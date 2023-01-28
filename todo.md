@@ -1,9 +1,7 @@
 # Yapılacaklar
 
-- Site açık kaynak durumuna getirilecek.
 - /discover tamamen düzeltilip tamamlanacak.
 - /genre/[id] ile /discover entegre edilecek ve bunun sonucunda /genre/[id] kaldırılıp /discover kullanılacak.
-- Seri etiketleri Türkçeleştirilecek.
 - /lastuploads/episodes eklenecek.
 - Basit kullanıcı kayıt/giriş ve profil sistemi yapılacak.
 - /user/[id] eklenecek.
