@@ -1,5 +1,5 @@
 <template><navbar/>
-    <div class="grid grid-rows-1 grid-cols-6"><!--grid-->
+    <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
     <leftmenu/>
     <div class="col-span-2 col-start-2 col-end-6 p-5"><!--page view-->
 <div class="card lg:card-side bg-base-100 p-[10px]">
@@ -30,6 +30,8 @@
 </div>
 </template>
 <script setup>
+const runtimeConfig = useRuntimeConfig();
+const route = useRoute()
 const info = await useFetch('https://api.mangadex.org/manga/random?contentRating[]=safe')
 let coverartid;
 //info.data["relationships"].forEach((item) => item.type == 'cover_art' ? coverartid = item.id : '')
@@ -40,6 +42,6 @@ let coverartid;
     }
 const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
 function mangapage() {
-            window.location.href = '/manga/' + info.data.value.data.id
+            window.location.href = route.query.theme ? '/manga/' + info.data.value.data.id + "?theme=" + route.query.theme : '/manga/' + info.data.value.data.id
         }
 </script>

@@ -1,13 +1,60 @@
 <template>
   <!--NAVBAR-->
-<div class="navbar bg-base-100">
+<div :data-theme="route.query.preview ? route.query.preview == 'none' ? runtimeConfig.public.theme : route.query.preview : route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"  class="navbar bg-base-100">
 <div class="flex-1">
-  <NuxtLink to="/" class="btn btn-ghost no-animation hover:bg-[transparent] bg-base-100 normal-case text-[23px]"><img width="75" src="https://cdn.discordapp.com/attachments/775822548519616562/1043105098236166194/mangile_full.png"/> Mangile</NuxtLink>
+  <NuxtLink :to="route.query.theme ? '/?theme=' + route.query.theme : '/'" class="btn btn-ghost no-animation hover:bg-[transparent] bg-base-100 normal-case text-[23px]"><img width="75" src="https://cdn.discordapp.com/attachments/775822548519616562/1043105098236166194/mangile_full.png"/> Mangile</NuxtLink>
 </div>
 <div class="flex-none gap-2">
   <div class="form-control">
-    <input id="searchbar" type="text" placeholder="Ara..." class="input input-bordered" @keyup="search()"/>
+    <input id="searchbar" type="text" placeholder="Ara..." class="input w-full max-w-xs" @keyup="search()"/>
   </div>
+<label for="my-modal-6" class="btn btn-ghost"><span class="p-2"><font-awesome-icon icon="fa-solid fa-palette" /></span> Tema Değiştir</label>
+
+<input type="checkbox" id="my-modal-6" class="modal-toggle" />
+<div class="modal modal-bottom sm:modal-middle cursor-pointer">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <label for="my-modal-6" class="btn btn-sm btn-square absolute right-4">✕</label>
+    <h3 class="font-bold text-lg">Mangile Tema Değiştirme Sistemi</h3>
+    <p class="py-4">
+      Aşağıdan İstediğiniz Temayı seçiniz.
+      <br/>
+      <select id="theme" class="select w-full max-w-xs">
+        <option> Tema Seç </option>
+        <option id="halloween">Cadılar Bayramı (Karanlık)</option>
+        <option id="forest">Orman (Karanlık)</option>
+        <option id="black">Siyah (Karanlık)</option>
+        <option id="luxury">Lüks (Karanlık)</option>
+        <option id="dracula">Drakula (Karanlık) [Önerilen] [Varsayılan]</option>
+        <option id="night">Gece (Karanlık) [Önerilen]</option>
+        <option id="business">İşletme (Karanlık)</option>
+        <option id="coffee">Kahve (Karanlık)</option>
+      </select>
+    </p>
+    <h2>Tema Önizlemeleri:</h2>
+    <div class="flex flex-row flex-wrap">
+    <div data-theme="halloween" class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"><div class="font-bold">Cadılar Bayramı</div> <div class="flex flex-wrap gap-1"><div class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-primary-content text-sm font-bold">A</div></div> <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-secondary-content text-sm font-bold">A</div></div> <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-accent-content text-sm font-bold">A</div></div> <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-neutral-content text-sm font-bold">A</div></div></div><div></div></div>
+
+    <div data-theme="forest" class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"><div class="font-bold">Orman</div> <div class="flex flex-wrap gap-1"><div class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-primary-content text-sm font-bold">A</div></div> <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-secondary-content text-sm font-bold">A</div></div> <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-accent-content text-sm font-bold">A</div></div> <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-neutral-content text-sm font-bold">A</div></div></div><div></div></div>
+
+    <div data-theme="black" class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"><div class="font-bold">Siyah</div> <div class="flex flex-wrap gap-1"><div class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-primary-content text-sm font-bold">A</div></div> <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-secondary-content text-sm font-bold">A</div></div> <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-accent-content text-sm font-bold">A</div></div> <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-neutral-content text-sm font-bold">A</div></div></div><div></div></div>
+
+    <div data-theme="luxury" class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"><div class="font-bold">Lüks</div> <div class="flex flex-wrap gap-1"><div class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-primary-content text-sm font-bold">A</div></div> <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-secondary-content text-sm font-bold">A</div></div> <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-accent-content text-sm font-bold">A</div></div> <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-neutral-content text-sm font-bold">A</div></div></div><div></div></div>
+
+    <div data-theme="dracula" class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"><div class="font-bold">Drakula</div> <div class="flex flex-wrap gap-1"><div class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-primary-content text-sm font-bold">A</div></div> <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-secondary-content text-sm font-bold">A</div></div> <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-accent-content text-sm font-bold">A</div></div> <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-neutral-content text-sm font-bold">A</div></div></div><div></div></div>
+
+    <div data-theme="night" class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"><div class="font-bold">Gece</div> <div class="flex flex-wrap gap-1"><div class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-primary-content text-sm font-bold">A</div></div> <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-secondary-content text-sm font-bold">A</div></div> <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-accent-content text-sm font-bold">A</div></div> <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-neutral-content text-sm font-bold">A</div></div></div><div></div></div>
+
+    <div data-theme="business" class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"><div class="font-bold">İşletme</div> <div class="flex flex-wrap gap-1"><div class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-primary-content text-sm font-bold">A</div></div> <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-secondary-content text-sm font-bold">A</div></div> <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-accent-content text-sm font-bold">A</div></div> <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-neutral-content text-sm font-bold">A</div></div></div><div></div></div>
+
+    <div data-theme="coffee" class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"><div class="font-bold">Kahve</div> <div class="flex flex-wrap gap-1"><div class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-primary-content text-sm font-bold">A</div></div> <div class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-secondary-content text-sm font-bold">A</div></div> <div class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-accent-content text-sm font-bold">A</div></div> <div class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"><div class="text-neutral-content text-sm font-bold">A</div></div></div><div></div></div>
+
+      </div>
+    <div class="modal-action">
+      <label for="my-modal-6" class="btn btn-ghost" @click="preview()">Önizleme</label>
+      <label for="my-modal-6" class="btn" @click="theme()">Temayı Seç!</label>
+    </div>
+  </div>
+</div>
   <div class="dropdown dropdown-end">
     <label tabindex="0" class="btn btn-ghost btn-circle avatar">
       <div class="w-10 rounded-full">
@@ -29,13 +76,22 @@
 <!--NAVBAR-->
 </template>
 <script setup>
+const runtimeConfig = useRuntimeConfig();
+const route = useRoute()
+function preview(){
+  window.location.href = `/?preview=${document.getElementById('theme').value == 'Drakula (Karanlık) [Önerilen] [Varsayılan]' ? 'dracula' : document.getElementById('theme').value == 'Cadılar Bayramı (Karanlık)' ? 'halloween' : document.getElementById('theme').value == 'Orman (Karanlık)' ? 'forest' : document.getElementById('theme').value == 'Siyah (Karanlık)' ? 'black' : document.getElementById('theme').value == 'Lüks (Karanlık)' ? 'luxury' : document.getElementById('theme').value == 'Gece (Karanlık) [Önerilen]' ? 'night' : document.getElementById('theme').value == 'İşletme (Karanlık)' ? 'business' : document.getElementById('theme').value == 'Kahve (Karanlık)' ? 'coffee' : 'none'}`
+}
+function theme(){
+  window.location.href = `/?theme=${document.getElementById('theme').value == 'Drakula (Karanlık) [Önerilen] [Varsayılan]' ? 'dracula' : document.getElementById('theme').value == 'Cadılar Bayramı (Karanlık)' ? 'halloween' : document.getElementById('theme').value == 'Orman (Karanlık)' ? 'forest' : document.getElementById('theme').value == 'Siyah (Karanlık)' ? 'black' : document.getElementById('theme').value == 'Lüks (Karanlık)' ? 'luxury' : document.getElementById('theme').value == 'Gece (Karanlık) [Önerilen]' ? 'night' : document.getElementById('theme').value == 'İşletme (Karanlık)' ? 'business' : document.getElementById('theme').value == 'Kahve (Karanlık)' ? 'coffee' : 'none'}`
+  localStorage.setItem("theme", `${document.getElementById('theme').value == 'Drakula (Karanlık) [Önerilen] [Varsayılan]' ? 'dracula' : document.getElementById('theme').value == 'Cadılar Bayramı (Karanlık)' ? 'halloween' : document.getElementById('theme').value == 'Orman (Karanlık)' ? 'forest' : document.getElementById('theme').value == 'Siyah (Karanlık)' ? 'black' : document.getElementById('theme').value == 'Lüks (Karanlık)' ? 'luxury' : document.getElementById('theme').value == 'Gece (Karanlık) [Önerilen]' ? 'night' : document.getElementById('theme').value == 'İşletme (Karanlık)' ? 'business' : document.getElementById('theme').value == 'Kahve (Karanlık)' ? 'coffee' : 'none'}`)
+}
 function search() {
 var input = document.getElementById("searchbar");
 
 input.addEventListener("keypress", function(event) {
 if (event.key === "Enter") {
   event.preventDefault();
-  window.location.href = `/search?q=${document.getElementById("searchbar").value}`
+  window.location.href = route.query.theme ? `/search?q=${document.getElementById("searchbar").value}&theme=${route.query.theme}` : `/search?q=${document.getElementById("searchbar").value}`
 }
 }); 
 }

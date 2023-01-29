@@ -1,6 +1,6 @@
 <template>
     <navbar/>
-    <div class="grid grid-rows-1 grid-cols-6"><!--grid-->
+    <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
     <leftmenu/>
     <div class="col-span-2 col-start-2 col-end-6 p-5"><!--page view-->
     <article class="prose max-w-none">
@@ -123,12 +123,16 @@
             </tbody>
         </table>
         </div>
-        Umuyorum ki bu tablo ve üstte verilen bilgiler sistemimizin kullanıcı arayüzünü anlamanıza yardımcı olacaktır. Lütfen hala anlamadığınız bir durum olursa, bize <NuxtLink to="/contact">iletişim</NuxtLink> adreslerimizden ulaşmaktan çekinmeyin.<br/><br/>
+        Umuyorum ki bu tablo ve üstte verilen bilgiler sistemimizin kullanıcı arayüzünü anlamanıza yardımcı olacaktır. Lütfen hala anlamadığınız bir durum olursa, bize <NuxtLink :to="route.query.theme ? '/contact?theme=' + route.query.theme : '/contact'">iletişim</NuxtLink> adreslerimizden ulaşmaktan çekinmeyin.<br/><br/>
         <div class="flex flex-row">
-        <NuxtLink to="/"><button class="btn m-2">Ana Sayfaya Dön</button></NuxtLink>
-        <NuxtLink to="/error"><button class="btn btn-error m-2">Hata sayfasına buradan erişebilirsiniz</button></NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/?theme=' + route.query.theme : '/'"><button class="btn m-2">Ana Sayfaya Dön</button></NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/error?theme=' + route.query.theme : '/error'"><button class="btn btn-error m-2">Hata sayfasına buradan erişebilirsiniz</button></NuxtLink>
         </div>
     </article>
     </div>
     </div>
 </template>
+<script setup>
+const runtimeConfig = useRuntimeConfig();
+const route = useRoute()
+</script>

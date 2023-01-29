@@ -8,6 +8,8 @@ Previews:<br/>
 
 `/`
 <img src="https://cdn.discordapp.com/attachments/775822548519616562/1068921716715294852/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069242953379360838/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069243018906976307/image.png">
 
 `/discover`
 <img src="https://cdn.discordapp.com/attachments/775822548519616562/1068922699826593923/image.png">

@@ -15,7 +15,6 @@
 - Yükleme Barı Eklenecek. (Nuxt 3 Loading Component eklenmesi gerekli.)
 - Rozetler eklenecek. (Yetkili/Fansub Yetkilisi/Site Sahibi/Okuyucu)
 - Dashboard yapılacak. (manga yükle/manga sil/manga düzenle/liste düzenle/liste sil/profil düzenle/profil sil) [Yetkili özel]
-- Tema değiştirme eklenecek. (Night/Dracula/Light)
 - Site son kontrolden geçecek ve iyileştirmeler yapılacak.
 - Domain Alınacak.
 - Yorumlar eklenecek. (Domain alınmadan eklenmeyecek.)

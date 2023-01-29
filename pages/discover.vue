@@ -1,6 +1,6 @@
 <template>
   <navbar/>
-  <div class="grid grid-rows-1 grid-cols-7"><!--grid-->
+  <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-7"><!--grid-->
   <leftmenu/>
   <div class="col-span-2 col-start-2 col-end-7 p-5 pl-20"><!--page view-->
   <alert/>
@@ -16,7 +16,7 @@
           <h2 class="card-title">{{ !item.attributes.title["en"] ? !item.attributes.title["ja-ro"] ? "" : item.attributes.title["ja-ro"].substring(0,20) + "...": item.attributes.title["en"].substring(0,20) + "..." }}</h2>
           <p>{{ !item.attributes.description["en"] ? "" : parseInt(item.attributes.description["en"]) == 0 ? "" : item.attributes.description["en"].substring(0,20) + "..."}}</p><br>
           <div class="dropdown dropdown-hover dropdown-top flex justify-end">
-            <a class="btn btn-secondary" :href="`/manga/${item.id}`"> İncele!</a>
+            <a class="btn btn-primary" :href="route.query.theme ? `/manga/${item.id}?theme=` + route.query.theme : `/manga/${item.id}`"> İncele!</a>
           </div>
         </div>
       </div>
@@ -71,6 +71,7 @@
   </template>
   <script setup>
   const route = useRoute()
+  const runtimeConfig = useRuntimeConfig();
   const tags = {
     genres: [
       {

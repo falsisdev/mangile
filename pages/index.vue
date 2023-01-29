@@ -1,6 +1,6 @@
 <template>
   <navbar/>
-  <div class="grid grid-rows-1 grid-cols-6"><!--grid-->
+  <div :data-theme="route.query.preview ? route.query.preview == 'none' ? runtimeConfig.public.theme : route.query.preview : route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
   <leftmenu/>
   <div class="col-span-2 col-start-2 col-end-6 p-5 pl-20"><!--page view-->
   <alert/>
@@ -17,7 +17,7 @@
       <h2 class="card-title">{{ item.name }}</h2>
       <p>{{ item.description }}</p>
       <div class="dropdown dropdown-hover dropdown-top flex justify-end">
-        <a class="btn btn-secondary" :href="`/manga/${item.url}`">Oku!</a>
+        <a class="btn btn-primary" :href="route.query.theme ? `/manga/${item.url}?theme=` + route.query.theme : `/manga/${item.url}`">Oku!</a>
       <div class="card w-72 dropdown-content bg-base-100 shadow-xl">
         <div class="card-body">
           <h2 class="card-title">{{ item.name }}</h2>
@@ -43,7 +43,7 @@
         <h1 class="text-5xl font-bold">{{ editorschoice.name }}</h1>
         <p class="py-6">{{ editorschoice.description }}</p>
         <div class="dropdown dropdown-hover dropdown-top dropdown-start">
-        <a class="btn btn-secondary" href='/manga/e78a489b-6632-4d61-b00b-5206f5b8b22b'>Devam Et!</a>
+        <a class="btn btn-primary" :href='route.query.theme ? `/manga/e78a489b-6632-4d61-b00b-5206f5b8b22b?theme=` + route.query.theme : `/manga/e78a489b-6632-4d61-b00b-5206f5b8b22b`'>Devam Et!</a>
         <div class="card w-96 dropdown-content bg-base-100 shadow-xl image-full">
         <figure><img :src="editorschoice.bg" alt="Cover"/></figure>
         <div class="card-body">
@@ -70,7 +70,7 @@
         <h1 class="text-5xl font-bold">{{ highlyrecommended.name }}</h1>
         <p class="py-6">{{ highlyrecommended.description }}</p>
         <div>
-        <a class="btn btn-secondary" href='/manga/8211bac6-a392-4e37-b3b6-dac0f4512d24'>Devam Et!</a>
+        <a class="btn btn-primary" :href='route.query.theme ? `/manga/8211bac6-a392-4e37-b3b6-dac0f4512d24?theme=` + route.query.theme : `/manga/8211bac6-a392-4e37-b3b6-dac0f4512d24`'>Devam Et!</a>
       </div>
       </div>
     </div>
@@ -80,7 +80,9 @@
   </div><!--grid-->
   </template>
   <script setup>
-  function redirecg(url) {
+const runtimeConfig = useRuntimeConfig();
+const route = useRoute()
+  function redirect(url) {
     window.location.href = url
   }
   const highlights = [{

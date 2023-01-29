@@ -6,23 +6,23 @@
     <li class="menu-title">
       <span>Baş Sayfalar</span>
     </li>
-    <li><NuxtLink to="/"><span><font-awesome-icon icon="fa-solid fa-house"></font-awesome-icon></span> Anasayfa</NuxtLink></li>
-    <li><a href="/discover"><span><font-awesome-icon icon="fa-solid fa-compass"></font-awesome-icon></span> Keşfet</a></li>
+    <li><NuxtLink :to="route.query.theme ? '/?theme=' + route.query.theme : '/'"><span><font-awesome-icon icon="fa-solid fa-house"></font-awesome-icon></span> Anasayfa</NuxtLink></li>
+    <li><a :href="route.query.theme ? '/discover?theme=' + route.query.theme : '/discover'"><span><font-awesome-icon icon="fa-solid fa-compass"></font-awesome-icon></span> Keşfet</a></li>
     <div class="divider"></div> 
     <li class="menu-title">
       <span>İçerikler</span>
     </li>
     <li><a><span><font-awesome-icon icon="fa-solid fa-file-circle-plus" /></span> Son Yüklenen Bölümler</a></li>
-    <li><a href="/lastuploads/manga"><span><font-awesome-icon icon="fa-solid fa-folder-plus" /></span> Son Yüklenen Mangalar</a></li>
-    <li><a href="/manga/random"><span><font-awesome-icon icon="fa-solid fa-shuffle"> Rastgele Manga</font-awesome-icon></span> Rastgele Manga</a></li>
+    <li><a :href="route.query.theme ? '/lastuploads/manga?theme=' + route.query.theme : '/lastuploads/manga'"><span><font-awesome-icon icon="fa-solid fa-folder-plus" /></span> Son Yüklenen Mangalar</a></li>
+    <li><a :href="route.query.theme ? '/manga/random?theme=' + route.query.theme : '/manga/random'"><span><font-awesome-icon icon="fa-solid fa-shuffle"> Rastgele Manga</font-awesome-icon></span> Rastgele Manga</a></li>
     <div class="divider"></div>
     <li class="menu-title">
       <span>Mühim Sayfalar</span>
     </li>
-    <li><NuxtLink to="/ui"><span><font-awesome-icon icon="fa-solid fa-users" /></span> Kullanıcı Arayüzü</NuxtLink></li>
-    <li><NuxtLink to="/about"><span><font-awesome-icon icon="fa-solid fa-file-pen" /></span> Hakkımızda</NuxtLink></li>
-    <li><NuxtLink to="/contact"><span><font-awesome-icon icon="fa-solid fa-phone" /></span> İletişim</NuxtLink></li>
-    <li><NuxtLink to="/terms"><span><font-awesome-icon icon="fa-solid fa-book-open-reader" /></span> Hizmet Şartları</NuxtLink></li>
+    <li><NuxtLink :to="route.query.theme ? '/ui?theme=' + route.query.theme : '/ui'"><span><font-awesome-icon icon="fa-solid fa-users" /></span> Kullanıcı Arayüzü</NuxtLink></li>
+    <li><NuxtLink :to="route.query.theme ? '/about?theme=' + route.query.theme : '/about'"><span><font-awesome-icon icon="fa-solid fa-file-pen" /></span> Hakkımızda</NuxtLink></li>
+    <li><NuxtLink :to="route.query.theme ? '/contact?theme=' + route.query.theme : '/contact'"><span><font-awesome-icon icon="fa-solid fa-phone" /></span> İletişim</NuxtLink></li>
+    <li><NuxtLink :to="route.query.theme ? '/terms?theme=' + route.query.theme : '/terms'"><span><font-awesome-icon icon="fa-solid fa-book-open-reader" /></span> Hizmet Şartları</NuxtLink></li>
     <div class="divider"></div>
     <li>
     <footer class="footer items-center p-4 bg-neutral text-neutral-content">
@@ -36,3 +36,6 @@
   </div>
   <!--LEFT MENU-->
 </template>
+<script setup>
+const route = useRoute()
+</script>

@@ -1,6 +1,6 @@
 <template>
     <navbar/>
-    <div class="grid grid-rows-1 grid-cols-6"><!--grid-->
+    <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
     <leftmenu/>
     <div class="col-span-2 col-start-2 col-end-6 p-5"><!--page view-->
     <article class="prose max-w-none">
@@ -25,10 +25,14 @@
         Benimle ilgili daha fazla bilgi istiyorsan seni meraklı okuyucu, <a href="https://falsis.ga" class="link link-primary">buraya</a> bakabilirsin.
         </p>
         <p>
-            İşte böyle dostum! Bizimle iletişime geçmek için <NuxtLink to="/contact" class="link">iletişim</NuxtLink> sayfasına bakabilirsin. Sitenin Kullanıcı Arayüzü (UI) ile ilgili kafan karışıksa, <NuxtLink to="/ui" class="link">şuradan</NuxtLink> sitedeki işaretlerin ne anlama geldiğine bakabilirsin. İyi okumalar, sayanora!
+            İşte böyle dostum! Bizimle iletişime geçmek için <NuxtLink :to="route.query.theme ? '/contact?theme=' + route.query.theme : '/contact'" class="link">iletişim</NuxtLink> sayfasına bakabilirsin. Sitenin Kullanıcı Arayüzü (UI) ile ilgili kafan karışıksa, <NuxtLink :to="route.query.theme ? '/ui?theme=' + route.query.theme : '/ui'" class="link">şuradan</NuxtLink> sitedeki işaretlerin ne anlama geldiğine bakabilirsin. İyi okumalar, sayanora!
         </p>
         <img class="shadow-lg rounded-lg" src="https://www.pixelstalk.net/wp-content/uploads/images6/Manga-Wallpaper-Free-Download.jpg"/>
     </article>
     </div>
     </div>
 </template>
+<script setup>
+const runtimeConfig = useRuntimeConfig();
+const route = useRoute()
+</script>

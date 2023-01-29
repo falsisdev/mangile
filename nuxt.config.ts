@@ -11,7 +11,8 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
       public: {
-        token: process.env.token
+        token: process.env.token,
+        theme: "dracula"
       }
     }
 })

@@ -1,10 +1,10 @@
 <template><navbar/>
-  <div class="grid grid-rows-1 grid-cols-6"><!--grid-->
+  <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
   <leftmenu/>
   <div class="col-span-4 col-start-2 col-end-6 p-5"><!--page view-->
 <div class="card lg:card-side bg-base-100 p-[10px]">
 <div class="card-body">
-  <NuxtLink class="link link-hover" :to="`/manga/${route.params.id}`">{{ info.data.value.data.attributes.title.en }}</NuxtLink>
+  <NuxtLink class="link link-hover" :to="route.query.theme ? `/manga/${route.params.id}?theme=` + route.query.theme : `/manga/${route.params.id}`">{{ info.data.value.data.attributes.title.en }}</NuxtLink>
   <article class="prose max-w-none">
   <h1>{{ epp.title }}</h1>
   </article>
@@ -47,9 +47,9 @@ if(item.ep == route.params.ep) {
 }
 }
 function onceki() {
-window.location.href = `/manga/${route.params.id}/read/${route.params.vol}/${parseInt(route.params.ep) - 1}`
+window.location.href = route.query.theme ? `/manga/${route.params.id}/read/${route.params.vol}/${parseInt(route.params.ep) - 1}?theme=` + route.query.theme : `/manga/${route.params.id}/read/${route.params.vol}/${parseInt(route.params.ep) - 1}`
 }
 function sonraki() {
-window.location.href = `/manga/${route.params.id}/read/${route.params.vol}/${parseInt(route.params.ep) + 1}`
+window.location.href = route.query.theme ? `/manga/${route.params.id}/read/${route.params.vol}/${parseInt(route.params.ep) + 1}?theme=` + route.query.theme : `/manga/${route.params.id}/read/${route.params.vol}/${parseInt(route.params.ep) + 1}`
 }
 </script>
