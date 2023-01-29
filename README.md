@@ -1,5 +1,5 @@
 # Mangile
-Mangile - Statik, Hızlı, Güvenli ve Türkçe manga okuma sitesi. 
+Mangile - Dinamik, Hızlı, Güvenli ve Türkçe manga okuma sitesi. 
 <br/>
 Teknolojiler;<br/>
 Vue 3, Nuxt 3, Daisy UI, TailwindCSS, TypeScript, JavaScript, NodeJS, FontAwesome, MangaDex API
