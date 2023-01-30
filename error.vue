@@ -123,4 +123,7 @@
 <script setup>
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig()
+useHead({
+    title: "Hata"
+})
 </script>

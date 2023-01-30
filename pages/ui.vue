@@ -135,4 +135,7 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute()
+useHead({
+  title: "Kullanıcı Arayüzü"
+})
 </script>

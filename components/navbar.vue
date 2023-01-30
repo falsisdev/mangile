@@ -78,6 +78,11 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute()
+  useHead({
+    titleTemplate: (titleChunk) => {
+      return titleChunk ? `${titleChunk} | Mangile` : 'Mangile';
+    }
+  })
 function preview(){
   window.location.href = `/?preview=${document.getElementById('theme').value == 'Drakula (Karanlık) [Önerilen] [Varsayılan]' ? 'dracula' : document.getElementById('theme').value == 'Cadılar Bayramı (Karanlık)' ? 'halloween' : document.getElementById('theme').value == 'Orman (Karanlık)' ? 'forest' : document.getElementById('theme').value == 'Siyah (Karanlık)' ? 'black' : document.getElementById('theme').value == 'Lüks (Karanlık)' ? 'luxury' : document.getElementById('theme').value == 'Gece (Karanlık) [Önerilen]' ? 'night' : document.getElementById('theme').value == 'İşletme (Karanlık)' ? 'business' : document.getElementById('theme').value == 'Kahve (Karanlık)' ? 'coffee' : 'none'}`
 }

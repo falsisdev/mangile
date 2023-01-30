@@ -35,4 +35,7 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute()
+useHead({
+  title: "Hakkımızda"
+})
 </script>

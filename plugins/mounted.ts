@@ -1,6 +1,6 @@
 export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.hook('app:mounted', () => {
-        document.body.clientWidth <= 1262 ? window.location.href = 'https://cdn.falsisdev.repl.co/accessdenied.json' : ''
+        document.body.clientWidth < 1100 ? window.location.href = 'https://cdn.falsisdev.repl.co/accessdenied.json' : ''
         if(localStorage.getItem("theme")) {
             if(localStorage.getItem("theme") != 'none') {
                 var searchParams = new URLSearchParams(window.location.search);

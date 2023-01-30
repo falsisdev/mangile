@@ -44,4 +44,7 @@ const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
 function mangapage() {
             window.location.href = route.query.theme ? '/manga/' + info.data.value.data.id + "?theme=" + route.query.theme : '/manga/' + info.data.value.data.id
         }
+useHead({
+  title: "Rastgele Manga"
+})
 </script>

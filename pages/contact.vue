@@ -60,4 +60,7 @@
     <script setup>
     const runtimeConfig = useRuntimeConfig();
     const route = useRoute()
+    useHead({
+    title: "İletişim"
+    })
     </script>

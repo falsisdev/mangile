@@ -82,6 +82,15 @@
   <script setup>
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute()
+if(route.query.preview) {
+useHead({
+  title: "Tema Önizleme"
+})
+}else{
+  useHead({
+  title: "Anasayfa"
+})
+}
   function redirect(url) {
     window.location.href = url
   }

@@ -7,13 +7,13 @@
   <!--arama sonuçları-->
   <article class="prose max-w-none p-5">
     <h1>Son Yüklenen Mangalar</h1>
+    Yükleme Kaynağı: MangaDex
   </article>
   <div v-if="statuscode == 200" class="flex flex-row flex-wrap">
   <div v-for="item of results" v-bind:key="item" class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] shadow-lg rounded-lg">
     <figure><img class="rounded shadow-md w-64 h-72" :src="`https://mangadex.org/covers/${item.id}/${cover[results.indexOf(item)].data.value.data.attributes.fileName}.512.jpg`"/></figure>
     <div class="card-body">
-      <h2 class="card-title">{{ !item.attributes.title["en"] ? !item.attributes.title["ja-ro"] ? "" : item.attributes.title["ja-ro"].substring(0,20) + "...": item.attributes.title["en"].substring(0,20) + "..." }}</h2>
-      <p>{{ !item.attributes.description["en"] ? "" : parseInt(item.attributes.description["en"]) == 0 ? "" : item.attributes.description["en"].substring(0,20) + "..."}}</p><br>
+      <h2 class="card-title">{{ !item.attributes.title["en"] ? !item.attributes.title["ja-ro"] ? "" : item.attributes.title["ja-ro"] : item.attributes.title["en"] }}</h2>
       <div class="dropdown dropdown-hover dropdown-top flex justify-end">
         <a class="btn btn-primary" :href="route.query.theme ? `/manga/${item.id}?theme=` + route.query.theme : `/manga/${item.id}`">Oku!</a>
       </div>
@@ -32,6 +32,9 @@
 <script setup>
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig();
+useHead({
+  title: "Son Yüklenen Mangalar"
+})
 let statuscode;
 let results;
 let data;

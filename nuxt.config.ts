@@ -5,7 +5,7 @@ export default defineNuxtConfig({
       ],
     app: {
       head: {
-        link: [ { rel: "https://unpkg.com/vue-simple-markdown/dist/vue-simple-markdown.css" }],
+        link: [ { rel: "https://unpkg.com/vue-simple-markdown/dist/vue-simple-markdown.css" }, { rel: "icon", href: "https://media.discordapp.net/attachments/775822548519616562/1043106785617260554/mangile_sun.png?size=4096"}],
         script: [ { src: "https://unpkg.com/vue-simple-markdown" }]
       }
     },

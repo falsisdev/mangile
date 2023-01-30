@@ -52,4 +52,7 @@ window.location.href = route.query.theme ? `/manga/${route.params.id}/read/${rou
 function sonraki() {
 window.location.href = route.query.theme ? `/manga/${route.params.id}/read/${route.params.vol}/${parseInt(route.params.ep) + 1}?theme=` + route.query.theme : `/manga/${route.params.id}/read/${route.params.vol}/${parseInt(route.params.ep) + 1}`
 }
+useHead({
+  title: `${epp.title}`
+})
 </script>

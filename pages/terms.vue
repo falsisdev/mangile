@@ -249,4 +249,7 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig();
 const route = useRoute()
+useHead({
+  title: "Hizmet Şartları"
+})
 </script>
