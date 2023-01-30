@@ -7,41 +7,40 @@ Vue 3, Nuxt 3, Daisy UI, TailwindCSS, TypeScript, JavaScript, NodeJS, FontAwesom
 Previews:<br/>
 
 `/`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068921716715294852/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069526535486320640/image.png">
 <img src="https://cdn.discordapp.com/attachments/775822548519616562/1069242953379360838/image.png">
 <img src="https://cdn.discordapp.com/attachments/775822548519616562/1069243018906976307/image.png">
 
 `/discover`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068922699826593923/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069526766504394752/image.png">
 
 `/lastuploads/manga`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068922852914499614/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069526923132276817/image.png">
 
 `/manga/random`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068923653904924733/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527120092602368/image.png">
 
 `/ui`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068923804040056929/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527194977706056/image.png">
 
 `/about`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068923934000562326/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527310644019250/image.png">
 
 `/contact`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068924091551203459/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527369670467624/image.png">
 
 `/terms`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068924190029250580/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527501572952114/image.png">
 
 `/manga/[id]`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068924396930084944/image.png">
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068924475141263550/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527636667269140/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527763670798356/image.png">
 
 `/manga/genre/[id]`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068924867837182002/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527951814697030/image.png">
 
 `/manga/[id]/read/[vol]/[ep]`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068925126898356265/image.png">
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068925331437801552/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069528086904840203/image.png">
 
 `/search`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1068925627115241533/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069528235550973962/image.png">
