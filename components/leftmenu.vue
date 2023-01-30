@@ -7,7 +7,7 @@
       <span>Baş Sayfalar</span>
     </li>
     <li><NuxtLink :to="route.query.theme ? '/?theme=' + route.query.theme : '/'"><span><font-awesome-icon icon="fa-solid fa-house"></font-awesome-icon></span> Anasayfa</NuxtLink></li>
-    <li><a :href="route.query.theme ? '/discover?theme=' + route.query.theme : '/discover'"><span><font-awesome-icon icon="fa-solid fa-compass"></font-awesome-icon></span> Keşfet</a></li>
+    <li><a :href="route.query.theme ? '/discover?page=1&theme=' + route.query.theme : '/discover'"><span><font-awesome-icon icon="fa-solid fa-compass"></font-awesome-icon></span> Keşfet</a></li>
     <div class="divider"></div> 
     <li class="menu-title">
       <span>İçerikler</span>

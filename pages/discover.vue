@@ -6,11 +6,14 @@
   <alert/>
   <br>
   <!--arama sonuçları-->
-  <article class="prose max-w-none p-5">
-        <h1>Keşfet</h1>
+  <article class="prose max-w-none p-5 flex flex-row">
+        <h1 class="pr-5">Keşfet</h1>
+        <span class="grow"></span>
+        <button id="clearfilters"  @click="clearFilters()" :class="`btn ${route.query.genres || route.query.demographic || route.query.status ? 'visible' : 'hidden'}`">Filtreleri Temizle</button>
       </article>
       <div v-if="statuscode == 200" class="flex flex-row flex-wrap">
       <div v-for="item of results" v-bind:key="item" class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] rounded-lg">
+        <div v-if="route.query.page == 1 ? parseInt(results.indexOf(item)) < 20 && parseInt(results.indexOf(item)) > -1 : route.query.page == 2 ? parseInt(results.indexOf(item)) < 40 && parseInt(results.indexOf(item)) > 19 : route.query.page == 3 ? parseInt(results.indexOf(item)) < 60 && parseInt(results.indexOf(item)) > 39 : route.query.page == 4 ? parseInt(results.indexOf(item)) < 80 && parseInt(results.indexOf(item)) > 59 : route.query.page == 5 ? parseInt(results.indexOf(item)) < 100 && parseInt(results.indexOf(item)) > 79 : parseInt(results.indexOf(item)) < 20 && parseInt(results.indexOf(item)) > -1">
         <figure><img class="rounded shadow-md w-64 h-72" :src="`https://mangadex.org/covers/${item.id}/${cover[results.indexOf(item)].data.value.data.attributes.fileName}.512.jpg`"/></figure>
         <div class="card-body">
           <h2 class="card-title">{{ !item.attributes.title["en"] ? !item.attributes.title["ja-ro"] ? "" : item.attributes.title["ja-ro"] : item.attributes.title["en"] }}</h2>
@@ -20,11 +23,12 @@
         </div>
       </div>
       </div>
+      </div>
       <div v-else>
           <article class="prose max-w-none p-5">
             <h2> Hiçbir Sonuç Bulunamadı!</h2>
           </article>
-        </div>
+        </div>  
       <!--arama sonuçları-->
   </div>
   <!--FILTER MENU-->
@@ -38,7 +42,7 @@
     <li>
     <label class="cursor-pointer label">
       <span class="label-text">{{ item.name }}</span>
-      <input :id="item.id" @click="typecheck(item.id)" type="checkbox" :checked="route.query['genres[]'] ? route.query['genres[]'].split(',').includes(item.id) ? false : 'checked' : 'checked'" class="checkbox checkbox-secondary checkbox-sm" />
+      <input :id="item.id" @click="typecheck(item.id)" type="checkbox" :checked="route.query['genres'] ? route.query['genres'].split(',').includes(item.id) ? 'checked' : false : false" class="checkbox checkbox-secondary checkbox-sm" />
     </label>
   </li></div>
     <div class="divider"></div>
@@ -48,7 +52,7 @@
     <div v-for="item of tags.demographics" v-bind:key="item" class="form-control"><li>
       <label class="cursor-pointer label">
       <span class="label-text">{{ item.name }}</span> 
-      <input :id="item.id" type="checkbox" checked="checked" class="checkbox checkbox-secondary checkbox-sm" />
+      <input :id="item.id" @click="demographicCheck(item.id)" type="checkbox" :checked="route.query['demographic'] ? route.query['demographic'].split(',').includes(item.id) ? 'checked' : false : false" class="checkbox checkbox-secondary checkbox-sm" />
       </label>
   </li></div>
   <div class="divider"></div>
@@ -58,11 +62,18 @@
     <div v-for="item of tags.status" v-bind:key="item" class="form-control"><li>
       <label class="cursor-pointer label">
       <span class="label-text">{{  item.name }}</span> 
-      <input :id="item.id" type="checkbox" checked="checked" class="checkbox checkbox-secondary checkbox-sm" />
+      <input :id="item.id" @click="statusCheck(item.id)" type="checkbox" :checked="route.query['status'] ? route.query['status'].split(',').includes(item.id) ? 'checked' : false : false" class="checkbox checkbox-secondary checkbox-sm" />
       </label>
   </li></div>
   <div class="divider"></div>
   <button @click="reload()" class="btn btn-secondary">Filtrele</button>
+  <div class="tabs tabs-boxed pt-2">
+        <NuxtLink :to="route.query.theme ? '/discover?page=1&theme=' + route.query.theme : '/discover?page=1'" class="tab">1</NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/discover?page=2&theme=' + route.query.theme : '/discover?page=2'" class="tab">2</NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/discover?page=3&theme=' + route.query.theme : '/discover?page=3'" class="tab">3</NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/discover?page=4&theme=' + route.query.theme : '/discover?page=4'" class="tab">4</NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/discover?page=5&theme=' + route.query.theme : '/discover?page=5'" class="tab">5</NuxtLink>
+  </div>
   </ul>
   </div>
   <!--FILTER MENU-->
@@ -202,24 +213,96 @@
   
   function typecheck(id) {
     var searchParams = new URLSearchParams(window.location.search);
-    if(document.getElementById(id).checked == true || document.getElementById(id).checked == "checked" && searchParams.get("genres[]")){
-      var spc = searchParams
-      delete spc.get("genres[]").split(",")[searchParams.get("genres[]").split(",").indexOf(id)]
-      var newRelativePathQuery = window.location.pathname + '?' + spc.toString();
-      history.pushState(null, '', newRelativePathQuery == window.location.pathname + '?' ? window.location.pathname : newRelativePathQuery);
-    }else{
-      searchParams.set("genres[]", searchParams.get("genres[]") == undefined ? id : String(`${Array(searchParams.get("genres[]")).join(",")},${id}`))
+    if(document.getElementById(id).checked == true || document.getElementById(id).checked == "checked" && searchParams.get("genres")){
+      searchParams.set("genres", searchParams.get("genres") == undefined || searchParams.get("genres") == '' || searchParams.get("genres") == null ? id : `${searchParams.get("genres")},${id}`)
       var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
       history.pushState(null, '', newRelativePathQuery);
+      document.getElementById("clearfilters").className = "btn visible"
+    }else{
+      var spc = searchParams.get("genres").split(",")
+      delete spc[spc.indexOf(id)]
+      searchParams.delete("genres")
+      var newRelativePathQuery = window.location.pathname + spc.toString() == ',' ? '?' + searchParams.toString() : '?' + searchParams.toString() + "&genres=" + spc.toString()
+      history.pushState(null, '', newRelativePathQuery == window.location.pathname + '?' ? window.location.pathname : newRelativePathQuery);
     }
   }
-  
+
+  function demographicCheck(id) {
+    var searchParams = new URLSearchParams(window.location.search);
+    if(document.getElementById(id).checked == true || document.getElementById(id).checked == "checked" && searchParams.get("demographic")){
+      searchParams.set("demographic", searchParams.get("demographic") == undefined || searchParams.get("demographic") == '' || searchParams.get("demographic") == null ? id : `${searchParams.get("demographic")},${id}`)
+      var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+      document.getElementById("clearfilters").className = "btn visible"
+      history.pushState(null, '', newRelativePathQuery);
+    }else{
+      var spc = searchParams.get("demographic").split(",")
+      delete spc[spc.indexOf(id)]
+      searchParams.delete("demographic")
+      var newRelativePathQuery = window.location.pathname + spc.toString() == ',' ? '?' + searchParams.toString() : '?' + searchParams.toString() + "&demographic=" + spc.toString()
+      history.pushState(null, '', newRelativePathQuery == window.location.pathname + '?' ? window.location.pathname : newRelativePathQuery);
+    }
+  }
+
+  function statusCheck(id) {
+    var searchParams = new URLSearchParams(window.location.search);
+    if(document.getElementById(id).checked == true || document.getElementById(id).checked == "checked" && searchParams.get("status")){
+      searchParams.set("status", searchParams.get("status") == undefined || searchParams.get("status") == '' || searchParams.get("status") == null ? id : `${searchParams.get("status")},${id}`)
+      var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+      document.getElementById("clearfilters").className = "btn visible"
+      history.pushState(null, '', newRelativePathQuery);
+    }else{
+      var spc = searchParams.get("status").split(",")
+      delete spc[spc.indexOf(id)]
+      searchParams.delete("status")
+      var newRelativePathQuery = window.location.pathname + spc.toString() == ',' ? '?' + searchParams.toString() : '?' + searchParams.toString() + "&status=" + spc.toString()
+      history.pushState(null, '', newRelativePathQuery == window.location.pathname + '?' ? window.location.pathname : newRelativePathQuery);
+    }
+  }
+
+  function clearFilters() {
+    var searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete("genres")
+    searchParams.delete("demographic")
+    searchParams.delete("status")
+    var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString()
+    history.pushState(null, '', newRelativePathQuery == window.location.pathname + '?' ? window.location.pathname : newRelativePathQuery);
+    document.getElementById("clearfilters").className = "btn hidden"
+    window.location.reload()
+  }
+
   let statuscode;
   let results;
   let data;
   let cover = [];
   try{
-  data = await useFetch(`https://api.mangadex.org/manga?excludedTags[]=b13b2a48-c720-44a9-9c77-39c9979373fb${route.query["genres"] ? "," + route.query["genres"] : ""}&limit=100&order[followedCount]=desc&originalLanguage[]=ja`)
+    var isGenres = route.query.genres == null || route.query.genres == '' || route.query.genres == ',' ? false : true
+    var isDemographic = route.query.demographic == null || route.query.demographic == '' || route.query.demographic == ',' ? false : true
+    var isStatus = route.query.demographic == null || route.query.demographic == '' || route.query.demographic == ',' ? false : true
+    let includedTags;
+    let publicationDemographic;
+    let status;
+    if(isGenres) {
+    for(let item of String(route.query.genres).split(",")) {
+      includedTags = `${includedTags == undefined ? '' : includedTags}&includedTags[]=${item}`
+    }
+  }else{
+    includedTags = false
+  }
+  if(isDemographic) {
+    for(let item of String(route.query.demographic).split(",")) {
+      publicationDemographic = `${publicationDemographic == undefined ? '' : publicationDemographic}&publicationDemographic[]=${item}`
+    }
+  }else{
+    publicationDemographic = false
+  }
+  if(isStatus) {
+    for(let item of String(route.query.status).split(",")) {
+      status = `${status == undefined ? '' : status}&status[]=${item}`
+    }
+  }else{
+    status = false
+  }
+  data = await useFetch(`https://api.mangadex.org/manga?excludedTags[]=b13b2a48-c720-44a9-9c77-39c9979373fb${includedTags == false ? '' : includedTags + "&includedTagsMode=OR"}${publicationDemographic == false ? '' : publicationDemographic}${status == false ? '' : status}&limit=100&order[followedCount]=desc&originalLanguage[]=ja`)
   results = data.data.value.data
   let coverartid;
       for(let item of results) {
@@ -232,6 +315,7 @@
       }
     statuscode = 200
   }catch(error) {
+    console.log(error)
     statuscode = 404
   }
   useHead({
