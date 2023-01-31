@@ -12,7 +12,7 @@
     <li class="menu-title">
       <span>İçerikler</span>
     </li>
-    <li><a><span><font-awesome-icon icon="fa-solid fa-file-circle-plus" /></span> Son Yüklenen Bölümler</a></li>
+    <li><a :href="route.query.theme ? '/lastuploads/episodes?theme=' + route.query.theme : '/lastuploads/episodes'"><span><font-awesome-icon icon="fa-solid fa-file-circle-plus" /></span> Son Yüklenen Bölümler</a></li>
     <li><a :href="route.query.theme ? '/lastuploads/manga?theme=' + route.query.theme : '/lastuploads/manga'"><span><font-awesome-icon icon="fa-solid fa-folder-plus" /></span> Son Yüklenen Mangalar</a></li>
     <li><a :href="route.query.theme ? '/manga/random?theme=' + route.query.theme : '/manga/random'"><span><font-awesome-icon icon="fa-solid fa-shuffle"> Rastgele Manga</font-awesome-icon></span> Rastgele Manga</a></li>
     <div class="divider"></div>

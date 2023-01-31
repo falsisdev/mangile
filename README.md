@@ -18,6 +18,9 @@ Previews:<br/>
 `/lastuploads/manga`
 <img src="https://cdn.discordapp.com/attachments/775822548519616562/1069526923132276817/image.png">
 
+`/lastuploads/episodes`
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069957172471009383/image.png">
+
 `/manga/random`
 <img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527120092602368/image.png">
 
