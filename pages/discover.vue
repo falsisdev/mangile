@@ -67,7 +67,7 @@
   </li></div>
   <div class="divider"></div>
   <button @click="reload()" class="btn btn-secondary">Filtrele</button>
-  <div class="tabs tabs-boxed pt-2">
+  <div class="tabs tabs-boxed pt-2 justify-center">
         <NuxtLink :to="route.query.theme ? '/discover?page=1&theme=' + route.query.theme : '/discover?page=1'" class="tab">1</NuxtLink>
         <NuxtLink :to="route.query.theme ? '/discover?page=2&theme=' + route.query.theme : '/discover?page=2'" class="tab">2</NuxtLink>
         <NuxtLink :to="route.query.theme ? '/discover?page=3&theme=' + route.query.theme : '/discover?page=3'" class="tab">3</NuxtLink>

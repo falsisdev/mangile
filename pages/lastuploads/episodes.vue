@@ -13,9 +13,9 @@
     <div v-for="[index, deger] of Object.entries(results.lastsids)" v-bind:key="[index, deger]" class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] shadow-lg rounded-lg">
         <figure><img class="rounded shadow-md w-64 h-72" :src="`https://mangadex.org/covers/${deger}/${cover[parseInt(settedids.indexOf(deger))].data.value.data.attributes.fileName}.512.jpg`"/></figure>
       <div class="card-body">
-        <h2 class="card-title">{{ !lastidsfetch[settedids.indexOf(deger)].attributes.title["en"] ? !lastidsfetch[settedids.indexOf(deger)].attributes.title["ja-ro"] ? "" : lastidsfetch[settedids.indexOf(deger)].attributes.title["ja-ro"] : lastidsfetch[settedids.indexOf(deger)].attributes.title["en"] }}</h2>
+        <h2 class="card-title">{{ !lastidsfetch[settedids.indexOf(deger)].attributes.title["en"] ? !lastidsfetch[settedids.indexOf(deger)].attributes.title["ja-ro"] ? "" : lastidsfetch[settedids.indexOf(deger)].attributes.title["ja-ro"].substring(0,20) + "..." : lastidsfetch[settedids.indexOf(deger)].attributes.title["en"].substring(0,20) + "..." }}</h2>
         <p>
-           Cilt  {{ results.lasteps[index].vol }} {{ results.lasteps[index].title }}<br/>
+           Cilt  {{ results.lasteps[index].vol }} {{ results.lasteps[index].title.substring(0,20) + "..." }}<br/>
            Kaynak:  {{ results.lasteps[index].source }}
         </p>
         <div class="dropdown dropdown-hover dropdown-top flex justify-end">
