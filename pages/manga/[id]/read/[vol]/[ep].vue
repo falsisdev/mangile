@@ -8,7 +8,11 @@
   <article class="prose max-w-none">
   <h1>{{ epp.title }}</h1>
   </article>
-  Çeviri Ekibi: {{ epp.source }}
+  <span class="flex flex-row">
+  <span>Çeviri Ekibi: {{ epp.source }}</span>
+  <span class="grow"></span>
+  <span>Sayfa Sayısı: {{ epp["pages"].length }}</span>
+  </span>
 <div class="divider"></div>
 <div class="grid grid-rows-1 grid-cols-2">
 <button @click="onceki()" class="btn btn-error col-span-1 col-start-1 col-end-2 m-2">Önceki Bölüm</button> <button @click="sonraki()" class="p-2 btn btn-success col-span-1 col-start-2 col-end-3 m-2">Sonraki Bölüm</button>

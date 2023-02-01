@@ -95,10 +95,10 @@ useHead({
     window.location.href = url
   }
   const highlights = [{
-    "name": "Monster",
-    "description": "Monster, ünlü bir hastanede gelecek vaat eden bir kariyere sahip ünlü bir cerrah olan Kenzo Tenma'nın kendini geliştirme hikayesini ele alıyor. Tenma, ciddi şekilde yaralanmış genç bir çocuğun hayatını kurtarmak için itibarını ve gelecek vaat eden kariyerini riske atar. Bu çocuğun kaderinde korku...",
-    "image": "https://mangadex.org/covers/d9e30523-9d65-469e-92a2-302995770950/0b815f57-43ad-4782-a56f-bf9d0d034147.jpg",
-    "url": "d9e30523-9d65-469e-92a2-302995770950"
+    "name": "Vinland Saga",
+    "description": "Çocukken Thorfinn, büyük Leif Ericson'un ayaklarının dibine oturdu ve çok batıdaki bir diyarın vahşi hikayeleriyle heyecanlandı. Ancak gençlik fantezileri, bir paralı asker baskını ile paramparça oldu. Ailesini öldüren Vikingler tarafından büyütülen Thorfinn, sonsuza dek grubun lideri Askeladd'ı ...",
+    "image": "https://mangadex.org/covers/5d1fc77e-706a-4fc5-bea8-486c9be0145d/af345d2b-42c6-4c65-8a81-922086255795.jpg",
+    "url": "5d1fc77e-706a-4fc5-bea8-486c9be0145d"
   },
   {
     "name": "Mushoku Tensei Isekai Ittara Honki Dasu",
