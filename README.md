@@ -38,8 +38,8 @@ Previews:
 <img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527501572952114/image.png">
 
 `/manga/[id]`
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527636667269140/image.png">
-<img src="https://cdn.discordapp.com/attachments/775822548519616562/1069527763670798356/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1070664814143221781/image.png">
+<img src="https://cdn.discordapp.com/attachments/775822548519616562/1070665178380767273/image.png">
 
 `/manga/[id]/read/[vol]/[ep]`
 <img src="https://cdn.discordapp.com/attachments/775822548519616562/1069528086904840203/image.png">
