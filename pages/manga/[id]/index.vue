@@ -26,7 +26,7 @@
 <span v-if="author.data.value.data.attributes.name == artist.data.value.data.attributes.name">{{  author.data.value.data.attributes.name }}</span>
 <span v-else>Yazar: {{  author.data.value.data.attributes.name }}<br/>Çizer: {{  artist.data.value.data.attributes.name }}</span>
 </div></div><br/>
-<div tabindex="0" class="collapse collapse-open border border-base-300 bg-base-100 rounded-box">
+<div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
         <input type="checkbox" />
         <div class="collapse-title text-xl font-medium">
           Serinin Konusu

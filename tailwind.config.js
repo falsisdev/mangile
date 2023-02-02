@@ -3,6 +3,39 @@ export const daisyui = {
   styled: true,
   themes: [
     {
+      "otuken": {
+        primary: "#a485dd",
+        secondary: "#fc83d6",
+        accent: "#f7c1aa",
+        neutral: "#292730",
+        "base-100": "#0d1117", 
+        info: "#5E8FD9", 
+        success: "#86efac", 
+        warning: "#EF921F", 
+        error: "#E54B43", 
+      },
+      "sky": {
+        primary: "#be185d",
+        secondary: "#4f46e5",
+        accent: "#84cc16",
+        neutral: "#302C35",
+        "base-100": "#272744", 
+        info: "#0284c7", 
+        success: "#10b981", 
+        warning: "#f59e0b", 
+        error: "#ef4444", 
+      },
+      "violett": {
+        primary: "#ff6bd2",
+        secondary: "#8653fc",
+        accent: "#8cf7d7",
+        neutral: "#272239",
+        "base-100": "#46244C", 
+        info: "#5BB2CD", 
+        success: "#22c55e", 
+        warning: "#facc15", 
+        error: "#F13746", 
+      },
       "catppuccin-latte": {
         primary: "#1e66f5", // blue
         secondary: "#ea76cb", // pink
