@@ -14,5 +14,5 @@ export default defineNuxtConfig({
         token: process.env.token,
         theme: "dracula"
       }
-    }
+    },
 })

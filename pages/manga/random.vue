@@ -1,6 +1,4 @@
-<template><navbar/>
-    <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
-    <leftmenu/>
+<template>
     <div class="col-span-2 col-start-2 col-end-6 p-5"><!--page view-->
 <div class="card lg:card-side bg-base-100 p-[10px]">
     <article class="prose">
@@ -26,7 +24,6 @@
     <div class="card-actions justify-center pt-5">
       <button @click="mangapage()" class="btn">Manganın Sayfasına Git</button>
     </div>
-</div>
 </div>
 </template>
 <script setup>

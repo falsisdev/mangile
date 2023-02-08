@@ -14,5 +14,10 @@ export default defineNuxtPlugin((nuxtApp) => {
                 }
             }
         }
+        /*
+        if(!localStorage.getItem("username") && !localStorage.getItem("password")) {
+            if(!window.location.pathname.endsWith("/signup")) window.location.href = '/signup'
+        }
+        */
      })
 })

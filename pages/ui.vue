@@ -1,7 +1,4 @@
 <template>
-    <navbar/>
-    <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
-    <leftmenu/>
     <div class="col-span-2 col-start-2 col-end-6 p-5"><!--page view-->
     <article class="prose max-w-none">
         <h1>Kullanıcı Arayüzü</h1>
@@ -129,7 +126,6 @@
         <NuxtLink :to="route.query.theme ? '/error?theme=' + route.query.theme : '/error'"><button class="btn btn-error m-2">Hata sayfasına buradan erişebilirsiniz</button></NuxtLink>
         </div>
     </article>
-    </div>
     </div>
 </template>
 <script setup>

@@ -1,7 +1,4 @@
 <template>
-  <navbar/>
-  <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-7"><!--grid-->
-  <leftmenu/>
   <div class="col-span-2 col-start-2 col-end-7 p-5 pl-20"><!--page view-->
   <alert/>
   <br>
@@ -77,7 +74,6 @@
   </ul>
   </div>
   <!--FILTER MENU-->
-  </div>    
   </template>
   <script setup>
   const route = useRoute()

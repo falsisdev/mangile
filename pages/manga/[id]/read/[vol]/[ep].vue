@@ -1,10 +1,8 @@
-<template><navbar/>
-  <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
-  <leftmenu/>
+<template>
   <div class="col-span-4 col-start-2 col-end-6 p-5"><!--page view-->
 <div class="card lg:card-side bg-base-100 p-[10px]">
 <div class="card-body">
-  <NuxtLink class="link link-hover" :to="route.query.theme ? `/manga/${route.params.id}?theme=` + route.query.theme : `/manga/${route.params.id}`">{{ info.data.value.data.attributes.title.en }}</NuxtLink>
+  <a class="link link-hover" :href="route.query.theme ? `/manga/${route.params.id}?theme=` + route.query.theme : `/manga/${route.params.id}`">{{ info.data.value.data.attributes.title.en }}</a>
   <article class="prose max-w-none">
   <h1>{{ epp.title }}</h1>
   </article>
@@ -25,7 +23,6 @@
 <div class="divider"></div>
 <div class="grid grid-rows-1 grid-cols-2">
 <button @click="onceki()" class="btn btn-error col-span-1 col-start-1 col-end-2 m-2">Önceki Bölüm</button> <button @click="sonraki()" class="p-2 btn btn-success col-span-1 col-start-2 col-end-3 m-2">Sonraki Bölüm</button>
-</div>
 </div>
 </div>
 </div>

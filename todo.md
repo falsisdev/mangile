@@ -6,10 +6,9 @@ Mangile projesi için yapılması planlanan eylemler aşağıda listelenmiştir;
 
 ### 🏠 Tüm sayfaları ilgilendiren değişiklikler
 
-10 - Yükleme barı eklenecek. Böylece gereksiz yere `<a>` etiketi kullanılan yerlerde özel Nuxt router'ı `<NuxtLink>` etiketi kullanılabilecek. Ancak bunun için öncelikle Nuxt 3'e Loading Bileşeni (Component) eklenmeli. (Henüz yeni yayınlanan bir framework olduğundan mevcut değil.)<br>
-13 - Tüm site son kontrolden geçecek, tasarımlar ve sistemler iyileştirilip tamamlanacak.<br>
-14 - Domain (Alan Adı) alınacak (muhtemelen mangile.ga veya mangile.ml)
-15 - Disqus yorumları eklenecek. Bu un için domain alınmalı çünkü site bağlantısı ile çalışıyor.
+12 - Tüm site son kontrolden geçecek, tasarımlar ve sistemler iyileştirilip tamamlanacak.<br>
+13 - Domain (Alan Adı) alınacak (muhtemelen mangile.ga veya mangile.ml)
+14 - Disqus yorumları eklenecek. Bu un için domain alınmalı çünkü site bağlantısı ile çalışıyor.
 
 ### 📃 Navbar ve Menüler ile ilgili değşiklikler
 
@@ -36,5 +35,5 @@ Mangile projesi için yapılması planlanan eylemler aşağıda listelenmiştir;
 4 - Kullanıcılara rozet sistemi eklenecek. Yetkili olup olmadıkları geliştirilmiş cdn'e kaydedilecek ve yetkililere profil düzenleme (herkesin profili) izni verilecek.<br>
 6 - Giriş yapan kullanıcıların kendi gizli listelerini oluşturmaları ve bu listeleri düzenlemeleri için `/list/[id]` ve `/list/[id]/edit` sayfaları eklenecek.<br>
 7 - İlk başta gizli olarak yapılan listeler tüm kullanıcılara açılacak ve bu listeler yine Mangile site içinde yapılan beğeniler sonucunda beğeni sıralamasına göre liste keşfetinde beğenilmeyi bekleyecek. Bunun sonucunda `/discover/lists` sayfası eklenecek.<br>
-11 - Yönetim Paneli (dashboard) eklenecek. Bunun sonucunda yalnızca yetkili rozetine sahip özel hesapların erişebileceği `/dashboard` (Bu sayfa istatistik içerir bol bol), `/dashboard/mangas/add`, `/dashboard/mangas/edit`, `/dashboard/mangas/delete` (Bunlar bölüm için geçerli) sayfaları (ve muhtemelen daha fazlası) eklenecek. Ayrıca yönetim paneli üzerinde belirli bir sayfaya sahip olmamasına rağmen direkt liste ve profil sayfalarından yalnızca yetkili hesapların erişebileceği düzenle, sil gibi aksiyon butonları eklenecek.<br>
-12 - Bakım modu eklenecek. Bunun için yalnızca yetkili hesapların erişebileceği ve yönetim paneline bağlı `/dashboard/maintenance` sayfası eklenecek.<br>
+10 - Yönetim Paneli (dashboard) eklenecek. Bunun sonucunda yalnızca yetkili rozetine sahip özel hesapların erişebileceği `/dashboard` (Bu sayfa istatistik içerir bol bol), `/dashboard/mangas/add`, `/dashboard/mangas/edit`, `/dashboard/mangas/delete` (Bunlar bölüm için geçerli) sayfaları (ve muhtemelen daha fazlası) eklenecek. Ayrıca yönetim paneli üzerinde belirli bir sayfaya sahip olmamasına rağmen direkt liste ve profil sayfalarından yalnızca yetkili hesapların erişebileceği düzenle, sil gibi aksiyon butonları eklenecek.<br>
+11 - Bakım modu eklenecek. Bunun için yalnızca yetkili hesapların erişebileceği ve yönetim paneline bağlı `/dashboard/maintenance` sayfası eklenecek.<br>

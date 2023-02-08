@@ -11,7 +11,7 @@
     <!------------------------------------>
     <li><NuxtLink :to="route.query.theme ? '/?theme=' + route.query.theme : '/'"><span><font-awesome-icon icon="fa-solid fa-house"></font-awesome-icon></span> Anasayfa</NuxtLink></li>
     <!------------------------------------>
-    <li><a :href="route.query.theme ? '/discover?page=1&theme=' + route.query.theme : '/discover'"><span><font-awesome-icon icon="fa-solid fa-compass"></font-awesome-icon></span> Keşfet</a></li>
+    <li><NuxtLink :to="route.query.theme ? '/discover?page=1&theme=' + route.query.theme : '/discover'"><span><font-awesome-icon icon="fa-solid fa-compass"></font-awesome-icon></span> Keşfet</NuxtLink></li>
     <!------------------------------------>
     <div class="divider"></div> 
     <!--Başlık 2-->
@@ -22,9 +22,9 @@
     <!------------------------------------>
     <li><a :href="route.query.theme ? '/lastuploads/episodes?theme=' + route.query.theme : '/lastuploads/episodes'"><span><font-awesome-icon icon="fa-solid fa-file-circle-plus" /></span> Son Yüklenen Bölümler</a></li>
     <!------------------------------------>
-    <li><a :href="route.query.theme ? '/lastuploads/manga?theme=' + route.query.theme : '/lastuploads/manga'"><span><font-awesome-icon icon="fa-solid fa-folder-plus" /></span> Son Yüklenen Mangalar</a></li>
+    <li><NuxtLink :to="route.query.theme ? '/lastuploads/manga?theme=' + route.query.theme : '/lastuploads/manga'"><span><font-awesome-icon icon="fa-solid fa-folder-plus" /></span> Son Yüklenen Mangalar</NuxtLink></li>
     <!------------------------------------>
-    <li><a :href="route.query.theme ? '/manga/random?theme=' + route.query.theme : '/manga/random'"><span><font-awesome-icon icon="fa-solid fa-shuffle"> Rastgele Manga</font-awesome-icon></span> Rastgele Manga</a></li>
+    <li><NuxtLink :to="route.query.theme ? '/manga/random?theme=' + route.query.theme : '/manga/random'"><span><font-awesome-icon icon="fa-solid fa-shuffle"> Rastgele Manga</font-awesome-icon></span> Rastgele Manga</NuxtLink></li>
     <!------------------------------------>
     <div class="divider"></div>
     <!--Başlık 3-->

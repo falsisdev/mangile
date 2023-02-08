@@ -1,7 +1,4 @@
 <template>
-    <navbar/>
-    <div :data-theme="route.query.theme ? route.query.theme == 'none' ? runtimeConfig.public.theme : route.query.theme : runtimeConfig.public.theme"   class="grid grid-rows-1 grid-cols-6"><!--grid-->
-    <leftmenu/>
     <div class="col-span-2 col-start-2 col-end-6 p-5"><!--page view-->
     <article class="prose max-w-none">
         <h1>Hizmet Şartları</h1>
@@ -243,7 +240,6 @@
         Bu kullanım koşulları, https://sartlar.com aracılığıyla oluşturulmuştur.
     </p>
     </article>
-    </div>
     </div>
 </template>
 <script setup>
