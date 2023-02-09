@@ -32,9 +32,9 @@
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig();
 const info = await useFetch(`https://api.mangadex.org/manga/${route.params.id}`)
-const episodedata = await useFetch(`https://cdn.falsis.ga/mangile?token=${runtimeConfig.public.token}&id=${route.params.id}`)
-const statuscode = episodedata.data.value.code
-const epdata = episodedata.data.value.data
+const episodedata = await useFetch(`https://cdn.falsis.ga/mangile/manga?token=${runtimeConfig.public.token}&id=${route.params.id}`)
+const statuscode = episodedata.data.value.statusCode
+const epdata = episodedata.data.value.data.result
 let eps;
 for(let item of epdata.volumes) {
 if(item.vol == route.params.vol) {

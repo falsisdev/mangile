@@ -7,16 +7,16 @@
       Yükleme Kaynağı: Mangile Verileri
     </article>
     <div v-if="statuscode == 200" class="flex flex-row flex-wrap">
-    <div v-for="[index, deger] of Object.entries(results.lastsids)" v-bind:key="[index, deger]" class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] shadow-lg rounded-lg">
+    <div v-for="[index, deger] of Object.entries(results.lastUploadedMangaIDs)" v-bind:key="[index, deger]" class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] shadow-lg rounded-lg">
         <figure><img class="rounded shadow-md w-64 h-72" :src="`https://mangadex.org/covers/${deger}/${cover[parseInt(settedids.indexOf(deger))].data.value.data.attributes.fileName}.512.jpg`"/></figure>
       <div class="card-body">
         <h2 class="card-title">{{ !lastidsfetch[settedids.indexOf(deger)].attributes.title["en"] ? !lastidsfetch[settedids.indexOf(deger)].attributes.title["ja-ro"] ? "" : lastidsfetch[settedids.indexOf(deger)].attributes.title["ja-ro"].substring(0,20) + "..." : lastidsfetch[settedids.indexOf(deger)].attributes.title["en"].substring(0,20) + "..." }}</h2>
         <p>
-           Cilt  {{ results.lasteps[index].vol }} {{ results.lasteps[index].title.substring(0,20) + "..." }}<br/>
-           Kaynak:  {{ results.lasteps[index].source }}
+           Cilt  {{ results.lastUploadedEpisodes[index].vol }} {{ results.lastUploadedEpisodes[index].title.substring(0,20) + "..." }}<br/>
+           Kaynak:  {{ results.lastUploadedEpisodes[index].source }}
         </p>
         <div class="dropdown dropdown-hover dropdown-top flex justify-end">
-          <a class="btn btn-primary" :href="route.query.theme ? `/manga/${deger}/read/${results.lasteps[index].vol}/${results.lasteps[index].ep}?theme=` + route.query.theme : `/manga/${deger}/read/${results.lasteps[index].vol}/${results.lasteps[index].ep}`">Oku!</a>
+          <a class="btn btn-primary" :href="route.query.theme ? `/manga/${deger}/read/${results.lastUploadedEpisodes[index].vol}/${results.lastUploadedEpisodes[index].ep}?theme=` + route.query.theme : `/manga/${deger}/read/${results.lastUploadedEpisodes[index].vol}/${results.lastUploadedEpisodes[index].ep}`">Oku!</a>
         </div>
       </div>
     </div>
@@ -43,9 +43,9 @@
   let coverartid;
   let settedids = [];
   try{
-  data = await useFetch(`https://cdn.falsis.ga/lasteps?token=${runtimeConfig.public.token}`)
-  results = data.data.value.lasteps
-  settedids = [...new Set(results.lastsids)]
+  data = await useFetch(`https://cdn.falsis.ga/mangile/lastuploads?token=${runtimeConfig.public.token}`)
+  results = data.data.value.data.result
+  settedids = [...new Set(results.lastUploadedMangaIDs)]
     for(let item of settedids) {
         let a = await useFetch(`https://api.mangadex.org/manga/${item}`)
         lastidsfetch.push(a.data.value.data)

@@ -137,9 +137,9 @@ let authorid;
 const artist = await useFetch(`https://api.mangadex.org/author/${artistid}`)
 const author = await useFetch(`https://api.mangadex.org/author/${authorid}`)
 const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
-const episodedata = await useFetch(`https://cdn.falsis.ga/mangile?token=${runtimeConfig.public.token}&id=${route.params.id}`)
-const statuscode = episodedata.data.value.code
-const epdata = episodedata.data.value.data
+const episodedata = await useFetch(`https://cdn.falsis.ga/mangile/manga?token=${runtimeConfig.public.token}&id=${route.params.id}`)
+const statuscode = episodedata.data.value.statusCode
+const epdata = episodedata.data.value.data.result
 useHead({
   title: `${ info.data.value.data.attributes.title.en || info.data.value.data.attributes.title["ja-ro"] }`
 })
