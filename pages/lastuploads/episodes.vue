@@ -1,5 +1,5 @@
 <template>
-    <div class="col-span-2 col-start-2 col-end-6 p-5 pl-20"><!--page view-->
+    <div class="col-span-2 col-start-2 col-end-6 my-5 ml-10"><!--page view-->
     <br>
     <!--arama sonuçları-->
     <article class="prose max-w-none p-5">
@@ -7,8 +7,8 @@
       Yükleme Kaynağı: Mangile Verileri
     </article>
     <div v-if="statuscode == 200" class="flex flex-row flex-wrap">
-    <div v-for="[index, deger] of Object.entries(results.lastUploadedMangaIDs)" v-bind:key="[index, deger]" class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] shadow-lg rounded-lg">
-        <figure><img class="rounded shadow-md w-64 h-72" :src="`https://mangadex.org/covers/${deger}/${cover[parseInt(settedids.indexOf(deger))].data.value.data.attributes.fileName}.512.jpg`"/></figure>
+    <div v-for="[index, deger] of Object.entries(results.lastUploadedMangaIDs)" v-bind:key="[index, deger]" class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] rounded-lg">
+        <figure><img class="rounded w-64 h-72" :src="`https://mangadex.org/covers/${deger}/${cover[parseInt(settedids.indexOf(deger))].data.value.data.attributes.fileName}.512.jpg`"/></figure>
       <div class="card-body">
         <h2 class="card-title">{{ !lastidsfetch[settedids.indexOf(deger)].attributes.title["en"] ? !lastidsfetch[settedids.indexOf(deger)].attributes.title["ja-ro"] ? "" : lastidsfetch[settedids.indexOf(deger)].attributes.title["ja-ro"].substring(0,20) + "..." : lastidsfetch[settedids.indexOf(deger)].attributes.title["en"].substring(0,20) + "..." }}</h2>
         <p>

@@ -1,5 +1,5 @@
 <template>
-     <div class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] shadow-lg rounded-lg">
+     <div class=" basis-1/5 card w-auto h-auto bg-base-100 p-[10px] rounded-lg">
     <figure><img class="rounded shadow-md w-64 h-72" :src="`https://mangadex.org/covers/${id}/${cover}.512.jpg`"/></figure>
     <div class="card-body">
       <h2 class="card-title">{{ name }}</h2>

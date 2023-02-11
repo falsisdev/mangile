@@ -1,5 +1,5 @@
 <template>
-    <div class="col-span-2 col-start-2 col-end-6 p-5"><!--page view-->
+    <div class="col-span-2 col-start-2 col-end-7 my-5"><!--page view-->
 <div class="card lg:card-side bg-base-100 p-[10px]">
     <article class="prose">
   <figure><img class="rounded shadow-md w-4/6 h-auto" :src="`https://mangadex.org/covers/${info.data.value.data.id}/${cover.data.value.data.attributes.fileName}.512.jpg`"></figure>
@@ -21,7 +21,7 @@
 <div class="divider"></div>
 </div>
 </div>
-    <div class="card-actions justify-center pt-5">
+    <div class="card-actions justify-center my-5">
       <button @click="mangapage()" class="btn">Manganın Sayfasına Git</button>
     </div>
 </div>

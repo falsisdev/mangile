@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-2 col-start-2 col-end-7 p-5 pl-20"><!--page view-->
+  <div class="col-span-2 col-start-2 col-end-8 my-5 ml-5"><!--page view-->
   <alert/>
   <br>
   <!--arama sonuçları-->
@@ -9,10 +9,10 @@
         <button id="clearfilters"  @click="clearFilters()" :class="`btn ${route.query.genres || route.query.demographic || route.query.status ? 'visible' : 'hidden'}`">Filtreleri Temizle</button>
       </article>
       <div v-if="statuscode == 200" class="flex flex-row flex-wrap">
-      <div v-for="item of results" v-bind:key="item" class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] rounded-lg">
+      <div v-for="item of results" v-bind:key="item" class="basis-1/5 card w-auto h-auto bg-base-100 rounded-lg">
         <div v-if="route.query.page == 1 ? parseInt(results.indexOf(item)) < 20 && parseInt(results.indexOf(item)) > -1 : route.query.page == 2 ? parseInt(results.indexOf(item)) < 40 && parseInt(results.indexOf(item)) > 19 : route.query.page == 3 ? parseInt(results.indexOf(item)) < 60 && parseInt(results.indexOf(item)) > 39 : route.query.page == 4 ? parseInt(results.indexOf(item)) < 80 && parseInt(results.indexOf(item)) > 59 : route.query.page == 5 ? parseInt(results.indexOf(item)) < 100 && parseInt(results.indexOf(item)) > 79 : parseInt(results.indexOf(item)) < 20 && parseInt(results.indexOf(item)) > -1">
         <figure><img class="rounded shadow-md w-64 h-72" :src="`https://mangadex.org/covers/${item.id}/${cover[results.indexOf(item)].data.value.data.attributes.fileName}.512.jpg`"/></figure>
-        <div class="card-body">
+        <div class="card-body mx-7">
           <h2 class="card-title">{{ !item.attributes.title["en"] ? !item.attributes.title["ja-ro"] ? "" : item.attributes.title["ja-ro"] : item.attributes.title["en"] }}</h2>
           <div class="dropdown dropdown-hover dropdown-top flex justify-end">
             <a class="btn btn-primary" :href="route.query.theme ? `/manga/${item.id}?theme=` + route.query.theme : `/manga/${item.id}`"> İncele!</a>
@@ -25,11 +25,18 @@
           <article class="prose max-w-none p-5">
             <h2> Hiçbir Sonuç Bulunamadı!</h2>
           </article>
-        </div>  
+        </div>
+        <div class="tabs tab-boxed my-2 justify-center">
+        <NuxtLink :to="route.query.theme ? '/discover?page=1&theme=' + route.query.theme : '/discover?page=1'" class="tab">1</NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/discover?page=2&theme=' + route.query.theme : '/discover?page=2'" class="tab">2</NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/discover?page=3&theme=' + route.query.theme : '/discover?page=3'" class="tab">3</NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/discover?page=4&theme=' + route.query.theme : '/discover?page=4'" class="tab">4</NuxtLink>
+        <NuxtLink :to="route.query.theme ? '/discover?page=5&theme=' + route.query.theme : '/discover?page=5'" class="tab">5</NuxtLink>
+  </div>  
       <!--arama sonuçları-->
   </div>
   <!--FILTER MENU-->
-  <div class="col-span-2 col-start-7 col-end-7">
+  <div class="col-span-2 col-start-8 col-end-8">
   <ul class="menu w-64 p-2 h-full flex flex-col"> 
       <div class="divider"></div>
     <li class="menu-title">
@@ -64,13 +71,6 @@
   </li></div>
   <div class="divider"></div>
   <button @click="reload()" class="btn btn-secondary">Filtrele</button>
-  <div class="tabs tabs-boxed pt-2 justify-center">
-        <NuxtLink :to="route.query.theme ? '/discover?page=1&theme=' + route.query.theme : '/discover?page=1'" class="tab">1</NuxtLink>
-        <NuxtLink :to="route.query.theme ? '/discover?page=2&theme=' + route.query.theme : '/discover?page=2'" class="tab">2</NuxtLink>
-        <NuxtLink :to="route.query.theme ? '/discover?page=3&theme=' + route.query.theme : '/discover?page=3'" class="tab">3</NuxtLink>
-        <NuxtLink :to="route.query.theme ? '/discover?page=4&theme=' + route.query.theme : '/discover?page=4'" class="tab">4</NuxtLink>
-        <NuxtLink :to="route.query.theme ? '/discover?page=5&theme=' + route.query.theme : '/discover?page=5'" class="tab">5</NuxtLink>
-  </div>
   </ul>
   </div>
   <!--FILTER MENU-->

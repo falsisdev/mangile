@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-4 col-start-2 col-end-6 p-5"><!--page view-->
+  <div class="col-span-4 col-start-2 col-end-8 my-5 ml-10"><!--page view-->
 <div class="card lg:card-side bg-base-100 p-[10px]">
 <div class="card-body">
   <a class="link link-hover" :href="route.query.theme ? `/manga/${route.params.id}?theme=` + route.query.theme : `/manga/${route.params.id}`">{{ info.data.value.data.attributes.title.en }}</a>

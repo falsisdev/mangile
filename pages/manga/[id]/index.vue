@@ -1,6 +1,6 @@
 <template>
-  <div class="col-span-2 col-start-2 col-end-6 p-5"><!--page view-->
-<div class="card lg:card-side bg-base-100 p-[10px]">
+  <div class="col-span-2 col-start-2 col-end-6 my-5 ml-10"><!--page view-->
+<div class="card lg:card-side bg-base-100">
   <span class="flex flex-col">
   <article class="prose">
 <figure><img class="rounded shadow-md w-4/6 h-auto" :src="`https://mangadex.org/covers/${info.data.value.data.id}/${cover.data.value.data.attributes.fileName}.512.jpg`"></figure>
@@ -13,25 +13,7 @@
             <span>Bu seri 18 yaşının altındaki bireylerin psikolojik durumunu ve akli dengesini bozabilecek içerikler içermektedir. 18 yaş altı bireylerin bu riskin farkında olmadan bu seriyi okuması önerilmemektedir.</span>
           </div>
           </div>
-</div>
-<div class="divider"></div>
-<div tabindex="0" class="collapse collapse-open border border-base-300 bg-base-100 rounded-box">
-        <input type="checkbox" />
-        <div class="collapse-title text-xl font-medium">
-          Serinin Yazarı ve Çizeri
-        </div>
-        <div class="collapse-content">
-<span v-if="author.data.value.data.attributes.name == artist.data.value.data.attributes.name">{{  author.data.value.data.attributes.name }}</span>
-<span v-else>Yazar: {{  author.data.value.data.attributes.name }}<br/>Çizer: {{  artist.data.value.data.attributes.name }}</span>
-</div></div><br/>
-<div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
-        <input type="checkbox" />
-        <div class="collapse-title text-xl font-medium">
-          Serinin Konusu
-        </div>
-        <div class="collapse-content">
-<span>{{ statuscode == 200 ? epdata.description : info.data.value.data.attributes.description.en }}</span>
-</div></div>
+</div><br/>
 </article>
 </span>
 <div class="card-body">
@@ -77,7 +59,7 @@
 </article><br/>
 <br/>
 <br/>
-<div tabindex="0" class="collapse collapse-open border border-base-300 bg-base-100 rounded-box mr-14">
+<div tabindex="0" class="collapse collapse-open border border-base-300 bg-base-100 rounded-box">
         <input type="checkbox" />
         <div class="collapse-title text-xl font-medium">
           <article class="prose pl-5 pt-5">
@@ -108,6 +90,45 @@
 </div>
 </div>
 </div>
+<div class="col-span-2 col-start-6 col-end-8 py-5 mr-5 my-5">
+  <div tabindex="0" class="collapse collapse-open border border-base-300 bg-base-100 rounded-box">
+        <input type="checkbox" />
+        <div class="collapse-title text-xl font-medium">
+          Serinin Yazarı ve Çizeri
+        </div>
+        <div class="collapse-content">
+<span v-if="author.data.value.data.attributes.name == artist.data.value.data.attributes.name">{{  author.data.value.data.attributes.name }}</span>
+<span v-else>Yazar: {{  author.data.value.data.attributes.name }}<br/>Çizer: {{  artist.data.value.data.attributes.name }}</span>
+</div></div><br/>
+<div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+        <input type="checkbox" />
+        <div class="collapse-title text-xl font-medium">
+          Serinin Konusu
+        </div>
+        <div class="collapse-content">
+<span>{{ statuscode == 200 ? epdata.description : info.data.value.data.attributes.description.en }}</span>
+</div></div><br/>
+  <div class="stats border border-base-300 flex">
+  
+  <div class="stat">
+    <div class="stat-figure text-primary">
+      <span><font-awesome-icon icon="fa-solid fa-users" /></span>
+    </div>
+    <div class="stat-title">Takipçiler</div>
+    <div class="stat-value">{{ ist.follows }}</div>
+    <div class="stat-desc">kişi bu mangayı takip ediyor.</div>
+  </div>
+  
+  <div class="stat">
+    <div class="stat-figure text-primary">
+      <span><font-awesome-icon icon="fa-solid fa-star" /></span>
+    </div>
+    <div class="stat-title">Ortalama Puan</div>
+    <div class="stat-value">%{{ ist.rating.average * 10 }}</div>
+    <div class="stat-desc">puan ortalamasına sahip.</div>
+  </div>
+  </div>
+</div>
 </template>
 <script setup>
 const route = useRoute()
@@ -137,6 +158,8 @@ let authorid;
 const artist = await useFetch(`https://api.mangadex.org/author/${artistid}`)
 const author = await useFetch(`https://api.mangadex.org/author/${authorid}`)
 const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
+const stats = await useFetch(`https://api.mangadex.org/statistics/manga?manga[]=${route.params.id}`)
+const ist = stats.data.value.statistics[String(route.params.id)]
 const episodedata = await useFetch(`https://cdn.falsis.ga/mangile/manga?token=${runtimeConfig.public.token}&id=${route.params.id}`)
 const statuscode = episodedata.data.value.statusCode
 const epdata = episodedata.data.value.data.result

@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-2 col-start-2 col-end-6 p-5 pl-20"><!--page view-->
+  <div class="col-span-2 col-start-2 col-end-8 my-5 ml-10"><!--page view-->
   <alert/>
   <br>
   <!--öne çıkanlar-->
@@ -8,8 +8,8 @@
   </article>
   <div class="divider"></div>
   <div class="flex flex-row flex-wrap">
-  <div v-for="item of highlights" v-bind:key="item" class="card w-auto h-auto lg:card-side bg-base-100 p-[10px] shadow-lg rounded-lg">
-    <figure><img class="rounded shadow-md w-64 h-72" :src="item.image + '.512.jpg'" alt="Cover"/></figure>
+  <div v-for="item of highlights" v-bind:key="item" class="card lg:card-side w-auto h-auto bg-base-100 p-[10px] shadow-lg rounded-lg">
+    <figure><img class=" w-64 h-72 rounded shadow-md" :src="item.image + '.512.jpg'" alt="Cover"/></figure>
     <div class="card-body">
       <h2 class="card-title">{{ item.name }}</h2>
       <p>{{ item.description }}</p>

@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-2 col-start-2 col-end-6 p-5 pl-20"><!--page view-->
+  <div class="col-span-2 col-start-2 col-end-7 my-5 ml-10"><!--page view-->
   <br>
   <!--arama sonuçları-->
   <article class="prose max-w-none p-5">

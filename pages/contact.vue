@@ -17,7 +17,7 @@
             <figure><img src="https://cdn.discordapp.com/attachments/775822548519616562/1068883023963107379/kremlinbanner1.1.jpg" /></figure>
             <div class="card-body">
                 <h2 class="card-title">        
-                    <div class="avatars absolute pb-20">
+                    <div class="avatar absolute pb-20">
                     <div class="w-24 mask mask-squircl">
                         <img src="https://cdn.discordapp.com/attachments/775822548519616562/1068883024256716940/20220523_212620.jpg" />
                     </div>
@@ -33,7 +33,7 @@
             <figure><img src="https://cdn.discordapp.com/attachments/775822548519616562/1068908750129348668/image.png" /></figure>
             <div class="card-body">
                 <h2 class="card-title">        
-                    <div class="avatars absolute pb-20">
+                    <div class="avatar absolute pb-20">
                     <div class="w-24 mask mask-squircl">
                         <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" />
                     </div>

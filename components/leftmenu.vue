@@ -1,6 +1,6 @@
 <template>
-  <!--Sol Menü-->
   <div class="col-span-1 col-start-1 col-end-2">
+  <!--Sol Menü-->
   <ul class="menu w-64 p-2 h-full flex flex-col">
     <div class="divider"></div> 
     <!--Başlık 1-->
