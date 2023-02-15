@@ -298,7 +298,7 @@
   }else{
     status = false
   }
-  data = await useFetch(`https://api.mangadex.org/manga?excludedTags[]=b13b2a48-c720-44a9-9c77-39c9979373fb${includedTags == false ? '' : includedTags + "&includedTagsMode=OR"}${publicationDemographic == false ? '' : publicationDemographic}${status == false ? '' : status}&limit=100&order[followedCount]=desc&originalLanguage[]=ja`)
+  data = await useFetch(`https://api.mangadex.org/manga?excludedTags[]=b13b2a48-c720-44a9-9c77-39c9979373fb${includedTags == false ? '' : includedTags + "&includedTagsMode=OR"}${publicationDemographic == false ? '' : publicationDemographic}${status == false ? '' : status}&limit=100&order[rating]=desc&originalLanguage[]=ja`)
   results = data.data.value.data
   let coverartid;
       for(let item of results) {

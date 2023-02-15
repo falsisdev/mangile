@@ -6,14 +6,13 @@
 <figure><img class="rounded shadow-md w-4/6 h-auto" :src="`https://mangadex.org/covers/${info.data.value.data.id}/${cover.data.value.data.attributes.fileName}.512.jpg`"></figure>
 </article>
 <article class="prose ml-20 w-96 mt-5">
-<div v-for="item of info.data.value.data.attributes.tags" :key="item">
-          <div v-if="item.attributes.name.en == 'Gore' || item.attributes.name.en == 'Sexual Violence' || item.attributes.name.en == 'Doujinshi'" class="alert alert-warning shadow-lg">
+          <div v-if="warning == 1" class="alert alert-warning shadow-lg">
           <div>
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             <span>Bu seri 18 yaşının altındaki bireylerin psikolojik durumunu ve akli dengesini bozabilecek içerikler içermektedir. 18 yaş altı bireylerin bu riskin farkında olmadan bu seriyi okuması önerilmemektedir.</span>
           </div>
           </div>
-</div><br/>
+          <br/>
 <div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
         <input type="checkbox" />
         <div class="collapse-title text-xl font-medium">
@@ -71,8 +70,8 @@
           Serinin Türleri
         </div>
         <div class="collapse-content">
-        <span class="tooltip" v-for="item of info.data.value.data.attributes.tags" :key="item" :data-tip="item.attributes.name.en == 'Reincarnation' ? 'Reenkarnasyon' : item.attributes.name.en == 'Action' ? 'Aksiyon' : item.attributes.name.en == 'Romance' ? 'Romantik' : item.attributes.name.en == 'Comedy' ? 'Komedi' : item.attributes.name.en == 'Adventure' ? 'Macera' : item.attributes.name.en == 'Magic' ? 'Büyü' : item.attributes.name.en == 'Drama' ? 'Dram' : item.attributes.name.en == 'Fantasy' ? 'Fantezi' : item.attributes.name.en == 'Adaptation' ? 'Adaptasyon' : item.attributes.name.en == 'Thriller' ? 'Gerilim' : item.attributes.name.en == 'Award Winning' ? 'Ödüllü' : item.attributes.name.en == 'Monsters' ? 'Canavarlar' : item.attributes.name.en == 'Psychological' ? 'Psikolojik' : item.attributes.name.en == 'Crime' ? 'Suç' : item.attributes.name.en == 'Survival' ? 'Hayatta Kalma' : item.attributes.name.en == 'Martial Arts' ? 'Dövüş Sanatları' : item.attributes.name.en == 'Mafia' ? 'Mafya' : item.attributes.name.en == 'Military' ? 'Askeri' : item.attributes.name.en == 'Philosophical' ? 'Felsefi' : item.attributes.name.en == 'Gore' ? 'Kan' : item.attributes.name.en == 'Medical' ? 'Tıbbi' : item.attributes.name.en == 'School Life' ? 'Okul Yaşamı' : item.attributes.name.en == 'Horror' ? 'Korku' : item.attributes.name.en == 'Police' ? 'Polisiye' : item.attributes.name.en == 'Slice of Life' ? 'Yaşamdan Kesit' : item.attributes.name.en == 'Mystery' ? 'Gizem' : item.attributes.name.en == 'Tragedy' ? 'Trajedi' : item.attributes.name.en == 'Demons' ? 'İblisler' : item.attributes.name.en == 'Monster Girls' ? 'Canavar Kızlar' : item.attributes.name.en == 'Supernatural' ? 'Doğaüstü' : item.attributes.name.en == 'Samurai' ? 'Samuray' : item.attributes.name.en == 'Time Travel' ? 'Zaman Yolculuğu' : item.attributes.name.en == 'Full Color' ? 'Tamamen Renkli' : item.attributes.name.en == `Boys' Love` ? 'Gay' : item.attributes.name.en == 'Music' ? 'Müzik' : item.attributes.name.en == `Girls' Love` ? 'Lezbiyen' : item.attributes.name.en == 'Vampires' ? 'Vampirler' : item.attributes.name.en == 'Web Comic' ? 'Web Çizgi Romanı' : item.attributes.name.en == 'Cooking' ? 'Yemek' : item.attributes.name.en == 'Historical' ? 'Tarihi' : item.attributes.name.en == 'Sci-Fi' ? 'Bilim Kurgu' : item.attributes.name.en"><NuxtLink :class="`m-1 badge badge-lg no-underline ${item.attributes.name.en == 'Award Winning' ? 'badge-accent' : item.attributes.name.en == 'Gore' ? 'badge-error' : ''}`" :to="route.query.theme ? `/discover/?genres=${item.id}&theme=` + route.query.theme : `/manga/genre/${item.id}`">
-          {{ item.attributes.name.en == 'Reincarnation' ? 'Reenkarnasyon' : item.attributes.name.en == 'Action' ? 'Aksiyon' : item.attributes.name.en == 'Romance' ? 'Romantik' : item.attributes.name.en == 'Comedy' ? 'Komedi' : item.attributes.name.en == 'Adventure' ? 'Macera' : item.attributes.name.en == 'Magic' ? 'Büyü' : item.attributes.name.en == 'Drama' ? 'Dram' : item.attributes.name.en == 'Fantasy' ? 'Fantezi' : item.attributes.name.en == 'Adaptation' ? 'Adaptasyon' : item.attributes.name.en == 'Thriller' ? 'Gerilim' : item.attributes.name.en == 'Award Winning' ? 'Ödüllü' : item.attributes.name.en == 'Monsters' ? 'Canavarlar' : item.attributes.name.en == 'Psychological' ? 'Psikolojik' : item.attributes.name.en == 'Crime' ? 'Suç' : item.attributes.name.en == 'Survival' ? 'Hayatta Kalma' : item.attributes.name.en == 'Martial Arts' ? 'Dövüş Sanatları' : item.attributes.name.en == 'Mafia' ? 'Mafya' : item.attributes.name.en == 'Military' ? 'Askeri' : item.attributes.name.en == 'Philosophical' ? 'Felsefi' : item.attributes.name.en == 'Gore' ? 'Kan' : item.attributes.name.en == 'Medical' ? 'Tıbbi' : item.attributes.name.en == 'School Life' ? 'Okul Yaşamı' : item.attributes.name.en == 'Horror' ? 'Korku' : item.attributes.name.en == 'Police' ? 'Polisiye' : item.attributes.name.en == 'Slice of Life' ? 'Yaşamdan Kesit' : item.attributes.name.en == 'Mystery' ? 'Gizem' : item.attributes.name.en == 'Tragedy' ? 'Trajedi' : item.attributes.name.en == 'Demons' ? 'İblisler' : item.attributes.name.en == 'Monster Girls' ? 'Canavar Kızlar' : item.attributes.name.en == 'Supernatural' ? 'Doğaüstü' : item.attributes.name.en == 'Samurai' ? 'Samuray' : item.attributes.name.en == 'Time Travel' ? 'Zaman Yolculuğu' : item.attributes.name.en == 'Full Color' ? 'Tamamen Renkli' : item.attributes.name.en == `Boys' Love` ? 'Gay' : item.attributes.name.en == 'Music' ? 'Müzik' : item.attributes.name.en == `Girls' Love` ? 'Lezbiyen' : item.attributes.name.en == 'Vampires' ? 'Vampirler' : item.attributes.name.en == 'Web Comic' ? 'Web Çizgi Romanı' : item.attributes.name.en == 'Cooking' ? 'Yemek' : item.attributes.name.en == 'Historical' ? 'Tarihi' : item.attributes.name.en == 'Sci-Fi' ? 'Bilim Kurgu' : item.attributes.name.en }}
+        <span class="tooltip" v-for="item of info.data.value.data.attributes.tags" :key="item" :data-tip="item.attributes.name.en == 'Reincarnation' ? 'Reenkarnasyon' : item.attributes.name.en == 'Action' ? 'Aksiyon' : item.attributes.name.en == 'Romance' ? 'Romantik' : item.attributes.name.en == 'Comedy' ? 'Komedi' : item.attributes.name.en == 'Adventure' ? 'Macera' : item.attributes.name.en == 'Magic' ? 'Büyü' : item.attributes.name.en == 'Drama' ? 'Dram' : item.attributes.name.en == 'Fantasy' ? 'Fantezi' : item.attributes.name.en == 'Adaptation' ? 'Adaptasyon' : item.attributes.name.en == 'Thriller' ? 'Gerilim' : item.attributes.name.en == 'Award Winning' ? 'Ödüllü' : item.attributes.name.en == 'Monsters' ? 'Canavarlar' : item.attributes.name.en == 'Psychological' ? 'Psikolojik' : item.attributes.name.en == 'Crime' ? 'Suç' : item.attributes.name.en == 'Survival' ? 'Hayatta Kalma' : item.attributes.name.en == 'Martial Arts' ? 'Dövüş Sanatları' : item.attributes.name.en == 'Mafia' ? 'Mafya' : item.attributes.name.en == 'Military' ? 'Askeri' : item.attributes.name.en == 'Philosophical' ? 'Felsefi' : item.attributes.name.en == 'Gore' ? 'Kan' : item.attributes.name.en == 'Medical' ? 'Tıbbi' : item.attributes.name.en == 'School Life' ? 'Okul Yaşamı' : item.attributes.name.en == 'Horror' ? 'Korku' : item.attributes.name.en == 'Police' ? 'Polisiye' : item.attributes.name.en == 'Slice of Life' ? 'Yaşamdan Kesit' : item.attributes.name.en == 'Mystery' ? 'Gizem' : item.attributes.name.en == 'Tragedy' ? 'Trajedi' : item.attributes.name.en == 'Demons' ? 'İblisler' : item.attributes.name.en == 'Monster Girls' ? 'Canavar Kızlar' : item.attributes.name.en == 'Supernatural' ? 'Doğaüstü' : item.attributes.name.en == 'Samurai' ? 'Samuray' : item.attributes.name.en == 'Time Travel' ? 'Zaman Yolculuğu' : item.attributes.name.en == 'Full Color' ? 'Tamamen Renkli' : item.attributes.name.en == `Boys' Love` ? 'Yaoi' : item.attributes.name.en == 'Music' ? 'Müzik' : item.attributes.name.en == `Girls' Love` ? 'Yuri' : item.attributes.name.en == 'Vampires' ? 'Vampirler' : item.attributes.name.en == 'Web Comic' ? 'Web Çizgi Romanı' : item.attributes.name.en == 'Cooking' ? 'Yemek' : item.attributes.name.en == 'Historical' ? 'Tarihi' : item.attributes.name.en == 'Sci-Fi' ? 'Bilim Kurgu' : item.attributes.name.en"><NuxtLink :class="`m-1 badge badge-lg no-underline ${item.attributes.name.en == 'Award Winning' ? 'badge-accent' : item.attributes.name.en == 'Gore' ? 'badge-error' : ''}`" :to="route.query.theme ? `/discover/?genres=${item.id}&theme=` + route.query.theme : `/manga/genre/${item.id}`">
+          {{ item.attributes.name.en == 'Reincarnation' ? 'Reenkarnasyon' : item.attributes.name.en == 'Action' ? 'Aksiyon' : item.attributes.name.en == 'Romance' ? 'Romantik' : item.attributes.name.en == 'Comedy' ? 'Komedi' : item.attributes.name.en == 'Adventure' ? 'Macera' : item.attributes.name.en == 'Magic' ? 'Büyü' : item.attributes.name.en == 'Drama' ? 'Dram' : item.attributes.name.en == 'Fantasy' ? 'Fantezi' : item.attributes.name.en == 'Adaptation' ? 'Adaptasyon' : item.attributes.name.en == 'Thriller' ? 'Gerilim' : item.attributes.name.en == 'Award Winning' ? 'Ödüllü' : item.attributes.name.en == 'Monsters' ? 'Canavarlar' : item.attributes.name.en == 'Psychological' ? 'Psikolojik' : item.attributes.name.en == 'Crime' ? 'Suç' : item.attributes.name.en == 'Survival' ? 'Hayatta Kalma' : item.attributes.name.en == 'Martial Arts' ? 'Dövüş Sanatları' : item.attributes.name.en == 'Mafia' ? 'Mafya' : item.attributes.name.en == 'Military' ? 'Askeri' : item.attributes.name.en == 'Philosophical' ? 'Felsefi' : item.attributes.name.en == 'Gore' ? 'Kan' : item.attributes.name.en == 'Medical' ? 'Tıbbi' : item.attributes.name.en == 'School Life' ? 'Okul Yaşamı' : item.attributes.name.en == 'Horror' ? 'Korku' : item.attributes.name.en == 'Police' ? 'Polisiye' : item.attributes.name.en == 'Slice of Life' ? 'Yaşamdan Kesit' : item.attributes.name.en == 'Mystery' ? 'Gizem' : item.attributes.name.en == 'Tragedy' ? 'Trajedi' : item.attributes.name.en == 'Demons' ? 'İblisler' : item.attributes.name.en == 'Monster Girls' ? 'Canavar Kızlar' : item.attributes.name.en == 'Supernatural' ? 'Doğaüstü' : item.attributes.name.en == 'Samurai' ? 'Samuray' : item.attributes.name.en == 'Time Travel' ? 'Zaman Yolculuğu' : item.attributes.name.en == 'Full Color' ? 'Tamamen Renkli' : item.attributes.name.en == `Boys' Love` ? 'Yaoi' : item.attributes.name.en == 'Music' ? 'Müzik' : item.attributes.name.en == `Girls' Love` ? 'Yuri' : item.attributes.name.en == 'Vampires' ? 'Vampirler' : item.attributes.name.en == 'Web Comic' ? 'Web Çizgi Romanı' : item.attributes.name.en == 'Cooking' ? 'Yemek' : item.attributes.name.en == 'Historical' ? 'Tarihi' : item.attributes.name.en == 'Sci-Fi' ? 'Bilim Kurgu' : item.attributes.name.en }}
         </NuxtLink></span></div></div><br/>
         <button @click="redirect(`https://mangadex.org/manga/${info.data.value.data.id}`)" class="btn btn-block no-animation">MangaDex Sayfasına Gidin</button>
           <div class="divider"></div>
@@ -93,18 +92,39 @@
   <li class="menu-title">
   <span>{{ item.title }}</span>
 </li>
-<li v-for="a of item.episodes" :key="a" class="hover-bordered">
+<li v-for="a of item.episodes" :key="a">
   <a :href="route.query.theme ? `/manga/${route.params.id}/read/${a.vol}/${a.ep}?theme=` + route.query.theme : `/manga/${route.params.id}/read/${a.vol}/${a.ep}`">
-<span class="text-primary"><font-awesome-icon icon="fa-solid fa-book-open" /></span>
+<span><font-awesome-icon icon="fa-solid fa-file-lines" /></span>
     <b>{{ a.title }}</b> ({{ a.source }})
   </a>
 </li>
 </span>
 </ul>
-<div v-else class="alert shadow-lg">
+<div v-else>
+<div class="alert alert-warning">
 <div>
-  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-info flex-shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-  <span>Görünüşe göre bu serinin yüklü hiçbir bölümü yok.</span>
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+  <span>Bu seriye Mangile kaynaklı hiçbir bölüm yüklenmemiş. Aşağıda MangaDex kaynaklı bölümler listelenmiştir.</span>
+</div>
+</div><br/>
+<div tabindex="0" class="collapse collapse-open border border-base-300 bg-base-100 rounded-box">
+        <input type="checkbox" />
+        <div class="collapse-title text-xl font-medium">
+          <article class="prose pl-5 pt-5">
+          <h2>Mangile Kaynaklı Bölümler</h2>
+          </article>
+        </div>
+        <div class="collapse-content">
+<ul class="menu bg-base-100 w-full p-2 rounded-box">
+<li v-for="a of chaps" :key="a">
+  <a target="_blank" :href="`https://mangadex.org/chapter/${a.id}`">
+<span><font-awesome-icon icon="fa-solid fa-arrow-up-right-from-square" /></span>
+    <b>Bölüm {{ a.attributes.chapter }} - {{ a.attributes.title }}</b> ({{ a.attributes.translatedLanguage == "en" ? 'İngilizce' : a.attributes.translatedLanguage }})
+  </a>
+</li>
+</ul>
+<button @click="redirect(`https://mangadex.org/manga/${info.data.value.data.id}`)" class="btn btn-block no-animation">Daha Fazla Bölüm</button>
+</div>
 </div>
 </div></div>
 </div>
@@ -132,7 +152,7 @@
   <div class="stats border border-base-300 flex">
   
   <div class="stat">
-    <div class="stat-figure text-primary">
+    <div class="stat-figure">
       <span><font-awesome-icon icon="fa-solid fa-users" /></span>
     </div>
     <div class="stat-title">Takipçiler</div>
@@ -141,11 +161,11 @@
   </div>
   
   <div class="stat">
-    <div class="stat-figure text-primary">
+    <div class="stat-figure">
       <span><font-awesome-icon icon="fa-solid fa-star" /></span>
     </div>
     <div class="stat-title">Ortalama Puan</div>
-    <div class="stat-value">%{{ ist.rating.average * 10 }}</div>
+    <div class="stat-value">{{ (ist.rating.average).toFixed(2) }}</div>
     <div class="stat-desc">puan ortalamasına sahip.</div>
   </div>
   </div>
@@ -180,11 +200,26 @@ const artist = await useFetch(`https://api.mangadex.org/author/${artistid}`)
 const author = await useFetch(`https://api.mangadex.org/author/${authorid}`)
 const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
 const stats = await useFetch(`https://api.mangadex.org/statistics/manga?manga[]=${route.params.id}`)
+let warning;
 const ist = stats.data.value.statistics[String(route.params.id)]
 const episodedata = await useFetch(`https://cdn.falsis.ga/mangile/manga?token=${runtimeConfig.public.token}&id=${route.params.id}`)
 const statuscode = episodedata.data.value.statusCode
 const epdata = episodedata.data.value.data.result
 const links = info.data.value.data.attributes.links
+const genres = info.data.value.data.attributes.tags
+
+for(let item of genres) {
+  if(item.attributes.name.en == 'Gore' || item.attributes.name.en == 'Sexual Violence' || item.attributes.name.en == 'Doujinshi' || item.attributes.name.en == 'Gay' || item.attributes.name.en == 'Lesbian' || item.attributes.name.en == "Boys' Love" || item.attributes.name.en == "Girls' Love" || item.attributes.name.en == "Genderswap") {
+    warning = ref(1)
+  }
+}
+
+let chapterlist;
+let chaps;
+if(statuscode != 200) {
+  chapterlist = await useFetch(`https://api.mangadex.org/chapter?manga=${route.params.id}&limit=100&order[chapter]=desc&translatedLanguage[]=en&includeExternalUrl=0`)
+  chaps = chapterlist.data.value.data
+}
 useHead({
   title: `${ info.data.value.data.attributes.title.en || info.data.value.data.attributes.title["ja-ro"] }`
 })
