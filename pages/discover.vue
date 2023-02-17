@@ -317,4 +317,7 @@
   useHead({
   title: "Manga Keşfet"
 })
+definePageMeta({
+    layout: "default",
+  })
   </script>

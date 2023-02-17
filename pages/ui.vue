@@ -134,4 +134,7 @@ const route = useRoute()
 useHead({
   title: "Kullanıcı Arayüzü"
 })
+definePageMeta({
+    layout: "list",
+  })
 </script>

@@ -111,4 +111,7 @@ const useravatar = userinfo.data.value.data.result.avatar
 const isMod = userinfo.data.value.data.result.badges.includes("authorized")
 const isowner = true
 const isUserAdmin = true
+definePageMeta({
+    layout: "list",
+})
 </script>

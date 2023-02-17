@@ -59,4 +59,7 @@
     useHead({
     title: "İletişim"
     })
+    definePageMeta({
+    layout: "list",
+  })
     </script>

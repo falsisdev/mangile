@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-2 col-start-2 col-end-8 my-5 ml-10"><!--page view-->
+  <div class="col-span-2 col-start-2 col-end-6 my-5 ml-10"><!--page view-->
   <br>
   <!--arama sonuçları-->
   <article class="prose max-w-none p-5">
@@ -23,6 +23,9 @@ const runtimeConfig = useRuntimeConfig();
 useHead({
   title: "Son Yüklenen Mangalar"
 })
+definePageMeta({
+    layout: "list",
+  })
 let statuscode;
 let results;
 let data;

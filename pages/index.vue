@@ -120,6 +120,9 @@ import { Autoplay, Scrollbar, FreeMode, Pagination  } from 'swiper';
       useHead({
         title: "Anasayfa"
       })
+      definePageMeta({
+        layout: "default",
+      })
         function redirect(url) {
           window.location.href = url
         }

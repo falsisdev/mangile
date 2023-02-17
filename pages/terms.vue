@@ -248,4 +248,7 @@ const route = useRoute()
 useHead({
   title: "Hizmet Şartları"
 })
+definePageMeta({
+    layout: "list",
+  })
 </script>

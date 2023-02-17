@@ -1,5 +1,5 @@
 <template>
-  <div class="col-span-2 col-start-2 col-end-7 my-5 ml-10"><!--page view-->
+  <div class="col-span-2 col-start-2 col-end-6 my-5 ml-10"><!--page view-->
   <br>
   <!--arama sonuçları-->
   <article class="prose max-w-none p-5">
@@ -43,4 +43,7 @@ statuscode = 404
 useHead({
   title: "Arama Sonuçları"
 })
+definePageMeta({
+    layout: "list",
+  })
 </script>

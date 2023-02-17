@@ -34,4 +34,7 @@ const route = useRoute()
 useHead({
   title: "Hakkımızda"
 })
+definePageMeta({
+    layout: "list",
+  })
 </script>

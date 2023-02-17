@@ -56,4 +56,7 @@ window.location.href = route.query.theme ? `/manga/${route.params.id}/read/${rou
 useHead({
   title: `${epp.title}`
 })
+definePageMeta({
+    layout: "default",
+  })
 </script>

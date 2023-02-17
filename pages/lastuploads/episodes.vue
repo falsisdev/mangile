@@ -35,6 +35,9 @@
   useHead({
     title: "Son Yüklenen Bölümler"
   })
+  definePageMeta({
+    layout: "list",
+  })
   let statuscode;
   let results;
   let data;
