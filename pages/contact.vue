@@ -25,7 +25,7 @@
                 </h2><br/>
                 <p>Mangile destek için kullanılan ve aslında geliştiricilere destek için açılmış Kremlin Geliştirici topluluğu Discord sunucusuna aşağıdaki buton aracılığıyla katılabilirsiniz.</p>
                 <div class="card-actions justify-end">
-                <a href="https://discord.gg/BDXkSgVaXe"><button class="btn btn-primary"><span class="pr-2"><font-awesome-icon icon="fa-solid fa-right-to-bracket" /></span>Katıl</button></a>
+                <a href="https://discord.gg/BDXkSgVaXe"><button class="btn btn-primary"><span class="pr-2" v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-right-from-bracket"></font-awesome-icon></span><span class="pr-2" v-else-if="route.query.icon == 'material'"><IconsMaterialLogout/></span>Katıl</button></a>
                 </div>
             </div>
             </div>
@@ -41,7 +41,7 @@
                 </h2><br/>
                 <p>Eğer Mangile websitesinde bazı sorunlar yaşıyorsanız bize en hızlı ulaşabileceğiniz yer olan Github Issues bölümüne aşağıdaki butona tıklayarak ulaşabilirsiniz.</p>
                 <div class="card-actions justify-end">
-                <a href="https://github.com/falsisdev/mangile/issues"><button class="btn btn-primary"><span class="pr-2"><font-awesome-icon icon="fa-solid fa-link" /></span>Github</button></a>
+                <a href="https://github.com/falsisdev/mangile/issues"><button class="btn btn-primary"><span class="pr-2" v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-link" /></span><span class="pr-2" v-else-if="route.query.icon == 'material'"><IconsMaterialLink/></span>Github</button></a>
                 </div>
             </div>
             </div>
@@ -49,7 +49,7 @@
         <article class="prose max-w-none">
             <h2>E-Posta Adresi</h2>
             <p>E-Posta Adresimiz: falsis@proton.me</p>
-            Bizimle e-posta aracılığıyla iletişime geçmek için <a href="mailto: falsis@proton.me"><button class="btn m-2"><span class="pr-2"><font-awesome-icon icon="fa-solid fa-envelope" /></span>E-Posta Gönder</button></a> butonunu kullanabilirsiniz.
+            Bizimle e-posta aracılığıyla iletişime geçmek için <a href="mailto: falsis@proton.me"><button class="btn m-2"><span class="pr-2" v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-envelope" /></span><span class="pr-2" v-else-if="route.query.icon == 'material'"><IconsMaterialMail/></span> E-Posta Gönder</button></a> butonunu kullanabilirsiniz.
         </article><br/>
         </div>
     </template>

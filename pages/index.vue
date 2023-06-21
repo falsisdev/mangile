@@ -32,6 +32,7 @@
   </swiper>
 
   <div class="divider"></div>
+  
   <!--editörün seçimi-->
   <article class="prose max-w-none px-5">
     <h1>Editörün Seçimi</h1>

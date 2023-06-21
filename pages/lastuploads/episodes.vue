@@ -46,7 +46,7 @@
   let coverartid;
   let settedids = [];
   try{
-  data = await useFetch(`https://cdn.falsis.ga/mangile/lastuploads?token=${runtimeConfig.public.token}`)
+  data = await useFetch(`${runtimeConfig.public.cdnBase}/mangile/lastuploads?token=${runtimeConfig.public.token}`)
   results = data.data.value.data.result
   settedids = [...new Set(results.lastUploadedMangaIDs)]
     for(let item of settedids) {

@@ -14,6 +14,14 @@ export default defineNuxtPlugin((nuxtApp) => {
                 }
             }
         }
+        if(localStorage.getItem("icontheme")) {
+            if(!searchParams.get("icon")) {
+                searchParams.set("icon", String(localStorage.getItem("icontheme")))
+                var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+                history.pushState(null, '', newRelativePathQuery);
+                window.location.reload();
+            }
+        }
         /*
         if(!localStorage.getItem("username") && !localStorage.getItem("password")) {
             if(!window.location.pathname.endsWith("/signup")) window.location.href = '/signup'

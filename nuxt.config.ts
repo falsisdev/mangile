@@ -1,5 +1,5 @@
 export default defineNuxtConfig({
-    modules: ['@nuxtjs/tailwindcss', '@nuxt/content'],
+    modules: ['@nuxtjs/tailwindcss', '@nuxt/content', '@nuxtjs/supabase'],
     css: [
         '@fortawesome/fontawesome-svg-core/styles.css'
       ],
@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
       public: {
         token: process.env.token,
+        cdnBase: "https://cdn.falsisdev.repl.co",
         theme: "dracula"
       }
     },

@@ -48,9 +48,9 @@
           Bilgiler
         </div>
         <div class="collapse-content">  
-        <span><font-awesome-icon icon="fa-solid fa-clock-rotate-left" /></span> Yayın Tarihi: {{ !info.data.value.data.attributes.year ? "Bilinmiyor" :  `${info.data.value.data.attributes.year}`  }}, {{ info.data.value.data.attributes.status == 'completed' ? ' Yayın Tamamlandı.' : info.data.value.data.attributes.status == 'ongoing' ? ' Yayın Devam Ediyor.' : info.data.value.data.attributes.status == 'hiatus' ? ' Yayına Ara Verildi.' : '.'}}<br/>
-        <span><font-awesome-icon icon="fa-solid fa-language" /></span> Serinin Orjinal Dili: {{ info.data.value.data.attributes.originalLanguage == 'ja' ? 'Japonca' : info.data.value.data.attributes.originalLanguage == 'ko' ? 'Korece' : info.data.value.data.attributes.originalLanguage == 'ch' ? 'Çince' : info.data.value.data.attributes.originalLanguage}}<br/> 
-        <span><font-awesome-icon icon="fa-solid fa-id-card-clip" /></span> Serinin Demografiği: {{ info.data.value.data.attributes.publicationDemographic == 'shounen' ? 'Shounen' : info.data.value.data.attributes.publicationDemographic == 'seinen' ? 'Seinen' : info.data.value.data.attributes.publicationDemographic == 'josei' ? 'Josei' : info.data.value.data.attributes.publicationDemographic == 'shoujo' ? 'Shoujo' : info.data.value.data.attributes.publicationDemographic }}
+        <span class="flex flex-row"><span v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-clock-rotate-left" /></span><span v-else-if="route.query.icon == 'material'" class="pt-1"><IconsMaterialHistory/></span> Yayın Tarihi: {{ !info.data.value.data.attributes.year ? "Bilinmiyor" :  `${info.data.value.data.attributes.year}`  }}, {{ info.data.value.data.attributes.status == 'completed' ? ' Yayın Tamamlandı.' : info.data.value.data.attributes.status == 'ongoing' ? ' Yayın Devam Ediyor.' : info.data.value.data.attributes.status == 'hiatus' ? ' Yayına Ara Verildi.' : '.'}}<br/></span>
+        <span class="flex flex-row"><span v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-language" /></span><span v-else-if="route.query.icon == 'material'" class="pt-1"><IconsMaterialTranslate/></span> Serinin Orjinal Dili: {{ info.data.value.data.attributes.originalLanguage == 'ja' ? 'Japonca' : info.data.value.data.attributes.originalLanguage == 'ko' ? 'Korece' : info.data.value.data.attributes.originalLanguage == 'ch' ? 'Çince' : info.data.value.data.attributes.originalLanguage}}<br/> </span>
+        <span class="flex flex-row"><span v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-id-card-clip" /></span><span class="pt-1" v-else-if="route.query.icon == 'material'"><IconsMaterialDemography/></span> Serinin Demografiği: {{ info.data.value.data.attributes.publicationDemographic == 'shounen' ? 'Shounen' : info.data.value.data.attributes.publicationDemographic == 'seinen' ? 'Seinen' : info.data.value.data.attributes.publicationDemographic == 'josei' ? 'Josei' : info.data.value.data.attributes.publicationDemographic == 'shoujo' ? 'Shoujo' : info.data.value.data.attributes.publicationDemographic }}</span>
       </div></div><br/>
       <div tabindex="0" class="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
         <input type="checkbox" />
@@ -93,7 +93,7 @@
 </li>
 <li v-for="a of item.episodes" :key="a">
   <a :href="route.query.theme ? `/manga/${route.params.id}/read/${a.vol}/${a.ep}?theme=` + route.query.theme : `/manga/${route.params.id}/read/${a.vol}/${a.ep}`">
-<span><font-awesome-icon icon="fa-solid fa-file-lines" /></span>
+<span v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-file-lines" /></span><span v-else-if="route.query.icon == 'material'"><IconsMaterialBook/></span>
     <b>{{ a.title }}</b> ({{ a.source }})
   </a>
 </li>
@@ -152,7 +152,7 @@
   
   <div class="stat">
     <div class="stat-figure">
-      <span><font-awesome-icon icon="fa-solid fa-users" /></span>
+      <span v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-users" /></span><span v-else-if="route.query.icon == 'material'"><IconsMaterialPeople/></span>
     </div>
     <div class="stat-title">Takipçiler</div>
     <div class="stat-value">{{ ist.follows }}</div>
@@ -161,7 +161,7 @@
   
   <div class="stat">
     <div class="stat-figure">
-      <span><font-awesome-icon icon="fa-solid fa-star" /></span>
+      <span v-if="!route.query.icon || route.query.icon == 'fontawesome'"><font-awesome-icon icon="fa-solid fa-star" /></span><span v-else-if="route.query.icon == 'material'"><IconsMaterialStar/></span>
     </div>
     <div class="stat-title">Ortalama Puan</div>
     <div class="stat-value">{{ (ist.rating.average).toFixed(2) }}</div>
@@ -201,7 +201,7 @@ const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
 const stats = await useFetch(`https://api.mangadex.org/statistics/manga?manga[]=${route.params.id}`)
 let warning;
 const ist = stats.data.value.statistics[String(route.params.id)]
-const episodedata = await useFetch(`https://cdn.falsis.ga/mangile/manga?token=${runtimeConfig.public.token}&id=${route.params.id}`)
+const episodedata = await useFetch(`${runtimeConfig.public.cdnBase}/mangile/manga?token=${runtimeConfig.public.token}&id=${route.params.id}`)
 const statuscode = episodedata.data.value.statusCode
 const epdata = episodedata.data.value.data.result
 const links = info.data.value.data.attributes.links

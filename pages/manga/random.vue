@@ -22,6 +22,7 @@
 </div>
     <div class="card-actions justify-center my-5">
       <button @click="mangapage()" class="btn">Manganın Sayfasına Git</button>
+      <button :disabled="refreshing" @click="refreshAll" class="btn">Mangayı Değiştir </button>
     </div>
 </div>
 </template>
@@ -39,6 +40,16 @@ const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
 function mangapage() {
             window.location.href = route.query.theme ? '/manga/' + info.data.value.data.id + "?theme=" + route.query.theme : '/manga/' + info.data.value.data.id
         }
+const refreshing = ref(false)
+const refreshAll = async () => {
+  refreshing.value = true
+  try {
+    await refreshNuxtData()
+  } finally {
+    refreshing.value = false
+  }
+}
+
 useHead({
   title: "Rastgele Manga"
 })

@@ -105,7 +105,7 @@
 const route = useRoute()
 const runtimeConfig = useRuntimeConfig();
 const username = route.params.username
-const userinfo = await useFetch(`https://cdn.falsis.ga/mangile/user?token=${runtimeConfig.public.token}&username=${username}`)
+const userinfo = await useFetch(`${runtimeConfig.public.cdnBase}/mangile/user?token=${runtimeConfig.public.token}&username=${username}`)
 const name = userinfo.data.value.data.result.name
 const useravatar = userinfo.data.value.data.result.avatar
 const isMod = userinfo.data.value.data.result.badges.includes("authorized")
