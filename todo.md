@@ -1,13 +1,13 @@
 # Yapılacaklar
 
-1. Kullanıcı Profili Görüntüleme [View Profile] eklenecek (firebase)
-2. Kullanıcı Profili Düzenleme [Edit Profile] eklenecek (signin + firebase)
-3. Websitesi ayarları [Settings] eklenecek. (signin + cookies)
-4. Yazarlar ve Çizerler [Authors] eklenecek. (mal api)
-5. Karakterler [Characters] eklenecek. (mal api)
-6. Kullanıcı Arayüzü sayfası tamamlanacak. (settings)
-7. Güvenlik İpuçları sayfası eklenecek. (signup + signin + settings)
-8. Kullanıcı Sözleşmesi eklenecek.
+1. Kullanıcı Profili Düzenleme [Edit Profile] eklenecek (signin + firebase)
+2. Websitesi ayarları [Settings] eklenecek. (signin + cookies)
+3. Yazarlar ve Çizerler [Authors] eklenecek. (mal api)
+4. Karakterler [Characters] eklenecek. (mal api)
+5. Kullanıcı Arayüzü sayfası tamamlanacak. (settings)
+6. Güvenlik İpuçları sayfası eklenecek. (signup + signin + settings)
+7. Kullanıcı Sözleşmesi eklenecek.
+8. Profil sayfası baştan sona geliştirilecek.
 9. Bölüm sayfası baştan sona geliştirilecek.
 10. Keşfet sayfası geliştirilecek.
 11. Türler sayfası geliştirilecek.

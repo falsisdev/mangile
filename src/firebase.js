@@ -71,8 +71,28 @@ export const deleteManga = (mangadexID) => {
   return mangasCollection.doc(mangadexID).delete();
 };
 
-export const createUser = (user) => {
-  return usersCollection.add(user);
+export const createUser = async (user) => {
+  let a = usersCollection.add(user);
+  await usersCollection
+    .doc(await getIDByEmail(user.email))
+    .collection("library")
+    .doc("bookcase")
+    .set({
+      completed: [],
+      dropped: [],
+      onhold: [],
+      plantoread: [],
+      reading: [],
+      rereading: [],
+    });
+  await usersCollection
+    .doc(await getIDByEmail(user.email))
+    .collection("library")
+    .doc("collection")
+    .set({
+      lists: [],
+    });
+  return a;
 };
 
 export const getUser = async (email) => {
@@ -80,6 +100,16 @@ export const getUser = async (email) => {
   return user.empty
     ? null
     : (await usersCollection.doc(user.docs[0].id).get()).data();
+};
+
+export const getIDByEmail = async (email) => {
+  const user = await usersCollection.where("email", "==", String(email)).get();
+  return user.empty ? null : user.docs[0].id;
+};
+
+export const getUserByID = async (id) => {
+  const user = await usersCollection.doc(id).get();
+  return user.exists ? user.data() : null;
 };
 
 export const checkUser = async (form) => {

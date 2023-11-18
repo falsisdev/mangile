@@ -1,5 +1,5 @@
 <script setup>
-import { getUser } from "../firebase";
+import { getIDByEmail, getUser } from "../firebase";
 import { useCookies } from "vue3-cookies";
 
 const { cookies } = useCookies();
@@ -13,8 +13,10 @@ function logout() {
 }
 
 let user;
+let id;
 if (isLogged) {
   user = await getUser(cookies.get("email"));
+  id = await getIDByEmail(cookies.get("email"));
 }
 </script>
 <template>
@@ -32,7 +34,9 @@ if (isLogged) {
         <b>{{ user.username }}</b>
       </li>
       <li>
-        <a> <Icon icon="material-symbols:person" /> Profil</a>
+        <RouterLink :to="`/user/${id}/view`">
+          <Icon icon="material-symbols:person" /> Profil</RouterLink
+        >
       </li>
       <li>
         <a> <Icon icon="material-symbols:settings" /> Ayarlar </a>

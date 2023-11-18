@@ -49,6 +49,11 @@ const router = createRouter({
       name: "auth",
       component: () => import("../views/LoginForm.vue"),
     },
+    {
+      path: "/user/:id/:action",
+      name: "user",
+      component: () => import("../views/ProfileView.vue"),
+    },
   ],
 });
 
