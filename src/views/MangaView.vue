@@ -3,6 +3,7 @@ import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
 import Tags from "../components/Tags.vue";
 import { ref } from "vue";
+import { getManga, getVol } from "../firebase";
 
 const route = useRoute();
 function redirect(url) {
@@ -37,15 +38,29 @@ const stats = await useFetch(
 );
 let warning;
 const ist = JSON.parse(stats.data.value).statistics[String(route.params.id)];
-const episodedata = await useFetch(
-  `${import.meta.env.VITE_BASEURL}/mangile/manga?token=${
-    import.meta.env.VITE_TOKEN
-  }&id=${route.params.id}`
-);
-const statuscode = JSON.parse(episodedata.data.value).statusCode;
-const epdata = JSON.parse(episodedata.data.value).data.result;
+const mangadata = await getManga(route.params.id);
+let statuscode = mangadata == null ? 404 : 200;
 const links = JSON.parse(info.data.value).data.attributes.links;
 const genres = JSON.parse(info.data.value).data.attributes.tags;
+
+async function getVolData(i) {
+  const voldata = await getVol(
+    route.params.id,
+    parseInt(mangadata.volumes) - parseInt(i)
+  );
+  return voldata;
+}
+
+let titles = new Array();
+let episodes = new Array();
+try {
+  for (var i = 0; i < mangadata.volumes; i++) {
+    titles.push(Object(await getVolData(i)).title);
+    episodes.push(Object(await getVolData(i)).episodes);
+  }
+} catch (err) {
+  statuscode = 404;
+}
 
 for (let item of genres) {
   if (
@@ -434,7 +449,7 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
               <div class="collapse-content">
                 <span>{{
                   statuscode == 200
-                    ? epdata.description
+                    ? mangadata.description
                     : JSON.parse(info.data.value).data.attributes.description.en
                 }}</span>
               </div>
@@ -713,11 +728,11 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                 v-if="statuscode == 200"
                 class="menu bg-base-100 w-full p-2 rounded-box"
               >
-                <span v-for="item of epdata.volumes" :key="item">
+                <span v-for="i of episodes" :key="i">
                   <li class="menu-title">
-                    <span>{{ item.title }}</span>
+                    <span>{{ titles[episodes.indexOf(i)] }}</span>
                   </li>
-                  <li v-for="a of item.episodes" :key="a">
+                  <li v-for="a of i" :key="a">
                     <a
                       :href="`/manga/${route.params.id}/read/${a.vol}/${a.ep}`"
                     >

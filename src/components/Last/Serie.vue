@@ -1,16 +1,18 @@
 <script setup>
 import { useFetch } from "@vueuse/core";
 import MangaCard from "../Manga/Card.vue";
+import { getLastTen } from "../../firebase";
 
 let statuscode;
-let results;
-let data;
+let data = [];
 let cover = [];
 try {
-  data = await useFetch(`https://api.mangadex.org/manga`);
-  results = JSON.parse(data.data.value).data;
+  for (let i of await getLastTen()) {
+    let a = await useFetch(`https://api.mangadex.org/manga/${i}`);
+    data.push(JSON.parse(a.data.value).data);
+  }
   let coverartid;
-  for (let item of results) {
+  for (let item of data) {
     for (let i of item.relationships) {
       if (i.type == "cover_art") {
         coverartid = i.id;
@@ -30,15 +32,15 @@ try {
   <!--arama sonuçları-->
   <article class="prose max-w-none p-5">
     <h1>Son Yüklenen Mangalar</h1>
-    Yükleme Kaynağı: MangaDex
+    Yükleme Kaynağı: Mangile Verileri
   </article>
   <div v-if="statuscode == 200" class="flex flex-row flex-wrap">
     <MangaCard
-      v-for="item of results"
+      v-for="item of data"
       :key="item"
       :id="item.id"
       :cover="
-        JSON.parse(cover[results.indexOf(item)].data.value).data.attributes
+        JSON.parse(cover[data.indexOf(item)].data.value).data.attributes
           .fileName
       "
       :name="

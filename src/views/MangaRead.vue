@@ -27,7 +27,13 @@
           <Icon icon="material-symbols:drive-file-move" class="h-5 w-5" />
         </button>
       </span>
-      <br />
+
+      <span class="flex flex-row">
+        <!--<span class="btn btn ghost btn-sm" @click="ilk()">İlk Sayfaya git</span>
+        <span class="btn btn ghost btn-sm" @click="son()">Son Sayfaya git</span>-->
+        <span class="grow" />
+        <span id="current">Şuanki Sayfa: {{ currentsayfa + 1 }}</span>
+      </span>
       <div class="divider"></div>
       <span class="flex flex-row">
         <button
@@ -70,26 +76,28 @@
 <script setup>
 import { useRoute, RouterLink } from "vue-router";
 import { useFetch } from "@vueuse/core";
+import { getManga, getVol } from "../firebase";
 
 const route = useRoute();
 const info = await useFetch(
   `https://api.mangadex.org/manga/${route.params.id}`
 );
-const episodedata = await useFetch(
+const mangadata = await getManga(route.params.id);
+/*const episodedata = await useFetch(
   `${import.meta.env.VITE_BASEURL}/mangile/manga?token=${
     import.meta.env.VITE_TOKEN
   }&id=${route.params.id}`
-);
-const statuscode = JSON.parse(episodedata.data.value).statusCode;
-const epdata = JSON.parse(episodedata.data.value).data.result;
-let eps;
-for (let item of epdata.volumes) {
-  if (item.vol == route.params.vol) {
-    eps = item.episodes;
-  }
+);*/
+let statuscode = mangadata == null ? 404 : 200;
+//const epdata = JSON.parse(episodedata.data.value).data.result;
+
+async function getVolData(i) {
+  const voldata = await getVol(route.params.id, i);
+  return voldata;
 }
+
 let epp;
-for (let item of eps) {
+for (let item of Object(await Object(getVolData(route.params.vol))).episodes) {
   if (item.ep == route.params.ep) {
     epp = item;
   }
@@ -112,22 +120,37 @@ function sayfa(yon) {
         "btn btn-ghost btn-sm btn-disabled";
     } else {
       if (parseInt(currentsayfa) == 0) {
-        currentsayfa++;
         document.getElementById("geri").className = "btn btn-ghost btn-sm";
       }
       currentsayfa++;
       document.getElementById("pages").src = epp.pages[currentsayfa];
+      document.getElementById("current").innerText =
+        "Şuanki Sayfa: " + (currentsayfa + 1);
     }
   } else if (yon == "geri") {
     if (parseInt(currentsayfa) == 1) {
       document.getElementById("geri").className =
         "btn btn-ghost btn-sm btn-disabled";
     } else {
-      if (parseInt(currentsayfa) + 1 == epp["pages"].length) currentsayfa -= 1;
-      document.getElementById("ileri").className = "btn btn-ghost btn-sm";
+      if (parseInt(currentsayfa) + 1 == epp["pages"].length)
+        document.getElementById("ileri").className = "btn btn-ghost btn-sm";
     }
     currentsayfa -= 1;
     document.getElementById("pages").src = epp.pages[currentsayfa];
+    document.getElementById("current").innerText =
+      "Şuanki Sayfa: " + (currentsayfa + 1);
   }
+}
+function son() {
+  currentsayfa = epp["pages"].length - 1;
+  document.getElementById("pages").src = epp.pages[currentsayfa];
+  document.getElementById("current").innerText =
+    "Şuanki Sayfa: " + (currentsayfa + 1);
+}
+function ilk() {
+  currentsayfa = 0;
+  document.getElementById("pages").src = epp.pages[currentsayfa];
+  document.getElementById("current").innerText =
+    "Şuanki Sayfa: " + (currentsayfa + 1);
 }
 </script>

@@ -1,32 +1,28 @@
 <script setup>
 import { useFetch } from "@vueuse/core";
+import { getLastChapters, getLastChapter } from "../../firebase";
 
 let statuscode;
-let results;
-let data;
+let data = new Array();
 let cover = [];
-var lastidsfetch = [];
-let coverartid;
-let settedids = [];
+let chdata = [];
 try {
-  data = await useFetch(
-    `${import.meta.env.VITE_BASEURL}/mangile/lastuploads?token=${
-      import.meta.env.VITE_TOKEN
-    }`
-  );
-  results = JSON.parse(data.data.value).data.result;
-  settedids = [...new Set(results.lastUploadedMangaIDs)];
-  for (let item of settedids) {
-    let a = await useFetch(`https://api.mangadex.org/manga/${item}`);
-    lastidsfetch.push(JSON.parse(a.data.value).data);
+  for (let i of await getLastChapters()) {
+    let a = await useFetch(
+      `https://api.mangadex.org/manga/${
+        Object(await getLastChapter(i)).mangaid
+      }`
+    );
+    chdata.push(Object(await getLastChapter(i)));
+    data.push(JSON.parse(a.data.value).data);
   }
-  for (let i of lastidsfetch) {
-    for (let b of i.relationships) {
-      if (b.type == "cover_art") {
-        coverartid = b.id;
-        cover.push(
-          await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
-        );
+  let coverartid;
+  for (let item of data) {
+    for (let i of item.relationships) {
+      if (i.type == "cover_art") {
+        coverartid = i.id;
+        let a = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
+        cover.push(JSON.parse(a.data.value).data);
       }
     }
   }
@@ -45,45 +41,45 @@ try {
   </article>
   <div v-if="statuscode == 200" class="flex flex-row flex-wrap">
     <div
-      v-for="[index, deger] of Object.entries(results.lastUploadedMangaIDs)"
-      :key="[index, deger]"
+      v-for="item of data"
+      :key="item"
       class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] rounded-lg"
     >
       <figure>
         <img
           class="rounded w-64 h-72"
-          :src="`https://mangadex.org/covers/${deger}/${
-            JSON.parse(cover[parseInt(settedids.indexOf(deger))].data.value)
-              .data.attributes.fileName
+          :src="`https://mangadex.org/covers/${item.id}/${
+            cover[parseInt(data.indexOf(item))].attributes.fileName
           }.512.jpg`"
         />
       </figure>
       <div class="card-body">
         <h2 class="card-title">
           {{
-            !lastidsfetch[settedids.indexOf(deger)].attributes.title["en"]
-              ? !lastidsfetch[settedids.indexOf(deger)].attributes.title[
-                  "ja-ro"
-                ]
+            !data[data.indexOf(item)].attributes.title["en"]
+              ? !data[data.indexOf(item)].attributes.title["ja-ro"]
                 ? ""
-                : lastidsfetch[settedids.indexOf(deger)].attributes.title[
-                    "ja-ro"
-                  ].substring(0, 20) + "..."
-              : lastidsfetch[settedids.indexOf(deger)].attributes.title[
-                  "en"
-                ].substring(0, 20) + "..."
+                : data[data.indexOf(item)].attributes.title["ja-ro"].substring(
+                    0,
+                    20
+                  ) + "..."
+              : data[data.indexOf(item)].attributes.title["en"].substring(
+                  0,
+                  20
+                ) + "..."
           }}
         </h2>
         <p>
-          Cilt {{ results.lastUploadedEpisodes[index].vol }}
-          {{ results.lastUploadedEpisodes[index].title.substring(0, 20) + "..."
-          }}<br />
-          Kaynak: {{ results.lastUploadedEpisodes[index].source }}
+          Cilt {{ chdata[data.indexOf(item)].vol }}
+          {{ chdata[data.indexOf(item)].epname }}<br />
+          Kaynak: {{ chdata[data.indexOf(item)].fansub }}
         </p>
         <div class="dropdown dropdown-hover dropdown-top flex justify-end">
           <a
             class="btn btn-primary"
-            :href="`/manga/${deger}/read/${results.lastUploadedEpisodes[index].vol}/${results.lastUploadedEpisodes[index].ep}`"
+            :href="`/manga/${data[data.indexOf(item)].id}/read/${
+              chdata[data.indexOf(item)].vol
+            }/${chdata[data.indexOf(item)].ep}`"
             >Oku!</a
           >
         </div>

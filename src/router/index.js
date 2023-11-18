@@ -44,6 +44,11 @@ const router = createRouter({
       name: "search",
       component: () => import("../views/SearchView.vue"),
     },
+    {
+      path: "/auth/:type",
+      name: "auth",
+      component: () => import("../views/LoginForm.vue"),
+    },
   ],
 });
 

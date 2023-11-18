@@ -2,9 +2,13 @@
 import { RouterLink, RouterView, useRouter, useRoute } from "vue-router";
 import { useTitle } from "@vueuse/core";
 import logo from "./assets/mangile_sun.svg";
+import { useCookies } from "vue3-cookies";
+import { getUser } from "../src/firebase";
+import MenuProfile from "./components/MenuProfile.vue";
 
 const router = useRouter();
 const route = useRoute();
+const { cookies } = useCookies();
 
 useTitle("Mangile");
 function back() {
@@ -24,6 +28,7 @@ function search() {
     }
   });
 }
+
 function directsearch() {
   window.location.href = `/search?q=${
     document.getElementById("searchbar").value
@@ -321,37 +326,9 @@ function directsearch() {
                 </button>
               </div>
             </div>
-
-            <div class="dropdown dropdown-end">
-              <label
-                tabindex="0"
-                class="btn btn-ghost btn-circle avatar btn-md mx-2"
-              >
-                <div class="w-10 rounded-full">
-                  <img
-                    src="https://cdn.discordapp.com/attachments/775822548519616562/1124639596454613022/manila2.png"
-                    title="Profil Fotoğrafı"
-                  />
-                </div>
-              </label>
-              <ul
-                tabindex="0"
-                class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52 z-50"
-              >
-                <li>
-                  <b>Manila Gillen</b>
-                </li>
-                <li>
-                  <a> <Icon icon="material-symbols:person" /> Profil</a>
-                </li>
-                <li>
-                  <a> <Icon icon="material-symbols:settings" /> Ayarlar </a>
-                </li>
-                <li>
-                  <a><Icon icon="material-symbols:logout" /> Çıkış Yap</a>
-                </li>
-              </ul>
-            </div>
+            <Suspense>
+              <MenuProfile />
+            </Suspense>
           </ul>
         </div>
       </div>
