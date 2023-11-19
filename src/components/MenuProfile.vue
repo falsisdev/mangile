@@ -1,5 +1,6 @@
 <script setup>
 import { getIDByEmail, getUser } from "../firebase";
+import SettingsView from "../views/SettingsView.vue";
 import { useCookies } from "vue3-cookies";
 
 const { cookies } = useCookies();
@@ -9,6 +10,7 @@ let isLogged = cookies.get("isLogged");
 function logout() {
   cookies.remove("isLogged");
   cookies.remove("email");
+  cookies.remove("theme");
   window.location.reload();
 }
 
@@ -39,7 +41,9 @@ if (isLogged) {
         >
       </li>
       <li>
-        <a> <Icon icon="material-symbols:settings" /> Ayarlar </a>
+        <a onclick="my_modal_3.showModal()">
+          <Icon icon="material-symbols:settings" /> Ayarlar
+        </a>
       </li>
       <li>
         <button @click="logout()">
@@ -47,6 +51,18 @@ if (isLogged) {
         </button>
       </li>
     </ul>
+    <dialog id="my_modal_3" class="modal">
+      <div class="modal-box">
+        <form method="dialog">
+          <button
+            class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          >
+            ✕
+          </button>
+        </form>
+        <SettingsView />
+      </div>
+    </dialog>
   </div>
   <RouterLink v-else to="/auth/login">
     <button class="btn btn-ghost btn-sm mt-3">

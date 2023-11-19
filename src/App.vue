@@ -42,7 +42,12 @@ function directsearch() {
       type="checkbox"
       class="drawer-toggle"
     />-->
-  <div class="grid grid-cols-10">
+  <div
+    class="grid grid-cols-10"
+    :data-theme="
+      cookies.get('theme') == null ? 'dracula' : cookies.get('theme')
+    "
+  >
     <div class="mx-20 my-5 col-span-8 col-start-2 col-end-10">
       <div class="navbar bg-base-100">
         <div class="flex-1">

@@ -51,7 +51,7 @@
     class="hero max-h-screen"
     :style="`background-image: url(${editorschoice.bigbg});`"
   >
-    <div class="hero-overlay bg-opacity-90"></div>
+    <div class="hero-overlay bg-opacity-90 bg-base-200"></div>
     <div class="hero-content flex-col lg:flex-row-reverse">
       <img :src="editorschoice.cover" class="max-w-sm rounded-lg shadow-2xl" />
       <div>
@@ -87,7 +87,7 @@
     class="hero max-h-screen"
     :style="`background-image: url(${highlyrecommended.bigbg});`"
   >
-    <div class="hero-overlay bg-opacity-90"></div>
+    <div class="hero-overlay bg-opacity-90 bg-base-200"></div>
     <div class="hero-content flex-col lg:flex-row-reverse">
       <img
         :src="highlyrecommended.cover"
