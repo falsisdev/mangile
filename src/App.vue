@@ -196,22 +196,6 @@ function directsearch() {
                         >
                       </li>
                       <li>
-                        <a class="text-sm/6"
-                          ><Icon
-                            icon="material-symbols:ink-pen"
-                            class="w-5 h-5"
-                          />Yazarlar ve Çizerler</a
-                        >
-                      </li>
-                      <li>
-                        <a class="text-sm/6"
-                          ><Icon
-                            icon="material-symbols:shield-person"
-                            class="w-5 h-5"
-                          />Karakterler</a
-                        >
-                      </li>
-                      <li>
                         <RouterLink to="/manga/random" class="text-sm/6"
                           ><Icon
                             icon="material-symbols:shuffle"
