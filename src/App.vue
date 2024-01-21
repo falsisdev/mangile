@@ -277,19 +277,19 @@ function directsearch() {
                         >
                       </li>
                       <li>
-                        <a class="text-sm/6"
+                        <RouterLink to="/article/security" class="text-sm/6"
                           ><Icon
                             icon="material-symbols:verified-user"
                             class="h-5 w-5"
-                          />Güvenlik İpuçları</a
+                          />Güvenlik İpuçları</RouterLink
                         >
                       </li>
                       <li>
-                        <a class="text-sm/6"
+                        <RouterLink to="/article/terms" class="text-sm/6"
                           ><Icon
                             icon="material-symbols:contract"
                             class="h-5 w-5"
-                          />Kullanıcı Sözleşmesi</a
+                          />Kullanıcı Sözleşmesi</RouterLink
                         >
                       </li>
                     </ul>

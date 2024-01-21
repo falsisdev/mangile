@@ -49,7 +49,7 @@ import { RouterLink } from "vue-router";
           <tr>
             <th>2</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-compass" /></span>
+              <span><Icon icon="material-symbols:map" class="h-5 w-5" /></span>
             </td>
             <td>Keşfet</td>
           </tr>
@@ -58,7 +58,9 @@ import { RouterLink } from "vue-router";
             <th>3</th>
             <td>
               <span
-                ><font-awesome-icon icon="fa-solid fa-file-circle-plus"
+                ><Icon
+                  icon="material-symbols:restore-page-rounded"
+                  class="h-5 w-5"
               /></span>
             </td>
             <td>Eklenen Dosyalar/Son Yüklenen Bölümler</td>
@@ -66,35 +68,49 @@ import { RouterLink } from "vue-router";
           <tr>
             <th>4</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-folder-plus" /></span>
+              <span
+                ><Icon
+                  icon="material-symbols:drive-folder-upload"
+                  class="h-5 w-5"
+              /></span>
             </td>
             <td>Eklenen Klasörler/Son Yüklenen Mangalar</td>
           </tr>
           <tr>
             <th>5</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-shuffle" /></span>
+              <span
+                ><Icon icon="material-symbols:shuffle" class="h-5 w-5"
+              /></span>
             </td>
             <td>Rastgele İçerik/Karıştır</td>
           </tr>
           <tr>
             <th>6</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-users" /></span>
+              <span
+                ><Icon
+                  icon="material-symbols:supervised-user-circle"
+                  class="h-5 w-5"
+              /></span>
             </td>
             <td>Birden fazla kullanıcıyı ilgilendiren içerik</td>
           </tr>
           <tr>
             <th>7</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-file-pen" /></span>
+              <span
+                ><Icon icon="material-symbols:add-notes" class="h-5 w-5"
+              /></span>
             </td>
-            <td>Bilgilendirme Metni</td>
+            <td>Notlar</td>
           </tr>
           <tr>
             <th>8</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-phone" /></span>
+              <span
+                ><Icon icon="material-symbols:phone-enabled" class="h-5 w-5"
+              /></span>
             </td>
             <td>İletişim</td>
           </tr>
@@ -102,7 +118,7 @@ import { RouterLink } from "vue-router";
             <th>9</th>
             <td>
               <span
-                ><font-awesome-icon icon="fa-solid fa-book-open-reader"
+                ><Icon icon="material-symbols:contract" class="h-5 w-5"
               /></span>
             </td>
             <td>Yasal İçerik</td>
@@ -110,7 +126,7 @@ import { RouterLink } from "vue-router";
           <tr>
             <th>10</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-info" /></span>
+              <span><Icon icon="material-symbols:info" class="h-5 w-5" /></span>
             </td>
             <td>Bilgilendirme</td>
           </tr>
@@ -118,7 +134,7 @@ import { RouterLink } from "vue-router";
             <th>11</th>
             <td>
               <span
-                ><font-awesome-icon icon="fa-solid fa-triangle-exclamation"
+                ><Icon icon="material-symbols:warning" class="h-5 w-5"
               /></span>
             </td>
             <td>Uyarı Bildirimi</td>
@@ -126,14 +142,18 @@ import { RouterLink } from "vue-router";
           <tr>
             <th>12</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-user" /></span>
+              <span
+                ><Icon icon="material-symbols:person" class="h-5 w-5"
+              /></span>
             </td>
             <td>Bir kullanıcıyı ilgilendiren içerik</td>
           </tr>
           <tr>
             <th>13</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-gear" /></span>
+              <span
+                ><Icon icon="material-symbols:settings" class="h-5 w-5"
+              /></span>
             </td>
             <td>Ayarlar</td>
           </tr>
@@ -141,7 +161,7 @@ import { RouterLink } from "vue-router";
             <th>14</th>
             <td>
               <span
-                ><font-awesome-icon icon="fa-solid fa-right-from-bracket"
+                ><Icon icon="material-symbols:logout" class="h-5 w-5"
               /></span>
             </td>
             <td>Çıkış Yap/Katıl</td>
@@ -150,7 +170,7 @@ import { RouterLink } from "vue-router";
             <th>15</th>
             <td>
               <span
-                ><font-awesome-icon icon="fa-solid fa-clock-rotate-left"
+                ><Icon icon="material-symbols:schedule" class="h-5 w-5"
               /></span>
             </td>
             <td>Belirli bir zaman belirtme</td>
@@ -168,7 +188,11 @@ import { RouterLink } from "vue-router";
           <tr>
             <th>18</th>
             <td>
-              <span><font-awesome-icon icon="fa-solid fa-book-open" /></span>
+              <span
+                ><Icon
+                  icon="material-symbols:menu-book-rounded"
+                  class="h-5 w-5"
+              /></span>
             </td>
             <td>Tek Döküman/Bölüm</td>
           </tr>
@@ -179,12 +203,12 @@ import { RouterLink } from "vue-router";
     arayüzünü anlamanıza yardımcı olacaktır. Lütfen hala anlamadığınız bir durum
     olursa, bize <RouterLink to="/contact">iletişim</RouterLink> adreslerimizden
     ulaşmaktan çekinmeyin.<br /><br />
-    <div class="flex flex-row">
+    <!--<div class="flex flex-row">
       <RouterLink to="/error"
         ><button class="btn btn-error m-2">
           Hata sayfasına buradan erişebilirsiniz
         </button></RouterLink
       >
-    </div>
+    </div>-->
   </article>
 </template>

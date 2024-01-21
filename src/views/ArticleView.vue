@@ -5,6 +5,8 @@ import Contact from "../components/Article/Contact.vue";
 import Rules from "../components/Article/Rules.vue";
 import Genres from "../components/Article/Genres.vue";
 import Privacy from "../components/Article/Privacy.vue";
+import Security from "../components/Article/Security.vue";
+import Terms from "../components/Article/Terms.vue";
 
 import { useRoute } from "vue-router";
 const route = useRoute();
@@ -27,5 +29,11 @@ const route = useRoute();
   </main>
   <main v-else-if="route.params.type == 'privacy'">
     <Privacy />
+  </main>
+  <main v-else-if="route.params.type == 'security'">
+    <Security />
+  </main>
+  <main v-else-if="route.params.type == 'terms'">
+    <Terms />
   </main>
 </template>

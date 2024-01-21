@@ -389,7 +389,7 @@ function theme() {
         </div>
       </div>
     </div>
-    <div class="modal-action">
+    <div class="modal-action m-2">
       <label for="my-modal-6" class="btn" @click="theme()"
         >Değişiklikleri Kaydet</label
       >
