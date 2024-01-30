@@ -52,7 +52,16 @@
       </span>
       <br />
       <div v-if="statuscode == 200" class="flex flex-col flex-wrap">
-        <img :src="epp.pages[currentsayfa]" id="pages" class="object-contain" />
+        <img
+          :src="
+            epp.pages[currentsayfa].replace(
+              'https://mediacdn.falsisdev.repl.co',
+              'https://6f2d7581-440f-4b4c-9e11-b25bda6e21ff-00-s1of6dthubzs.kirk.replit.dev/'
+            )
+          "
+          id="pages"
+          class="object-contain"
+        />
       </div>
       <br />
       <div class="divider"></div>

@@ -99,7 +99,7 @@ function directsearch() {
                         >
                       </li>
                       <li>
-                        <RouterLink to="/lastuploads/episodes" class="text-sm/6"
+                        <RouterLink to="/lastuploads/chapters" class="text-sm/6"
                           ><Icon
                             icon="material-symbols:restore-page-rounded"
                             class="h-5 w-5"
