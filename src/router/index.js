@@ -1,5 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import { getUser } from "../firebase";
+import { useCookies } from "vue3-cookies";
+
+const { cookies } = useCookies();
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,6 +57,25 @@ const router = createRouter({
       path: "/user/:id/:action",
       name: "user",
       component: () => import("../views/ProfileView.vue"),
+    },
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: async () => {
+        if (cookies.get("email")) {
+          if (
+            Object.values(await getUser(cookies.get("email")))[
+              Object.keys(await getUser(cookies.get("email"))).indexOf("roles")
+            ].includes("mod")
+          ) {
+            return import("../views/DashView.vue");
+          } else {
+            return import("../views/ProfileView.vue");
+          }
+        } else {
+          return import("../views/LoginForm.vue");
+        }
+      },
     },
   ],
 });

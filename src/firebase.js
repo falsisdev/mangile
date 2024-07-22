@@ -120,7 +120,7 @@ export const checkUser = async (form) => {
     return true;
   } else if (
     form.password ==
-    (await usersCollection.doc(user.docs[0].id).get()).data().password
+    atob((await usersCollection.doc(user.docs[0].id).get()).data().password)
   ) {
     return false;
   } else {

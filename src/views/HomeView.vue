@@ -1,4 +1,9 @@
 <template>
+  <div v-if="route.query.connected" class="toast toast-bottom toast-end z-10">
+    <div class="alert alert-success">
+      <span>Profil Sunucuya Başarıyla Bağlandı</span>
+    </div>
+  </div>
   <br />
   <article class="prose max-w-none px-5 pt-5">
     <h1>Öne Çıkanlar</h1>
@@ -135,6 +140,7 @@ import "swiper/css/pagination";
 
 // import required modules
 import { Autoplay, Scrollbar, FreeMode, Pagination } from "swiper/modules";
+import { useRoute } from "vue-router";
 
 export default {
   components: {
@@ -142,6 +148,7 @@ export default {
     SwiperSlide,
   },
   setup() {
+    const route = useRoute();
     const highlights = [
       {
         name: "Vinland Saga",
@@ -248,6 +255,7 @@ export default {
       highlights,
       editorschoice,
       highlyrecommended,
+      route,
       modules: [Autoplay, Scrollbar, FreeMode, Pagination],
     };
   },

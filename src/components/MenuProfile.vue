@@ -2,6 +2,7 @@
 import { getIDByEmail, getUser } from "../firebase";
 import SettingsView from "../views/SettingsView.vue";
 import { useCookies } from "vue3-cookies";
+import { socket } from "@/socket";
 
 const { cookies } = useCookies();
 
@@ -11,6 +12,7 @@ function logout() {
   cookies.remove("isLogged");
   cookies.remove("email");
   cookies.remove("theme");
+  socket.disconnect();
   window.location.reload();
 }
 

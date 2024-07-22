@@ -5,10 +5,13 @@ import logo from "./assets/mangile_sun.svg";
 import { useCookies } from "vue3-cookies";
 import { getUser } from "../src/firebase";
 import MenuProfile from "./components/MenuProfile.vue";
+//import { state, socket } from "@/socket";
 
 const router = useRouter();
 const route = useRoute();
 const { cookies } = useCookies();
+
+//state.connected ? socket.timeout(5000).emit("test", "yep") : "";
 
 useTitle("Mangile");
 function back() {
@@ -44,9 +47,7 @@ function directsearch() {
     />-->
   <div
     class="grid grid-cols-10"
-    :data-theme="
-      cookies.get('theme') == null ? 'dracula' : cookies.get('theme')
-    "
+    :data-theme="cookies.get('theme') == null ? 'dim' : cookies.get('theme')"
   >
     <div class="mx-20 my-5 col-span-8 col-start-2 col-end-10">
       <div class="navbar bg-base-100">
@@ -56,7 +57,7 @@ function directsearch() {
             class="btn btn-ghost no-animation hover:bg-[transparent] bg-base-100 normal-case font-bold text-[20px]"
             ><img
               width="60"
-              src="https://cdn.discordapp.com/attachments/775822548519616562/1043105098236166194/mangile_full.png"
+              src="https://cdn.discordapp.com/attachments/775822548519616562/1124637880871034900/mangile_logo.png?ex=669f7ca5&is=669e2b25&hm=861879e0956d3ee3986e68e8f570fba88510010f955328475c095e1018da599c&"
               title="logo"
             />
             <span class="mb-2">Mangile</span></RouterLink

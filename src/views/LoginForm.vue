@@ -137,10 +137,12 @@ import { useRoute, RouterLink } from "vue-router";
 import { reactive } from "vue";
 import { createUser as create, checkUser } from "../firebase";
 import { useCookies } from "vue3-cookies";
+import { socket } from "@/socket";
 
 const { cookies } = useCookies();
 const route = useRoute();
 const form = reactive({ email: "", password: "" });
+let connected;
 
 const onSubmit = async () => {
   if (route.params.type == "signup") {
@@ -166,7 +168,7 @@ const onSubmit = async () => {
         uploads: 0,
         roles: ["user"],
         pfp: pfps[Math.floor(Math.random() * pfps.length)],
-        password: form.password,
+        password: btoa(form.password),
         lists: 0,
         email: form.email,
       });
@@ -184,7 +186,9 @@ const onSubmit = async () => {
       cookies.set("isLogged", true);
       form.email = "";
       form.password = "";
-      window.location.href = "/";
+      socket.connect();
+      console.log("Profil Sunucuya Bağlandı.");
+      window.location.href = "/?connected=1";
     }
   }
   return { form, onSubmit };
