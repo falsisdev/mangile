@@ -1,6 +1,8 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import { getCountFromServer } from "firebase/firestore";
 import { ref, onUnmounted } from "vue";
+//import { getAnalytics } from "firebase/analytics";
 
 const config = {
   apiKey: import.meta.env.VITE_FIREBASEAPIKEY,
@@ -25,6 +27,21 @@ export const addManga = async (data, mangadexID) => {
 export const getManga = async (mangadexID) => {
   const manga = await mangasCollection.doc(mangadexID).get();
   return manga.exists ? manga.data() : null;
+};
+
+export const getMangaCount = async () => {
+  const res = await getCountFromServer(mangasCollection);
+  return res;
+};
+
+export const getUsersCount = async () => {
+  const res = await getCountFromServer(usersCollection);
+  return res;
+};
+
+export const getUploadedChaptersCount = async () => {
+  const res = await getCountFromServer(lastsCollection);
+  return res;
 };
 
 export const getLastTen = async () => {
@@ -100,6 +117,12 @@ export const getUser = async (email) => {
   return user.empty
     ? null
     : (await usersCollection.doc(user.docs[0].id).get()).data();
+};
+
+export const getBookCaseById = async (id) => {
+  return (
+    await usersCollection.doc(id).collection("library").doc("bookcase").get()
+  ).data();
 };
 
 export const getIDByEmail = async (email) => {

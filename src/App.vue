@@ -57,7 +57,7 @@ function directsearch() {
             class="btn btn-ghost no-animation hover:bg-[transparent] bg-base-100 normal-case font-bold text-[20px]"
             ><img
               width="60"
-              src="https://cdn.discordapp.com/attachments/775822548519616562/1124637880871034900/mangile_logo.png?ex=669f7ca5&is=669e2b25&hm=861879e0956d3ee3986e68e8f570fba88510010f955328475c095e1018da599c&"
+              src="https://firebasestorage.googleapis.com/v0/b/mangile-2229f.appspot.com/o/assets%2Fimages%2Fmangile_logo.png?alt=media&token=0c80a04f-0611-425f-bad4-7d7339751aaa"
               title="logo"
             />
             <span class="mb-2">Mangile</span></RouterLink
@@ -136,7 +136,7 @@ function directsearch() {
                           ><Icon
                             icon="material-symbols:library-books-rounded"
                             class="h-5 w-5"
-                          />Kitaplık</a
+                          />Kütüphane</a
                         >
                       </li>
                       <li>
@@ -299,7 +299,7 @@ function directsearch() {
               </div>
             </ul>
             <div class="form-control">
-              <div class="input-group input-group-sm mt-3">
+              <div class="input-group input-group-sm mt-2">
                 <input
                   id="searchbar"
                   type="text"

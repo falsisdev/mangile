@@ -1,3 +1,20 @@
+<script setup>
+import { onMounted } from "vue";
+import {
+  getMangaCount,
+  getUsersCount,
+  getUploadedChaptersCount as getChCount,
+} from "../firebase";
+
+let mangacount;
+let userscount;
+let chcount;
+onMounted(async () => {
+  mangacount = await getMangaCount();
+  userscount = await getUsersCount();
+  chcount = await getChCount();
+});
+</script>
 <template>
   <div role="tablist" class="tabs tabs-lifted mt-2">
     <input
@@ -53,9 +70,9 @@
                 ></path>
               </svg>
             </div>
-            <div class="stat-title">Downloads</div>
-            <div class="stat-value">31K</div>
-            <div class="stat-desc">Jan 1st - Feb 1st</div>
+            <div class="stat-title">Sisteme elle eklenmiş</div>
+            <div class="stat-value">{{ mangacount }}</div>
+            <div class="stat-desc">adet manga bulunmaktadır.</div>
           </div>
 
           <div class="stat">

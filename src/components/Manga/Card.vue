@@ -1,5 +1,31 @@
 <template>
-  <div class="basis-1/5 card w-auto h-auto bg-base-100 p-[10px] rounded-lg">
+  <div
+    v-if="isLib"
+    class="card card-compact w-64 h-64 image-full bg-base-100 rounded-lg"
+  >
+    <figure>
+      <img
+        class="w-64"
+        :src="`https://mangadex.org/covers/${id}/${cover}.512.jpg`"
+      />
+    </figure>
+    <div class="card-body">
+      <h2 class="card-title">{{ name }}</h2>
+      <div class="card-actions justify-start">
+        <a v-if="isOwner" class="btn btn-accent"
+          ><Icon icon="material-symbols:edit" class="h-5 w-5"
+        /></a>
+        <a class="btn btn-primary" :href="`/manga/${id}`">Oku</a>
+        <a v-if="isOwner" class="btn btn-error"
+          ><Icon icon="material-symbols:delete" class="h-5 w-5"
+        /></a>
+      </div>
+    </div>
+  </div>
+  <div
+    v-else
+    class="basis-1/5 card w-auto h-auto bg-base-100 p-[10px] rounded-lg"
+  >
     <figure>
       <img
         class="rounded shadow-md w-64 h-72"
@@ -16,6 +42,8 @@
 </template>
 <script setup>
 const props = defineProps({
+  isLib: Boolean,
+  isOwner: Boolean,
   id: String,
   cover: String,
   name: String,
