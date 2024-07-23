@@ -1,23 +1,41 @@
 # Yapılacaklar
 
-1. Bildirimler [Notifications] eklenecek. (signup + signin + settings + firebase + socket.io)
-2. Bölüm ve Manga Yorumları eklenecek. (disqus)
-3. Bölüm sayfası baştan sona geliştirilecek.
-4. Mangayı takip etme [following] eklenecek. (signin + viewprofile + firebase + notifications)
-5. Manga puanlama [rating] eklenecek. (signin + firebase)
-6. Kitaplık eklenecek (signin + firebase + viewprofile + following)
-7. Listelerin [lists] eklenecek. (signin + firebase + viewprofile)
-8. Okuma geçmişi eklenecek. (signin + firebase)
-9. Profil Düzenleme sayfası geliştirilecek.
-10. Keşfet sayfası geliştirilecek.
-11. Türler sayfası geliştirilecek.
-12. Arama sayfası geliştirilecek.
-13. Yönetim paneli [dashboard] eklenecek. (signup + signin + signout + viewprofile + editprofile + settings + notifications + following + rating + lists + firebase + chart.js + socket.io)
-14. Manga Raporlama [reporting] eklenecek. (signin + dashboard + socket.io + notifications)
-15. Bölüm ekleme [chapter adding] eklenecek. (signin + dashboard + firebase + socket.io + notifications)
-16. Bölüm düzenleme ve silme [chapter editing] eklenecek. (signin + dashboard + firebase + socket.io + notifications + chapteradding)
-17. Manga ekleme [manga adding] eklenecek. (signin + dashboard + firebase)
-18. Manga düzenleme ve silme eklenecek. (signin + dashboard + firebase + mangaadding)
-19. Profil sayfası baştan sona geliştirilecek.
-20. Ana sayfa geliştirilecek.
-21. MAL ile entegre özellikler [mal-integrated] (signin + dashboard + firebase + malapi)
+Eklenecekler:
+- Kitaplık aksiyonları eklenecek ve düzeltilecek (Tahmini: Temmuz 2024) 
+- Kitaplığa yeniden okunuyor sekmesi eklenecek (Tahmini: Temmuz 2024)
+- Listeler sekmesine oluşturulan ve beğenilen listeler eklenecek (Tahmini: Temmuz 2024)
+- Favoriler sekmesine manga, bölüm ve panel eklenecek (Tahmini: Ağustos 2024)
+- Mangayı favorileme eklenecek (Tahmini: Ağustos 2024)
+- Bölümü favorileme eklenecek (Tahmini: Ağustos 2024)
+- Listeyi beğenme eklenecek (Tahmini: Ağustos 2024)
+- Profil fotoğrafı ekleme eklenecek (Tahmini: Ağustos 2024)
+- Dashboard ile analytics entegre edilecek (Tahmini: Nisan 2025)
+- Dashboarda kullanıcı paneli eklenecek (Tahmini: Nisan 2025)
+- Manga puanlama ve puan ortalaması eklenecek (Tahmini: Eylül 2024)
+- Dashboarda manga paneli eklenecek (Tahmini: Nisan 2025)
+- Paneli favorileme eklenecek (Tahmini: Kasım 2024)
+- Okuma geçmişi eklenecek (Tahmini: Ocak 2025)
+- Yorum Sistemi eklenecek (Tahmini: Şubat 2025)
+- Yorum beğenme eklenecek (Tahmini: Şubat 2025)
+- Favoriler sekmesine yorumlar eklenecek (Tahmini: Şubat 2025)
+- Yorum yapma eklenecek (Tahmini: Şubat 2025)
+- Manga okuyucu eklentisi eklenecek (Tahmini: Kasım 2024)
+- Bildirimler eklenecek (Tahmini: Haziran 2025)
+- Dashboardla bildirimler entegre edilecek (Tahmini: Haziran 2025)
+- Raporlama sistemi eklenecek (Tahmini: Haziran 2025)
+- MyAnimeList tracking eklenecek (Tahmini: Ağustos 2026)
+
+Sorun çözüm:
+- Keşfet sayfası arayüz sorunları çözülecek (Tahmini: Ağustos 2026)
+- Türler sayfası sorunları çözülecek (Tahmini: Ağustos 2026)
+
+Improvement:
+- Profil sayfası geliştirilecek. (Tahmini: Kasım 2024)
+- Keşfet sayfası filtreleme geliştirilecek (Tahmini: Eylül 2026)
+- Arama sayfası geliştirilecek. (Tahmini: Eylül 2026)
+- Ana sayfa geliştirilecek. (Tahmini: Eylül 2026)
+
+Tahmini Tarihler Aralığı:
+Temmuz 2024 - Eylül 2026
+
+Tahmini Yayınlanma Tarihi Aralığı: Ocak - Haziran 2027 (2027'nin ilk yarısı)
