@@ -1,7 +1,7 @@
 # Yapılacaklar
 
 Eklenecekler:
-- Kitaplık aksiyonları eklenecek ve düzeltilecek (Tahmini: Temmuz 2024) 
+
 - Kitaplığa yeniden okunuyor sekmesi eklenecek (Tahmini: Temmuz 2024)
 - Listeler sekmesine oluşturulan ve beğenilen listeler eklenecek (Tahmini: Temmuz 2024)
 - Favoriler sekmesine manga, bölüm ve panel eklenecek (Tahmini: Ağustos 2024)
@@ -26,10 +26,13 @@ Eklenecekler:
 - MyAnimeList tracking eklenecek (Tahmini: Ağustos 2026)
 
 Sorun çözüm:
+
 - Keşfet sayfası arayüz sorunları çözülecek (Tahmini: Ağustos 2026)
 - Türler sayfası sorunları çözülecek (Tahmini: Ağustos 2026)
+- Manga sayfasındaki durum dizininin rastgele gelmesi düzeltilecek (Tahmini: Ağustos 2024)
 
 Improvement:
+
 - Profil sayfası geliştirilecek. (Tahmini: Kasım 2024)
 - Keşfet sayfası filtreleme geliştirilecek (Tahmini: Eylül 2026)
 - Arama sayfası geliştirilecek. (Tahmini: Eylül 2026)

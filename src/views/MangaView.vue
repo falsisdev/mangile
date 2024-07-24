@@ -3,15 +3,44 @@ import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
 import Tags from "../components/Tags.vue";
 import { ref } from "vue";
-import { getManga, getVol } from "../firebase";
+import { useCookies } from "vue3-cookies";
+import {
+  getManga,
+  getVol,
+  checkMangaInBC,
+  getUser,
+  getIDByEmail,
+  removeMangaFromBC,
+} from "../firebase";
+import LibEdit from "../components/LibEdit.vue";
 
 const route = useRoute();
+const { cookies } = useCookies();
 function redirect(url) {
   window.location.href = url;
 }
 const info = await useFetch(
   `https://api.mangadex.org/manga/${route.params.id}`
 );
+
+let loggeduser;
+let id;
+if (cookies.get("email")) {
+  loggeduser = await getUser(cookies.get("email"));
+  id = await getIDByEmail(cookies.get("email"));
+} else {
+  loggeduser = null;
+}
+
+let checkmangainbc = loggeduser
+  ? await checkMangaInBC(id, route.params.id)
+  : null;
+
+function remove() {
+  removeMangaFromBC(id, route.params.id, checkmangainbc[1]);
+  window.location.reload();
+}
+
 let coverartid;
 for (let item of JSON.parse(info.data.value).data.relationships) {
   if (item.type == "cover_art") {
@@ -697,7 +726,100 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                   />
                 </div>
               </div>
-              <br />
+              <span class="divider" />
+              <article v-if="loggeduser" class="prose my-3">
+                <h1>Eylemler</h1>
+                <span class="grid grid-cols-4">
+                  <label
+                    :for="route.params.id + 'edit'"
+                    :class="`col-span-4 col-start-1 col-end-5 mx-1 btn ${
+                      checkmangainbc[0]
+                        ? checkmangainbc[1] == 'reading'
+                          ? 'btn-success'
+                          : checkmangainbc[1] == 'completed'
+                          ? 'btn-info'
+                          : checkmangainbc[1] == 'onhold'
+                          ? 'btn-warning'
+                          : checkmangainbc[1] == 'dropped'
+                          ? 'btn-error'
+                          : checkmangainbc[1] == 'plantoread'
+                          ? 'btn-primary'
+                          : checkmangainbc[1] == 'rereading'
+                          ? 'btn-accent'
+                          : 'btn-neutral'
+                        : 'btn-neutral'
+                    }`"
+                  >
+                    <Icon icon="material-symbols:library-add" class="h-4 w-4" />
+                    {{
+                      checkmangainbc[0]
+                        ? checkmangainbc[1] == "reading"
+                          ? "Okunuyor"
+                          : checkmangainbc[1] == "completed"
+                          ? "Bitirildi"
+                          : checkmangainbc[1] == "onhold"
+                          ? "Bekletiliyor"
+                          : checkmangainbc[1] == "dropped"
+                          ? "Bırakıldı"
+                          : checkmangainbc[1] == "plantoread"
+                          ? "Planlandı"
+                          : checkmangainbc[1] == "rereading"
+                          ? "Yeniden Okunuyor"
+                          : "Kitaplığa Ekle"
+                        : "Kitaplığa Ekle"
+                    }}
+                  </label>
+                  <label
+                    v-if="checkmangainbc[0]"
+                    for="id"
+                    class="col-span-1 col-start-5 col-end-5 btn btn-error"
+                    ><Icon icon="material-symbols:delete" class="h-5 w-5" />
+                    Sil</label
+                  >
+                </span>
+                <input type="checkbox" id="id" class="modal-toggle" />
+                <div class="modal" role="dialog">
+                  <article class="prose modal-box w-96">
+                    <h3>İşlemi Onaylayın</h3>
+                    <p>
+                      {{
+                        JSON.parse(info.data.value).data.attributes.title.en ||
+                        JSON.parse(info.data.value).data.attributes.title[
+                          "ja-ro"
+                        ]
+                      }}
+                      adlı girdiyi kitaplığınızdan kaldırmak istediğinize emin
+                      misiniz?
+                    </p>
+                    <div class="modal-action">
+                      <label @click="remove()" class="btn btn-error"
+                        ><Icon icon="material-symbols:delete" class="h-5 w-5" />
+                        Sil</label
+                      >
+                      <label for="id" class="btn"
+                        ><Icon icon="material-symbols:cancel" class="h-5 w-5" />
+                        İptal</label
+                      >
+                    </div>
+                  </article>
+                </div>
+                <input
+                  type="checkbox"
+                  :id="route.params.id + 'edit'"
+                  class="modal-toggle"
+                />
+                <div class="modal" role="dialog">
+                  <LibEdit
+                    :name="
+                      JSON.parse(info.data.value).data.attributes.title.en ||
+                      JSON.parse(info.data.value).data.attributes.title['ja-ro']
+                    "
+                    :id="route.params.id"
+                    :status="checkmangainbc[0] ? checkmangainbc[1] : null"
+                    :userid="id"
+                  />
+                </div>
+              </article>
               <button
                 @click="
                   redirect(
@@ -706,7 +828,7 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                     }`
                   )
                 "
-                class="btn btn-block no-animation"
+                class="btn btn-block no-animation mx-1"
               >
                 MangaDex Sayfasına Gidin
               </button>

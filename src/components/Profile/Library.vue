@@ -1,12 +1,7 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
-import {
-  getUserByID,
-  getUser,
-  getBookCaseById,
-  getManga,
-} from "../../firebase";
+import { getUserByID, getUser, getBookCaseById } from "../../firebase";
 import { useCookies } from "vue3-cookies";
 import Card from "../Manga/Card.vue";
 const { cookies } = useCookies();
@@ -20,6 +15,7 @@ let infos = {
   onhold: [],
   dropped: [],
   planned: [],
+  rereading: [],
 };
 let covers = {
   reading: [],
@@ -27,6 +23,7 @@ let covers = {
   onhold: [],
   dropped: [],
   planned: [],
+  rereading: [],
 };
 
 const user = await getUserByID(id);
@@ -112,6 +109,22 @@ for (let item of bookcase.plantoread) {
   const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
   covers["planned"].push(JSON.parse(cover.data.value).data.attributes.fileName);
 }
+
+for (let item of bookcase.rereading) {
+  const info = await useFetch(`https://api.mangadex.org/manga/${item}`);
+  infos["rereading"].push(info);
+  let coverartid;
+  for (let item of JSON.parse(info.data.value).data.relationships) {
+    coverartid;
+    if (item.type == "cover_art") {
+      coverartid = item.id;
+    }
+  }
+  const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
+  covers["rereading"].push(
+    JSON.parse(cover.data.value).data.attributes.fileName
+  );
+}
 </script>
 <template>
   <article class="prose my-2">
@@ -160,7 +173,7 @@ for (let item of bookcase.plantoread) {
             <h2>
               <span class="flex flex-row"
                 ><Icon icon="material-symbols:play-arrow" class="h-7 w-7 m-1" />
-                Okunuyor </span
+                Okunuyor ({{ bookcase["reading"].length }}) </span
               ><span class="divider"></span>
             </h2>
             <div class="flex flex-row flex-wrap">
@@ -171,6 +184,8 @@ for (let item of bookcase.plantoread) {
                 :isOwner="user.email == loggeduser.email"
                 :isLib="true"
                 :id="item"
+                :userid="id"
+                status="reading"
                 :cover="covers.reading[bookcase['reading'].indexOf(item)]"
                 :name="
                   JSON.parse(
@@ -197,7 +212,7 @@ for (let item of bookcase.plantoread) {
             <h2>
               <span class="flex flex-row"
                 ><Icon icon="material-symbols:check" class="h-7 w-7 m-1" />
-                Bitirildi </span
+                Bitirildi ({{ bookcase["completed"].length }})</span
               ><span class="divider"></span>
             </h2>
             <div class="flex flex-row flex-wrap">
@@ -208,6 +223,8 @@ for (let item of bookcase.plantoread) {
                 :isOwner="user.email == loggeduser.email"
                 :isLib="true"
                 :id="item"
+                :userid="id"
+                status="completed"
                 :cover="covers.completed[bookcase['completed'].indexOf(item)]"
                 :name="
                   JSON.parse(
@@ -239,7 +256,7 @@ for (let item of bookcase.plantoread) {
                   icon="material-symbols:pause-rounded"
                   class="h-7 w-7 m-1"
                 />
-                Bekletiliyor </span
+                Bekletiliyor ({{ bookcase["onhold"].length }}) </span
               ><span class="divider"></span>
             </h2>
             <div class="flex flex-row flex-wrap">
@@ -250,6 +267,8 @@ for (let item of bookcase.plantoread) {
                 :isOwner="user.email == loggeduser.email"
                 :isLib="true"
                 :id="item"
+                :userid="id"
+                status="onhold"
                 :cover="covers.onhold[bookcase['onhold'].indexOf(item)]"
                 :name="
                   JSON.parse(
@@ -276,7 +295,7 @@ for (let item of bookcase.plantoread) {
             <h2>
               <span class="flex flex-row"
                 ><Icon icon="material-symbols:delete" class="h-7 w-7 m-1" />
-                Bırakıldı </span
+                Bırakıldı ({{ bookcase["dropped"].length }}) </span
               ><span class="divider"></span>
             </h2>
             <div class="flex flex-row flex-wrap">
@@ -287,6 +306,8 @@ for (let item of bookcase.plantoread) {
                 :isOwner="user.email == loggeduser.email"
                 :isLib="true"
                 :id="item"
+                :userid="id"
+                status="dropped"
                 :cover="covers.dropped[bookcase['dropped'].indexOf(item)]"
                 :name="
                   JSON.parse(
@@ -316,7 +337,7 @@ for (let item of bookcase.plantoread) {
                   icon="material-symbols:timer-pause"
                   class="h-7 w-7 m-1"
                 />
-                Planlandı </span
+                Planlandı ({{ bookcase["plantoread"].length }}) </span
               ><span class="divider"></span>
             </h2>
             <div class="flex flex-row flex-wrap">
@@ -327,6 +348,8 @@ for (let item of bookcase.plantoread) {
                 :isOwner="user.email == loggeduser.email"
                 :isLib="true"
                 :id="item"
+                :userid="id"
+                status="plantoread"
                 :cover="covers.planned[bookcase['plantoread'].indexOf(item)]"
                 :name="
                   JSON.parse(
@@ -335,6 +358,46 @@ for (let item of bookcase.plantoread) {
                   ).data.attributes.title.en ||
                   JSON.parse(
                     infos.planned[bookcase['plantoread'].indexOf(item)].data
+                      .value
+                  ).data.attributes.title['ja-ro']
+                "
+              />
+            </div>
+          </article>
+        </div>
+        <input
+          type="radio"
+          name="my_tabs_2"
+          role="tab"
+          class="tab"
+          aria-label="Yeniden Okunuyor"
+        />
+        <div role="tabpanel" class="tab-content">
+          <article class="prose mt-5">
+            <h2>
+              <span class="flex flex-row"
+                ><Icon icon="material-symbols:refresh" class="h-7 w-7 m-1" />
+                Yeniden Okunuyor ({{ bookcase["rereading"].length }})</span
+              ><span class="divider"></span>
+            </h2>
+            <div class="flex flex-row flex-wrap">
+              <Card
+                v-for="item of bookcase.rereading"
+                class="m-2"
+                :key="item"
+                :isOwner="user.email == loggeduser.email"
+                :isLib="true"
+                :id="item"
+                :userid="id"
+                status="rereading"
+                :cover="covers.rereading[bookcase['rereading'].indexOf(item)]"
+                :name="
+                  JSON.parse(
+                    infos.rereading[bookcase['rereading'].indexOf(item)].data
+                      .value
+                  ).data.attributes.title.en ||
+                  JSON.parse(
+                    infos.rereading[bookcase['rereading'].indexOf(item)].data
                       .value
                   ).data.attributes.title['ja-ro']
                 "

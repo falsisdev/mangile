@@ -112,6 +112,58 @@ export const createUser = async (user) => {
   return a;
 };
 
+export const removeMangaFromBC = async (userid, mangaid, status) => {
+  //status denilen şey manganın kitaplıkta hangi durumda bulunduğu; reading, onhold, dropped gibi...
+  let bc = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("bookcase")
+      .get()
+  ).data();
+  let bcnew = bc[status].splice(bc[status].indexOf(mangaid), 1);
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("bookcase")
+    .update(bc);
+};
+
+export const addMangaToBC = async (userid, mangaid, status) => {
+  //status denilen şey manganın kitaplıkta hangi durumda bulunacağı; reading, onhold, dropped gibi...
+  if (status == null) window.location.reload();
+  let bc = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("bookcase")
+      .get()
+  ).data();
+  let bcnew = bc[status].push(mangaid);
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("bookcase")
+    .update(bc);
+};
+
+//aşağıdaki fonksiyonda arrayin sıralaması konusunda sorun bulunuyor, çözülecek
+export const checkMangaInBC = async (userid, mangaid) => {
+  let bc = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("bookcase")
+      .get()
+  ).data();
+  let i = Object.values(bc).findIndex((index) =>
+    Object.values(bc).some((x) => x.includes(mangaid)) ? index : false
+  );
+  let ind = i == -1;
+  let st = ind ? false : Object.keys(bc)[i];
+  return [Object.values(bc).some((array) => array.includes(mangaid)), st];
+};
+
 export const getUser = async (email) => {
   const user = await usersCollection.where("email", "==", String(email)).get();
   return user.empty

@@ -5,6 +5,7 @@ import logo from "./assets/mangile_sun.svg";
 import { useCookies } from "vue3-cookies";
 import { getUser } from "../src/firebase";
 import MenuProfile from "./components/MenuProfile.vue";
+import UserMust from "./components/UserMust.vue";
 //import { state, socket } from "@/socket";
 
 const router = useRouter();
@@ -118,44 +119,9 @@ function directsearch() {
                     </ul>
                   </li>
                   <li>
-                    <span class="hover:bg-base-100 text-sm/6">
-                      <Icon
-                        icon="material-symbols:local-library"
-                        class="h-5 w-5" /><span class="flex flex-row"
-                        >Kütüphane</span
-                      ><span
-                        class="tooltip tooltip-accent"
-                        data-tip="Kullanıcı girişi gerektiriyor!"
-                        ><Icon
-                          icon="material-symbols:person-alert"
-                          class="badge badge-accent" /></span
-                    ></span>
-                    <ul>
-                      <li>
-                        <a class="text-sm/6"
-                          ><Icon
-                            icon="material-symbols:library-books-rounded"
-                            class="h-5 w-5"
-                          />Kütüphane</a
-                        >
-                      </li>
-                      <li>
-                        <a class="text-sm/6"
-                          ><Icon
-                            icon="material-symbols:list-alt"
-                            class="h-5 w-5"
-                          />Listelerin</a
-                        >
-                      </li>
-                      <li>
-                        <a class="text-sm/6"
-                          ><Icon
-                            icon="material-symbols:history"
-                            class="h-5 w-5"
-                          />Okuma Geçmişi</a
-                        >
-                      </li>
-                    </ul>
+                    <Suspense>
+                      <UserMust />
+                    </Suspense>
                   </li>
                 </ul>
               </div>

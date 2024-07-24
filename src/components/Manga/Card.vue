@@ -12,14 +12,37 @@
     <div class="card-body">
       <h2 class="card-title">{{ name }}</h2>
       <div class="card-actions justify-start">
-        <a v-if="isOwner" class="btn btn-accent"
+        <label :for="id + 'edit'" v-if="isOwner" class="btn btn-accent"
           ><Icon icon="material-symbols:edit" class="h-5 w-5"
-        /></a>
+        /></label>
         <a class="btn btn-primary" :href="`/manga/${id}`">Oku</a>
-        <a v-if="isOwner" class="btn btn-error"
+        <label :for="id" v-if="isOwner" class="btn btn-error"
           ><Icon icon="material-symbols:delete" class="h-5 w-5"
-        /></a>
+        /></label>
       </div>
+    </div>
+    <input type="checkbox" :id="id" class="modal-toggle" />
+    <div class="modal" role="dialog">
+      <article class="prose modal-box w-96">
+        <h3>İşlemi Onaylayın</h3>
+        <p>
+          {{ name }} adlı girdiyi kitaplığınızdan kaldırmak istediğinize emin
+          misiniz?
+        </p>
+        <div class="modal-action">
+          <label @click="remove()" class="btn btn-error"
+            ><Icon icon="material-symbols:delete" class="h-5 w-5" /> Sil</label
+          >
+          <label :for="id" class="btn"
+            ><Icon icon="material-symbols:cancel" class="h-5 w-5" />
+            İptal</label
+          >
+        </div>
+      </article>
+    </div>
+    <input type="checkbox" :id="id + 'edit'" class="modal-toggle" />
+    <div class="modal" role="dialog">
+      <LibEdit :name="name" :id="id" :status="status" :userid="userid" />
     </div>
   </div>
   <div
@@ -41,11 +64,21 @@
   </div>
 </template>
 <script setup>
+import { removeMangaFromBC } from "../../firebase";
+import LibEdit from "../../components/LibEdit.vue";
+
 const props = defineProps({
   isLib: Boolean,
   isOwner: Boolean,
   id: String,
   cover: String,
   name: String,
+  status: String,
+  userid: String,
 });
+
+function remove() {
+  removeMangaFromBC(props.userid, props.id, props.status);
+  window.location.reload();
+}
 </script>
