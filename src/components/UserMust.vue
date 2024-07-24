@@ -39,11 +39,6 @@ if (cookies.get("email")) {
     </li>
     <li>
       <a class="text-sm/6"
-        ><Icon icon="material-symbols:list-alt" class="h-5 w-5" />Listelerin</a
-      >
-    </li>
-    <li>
-      <a class="text-sm/6"
         ><Icon icon="material-symbols:history" class="h-5 w-5" />Okuma
         Geçmişi</a
       >

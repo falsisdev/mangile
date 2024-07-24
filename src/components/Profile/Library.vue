@@ -1,7 +1,12 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
-import { getUserByID, getUser, getBookCaseById } from "../../firebase";
+import {
+  getUserByID,
+  getUser,
+  getBookCaseById,
+  getCollectionById,
+} from "../../firebase";
 import { useCookies } from "vue3-cookies";
 import Card from "../Manga/Card.vue";
 const { cookies } = useCookies();
@@ -24,6 +29,7 @@ let covers = {
   dropped: [],
   planned: [],
   rereading: [],
+  lists: [],
 };
 
 const user = await getUserByID(id);
@@ -33,9 +39,25 @@ if (cookies.get("email")) {
   loggeduser = null;
 }
 const bookcase = await getBookCaseById(id);
+const collection = await getCollectionById(id);
 
 function redirect(url) {
   window.location.href = url;
+}
+
+for (let item of collection.lists) {
+  const info = await useFetch(
+    `https://api.mangadex.org/manga/${item.series[0]}`
+  );
+  let coverartid;
+  for (let item of JSON.parse(info.data.value).data.relationships) {
+    coverartid;
+    if (item.type == "cover_art") {
+      coverartid = item.id;
+    }
+  }
+  const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
+  covers["lists"].push(JSON.parse(cover.data.value).data.attributes.fileName);
 }
 
 for (let item of bookcase.reading) {
@@ -413,9 +435,9 @@ for (let item of bookcase.rereading) {
       name="my_tabs_1"
       role="tab"
       class="tab"
-      aria-label="Listeler"
+      aria-label="Koleksiyon"
     />
-    <div role="tabpanel" class="tab-content p-10">
+    <div role="tabpanel" class="tab-content">
       <article class="prose mt-5">
         <h1>
           <span class="flex flex-row"
@@ -425,7 +447,22 @@ for (let item of bookcase.rereading) {
           <span class="divider"></span>
         </h1>
       </article>
-      Tab content 2
+      <div class="flex flex-row flex-wrap">
+        <Card
+          v-for="item of collection.lists"
+          class="m-2"
+          :key="item"
+          :isOwner="user.email == loggeduser.email"
+          :isLib="true"
+          :isList="true"
+          :id="item.id"
+          :userid="id"
+          :description="item.description"
+          :cover="covers.lists[collection['lists'].indexOf(item)]"
+          :coverid="item.series[0]"
+          :name="item.title"
+        /><!--window.crypto.randomUUID()-->
+      </div>
     </div>
     <input
       type="radio"

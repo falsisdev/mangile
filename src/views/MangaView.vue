@@ -11,6 +11,8 @@ import {
   getUser,
   getIDByEmail,
   removeMangaFromBC,
+  addMangaToList,
+  getListsById,
 } from "../firebase";
 import LibEdit from "../components/LibEdit.vue";
 
@@ -25,9 +27,11 @@ const info = await useFetch(
 
 let loggeduser;
 let id;
+let lists;
 if (cookies.get("email")) {
   loggeduser = await getUser(cookies.get("email"));
   id = await getIDByEmail(cookies.get("email"));
+  lists = await getListsById(id);
 } else {
   loggeduser = null;
 }
@@ -36,9 +40,23 @@ let checkmangainbc = loggeduser
   ? await checkMangaInBC(id, route.params.id)
   : null;
 
-function remove() {
-  removeMangaFromBC(id, route.params.id, checkmangainbc[1]);
+async function remove() {
+  await removeMangaFromBC(id, route.params.id, checkmangainbc[1]);
   window.location.reload();
+}
+async function ekle() {
+  if (
+    lists
+      .find((x) => x.title == String(document.getElementById("liste").value))
+      ["series"].includes(route.params.id)
+  )
+    window.location.reload();
+  await addMangaToList(
+    id,
+    lists.find((x) => x.title == String(document.getElementById("liste").value))
+      .id,
+    route.params.id
+  );
 }
 
 let coverartid;
@@ -731,8 +749,14 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                 <h1>Eylemler</h1>
                 <span class="grid grid-cols-4">
                   <label
+                    for="list"
+                    class="col-span-1 col-start-1 col-end-2 btn btn-ghost"
+                    ><Icon icon="material-symbols:add" class="h-5 w-5" />
+                    Ekle</label
+                  >
+                  <label
                     :for="route.params.id + 'edit'"
-                    :class="`col-span-4 col-start-1 col-end-5 mx-1 btn ${
+                    :class="`col-span-3 col-start-2 col-end-5 mx-1 btn ${
                       checkmangainbc[0]
                         ? checkmangainbc[1] == 'reading'
                           ? 'btn-success'
@@ -797,6 +821,44 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                         Sil</label
                       >
                       <label for="id" class="btn"
+                        ><Icon icon="material-symbols:cancel" class="h-5 w-5" />
+                        İptal</label
+                      >
+                    </div>
+                  </article>
+                </div>
+                <input type="checkbox" id="list" class="modal-toggle" />
+                <div class="modal" role="dialog">
+                  <article class="prose modal-box w-96">
+                    <h3>Listeye Ekle</h3>
+                    <p>
+                      {{
+                        JSON.parse(info.data.value).data.attributes.title.en ||
+                        JSON.parse(info.data.value).data.attributes.title[
+                          "ja-ro"
+                        ]
+                      }}
+                      adlı girdiyi listeye ekleyin
+                    </p>
+                    <select
+                      v-if="lists"
+                      id="liste"
+                      class="select select-bordered select-sm w-full max-w-xs ml-2"
+                    >
+                      <option v-for="item of lists" :key="item">
+                        {{ item.title }}
+                      </option>
+                    </select>
+                    <span v-else
+                      >Üzgünüz, hiç listeniz yok. Bir seriyi listenize eklemeden
+                      önce bir liste oluşturun.</span
+                    >
+                    <div class="modal-action">
+                      <label @click="ekle()" class="btn btn-success"
+                        ><Icon icon="material-symbols:add" class="h-5 w-5" />
+                        Ekle</label
+                      >
+                      <label for="list" class="btn"
                         ><Icon icon="material-symbols:cancel" class="h-5 w-5" />
                         İptal</label
                       >

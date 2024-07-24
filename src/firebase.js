@@ -80,6 +80,16 @@ export const getVol = async (mangadexID, vol) => {
   return volume.exists ? volume.data() : null;
 };
 
+export const getListsById = async (userid) => {
+  return (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data().lists;
+};
+
 export const editManga = (mangadexID, newData) => {
   return mangasCollection.doc(mangadexID).update(newData);
 };
@@ -129,6 +139,28 @@ export const removeMangaFromBC = async (userid, mangaid, status) => {
     .update(bc);
 };
 
+export const removeMangaFromList = async (userid, mangaid, listid) => {
+  //status denilen şey manganın kitaplıkta hangi durumda bulunduğu; reading, onhold, dropped gibi...
+  let col = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let colnew = col["lists"]
+    .find((x) => x.id == listid)
+    ["series"].splice(
+      col["lists"].find((x) => x.id == listid)["series"].indexOf(mangaid),
+      1
+    );
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("collection")
+    .update(col);
+};
+
 export const addMangaToBC = async (userid, mangaid, status) => {
   //status denilen şey manganın kitaplıkta hangi durumda bulunacağı; reading, onhold, dropped gibi...
   if (status == null) window.location.reload();
@@ -145,6 +177,41 @@ export const addMangaToBC = async (userid, mangaid, status) => {
     .collection("library")
     .doc("bookcase")
     .update(bc);
+};
+
+export const updateList = async (userid, listid, desc, title) => {
+  let col = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let titlenew = (col["lists"].find((x) => x.id == listid).title = title);
+  let descnew = (col["lists"].find((x) => x.id == listid).description = desc);
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("collection")
+    .update(col);
+};
+
+export const addMangaToList = async (userid, listid, mangaid) => {
+  let col = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let seriesnew = col["lists"]
+    .find((x) => x.id == listid)
+    ["series"].push(mangaid);
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("collection")
+    .update(col);
 };
 
 //aşağıdaki fonksiyonda arrayin sıralaması konusunda sorun bulunuyor, çözülecek
@@ -175,6 +242,23 @@ export const getBookCaseById = async (id) => {
   return (
     await usersCollection.doc(id).collection("library").doc("bookcase").get()
   ).data();
+};
+
+export const getCollectionById = async (id) => {
+  return (
+    await usersCollection.doc(id).collection("library").doc("collection").get()
+  ).data();
+};
+
+export const getListById = async (userid, listid) => {
+  let col = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  return col["lists"].find((x) => x.id == listid);
 };
 
 export const getIDByEmail = async (email) => {

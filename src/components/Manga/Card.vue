@@ -1,50 +1,173 @@
 <template>
-  <div
-    v-if="isLib"
-    class="card card-compact w-64 h-64 image-full bg-base-100 rounded-lg"
-  >
-    <figure>
-      <img
-        class="w-64"
-        :src="`https://mangadex.org/covers/${id}/${cover}.512.jpg`"
-      />
-    </figure>
-    <div class="card-body">
-      <h2 class="card-title">{{ name }}</h2>
-      <div class="card-actions justify-start">
-        <label :for="id + 'edit'" v-if="isOwner" class="btn btn-accent"
-          ><Icon icon="material-symbols:edit" class="h-5 w-5"
-        /></label>
-        <a class="btn btn-primary" :href="`/manga/${id}`">Oku</a>
-        <label :for="id" v-if="isOwner" class="btn btn-error"
-          ><Icon icon="material-symbols:delete" class="h-5 w-5"
-        /></label>
+  <main v-if="isLib">
+    <div
+      v-if="isList"
+      class="card card-compact w-64 h-104 image-full bg-base-100 rounded-auto"
+    >
+      <figure>
+        <img
+          class="w-64 opacity-75"
+          :src="`https://mangadex.org/covers/${coverid}/${cover}.512.jpg`"
+        />
+      </figure>
+      <div class="card-body">
+        <h2 class="card-title font-bold">{{ name }}</h2>
+        <p>{{ description }}</p>
+        <div class="card-actions justify-start">
+          <label :for="id + 'edit'" v-if="isOwner" class="btn btn-accent"
+            ><Icon icon="material-symbols:edit" class="h-5 w-5"
+          /></label>
+          <a class="btn btn-primary" :href="`/user/${userid}/list/${id}`"
+            >Görüntüle</a
+          >
+          <label :for="id" v-if="isOwner" class="btn btn-error"
+            ><Icon icon="material-symbols:delete" class="h-5 w-5"
+          /></label>
+        </div>
+      </div>
+      <input type="checkbox" :id="id" class="modal-toggle" />
+      <div class="modal" role="dialog">
+        <article class="prose modal-box w-96">
+          <h3>İşlemi Onaylayın</h3>
+          <p>
+            {{ name }} adlı listeyi koleksiyonunuzdan kaldırmak istediğinize
+            emin misiniz?
+          </p>
+          <div class="modal-action">
+            <label @click="removelist()" class="btn btn-error"
+              ><Icon icon="material-symbols:delete" class="h-5 w-5" />
+              Sil</label
+            >
+            <label :for="id" class="btn"
+              ><Icon icon="material-symbols:cancel" class="h-5 w-5" />
+              İptal</label
+            >
+          </div>
+        </article>
+      </div>
+      <input type="checkbox" :id="id + 'edit'" class="modal-toggle" />
+      <div class="modal" role="dialog">
+        <ListEdit
+          :name="name"
+          :id="id"
+          :description="description"
+          :userid="userid"
+        />
       </div>
     </div>
-    <input type="checkbox" :id="id" class="modal-toggle" />
-    <div class="modal" role="dialog">
-      <article class="prose modal-box w-96">
-        <h3>İşlemi Onaylayın</h3>
-        <p>
-          {{ name }} adlı girdiyi kitaplığınızdan kaldırmak istediğinize emin
-          misiniz?
-        </p>
-        <div class="modal-action">
-          <label @click="remove()" class="btn btn-error"
-            ><Icon icon="material-symbols:delete" class="h-5 w-5" /> Sil</label
-          >
-          <label :for="id" class="btn"
-            ><Icon icon="material-symbols:cancel" class="h-5 w-5" />
-            İptal</label
-          >
+    <div
+      v-else-if="isListSerie"
+      class="card card-side w-96 h-64 bg-base-100 rounded-auto"
+    >
+      <figure>
+        <img
+          class="w-48 h-64"
+          :src="`https://mangadex.org/covers/${id}/${cover}.512.jpg`"
+        />
+      </figure>
+      <div class="card-body">
+        <span class="card-title font-bold mt-5">{{ name }}</span>
+        <span>
+          Butona tıkladığınızda herhangi bir dönüt almıyorsanız lütfen
+          <a href="#top">buraya</a> tıklayın.
+        </span>
+        <div class="card-actions justify-start">
+          <label :for="id + 'delete'" v-if="isOwner" class="btn btn-error"
+            ><Icon icon="material-symbols:delete" class="h-5 w-5"
+          /></label>
         </div>
-      </article>
+      </div>
+      <span id="top"></span>
+      <input type="checkbox" :id="id + 'delete'" class="modal-toggle" />
+      <div class="modal" role="dialog">
+        <article class="prose modal-box w-96">
+          <h3>İşlemi Onaylayın</h3>
+          <p>
+            {{ name }} adlı seriyi listenizden kaldırmak istediğinize emin
+            misiniz?
+          </p>
+          <p>
+            Eğer işlemi onaylarsanız yaptığınız diğer tüm değişiklikler yok
+            sayılacaktır.
+          </p>
+          <div class="modal-action">
+            <label @click="removelist()" class="btn btn-error"
+              ><Icon icon="material-symbols:delete" class="h-5 w-5" /> İşlemi
+              Onaylıyorum</label
+            >
+            <label :for="id + 'delete'" class="btn"
+              ><Icon icon="material-symbols:cancel" class="h-5 w-5" />
+              İptal</label
+            >
+          </div>
+        </article>
+      </div>
     </div>
-    <input type="checkbox" :id="id + 'edit'" class="modal-toggle" />
-    <div class="modal" role="dialog">
-      <LibEdit :name="name" :id="id" :status="status" :userid="userid" />
+    <div
+      v-else
+      class="card card-compact w-64 h-64 image-full bg-base-100 rounded-auto"
+    >
+      <figure>
+        <img
+          class="w-64"
+          :src="`https://mangadex.org/covers/${id}/${cover}.512.jpg`"
+        />
+      </figure>
+      <div class="card-body">
+        <h2 class="card-title">{{ name }}</h2>
+        <p>
+          Seri{{
+            status == "reading"
+              ? "ye devam ediliyor"
+              : status == "completed"
+              ? " tamamlanmış"
+              : status == "onhold"
+              ? " bekletiliyor"
+              : status == "dropped"
+              ? " bırakılmış"
+              : status == "plantoread"
+              ? " okunacak"
+              : status == "rereading"
+              ? " bir kez daha okunuyor"
+              : "bilinmeyen bir durumda"
+          }}
+        </p>
+        <div class="card-actions justify-start">
+          <label :for="id + 'edit'" v-if="isOwner" class="btn btn-accent"
+            ><Icon icon="material-symbols:edit" class="h-5 w-5"
+          /></label>
+          <a class="btn btn-primary" :href="`/manga/${id}`">Görüntüle</a>
+          <label :for="id" v-if="isOwner" class="btn btn-error"
+            ><Icon icon="material-symbols:delete" class="h-5 w-5"
+          /></label>
+        </div>
+      </div>
+      <input type="checkbox" :id="id" class="modal-toggle" />
+      <div class="modal" role="dialog">
+        <article class="prose modal-box w-96">
+          <h3>İşlemi Onaylayın</h3>
+          <p>
+            {{ name }} adlı girdiyi kitaplığınızdan kaldırmak istediğinize emin
+            misiniz?
+          </p>
+          <div class="modal-action">
+            <label @click="remove()" class="btn btn-error"
+              ><Icon icon="material-symbols:delete" class="h-5 w-5" />
+              Sil</label
+            >
+            <label :for="id" class="btn"
+              ><Icon icon="material-symbols:cancel" class="h-5 w-5" />
+              İptal</label
+            >
+          </div>
+        </article>
+      </div>
+      <input type="checkbox" :id="id + 'edit'" class="modal-toggle" />
+      <div class="modal" role="dialog">
+        <LibEdit :name="name" :id="id" :status="status" :userid="userid" />
+      </div>
     </div>
-  </div>
+  </main>
   <div
     v-else
     class="basis-1/5 card w-auto h-auto bg-base-100 p-[10px] rounded-lg"
@@ -64,8 +187,9 @@
   </div>
 </template>
 <script setup>
-import { removeMangaFromBC } from "../../firebase";
+import { removeMangaFromBC, removeMangaFromList } from "../../firebase";
 import LibEdit from "../../components/LibEdit.vue";
+import ListEdit from "../../components/ListEdit.vue";
 
 const props = defineProps({
   isLib: Boolean,
@@ -75,10 +199,20 @@ const props = defineProps({
   name: String,
   status: String,
   userid: String,
+  isList: Boolean,
+  description: String,
+  coverid: String,
+  isListSerie: Boolean,
+  listid: String,
 });
 
-function remove() {
-  removeMangaFromBC(props.userid, props.id, props.status);
+async function remove() {
+  await removeMangaFromBC(props.userid, props.id, props.status);
+  window.location.reload();
+}
+
+async function removelist() {
+  await removeMangaFromList(props.userid, props.id, props.listid);
   window.location.reload();
 }
 </script>

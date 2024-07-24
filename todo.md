@@ -2,8 +2,7 @@
 
 Eklenecekler:
 
-- Kitaplığa yeniden okunuyor sekmesi eklenecek (Tahmini: Temmuz 2024)
-- Listeler sekmesine oluşturulan ve beğenilen listeler eklenecek (Tahmini: Temmuz 2024)
+- Listeler sekmesine beğenilen listeler eklenecek (Tahmini: Temmuz 2024)
 - Favoriler sekmesine manga, bölüm ve panel eklenecek (Tahmini: Ağustos 2024)
 - Mangayı favorileme eklenecek (Tahmini: Ağustos 2024)
 - Bölümü favorileme eklenecek (Tahmini: Ağustos 2024)

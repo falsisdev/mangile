@@ -59,6 +59,11 @@ const router = createRouter({
       component: () => import("../views/ProfileView.vue"),
     },
     {
+      path: "/user/:userid/list/:listid",
+      name: "list",
+      component: () => import("../views/ListView.vue"),
+    },
+    {
       path: "/dashboard",
       name: "dashboard",
       component: async () => {
