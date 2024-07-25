@@ -1,67 +1,141 @@
-import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import { createRouter, createWebHistory, useRoute } from "vue-router";
 import { getUser } from "../firebase";
 import { useCookies } from "vue3-cookies";
+import DefaultView from "../views/DefaultView.vue";
 
 const { cookies } = useCookies();
+const route = useRoute();
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: "/:catchAll(.*)",
+      component: () => import("../components/Error.vue"),
+    },
+    {
       path: "/",
       name: "home",
-      component: HomeView,
+      component: () => import("../components/Home.vue"),
     },
     {
-      path: "/article/:type",
+      path: "/article",
       name: "article",
-      component: () => import("../views/ArticleView.vue"),
+      component: () => DefaultView,
+      children: [
+        {
+          path: "about",
+          component: () => import("../components/Article/About.vue"),
+        },
+        {
+          path: "ui",
+          component: () => import("../components/Article/UI.vue"),
+        },
+        {
+          path: "contact",
+          component: () => import("../components/Article/Contact.vue"),
+        },
+        {
+          path: "rules",
+          component: () => import("../components/Article/Rules.vue"),
+        },
+        {
+          path: "genres",
+          component: () => import("../components/Article/Genres.vue"),
+        },
+        {
+          path: "privacy",
+          component: () => import("../components/Article/Privacy.vue"),
+        },
+        {
+          path: "security",
+          component: () => import("../components/Article/Security.vue"),
+        },
+        {
+          path: "terms",
+          component: () => import("../components/Article/Terms.vue"),
+        },
+      ],
     },
     {
-      path: "/lastuploads/:type",
+      path: "/lastuploads",
       name: "lastuploads",
-      component: () => import("../views/LastUploadsView.vue"),
-    },
-    {
-      path: "/manga/random",
-      name: "randommanga",
-      component: () => import("../views/RandomManga.vue"),
+      component: () => DefaultView,
+      children: [
+        {
+          path: "chapters",
+          component: () => import("../components/Last/Chapter.vue"),
+        },
+        {
+          path: "manga",
+          component: () => import("../components/Last/Serie.vue"),
+        },
+      ],
     },
     {
       path: "/explore",
       name: "explore",
-      component: () => import("../views/ExploreView.vue"),
+      component: () => import("../components/Explore.vue"),
     },
     {
-      path: "/manga/:id",
+      path: "/manga",
       name: "manga",
-      component: () => import("../views/MangaView.vue"),
-    },
-    {
-      path: "/manga/:id/read/:vol/:ep",
-      name: "read",
-      component: () => import("../views/MangaRead.vue"),
+      component: () => DefaultView,
+      children: [
+        {
+          path: ":id",
+          component: () => import("../components/Manga/View.vue"),
+        },
+        {
+          path: ":id/read/:vol/:ep",
+          component: () => import("../components/Manga/Read.vue"),
+        },
+        {
+          path: "random",
+          component: () => import("../components/Manga/Random.vue"),
+        },
+      ],
     },
     {
       path: "/search",
       name: "search",
-      component: () => import("../views/SearchView.vue"),
+      component: () => import("../components/Search.vue"),
     },
     {
-      path: "/auth/:type",
+      path: "/auth",
       name: "auth",
-      component: () => import("../views/LoginForm.vue"),
+      component: () => DefaultView,
+      children: [
+        {
+          path: ":type",
+          component: () => import("../components/AuthForm.vue"),
+        },
+      ],
     },
     {
-      path: "/user/:id/:action",
+      path: "/user",
       name: "user",
-      component: () => import("../views/ProfileView.vue"),
-    },
-    {
-      path: "/user/:userid/list/:listid",
-      name: "list",
-      component: () => import("../views/ListView.vue"),
+      component: () => DefaultView,
+      children: [
+        {
+          path: ":id",
+          component: () => import("../components/Profile/View.vue"),
+          children: [
+            {
+              path: "edit",
+              component: () => import("../components/Profile/Edit.vue"),
+            },
+            {
+              path: "library",
+              component: () => import("../components/Profile/Library.vue"),
+            },
+            {
+              path: "list/:listid",
+              component: () => import("../components/List/View.vue"),
+            },
+          ],
+        },
+      ],
     },
     {
       path: "/dashboard",
@@ -75,10 +149,10 @@ const router = createRouter({
           ) {
             return import("../views/DashView.vue");
           } else {
-            return import("../views/ProfileView.vue");
+            return import("../components/Profile/View.vue");
           }
         } else {
-          return import("../views/LoginForm.vue");
+          return import("../components/AuthForm.vue");
         }
       },
     },

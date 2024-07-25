@@ -44,7 +44,7 @@ function theme() {
   }
 }
 </script>
-<template>
+<template v-if="cookies.get('isLogged')">
   <article class="prose max-w-none">
     <h2>Ayarlar</h2>
   </article>

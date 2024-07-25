@@ -4,7 +4,7 @@ import { useTitle } from "@vueuse/core";
 import logo from "./assets/mangile_sun.svg";
 import { useCookies } from "vue3-cookies";
 import { getUser } from "../src/firebase";
-import MenuProfile from "./components/MenuProfile.vue";
+import MenuProfile from "./components/Profile/Menu.vue";
 import UserMust from "./components/UserMust.vue";
 //import { state, socket } from "@/socket";
 

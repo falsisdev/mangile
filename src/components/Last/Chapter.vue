@@ -43,11 +43,11 @@ try {
     <div
       v-for="item of data"
       :key="item"
-      class="basis-1/4 card w-auto h-auto bg-base-100 p-[10px] rounded-lg"
+      class="basis-1/4 card card-compact card-side bg-base-200 mx-2 shadow-lg border border-base-100 rounded-lg"
     >
       <figure>
         <img
-          class="rounded w-64 h-72"
+          class="rounded w-full h-48"
           :src="`https://mangadex.org/covers/${item.id}/${
             cover[parseInt(data.indexOf(item))].attributes.fileName
           }.512.jpg`"
@@ -59,14 +59,8 @@ try {
             !data[data.indexOf(item)].attributes.title["en"]
               ? !data[data.indexOf(item)].attributes.title["ja-ro"]
                 ? ""
-                : data[data.indexOf(item)].attributes.title["ja-ro"].substring(
-                    0,
-                    20
-                  ) + "..."
-              : data[data.indexOf(item)].attributes.title["en"].substring(
-                  0,
-                  20
-                ) + "..."
+                : data[data.indexOf(item)].attributes.title["ja-ro"]
+              : data[data.indexOf(item)].attributes.title["en"]
           }}
         </h2>
         <p>

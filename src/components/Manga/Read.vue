@@ -85,7 +85,7 @@
 <script setup>
 import { useRoute, RouterLink } from "vue-router";
 import { useFetch } from "@vueuse/core";
-import { getManga, getVol } from "../firebase";
+import { getManga, getVol } from "../../firebase";
 
 const route = useRoute();
 const info = await useFetch(

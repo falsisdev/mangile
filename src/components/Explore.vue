@@ -4,8 +4,8 @@
     <div class="col-span-8 col-start-1 col-end-11 my-5 ml-5">
       <!--page view-->
       <!--arama sonuçları-->
-      <article class="prose max-w-none p-5 flex flex-row">
-        <h1 class="pr-5">Keşfet</h1>
+      <article class="prose max-w-none flex flex-row">
+        <h1>Keşfet</h1>
         <span class="grow"></span>
         <button
           id="clearfilters"
@@ -23,7 +23,7 @@
         <div
           v-for="item of results"
           v-bind:key="item"
-          class="basis-1/5 card w-auto h-auto bg-base-100 rounded-lg m-2"
+          class="basis-1/5 card-side card card-compact bg-base-200 mx-1 shadow-lg border border-base-100 rounded-lg"
         >
           <div
             v-if="
@@ -48,26 +48,35 @@
           >
             <figure>
               <img
-                class="rounded shadow-md w-64 h-72"
+                class="rounded shadow-md w-full h-48"
                 :src="`https://mangadex.org/covers/${item.id}/${
                   JSON.parse(cover[results.indexOf(item)].data.value).data
                     .attributes.fileName
                 }.512.jpg`"
               />
             </figure>
-            <div class="card-body flex flex-col content-between">
-              <h2
-                class="card-title place-self-start justify-self-start self-start"
-              >
+            <div class="card-body">
+              <h2 class="card-title">
                 {{
-                  !item.attributes.title["en"]
-                    ? !item.attributes.title["ja-ro"]
-                      ? ""
-                      : item.attributes.title["ja-ro"].substring(0, 20) + "..."
-                    : item.attributes.title["en"].substring(0, 20) + "..."
+                  !item.attributes["altTitles"].some((x) => x.tr)
+                    ? !item.attributes.title["en"]
+                      ? !item.attributes.title["ja-ro"]
+                        ? !item.attributes.title["ja"]
+                          ? "Bilinmeyen Başlık"
+                          : item.attributes.title["ja"]
+                        : item.attributes.title["ja-ro"]
+                      : item.attributes.title["en"]
+                    : item.attributes["altTitles"].find((x) => x.tr).tr
                 }}
               </h2>
-              <div class="self-end justify-self-end place-self-end">
+              <p>
+                {{
+                  item.attributes.description["en"].substring(0, 100) + "..."
+                }}
+              </p>
+              <div
+                class="dropdown dropdown-hover dropdown-top flex justify-end bottom-0"
+              >
                 <a class="btn btn-primary" :href="`/manga/${item.id}`">
                   İncele!</a
                 >
@@ -91,8 +100,9 @@
       <!--arama sonuçları-->
     </div>
     <!--FILTER MENU-->
-    <div class="col-span-1 col-start-11 col-end-12">
+    <div class="col-span-1 col-start-11 col-end-12 mt-5">
       <ul class="menu w-64 p-2 h-full flex flex-col">
+        <article class="prose"><h1>Filtreleme</h1></article>
         <div class="divider"></div>
         <li class="menu-title">
           <span>Türlere Göre Filtrele</span>

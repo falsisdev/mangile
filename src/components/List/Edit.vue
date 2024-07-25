@@ -68,8 +68,8 @@
   </article>
 </template>
 <script setup>
-import { getCollectionById, updateList } from "../firebase";
-import Card from "./Manga/Card.vue";
+import { getCollectionById, updateList } from "../../firebase";
+import Card from "../Manga/Card.vue";
 import { useFetch } from "@vueuse/core";
 
 const props = defineProps({

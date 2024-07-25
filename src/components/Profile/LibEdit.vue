@@ -48,7 +48,7 @@
   </article>
 </template>
 <script setup>
-import { removeMangaFromBC, addMangaToBC } from "../firebase";
+import { removeMangaFromBC, addMangaToBC } from "../../firebase";
 
 const props = defineProps({
   name: String,

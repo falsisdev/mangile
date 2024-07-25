@@ -170,16 +170,17 @@
   </main>
   <div
     v-else
-    class="basis-1/5 card w-auto h-auto bg-base-100 p-[10px] rounded-lg"
+    class="basis-1/4 card card-compact card-side bg-base-200 mx-2 shadow-lg border border-base-100 rounded-lg"
   >
     <figure>
       <img
-        class="rounded shadow-md w-64 h-72"
+        class="rounded shadow-md w-full h-48"
         :src="`https://mangadex.org/covers/${id}/${cover}.512.jpg`"
       />
     </figure>
     <div class="card-body">
       <h2 class="card-title">{{ name }}</h2>
+      <p>{{ name }} mangasının bir bölümü sisteme eklendi.</p>
       <div class="dropdown dropdown-hover dropdown-top flex justify-end">
         <a class="btn btn-primary" :href="`/manga/${id}`">Oku!</a>
       </div>
@@ -188,8 +189,8 @@
 </template>
 <script setup>
 import { removeMangaFromBC, removeMangaFromList } from "../../firebase";
-import LibEdit from "../../components/LibEdit.vue";
-import ListEdit from "../../components/ListEdit.vue";
+import LibEdit from "../Profile/LibEdit.vue";
+import ListEdit from "../List/Edit.vue";
 
 const props = defineProps({
   isLib: Boolean,

@@ -1,14 +1,19 @@
 <script setup>
-import { getListById, getUser, getIDByEmail, getUserByID } from "../firebase";
+import {
+  getListById,
+  getUser,
+  getIDByEmail,
+  getUserByID,
+} from "../../firebase";
 import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
 import { useCookies } from "vue3-cookies";
-import ListEdit from "../components/ListEdit.vue";
+import ListEdit from "./Edit.vue";
 
 const route = useRoute();
 const { cookies } = useCookies();
-const list = await getListById(route.params.userid, route.params.listid);
-const listuser = await getUserByID(route.params.userid);
+const list = await getListById(route.params.id, route.params.listid);
+const listuser = await getUserByID(route.params.id);
 
 let cover = [];
 let manga = [];
@@ -47,7 +52,7 @@ for (let item of list.series) {
     <label class="btn btn-ghost hover:bg-transparent"
       ><RouterLink
         class="no-underline flex flex-row items-center"
-        :to="`/user/${route.params.userid}`"
+        :to="`/user/${route.params.id}`"
         ><div class="avatar placeholder mx-1">
           <div class="bg-neutral text-neutral-content w-8 rounded-full">
             <img :src="listuser.pfp" />
@@ -58,7 +63,7 @@ for (let item of list.series) {
     >
     <label
       :for="route.params.listid + 'edit'"
-      v-if="cookedid == route.params.userid"
+      v-if="cookedid == route.params.id"
       class="btn btn-ghost"
       ><Icon icon="material-symbols:edit" class="h-5 w-5" /> Düzenle</label
     >
@@ -73,7 +78,7 @@ for (let item of list.series) {
       :name="list.title"
       :id="route.params.listid"
       :description="list.description"
-      :userid="route.params.userid"
+      :userid="route.params.id"
     />
   </div>
   <span class="divider" />
@@ -81,11 +86,11 @@ for (let item of list.series) {
     <div
       v-for="item of list.series"
       :key="item"
-      class="lg:basis-1/5 card w-64 h-auto bg-base-100 p-[10px] rounded-lg"
+      class="lg:basis-1/5 w-full h-48 card card-compact card-side bg-base-200 m-1 shadow-lg border border-base-100 rounded-lg"
     >
       <figure>
         <img
-          class="rounded w-64 h-72"
+          class="rounded shadow-md w-full h-48"
           :src="`https://mangadex.org/covers/${
             manga[list['series'].indexOf(item)].id
           }/${cover[list['series'].indexOf(item)]}.512.jpg`"
@@ -94,14 +99,24 @@ for (let item of list.series) {
       <div class="card-body">
         <h2 class="card-title">
           {{
-            !manga[list["series"].indexOf(item)].attributes.title["en"]
-              ? !manga[list["series"].indexOf(item)].attributes.title["ja-ro"]
-                ? ""
-                : manga[list["series"].indexOf(item)].attributes.title["ja-ro"]
-              : manga[list["series"].indexOf(item)].attributes.title["en"]
+            !manga[list["series"].indexOf(item)].attributes["altTitles"].some(
+              (x) => x.tr
+            )
+              ? !manga[list["series"].indexOf(item)].attributes.title["en"]
+                ? !manga[list["series"].indexOf(item)].attributes.title["ja-ro"]
+                  ? !manga[list["series"].indexOf(item)].attributes.title["ja"]
+                    ? "Bilinmeyen Başlık"
+                    : manga[list["series"].indexOf(item)].attributes.title["ja"]
+                  : manga[list["series"].indexOf(item)].attributes.title[
+                      "ja-ro"
+                    ]
+                : manga[list["series"].indexOf(item)].attributes.title["en"]
+              : manga[list["series"].indexOf(item)].attributes[
+                  "altTitles"
+                ].find((x) => x.tr).tr
           }}
         </h2>
-        <p></p>
+        <p>Seri, {{ list.title }}'ın bir parçasıdır.</p>
         <div class="dropdown dropdown-hover dropdown-top flex justify-end">
           <a
             class="btn btn-primary"

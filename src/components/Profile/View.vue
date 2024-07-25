@@ -1,5 +1,5 @@
 <script setup>
-import { useRoute, RouterLink } from "vue-router";
+import { useRoute, RouterLink, RouterView } from "vue-router";
 import { getUserByID, getUser } from "../../firebase";
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
@@ -16,7 +16,10 @@ if (cookies.get("email")) {
 }
 </script>
 <template>
-  <div class="col-span-2 col-start-2 col-end-6 my-5 ml-10">
+  <div
+    v-if="route.path == `/user/${route.params.id}`"
+    class="col-span-2 col-start-2 col-end-6 my-5 ml-10"
+  >
     <div class="card card-side bg-base-100 border border-base-200">
       <figure class="w-48 h-48 rounded-full m-5">
         <label class="swap swap-rotate text-9xl">
@@ -151,4 +154,5 @@ if (cookies.get("email")) {
       </div>
     </div>
   </div>
+  <RouterView v-else />
 </template>

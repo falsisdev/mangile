@@ -65,7 +65,7 @@
         <div class="dropdown dropdown-hover dropdown-top dropdown-start">
           <a
             class="btn btn-primary"
-            href="/manga/c071276e-abd4-4711-8b14-544431eb152a"
+            href="/manga/8211bac6-a392-4e37-b3b6-dac0f4512d24"
             >Devam Et!</a
           >
           <div
@@ -151,12 +151,12 @@ export default {
     const route = useRoute();
     const highlights = [
       {
-        name: "Vinland Saga",
+        name: "Kimi no na wa.",
         description:
-          "Çocukken Thorfinn, büyük Leif Ericson'un ayaklarının dibine oturdu ve çok batıdaki bir diyarın vahşi hikayeleriyle heyecanlandı. Ancak gençlik fantezileri, bir paralı asker baskını ile paramparça oldu. Ailesini öldüren Vikingler tarafından büyütülen Thorfinn, sonsuza dek grubun lideri Askeladd'ı ...",
+          "Hikaye, Japonya'da bin yıl sonra ilk kez bir kuyruklu yıldızın düşmesinden bir ay sonra geçiyor. Kırsal kesimde yaşayan liseli bir kız olan Mitsuha, taşradaki hayattan bıktığı için şehirde yaşamak istemektedir. Sonra Taki var. Arkadaşlarıyla birlikte Tokyo'da yaşayan ve bir İtalyan restoranında y...",
         image:
-          "https://mangadex.org/covers/5d1fc77e-706a-4fc5-bea8-486c9be0145d/af345d2b-42c6-4c65-8a81-922086255795.jpg",
-        url: "5d1fc77e-706a-4fc5-bea8-486c9be0145d",
+          "https://mangadex.org/covers/c071276e-abd4-4711-8b14-544431eb152a/fc610180-01ea-48bf-9ec7-b84e07d4a390.jpg",
+        url: "c071276e-abd4-4711-8b14-544431eb152a",
       },
       {
         name: "Mushoku Tensei Isekai Ittara Honki Dasu",
@@ -232,16 +232,15 @@ export default {
       },
     ];
     const editorschoice = {
-      name: "Kimi no na wa.",
+      name: "Re:Zero kara Hajimeru Isekai Seikatsu - Daiyonshou - Seiiki to Gouyoku no Majou",
       cover:
-        "https://mangadex.org/covers/c071276e-abd4-4711-8b14-544431eb152a/fc610180-01ea-48bf-9ec7-b84e07d4a390.jpg",
-      bigbg:
-        "https://i.pinimg.com/originals/33/b4/d4/33b4d47c13a625aeee4124d66599c31c.gif",
-      bg: "https://w0.peakpx.com/wallpaper/386/636/HD-wallpaper-comet-kimi-no-na-wa-8k-your-name.jpg",
+        "https://mangadex.org/covers/8211bac6-a392-4e37-b3b6-dac0f4512d24/a028d0be-c055-4553-9079-9c8299b4e022.jpg",
+      bigbg: "https://giffiles.alphacoders.com/132/132658.gif",
+      bg: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ae67dbcc-91f7-4369-a654-3159c9f4a09f/dffygtb-27fa2b7a-440a-4e91-9203-4e26d4f6e6cf.jpg/v1/fill/w_1280,h_720,q_75,strp/high_quality_re_zero_4k_wallpaper_by_sdugoten_dffygtb-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzIwIiwicGF0aCI6IlwvZlwvYWU2N2RiY2MtOTFmNy00MzY5LWE2NTQtMzE1OWM5ZjRhMDlmXC9kZmZ5Z3RiLTI3ZmEyYjdhLTQ0MGEtNGU5MS05MjAzLTRlMjZkNGY2ZTZjZi5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.gTSRYaWR-AtGRyj_OnfqMnx6NMhwD6ek3LV41zLQacM",
       description:
-        "Hikaye, Japonya'da bin yıl sonra ilk kez bir kuyruklu yıldızın düşmesinden bir ay sonra geçiyor. Kırsal kesimde yaşayan liseli bir kız olan Mitsuha, taşradaki hayattan bıktığı için şehirde yaşamak istemektedir. Sonra Taki var. Arkadaşlarıyla birlikte Tokyo'da yaşayan ve bir İtalyan restoranında yarı zamanlı olarak çalışan bir lise öğrencisidir. Ayrıca mimariyi de içeren güzel sanatlara da büyük bir ilgisi var. Bir gün Mitsuha kendini genç bir adam olarak hayal eder. Öte yandan Taki'nin de rüyasında kırsal kesimde liseye giden bir kız öğrenci olduğu görülür. Hayallerinin ardındaki sır nedir?.",
+        "Marketten çıkan Subaru Natsuki, insanların ve yarı insanların yaşadığı kalabalık bir kasabayla karşılaşır. Ejderhaları ve arabaları ulaşım aracı olarak kullanan kasabanın, onun aşina olduğu günümüz Japonya'sı olmadığı açıktır. Ancak günlerini çizgi romanlara ve oyunlara dalarak geçiren biri olarak Subaru, kendisinin bu yeni fantezi dünyasında üstün büyülü güçlere sahip bir kahraman olduğunu varsayıyor. Ne yazık ki durum böyle değildir ve bir grup haydutla karşılaştığında işler hızla ters gider. Neyse ki, çalınan nişanını ararken Satella adında gümüş saçlı bir güzel onu kurtarmaya gelir. Subaru, nezaketinin karşılığında aramaya yardım etmeyi teklif eder ve bu da sonunda onları bir ganimet dükkanına götürür.",
       shortdesc:
-        "Hikaye, Japonya'da bin yıl sonra ilk kez bir kuyruklu yıldızın düşmesinden bir ay sonra geçiyor. Kırsal kesimde yaşayan liseli bir kız olan Mitsuha, taşradaki hayattan bıktığı için şehirde yaşamak istemektedir. Sonra Taki var. O, Tokyo'da ailesiyle birlikte yaşayan bir lise öğrencisi...",
+        "Natsuki Subaru, beyaz balinayı ve 'Tembellik' ölümcül günahının başpiskoposunu yener ve Emilia ile yeniden bir araya gelir. Acı dolu bir ayrılığın ardından barışan ikiliyi yeni bir çalkantı beklemektedir...",
     };
     const highlyrecommended = {
       name: "Tomodachi Game",

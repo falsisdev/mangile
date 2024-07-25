@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
-import Tags from "../components/Tags.vue";
+import Tags from "../Tags.vue";
 import { ref } from "vue";
 import { useCookies } from "vue3-cookies";
 import {
@@ -13,8 +13,8 @@ import {
   removeMangaFromBC,
   addMangaToList,
   getListsById,
-} from "../firebase";
-import LibEdit from "../components/LibEdit.vue";
+} from "../../firebase";
+import LibEdit from "../Profile/LibEdit.vue";
 
 const route = useRoute();
 const { cookies } = useCookies();
@@ -49,14 +49,18 @@ async function ekle() {
     lists
       .find((x) => x.title == String(document.getElementById("liste").value))
       ["series"].includes(route.params.id)
-  )
+  ) {
     window.location.reload();
-  await addMangaToList(
-    id,
-    lists.find((x) => x.title == String(document.getElementById("liste").value))
-      .id,
-    route.params.id
-  );
+  } else {
+    await addMangaToList(
+      id,
+      lists.find(
+        (x) => x.title == String(document.getElementById("liste").value)
+      ).id,
+      route.params.id
+    );
+    window.location.reload();
+  }
 }
 
 let coverartid;
@@ -137,7 +141,11 @@ let done = false;
 for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
   if (Boolean(item.tr)) {
     if (!done) {
-      alttitle = item.tr;
+      alttitle = JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+        ? JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+        : JSON.parse(info.data.value).data.attributes.title["ja"]
+        ? JSON.parse(info.data.value).data.attributes.title["ja"]
+        : JSON.parse(info.data.value).data.attributes.title["en"];
       done = true;
     }
   } else if (Boolean(item.en)) {
@@ -639,8 +647,29 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
               <h1 class="flex flex-col">
                 <span>
                   {{
-                    JSON.parse(info.data.value).data.attributes.title.en ||
-                    JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+                    !JSON.parse(info.data.value).data.attributes[
+                      "altTitles"
+                    ].some((x) => x.tr)
+                      ? !JSON.parse(info.data.value).data.attributes.title["en"]
+                        ? !JSON.parse(info.data.value).data.attributes.title[
+                            "ja-ro"
+                          ]
+                          ? !JSON.parse(info.data.value).data.attributes.title[
+                              "ja"
+                            ]
+                            ? "Bilinmeyen Başlık"
+                            : JSON.parse(info.data.value).data.attributes.title[
+                                "ja"
+                              ]
+                          : JSON.parse(info.data.value).data.attributes.title[
+                              "ja-ro"
+                            ]
+                        : JSON.parse(info.data.value).data.attributes.title[
+                            "en"
+                          ]
+                      : JSON.parse(info.data.value).data.attributes[
+                          "altTitles"
+                        ].find((x) => x.tr).tr
                   }}
                 </span>
                 <span class="text-gray-400 text-xl mx-1">
@@ -841,7 +870,7 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                       adlı girdiyi listeye ekleyin
                     </p>
                     <select
-                      v-if="lists"
+                      v-if="lists[0]"
                       id="liste"
                       class="select select-bordered select-sm w-full max-w-xs ml-2"
                     >
@@ -854,7 +883,10 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                       önce bir liste oluşturun.</span
                     >
                     <div class="modal-action">
-                      <label @click="ekle()" class="btn btn-success"
+                      <label
+                        v-if="lists[0]"
+                        @click="ekle()"
+                        class="btn btn-success"
                         ><Icon icon="material-symbols:add" class="h-5 w-5" />
                         Ekle</label
                       >

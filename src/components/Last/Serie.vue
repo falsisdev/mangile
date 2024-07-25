@@ -47,8 +47,8 @@ try {
         !item.attributes.title['en']
           ? !item.attributes.title['ja-ro']
             ? 'Bilinmeyen Seri'
-            : item.attributes.title['ja-ro'].substring(0, 20) + '...'
-          : item.attributes.title['en'].substring(0, 20) + '...'
+            : item.attributes.title['ja-ro']
+          : item.attributes.title['en']
       "
     />
   </div>

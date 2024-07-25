@@ -1,6 +1,6 @@
 <script setup>
-import { getIDByEmail, getUser } from "../firebase";
-import SettingsView from "../views/SettingsView.vue";
+import { getIDByEmail, getUser } from "../../firebase";
+import Settings from "../Settings.vue";
 import { useCookies } from "vue3-cookies";
 import { socket } from "@/socket";
 
@@ -38,7 +38,7 @@ if (isLogged) {
         <b>{{ user.username }}</b>
       </li>
       <li>
-        <RouterLink :to="`/user/${id}/view`">
+        <RouterLink :to="`/user/${id}`">
           <Icon icon="material-symbols:person" /> Profil</RouterLink
         >
       </li>
@@ -62,7 +62,7 @@ if (isLogged) {
             ✕
           </button>
         </form>
-        <SettingsView />
+        <Settings />
       </div>
     </dialog>
   </div>
