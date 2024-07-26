@@ -7,7 +7,9 @@
       <figure>
         <img
           class="w-64 opacity-75"
-          :src="`https://mangadex.org/covers/${coverid}/${cover}.512.jpg`"
+          :src="`https://mangadex.org/covers/${coverid}/${cover}${
+            cover == 'e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3' ? '' : '.512'
+          }.jpg`"
         />
       </figure>
       <div class="card-body">
@@ -34,7 +36,7 @@
             emin misiniz?
           </p>
           <div class="modal-action">
-            <label @click="removelist()" class="btn btn-error"
+            <label @click="deletelist()" class="btn btn-error"
               ><Icon icon="material-symbols:delete" class="h-5 w-5" />
               Sil</label
             >
@@ -188,7 +190,11 @@
   </div>
 </template>
 <script setup>
-import { removeMangaFromBC, removeMangaFromList } from "../../firebase";
+import {
+  removeMangaFromBC,
+  removeMangaFromList,
+  deleteList,
+} from "../../firebase";
 import LibEdit from "../Profile/LibEdit.vue";
 import ListEdit from "../List/Edit.vue";
 
@@ -214,6 +220,11 @@ async function remove() {
 
 async function removelist() {
   await removeMangaFromList(props.userid, props.id, props.listid);
+  window.location.reload();
+}
+
+async function deletelist() {
+  await deleteList(props.userid, props.listid);
   window.location.reload();
 }
 </script>

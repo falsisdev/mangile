@@ -3,10 +3,11 @@
 Eklenecekler:
 
 - Listeler sekmesine beğenilen listeler eklenecek (Tahmini: Temmuz 2024)
+- Listeyi beğenme eklenecek (Tahmini: Temmuz 2024)
+- Liste oluşturma eklenecek (Tahmini: Ağustos 2024)
 - Favoriler sekmesine manga, bölüm ve panel eklenecek (Tahmini: Ağustos 2024)
 - Mangayı favorileme eklenecek (Tahmini: Ağustos 2024)
 - Bölümü favorileme eklenecek (Tahmini: Ağustos 2024)
-- Listeyi beğenme eklenecek (Tahmini: Ağustos 2024)
 - Profil fotoğrafı ekleme eklenecek (Tahmini: Ağustos 2024)
 - Dashboard ile analytics entegre edilecek (Tahmini: Nisan 2025)
 - Dashboarda kullanıcı paneli eklenecek (Tahmini: Nisan 2025)
@@ -26,7 +27,6 @@ Eklenecekler:
 
 Sorun çözüm:
 
-- Keşfet sayfası arayüz sorunları çözülecek (Tahmini: Ağustos 2026)
 - Türler sayfası sorunları çözülecek (Tahmini: Ağustos 2026)
 - Manga sayfasındaki durum dizininin rastgele gelmesi düzeltilecek (Tahmini: Ağustos 2024)
 

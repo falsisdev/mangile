@@ -161,6 +161,27 @@ export const removeMangaFromList = async (userid, mangaid, listid) => {
     .update(col);
 };
 
+export const deleteList = async (userid, listid) => {
+  let col = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let colnew = col["lists"].splice(
+    col["lists"].indexOf(
+      col["lists"].find((x) => x.id == listid),
+      1
+    )
+  );
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("collection")
+    .update(col);
+};
+
 export const addMangaToBC = async (userid, mangaid, status) => {
   //status denilen şey manganın kitaplıkta hangi durumda bulunacağı; reading, onhold, dropped gibi...
   if (status == null) window.location.reload();
@@ -187,8 +208,8 @@ export const updateList = async (userid, listid, desc, title) => {
       .doc("collection")
       .get()
   ).data();
-  let titlenew = (col["lists"].find((x) => x.id == listid).title = title);
-  let descnew = (col["lists"].find((x) => x.id == listid).description = desc);
+  if (desc) col["lists"].find((x) => x.id == listid).title = title;
+  if (title) col["lists"].find((x) => x.id == listid).description = desc;
   await usersCollection
     .doc(userid)
     .collection("library")
@@ -204,9 +225,9 @@ export const addMangaToList = async (userid, listid, mangaid) => {
       .doc("collection")
       .get()
   ).data();
-  let seriesnew = col["lists"]
-    .find((x) => x.id == listid)
-    ["series"].push(mangaid);
+  let seriesnew = col["lists"].find((x) => x.id == listid)["series"][0]
+    ? col["lists"].find((x) => x.id == listid)["series"].push(mangaid)
+    : (col["lists"].find((x) => x.id == listid)["series"][0] = mangaid);
   await usersCollection
     .doc(userid)
     .collection("library")
@@ -293,6 +314,27 @@ export const updateUser = (id, user) => {
 
 export const deleteUser = (id) => {
   return usersCollection.doc(id).delete();
+};
+
+export const createList = async (userid, desc, title) => {
+  let col = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let listnew = col["lists"].push({
+    description: desc ? desc : "",
+    id: self.crypto.randomUUID(),
+    series: [null],
+    title: title ? title : "Listem",
+  });
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("collection")
+    .update(col);
 };
 
 export const useLoadUsers = () => {

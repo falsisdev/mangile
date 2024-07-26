@@ -1,6 +1,7 @@
 <script setup>
 import { getIDByEmail, getUser } from "../../firebase";
 import Settings from "../Settings.vue";
+import ListCreate from "../List/Create.vue";
 import { useCookies } from "vue3-cookies";
 import { socket } from "@/socket";
 
@@ -43,6 +44,11 @@ if (isLogged) {
         >
       </li>
       <li>
+        <a onclick="listcreate.showModal()">
+          <Icon icon="material-symbols:list-alt-add" /> Liste Oluştur
+        </a>
+      </li>
+      <li>
         <a onclick="my_modal_3.showModal()">
           <Icon icon="material-symbols:settings" /> Ayarlar
         </a>
@@ -63,6 +69,18 @@ if (isLogged) {
           </button>
         </form>
         <Settings />
+      </div>
+    </dialog>
+    <dialog id="listcreate" class="modal">
+      <div class="modal-box">
+        <form method="dialog">
+          <button
+            class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          >
+            ✕
+          </button>
+        </form>
+        <ListCreate :id="id" />
       </div>
     </dialog>
   </div>

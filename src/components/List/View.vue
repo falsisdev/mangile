@@ -27,18 +27,22 @@ if (cookies.get("email")) {
   loggeduser = null;
 }
 
-for (let item of list.series) {
-  const info = await useFetch(`https://api.mangadex.org/manga/${item}`);
-  manga.push(JSON.parse(info.data.value).data);
-  let coverartid;
-  for (let item of JSON.parse(info.data.value).data.relationships) {
-    coverartid;
-    if (item.type == "cover_art") {
-      coverartid = item.id;
+if (list.series[0]) {
+  for (let item of list.series) {
+    const info = await useFetch(`https://api.mangadex.org/manga/${item}`);
+    manga.push(JSON.parse(info.data.value).data);
+    let coverartid;
+    for (let item of JSON.parse(info.data.value).data.relationships) {
+      coverartid;
+      if (item.type == "cover_art") {
+        coverartid = item.id;
+      }
     }
+    const cv = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
+    cover.push(JSON.parse(cv.data.value).data.attributes.fileName);
   }
-  const cv = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
-  cover.push(JSON.parse(cv.data.value).data.attributes.fileName);
+} else {
+  //
 }
 </script>
 <template>
@@ -82,7 +86,7 @@ for (let item of list.series) {
     />
   </div>
   <span class="divider" />
-  <div class="flex flex-row flex-wrap">
+  <div v-if="list.series[0]" class="flex flex-row flex-wrap">
     <div
       v-for="item of list.series"
       :key="item"
@@ -127,4 +131,5 @@ for (let item of list.series) {
       </div>
     </div>
   </div>
+  <div v-else>Bu listede herhangi bir manga bulunmamaktadır.</div>
 </template>

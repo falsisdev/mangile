@@ -41,23 +41,25 @@ if (cookies.get("email")) {
 const bookcase = await getBookCaseById(id);
 const collection = await getCollectionById(id);
 
-function redirect(url) {
-  window.location.href = url;
-}
-
 for (let item of collection.lists) {
-  const info = await useFetch(
-    `https://api.mangadex.org/manga/${item.series[0]}`
-  );
-  let coverartid;
-  for (let item of JSON.parse(info.data.value).data.relationships) {
-    coverartid;
-    if (item.type == "cover_art") {
-      coverartid = item.id;
+  if (item.series[0]) {
+    const info = await useFetch(
+      `https://api.mangadex.org/manga/${item.series[0]}`
+    );
+    let coverartid;
+    for (let item of JSON.parse(info.data.value).data.relationships) {
+      coverartid;
+      if (item.type == "cover_art") {
+        coverartid = item.id;
+      }
     }
+    const cover = await useFetch(
+      `https://api.mangadex.org/cover/${coverartid}`
+    );
+    covers["lists"].push(JSON.parse(cover.data.value).data.attributes.fileName);
+  } else {
+    covers["lists"].push("e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3");
   }
-  const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
-  covers["lists"].push(JSON.parse(cover.data.value).data.attributes.fileName);
 }
 
 for (let item of bookcase.reading) {
@@ -459,7 +461,11 @@ for (let item of bookcase.rereading) {
           :userid="id"
           :description="item.description"
           :cover="covers.lists[collection['lists'].indexOf(item)]"
-          :coverid="item.series[0]"
+          :coverid="
+            item.series[0]
+              ? item.series[0]
+              : '8e67e13e-fdeb-44f5-8ecb-c4609df6b02c'
+          "
           :name="item.title"
         /><!--window.crypto.randomUUID()-->
       </div>
