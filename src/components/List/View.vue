@@ -4,6 +4,8 @@ import {
   getUser,
   getIDByEmail,
   getUserByID,
+  likeList,
+  unlikeList,
 } from "../../firebase";
 import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
@@ -44,6 +46,17 @@ if (list.series[0]) {
 } else {
   //
 }
+
+let likes = list["likes"].length;
+const like = async () => {
+  if (document.getElementById("likes").value == "on") {
+    document.getElementById("likes").value = "off";
+    await likeList(cookedid, route.params.id, list.id);
+  } else {
+    document.getElementById("likes").value = "on";
+    await unlikeList(cookedid, route.params.id, route.params.listid);
+  }
+};
 </script>
 <template>
   <br />
@@ -65,6 +78,34 @@ if (list.series[0]) {
         {{ listuser.username }} tarafından</RouterLink
       ></label
     >
+    <label
+      v-if="route.params.id == cookedid"
+      class="btn btn-ghost hover:bg-transparent"
+      ><div
+        class="tooltip flex flex-row"
+        data-tip="Kendi listenizi beğenemezsiniz"
+      >
+        <Icon icon="solar:heart-lock-bold" class="h-5 w-5 mr-1" />
+        {{ likes }}
+      </div></label
+    >
+    <label v-else class="swap btn btn-ghost">
+      <input id="likes" @click="like()" type="checkbox" />
+      <span class="swap-off flex flex-row"
+        ><Icon
+          icon="material-symbols:favorite-outline"
+          class="h-5 w-5 mr-1 p-[0.5px]"
+        />
+        {{ likes }}</span
+      >
+      <span class="swap-on flex flex-row"
+        ><Icon
+          icon="material-symbols:favorite"
+          class="h-5 w-5 mr-1 p-[0.5px]"
+        />
+        {{ likes + 1 }}</span
+      >
+    </label>
     <label
       :for="route.params.listid + 'edit'"
       v-if="cookedid == route.params.id"

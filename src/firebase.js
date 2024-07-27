@@ -117,6 +117,7 @@ export const createUser = async (user) => {
     .collection("library")
     .doc("collection")
     .set({
+      liked: [],
       lists: [],
     });
   return a;
@@ -169,6 +170,8 @@ export const deleteList = async (userid, listid) => {
       .doc("collection")
       .get()
   ).data();
+  let count = (await usersCollection.doc(userid).get()).data();
+  let countnew = (count["lists"] -= 1);
   let colnew = col["lists"].splice(
     col["lists"].indexOf(
       col["lists"].find((x) => x.id == listid),
@@ -180,6 +183,7 @@ export const deleteList = async (userid, listid) => {
     .collection("library")
     .doc("collection")
     .update(col);
+  await usersCollection.doc(userid).update(count);
 };
 
 export const addMangaToBC = async (userid, mangaid, status) => {
@@ -324,9 +328,12 @@ export const createList = async (userid, desc, title) => {
       .doc("collection")
       .get()
   ).data();
+  let count = (await usersCollection.doc(userid).get()).data();
+  let countnew = (count["lists"] += 1);
   let listnew = col["lists"].push({
     description: desc ? desc : "",
     id: self.crypto.randomUUID(),
+    likes: 0,
     series: [null],
     title: title ? title : "Listem",
   });
@@ -335,6 +342,73 @@ export const createList = async (userid, desc, title) => {
     .collection("library")
     .doc("collection")
     .update(col);
+  await usersCollection.doc(userid).update(count);
+};
+
+export const likeList = async (userid, authorid, listid) => {
+  let coluser = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let colauthor = (
+    await usersCollection
+      .doc(authorid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let colauthornew = colauthor["lists"]
+    .find((x) => x.id == listid)
+    ["likes"].push(userid);
+  console.log(colauthor);
+  let colusernew = coluser["liked"].push(listid);
+  await usersCollection
+    .doc(authorid)
+    .collection("library")
+    .doc("collection")
+    .update(colauthor);
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("collection")
+    .update(coluser);
+};
+
+export const unlikeList = async (userid, authorid, listid) => {
+  let coluser = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let colauthor = (
+    await usersCollection
+      .doc(authorid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let colauthornew = colauthor["lists"]
+    .find((x) => x.id == listid)
+    ["likes"].splice(
+      colauthor["lists"].find((x) => x.id == listid)["likes"].indexOf(userid),
+      1
+    );
+  let colusernew = coluser["liked"].splice(coluser["liked"].indexOf(listid), 1);
+  await usersCollection
+    .doc(authorid)
+    .collection("library")
+    .doc("collection")
+    .update(colauthor);
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("collection")
+    .update(coluser);
 };
 
 export const useLoadUsers = () => {

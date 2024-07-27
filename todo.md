@@ -2,9 +2,8 @@
 
 Eklenecekler:
 
+- Giriş gerektiren sayfalar router'a eklenecek (Tahmini: Temmuz 2024)
 - Listeler sekmesine beğenilen listeler eklenecek (Tahmini: Temmuz 2024)
-- Listeyi beğenme eklenecek (Tahmini: Temmuz 2024)
-- Liste oluşturma eklenecek (Tahmini: Ağustos 2024)
 - Favoriler sekmesine manga, bölüm ve panel eklenecek (Tahmini: Ağustos 2024)
 - Mangayı favorileme eklenecek (Tahmini: Ağustos 2024)
 - Bölümü favorileme eklenecek (Tahmini: Ağustos 2024)

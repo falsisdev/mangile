@@ -457,6 +457,7 @@ for (let item of bookcase.rereading) {
           :isOwner="user.email == loggeduser.email"
           :isLib="true"
           :isList="true"
+          :likes="item['likes'].length"
           :id="item.id"
           :userid="id"
           :description="item.description"

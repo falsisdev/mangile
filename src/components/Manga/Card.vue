@@ -15,14 +15,34 @@
       <div class="card-body">
         <h2 class="card-title font-bold">{{ name }}</h2>
         <p>{{ description }}</p>
-        <div class="card-actions justify-start">
-          <label :for="id + 'edit'" v-if="isOwner" class="btn btn-accent"
+        <div class="card-actions grid grid-cols-7">
+          <label class="btn btn-ghost col-span-2 col-start-6"
+            ><div
+              class="tooltip flex flex-row"
+              data-tip="Beğenmek için listeyi görüntülemeniz gerekmektedir"
+            >
+              <Icon
+                icon="solar:heart-lock-bold"
+                class="h-5 w-5 mr-1 pb-[0.5px]"
+              />
+              <span class="mt-[0.5px]">{{ likes }}</span>
+            </div></label
+          >
+          <label
+            :for="id + 'edit'"
+            v-if="isOwner"
+            class="col-start-1 col-end-3 btn btn-accent"
             ><Icon icon="material-symbols:edit" class="h-5 w-5"
           /></label>
-          <a class="btn btn-primary" :href="`/user/${userid}/list/${id}`"
+          <a
+            class="col-start-3 col-end-6 btn btn-primary"
+            :href="`/user/${userid}/list/${id}`"
             >Görüntüle</a
           >
-          <label :for="id" v-if="isOwner" class="btn btn-error"
+          <label
+            :for="id"
+            v-if="isOwner"
+            class="col-start-6 col-end-8 btn btn-error"
             ><Icon icon="material-symbols:delete" class="h-5 w-5"
           /></label>
         </div>
@@ -211,6 +231,7 @@ const props = defineProps({
   coverid: String,
   isListSerie: Boolean,
   listid: String,
+  likes: Number,
 });
 
 async function remove() {
