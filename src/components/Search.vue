@@ -1,3 +1,53 @@
+<script setup>
+import { useRoute } from "vue-router";
+import { useFetch, useTitle } from "@vueuse/core";
+//////////////////////////////////////////////////////////
+import MangaCard from "./Manga/Card.vue";
+import PeopleCard from "./PeopleCard.vue";
+//////////////////////////////////////////////////////////
+const route = useRoute();
+useTitle(`Arama: ${route.query.q}`, { titleTemplate: "%s | Mangile" });
+//////////////////////////////////////////////////////////
+let statuscode;
+let results;
+let data;
+let peopleData;
+let peopleResults;
+let charData;
+let charRes;
+let cover = [];
+//////////////////////////////////////////////////////////
+try {
+  data = await useFetch(
+    `https://api.mangadex.org/manga?title=${route.query.q}&excludedTags[]=b13b2a48-c720-44a9-9c77-39c9979373fb&limit=24&order[relevance]=desc`
+  );
+  peopleData = await useFetch(
+    `https://api.jikan.moe/v4/people?q=${route.query.q}`
+  );
+  charData = await useFetch(
+    `https://api.jikan.moe/v4/characters?q=${route.query.q}`
+  );
+  results = JSON.parse(data.data.value).data;
+  peopleResults = JSON.parse(peopleData.data.value).data;
+  charRes = JSON.parse(charData.data.value).data;
+  let coverartid;
+  for (let item of results) {
+    for (let i of item.relationships) {
+      if (i.type == "cover_art") {
+        coverartid = i.id;
+        cover.push(
+          await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
+        );
+      }
+    }
+  }
+  statuscode = 200;
+} catch (error) {
+  statuscode = 404;
+  console.log(error);
+}
+//////////////////////////////////////////////////////////
+</script>
 <template>
   <div class="col-span-2 col-start-2 col-end-6 my-5 ml-10">
     <!--page view-->
@@ -74,48 +124,3 @@
   </div>
   <!--page view-->
 </template>
-<script setup>
-import { useRoute } from "vue-router";
-import { useFetch } from "@vueuse/core";
-import MangaCard from "./Manga/Card.vue";
-import PeopleCard from "./PeopleCard.vue";
-
-const route = useRoute();
-let statuscode;
-let results;
-let data;
-let peopleData;
-let peopleResults;
-let charData;
-let charRes;
-let cover = [];
-try {
-  data = await useFetch(
-    `https://api.mangadex.org/manga?title=${route.query.q}&excludedTags[]=b13b2a48-c720-44a9-9c77-39c9979373fb&limit=24&order[relevance]=desc`
-  );
-  peopleData = await useFetch(
-    `https://api.jikan.moe/v4/people?q=${route.query.q}`
-  );
-  charData = await useFetch(
-    `https://api.jikan.moe/v4/characters?q=${route.query.q}`
-  );
-  results = JSON.parse(data.data.value).data;
-  peopleResults = JSON.parse(peopleData.data.value).data;
-  charRes = JSON.parse(charData.data.value).data;
-  let coverartid;
-  for (let item of results) {
-    for (let i of item.relationships) {
-      if (i.type == "cover_art") {
-        coverartid = i.id;
-        cover.push(
-          await useFetch(`https://api.mangadex.org/cover/${coverartid}`)
-        );
-      }
-    }
-  }
-  statuscode = 200;
-} catch (error) {
-  statuscode = 404;
-  console.log(error);
-}
-</script>

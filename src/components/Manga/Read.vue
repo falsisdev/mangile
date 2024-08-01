@@ -16,7 +16,12 @@
           <h1>{{ epp.title }}</h1>
         </article>
         <span class="flex flex-row">
-          <span>Çeviri Ekibi: {{ epp.source }}</span>
+          <span
+            >Çeviri Ekibi:
+            <RouterLink class="link" :to="`/scan/${epp.scan}`">{{
+              epp.source
+            }}</RouterLink></span
+          >
           <span class="grow" />
           <span
             >Sayfa: {{ flipbook.numPages }} - {{ flipbook.numPages - 1 }}/{{
@@ -82,15 +87,34 @@
 </style>
 <script setup>
 import { useRoute, RouterLink } from "vue-router";
-import { useFetch } from "@vueuse/core";
-import { /*getManga,*/ getVol } from "../../firebase";
+import { useFetch, useTitle } from "@vueuse/core";
 import Flipbook from "flipbook-vue";
-
+//////////////////////////////////////////////////////////
+import { /*getManga,*/ getVol } from "../../firebase";
+//////////////////////////////////////////////////////////
 const route = useRoute();
 const info = await useFetch(
   `https://api.mangadex.org/manga/${route.params.id}`
 );
-//const mangadata = await getManga(route.params.id);
+useTitle(
+  !JSON.parse(info.data.value).data.attributes["altTitles"].some((x) => x.tr)
+    ? !JSON.parse(info.data.value).data.attributes.title["en"]
+      ? !JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+        ? !JSON.parse(info.data.value).data.attributes.title["ja"]
+          ? "Bilinmeyen Başlık"
+          : JSON.parse(info.data.value).data.attributes.title["ja"]
+        : JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+      : JSON.parse(info.data.value).data.attributes.title["en"]
+    : JSON.parse(info.data.value).data.attributes["altTitles"].find((x) => x.tr)
+        .tr +
+        " " +
+        route.params.vol +
+        ". Cilt " +
+        route.params.ep +
+        ". Bölüm",
+  { titleTemplate: "%s | Mangile" }
+);
+//////////////////////////////////////////////////////////
 async function getVolData(i) {
   const voldata = await getVol(route.params.id, i);
   return voldata;

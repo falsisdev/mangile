@@ -1,19 +1,26 @@
 <script setup>
+//////////////////////////////////////////////////////////
 import { useRoute, RouterLink, RouterView } from "vue-router";
-import { getUserByID, getUser } from "../../firebase";
 import { useCookies } from "vue3-cookies";
+import { useTitle } from "@vueuse/core";
+//////////////////////////////////////////////////////////
+import { getUserByID, getUser } from "../../firebase";
+//////////////////////////////////////////////////////////
 const { cookies } = useCookies();
 const route = useRoute();
-
+//////////////////////////////////////////////////////////
 let id = route.params.id;
 let loggeduser;
-
+//////////////////////////////////////////////////////////
 const user = await getUserByID(id);
 if (cookies.get("email")) {
   loggeduser = await getUser(cookies.get("email"));
 } else {
   loggeduser = null;
 }
+//////////////////////////////////////////////////////////
+useTitle(loggeduser.username, { titleTemplate: "%s | Mangile" });
+//////////////////////////////////////////////////////////
 </script>
 <template>
   <div

@@ -1,3 +1,11 @@
+<script setup>
+const props = defineProps({
+  id: String,
+  cover: String,
+  name: String,
+  url: String,
+});
+</script>
 <template>
   <div class="basis-1/5 card w-auto h-auto bg-base-100 p-[10px] rounded-lg">
     <figure>
@@ -21,11 +29,3 @@
     </div>
   </div>
 </template>
-<script setup>
-const props = defineProps({
-  id: String,
-  cover: String,
-  name: String,
-  url: String,
-});
-</script>

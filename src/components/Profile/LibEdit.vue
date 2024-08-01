@@ -1,3 +1,42 @@
+<script setup>
+import { removeMangaFromBC, addMangaToBC } from "../../firebase";
+//////////////////////////////////////////////////////////
+const props = defineProps({
+  name: String,
+  id: String,
+  userid: String,
+  status: String,
+});
+//////////////////////////////////////////////////////////
+const save = async () => {
+  if (document.getElementById("durum").value) {
+    if (props.status !== null)
+      await removeMangaFromBC(props.userid, props.id, props.status);
+    await addMangaToBC(
+      props.userid,
+      props.id,
+      document.getElementById("durum").value == "Okunuyor"
+        ? "reading"
+        : document.getElementById("durum").value == "Bitirildi"
+        ? "completed"
+        : document.getElementById("durum").value == "Bekletiliyor"
+        ? "onhold"
+        : document.getElementById("durum").value == "Bırakıldı"
+        ? "dropped"
+        : document.getElementById("durum").value == "Planlandı"
+        ? "plantoread"
+        : document.getElementById("durum").value == "Yeniden Okunuyor"
+        ? "rereading"
+        : null
+    );
+    window.location.reload();
+  } else {
+    window.location.reload();
+  }
+};
+//////////////////////////////////////////////////////////
+</script>
+
 <template>
   <article class="prose modal-box">
     <h3>İlerlemeyi Düzenle</h3>
@@ -47,40 +86,3 @@
     </div>
   </article>
 </template>
-<script setup>
-import { removeMangaFromBC, addMangaToBC } from "../../firebase";
-
-const props = defineProps({
-  name: String,
-  id: String,
-  userid: String,
-  status: String,
-});
-
-async function save() {
-  if (document.getElementById("durum").value) {
-    if (props.status !== null)
-      await removeMangaFromBC(props.userid, props.id, props.status);
-    await addMangaToBC(
-      props.userid,
-      props.id,
-      document.getElementById("durum").value == "Okunuyor"
-        ? "reading"
-        : document.getElementById("durum").value == "Bitirildi"
-        ? "completed"
-        : document.getElementById("durum").value == "Bekletiliyor"
-        ? "onhold"
-        : document.getElementById("durum").value == "Bırakıldı"
-        ? "dropped"
-        : document.getElementById("durum").value == "Planlandı"
-        ? "plantoread"
-        : document.getElementById("durum").value == "Yeniden Okunuyor"
-        ? "rereading"
-        : null
-    );
-    window.location.reload();
-  } else {
-    window.location.reload();
-  }
-}
-</script>

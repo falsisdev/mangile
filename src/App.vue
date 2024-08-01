@@ -1,27 +1,23 @@
 <script setup>
-import { RouterLink, RouterView, useRouter, useRoute } from "vue-router";
-import { useTitle } from "@vueuse/core";
-import logo from "./assets/mangile_sun.svg";
+import { RouterLink, RouterView, useRouter } from "vue-router";
 import { useCookies } from "vue3-cookies";
-import { getUser } from "../src/firebase";
+//////////////////////////////////////////////////////////
 import MenuProfile from "./components/Profile/Menu.vue";
 import UserMust from "./components/UserMust.vue";
-//import { state, socket } from "@/socket";
-
+//////////////////////////////////////////////////////////
+import logo from "./assets/mangile_sun.svg";
+//////////////////////////////////////////////////////////
 const router = useRouter();
-const route = useRoute();
 const { cookies } = useCookies();
-
-//state.connected ? socket.timeout(5000).emit("test", "yep") : "";
-
-useTitle("Mangile");
-function back() {
-  router.back();
-}
-function forward() {
-  router.forward();
-}
-function search() {
+//////////////////////////////////////////////////////////
+const back = () => router.back();
+const forward = () => router.forward();
+const directsearch = () => {
+  window.location.href = `/search?q=${
+    document.getElementById("searchbar").value
+  }`;
+};
+const search = () => {
   var input = document.getElementById("searchbar");
   input.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
@@ -31,21 +27,10 @@ function search() {
       }`;
     }
   });
-}
-
-function directsearch() {
-  window.location.href = `/search?q=${
-    document.getElementById("searchbar").value
-  }`;
-}
+};
+//////////////////////////////////////////////////////////
 </script>
 <template>
-  <!--<Icon
-      icon="material-symbols:menu"
-      id="my-drawer-3"
-      type="checkbox"
-      class="drawer-toggle"
-    />-->
   <div
     class="grid grid-cols-10"
     :data-theme="cookies.get('theme') == null ? 'dim' : cookies.get('theme')"

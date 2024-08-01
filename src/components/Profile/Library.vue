@@ -1,6 +1,8 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
+import { useCookies } from "vue3-cookies";
+//////////////////////////////////////////////////////////
 import {
   getUserByID,
   getUser,
@@ -8,13 +10,14 @@ import {
   getCollectionById,
   getUsersLikedList,
 } from "../../firebase";
-import { useCookies } from "vue3-cookies";
 import Card from "../Manga/Card.vue";
+//////////////////////////////////////////////////////////
 const { cookies } = useCookies();
 const route = useRoute();
-
+//////////////////////////////////////////////////////////
 let id = route.params.id;
 let loggeduser;
+let likedlists = [];
 let infos = {
   reading: [],
   completed: [],
@@ -33,21 +36,21 @@ let covers = {
   lists: [],
   liked: [],
 };
-
+//////////////////////////////////////////////////////////
 const user = await getUserByID(id);
+const bookcase = await getBookCaseById(id);
+const collection = await getCollectionById(id);
+const likedids = collection.liked;
+//////////////////////////////////////////////////////////
 if (cookies.get("email")) {
   loggeduser = await getUser(cookies.get("email"));
 } else {
   loggeduser = null;
 }
-const bookcase = await getBookCaseById(id);
-const collection = await getCollectionById(id);
-const likedids = collection.liked;
-let likedlists = [];
+//////////////////////////////////////////////////////////
 for (let item of likedids) {
   likedlists.push(await getUsersLikedList(item.userid, item.listid));
 }
-
 for (let item of likedlists) {
   if (item.series[0]) {
     const info = await useFetch(
@@ -68,7 +71,7 @@ for (let item of likedlists) {
     covers["liked"].push("e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3");
   }
 }
-
+//////////////////////////////////////////////////////////
 for (let item of collection.lists) {
   if (item.series[0]) {
     const info = await useFetch(
@@ -89,7 +92,7 @@ for (let item of collection.lists) {
     covers["lists"].push("e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3");
   }
 }
-
+//////////////////////////////////////////////////////////
 for (let item of bookcase.reading) {
   const info = await useFetch(`https://api.mangadex.org/manga/${item}`);
   infos["reading"].push(info);
@@ -177,6 +180,7 @@ for (let item of bookcase.rereading) {
     JSON.parse(cover.data.value).data.attributes.fileName
   );
 }
+//////////////////////////////////////////////////////////
 </script>
 <template>
   <article class="prose my-2">

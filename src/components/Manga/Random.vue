@@ -1,9 +1,24 @@
 <script setup>
-import { useFetch } from "@vueuse/core";
+import { useFetch, useTitle } from "@vueuse/core";
 import Tags from "../Tags.vue";
 
 const info = await useFetch(
   "https://api.mangadex.org/manga/random?contentRating[]=safe"
+);
+useTitle(
+  "Rastgele Manga: " +
+    (!JSON.parse(info.data.value).data.attributes["altTitles"].some((x) => x.tr)
+      ? !JSON.parse(info.data.value).data.attributes.title["en"]
+        ? !JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+          ? !JSON.parse(info.data.value).data.attributes.title["ja"]
+            ? "Bilinmeyen Başlık"
+            : JSON.parse(info.data.value).data.attributes.title["ja"]
+          : JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+        : JSON.parse(info.data.value).data.attributes.title["en"]
+      : JSON.parse(info.data.value).data.attributes["altTitles"].find(
+          (x) => x.tr
+        ).tr),
+  { titleTemplate: "%s | Mangile" }
 );
 let coverartid;
 for (let item of JSON.parse(info.data.value).data.relationships) {

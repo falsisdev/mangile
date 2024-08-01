@@ -1,8 +1,9 @@
 <script setup>
 import { useCookies } from "vue3-cookies";
+//////////////////////////////////////////////////////////
 const { cookies } = useCookies();
-
-function theme() {
+//////////////////////////////////////////////////////////
+const theme = () => {
   if (document.getElementById("theme").value) {
     cookies.set(
       "theme",
@@ -42,7 +43,8 @@ function theme() {
   } else {
     window.location.reload();
   }
-}
+};
+//////////////////////////////////////////////////////////
 </script>
 <template v-if="cookies.get('isLogged')">
   <article class="prose max-w-none">

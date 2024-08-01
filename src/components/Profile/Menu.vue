@@ -2,27 +2,30 @@
 import { getIDByEmail, getUser } from "../../firebase";
 import Settings from "../Settings.vue";
 import ListCreate from "../List/Create.vue";
+//////////////////////////////////////////////////////////
 import { useCookies } from "vue3-cookies";
 import { socket } from "@/socket";
-
+//////////////////////////////////////////////////////////
 const { cookies } = useCookies();
-
+//////////////////////////////////////////////////////////
 let isLogged = cookies.get("isLogged");
-
-function logout() {
+//////////////////////////////////////////////////////////
+const logout = () => {
   cookies.remove("isLogged");
   cookies.remove("email");
   cookies.remove("theme");
   socket.disconnect();
   window.location.reload();
-}
-
+};
+//////////////////////////////////////////////////////////
 let user;
 let id;
+//////////////////////////////////////////////////////////
 if (isLogged) {
   user = await getUser(cookies.get("email"));
   id = await getIDByEmail(cookies.get("email"));
 }
+//////////////////////////////////////////////////////////
 </script>
 <template>
   <div class="dropdown dropdown-end" v-if="isLogged">

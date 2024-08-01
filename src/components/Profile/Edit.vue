@@ -1,22 +1,27 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
-import { getUserByID, getUser, updateUser } from "../../firebase";
 import { useCookies } from "vue3-cookies";
 import { onMounted, reactive } from "vue";
+//////////////////////////////////////////////////////////
+import { getUserByID, getUser, updateUser } from "../../firebase";
+//////////////////////////////////////////////////////////
 const { cookies } = useCookies();
 const route = useRoute();
 const router = useRouter();
-
+//////////////////////////////////////////////////////////
 let id = route.params.id;
 let loggeduser;
 let st;
-
+//////////////////////////////////////////////////////////
 const user = await getUserByID(id);
+const form = reactive({ username: "", password: "" });
+//////////////////////////////////////////////////////////
 if (cookies.get("email")) {
   loggeduser = await getUser(cookies.get("email"));
 } else {
   loggeduser = null;
 }
+//////////////////////////////////////////////////////////
 onMounted(() => {
   st;
   if (cookies.get("email") == user.email) {
@@ -28,8 +33,6 @@ onMounted(() => {
     router.back();
   }
 });
-////////////////////////////////
-const form = reactive({ username: "", password: "" });
 const onSubmit = async () => {
   await updateUser(route.params.id, {
     username: form.username ? form.username : user.username,
@@ -37,6 +40,7 @@ const onSubmit = async () => {
   });
   window.location.href = `/user/${route.params.id}/view`;
 };
+//////////////////////////////////////////////////////////
 </script>
 <template>
   <div v-if="st == 404">

@@ -1,9 +1,10 @@
 <script setup>
 import { useRoute } from "vue-router";
-import { useFetch } from "@vueuse/core";
-import Tags from "../Tags.vue";
+import { useFetch, useTitle } from "@vueuse/core";
 import { ref } from "vue";
 import { useCookies } from "vue3-cookies";
+//////////////////////////////////////////////////////////
+import Tags from "../Tags.vue";
 import {
   getManga,
   getVol,
@@ -15,19 +16,32 @@ import {
   getListsById,
 } from "../../firebase";
 import LibEdit from "../Profile/LibEdit.vue";
-
+//////////////////////////////////////////////////////////
 const route = useRoute();
 const { cookies } = useCookies();
-function redirect(url) {
-  window.location.href = url;
-}
+//////////////////////////////////////////////////////////
+const redirect = (url) => (window.location.href = url);
 const info = await useFetch(
   `https://api.mangadex.org/manga/${route.params.id}`
 );
-
+useTitle(
+  !JSON.parse(info.data.value).data.attributes["altTitles"].some((x) => x.tr)
+    ? !JSON.parse(info.data.value).data.attributes.title["en"]
+      ? !JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+        ? !JSON.parse(info.data.value).data.attributes.title["ja"]
+          ? "Bilinmeyen Başlık"
+          : JSON.parse(info.data.value).data.attributes.title["ja"]
+        : JSON.parse(info.data.value).data.attributes.title["ja-ro"]
+      : JSON.parse(info.data.value).data.attributes.title["en"]
+    : JSON.parse(info.data.value).data.attributes["altTitles"].find((x) => x.tr)
+        .tr,
+  { titleTemplate: "%s | Mangile" }
+);
+//////////////////////////////////////////////////////////
 let loggeduser;
 let id;
 let lists;
+//////////////////////////////////////////////////////////
 if (cookies.get("email")) {
   loggeduser = await getUser(cookies.get("email"));
   id = await getIDByEmail(cookies.get("email"));
@@ -35,16 +49,16 @@ if (cookies.get("email")) {
 } else {
   loggeduser = null;
 }
-
+//////////////////////////////////////////////////////////
 let checkmangainbc = loggeduser
   ? await checkMangaInBC(id, route.params.id)
   : null;
-
-async function remove() {
+//////////////////////////////////////////////////////////
+const remove = async () => {
   await removeMangaFromBC(id, route.params.id, checkmangainbc[1]);
   window.location.reload();
-}
-async function ekle() {
+};
+const ekle = async () => {
   if (
     lists
       .find((x) => x.title == String(document.getElementById("liste").value))
@@ -61,8 +75,8 @@ async function ekle() {
     );
     window.location.reload();
   }
-}
-
+};
+//////////////////////////////////////////////////////////
 let coverartid;
 for (let item of JSON.parse(info.data.value).data.relationships) {
   if (item.type == "cover_art") {
@@ -81,29 +95,33 @@ for (let item of JSON.parse(info.data.value).data.relationships) {
     artistid = item.id;
   }
 }
+//////////////////////////////////////////////////////////
 const artist = await useFetch(`https://api.mangadex.org/author/${artistid}`);
 const author = await useFetch(`https://api.mangadex.org/author/${authorid}`);
 const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
 const stats = await useFetch(
   `https://api.mangadex.org/statistics/manga?manga[]=${route.params.id}`
 );
-let warning;
+//////////////////////////////////////////////////////////
 const ist = JSON.parse(stats.data.value).statistics[String(route.params.id)];
 const mangadata = await getManga(route.params.id);
-let statuscode = mangadata == null ? 404 : 200;
 const links = JSON.parse(info.data.value).data.attributes.links;
 const genres = JSON.parse(info.data.value).data.attributes.tags;
-
-async function getVolData(i) {
+//////////////////////////////////////////////////////////
+let warning;
+let statuscode = mangadata == null ? 404 : 200;
+//////////////////////////////////////////////////////////
+const getVolData = async (i) => {
   const voldata = await getVol(
     route.params.id,
     parseInt(mangadata.volumes) - parseInt(i)
   );
   return voldata;
-}
-
+};
+//////////////////////////////////////////////////////////
 let titles = new Array();
 let episodes = new Array();
+//////////////////////////////////////////////////////////
 try {
   for (var i = 0; i < mangadata.volumes; i++) {
     titles.push(Object(await getVolData(i)).title);
@@ -112,7 +130,7 @@ try {
 } catch (err) {
   statuscode = 404;
 }
-
+//////////////////////////////////////////////////////////
 for (let item of genres) {
   if (
     item.attributes.name.en == "Gore" ||
@@ -127,16 +145,20 @@ for (let item of genres) {
     warning = ref(1);
   }
 }
+//////////////////////////////////////////////////////////
 let chapterlist;
 let chaps;
+//////////////////////////////////////////////////////////
 if (statuscode != 200) {
   chapterlist = await useFetch(
     `https://api.mangadex.org/chapter?manga=${route.params.id}&limit=100&order[chapter]=desc&translatedLanguage[]=en&includeExternalUrl=0`
   );
   chaps = JSON.parse(chapterlist.data.value).data;
 }
+//////////////////////////////////////////////////////////
 let alttitle;
 let done = false;
+//////////////////////////////////////////////////////////
 for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
   if (Boolean(item.tr)) {
     if (!done) {
@@ -159,6 +181,7 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
     }
   }
 }
+//////////////////////////////////////////////////////////
 </script>
 <template>
   <div class="grid grid-cols-10">
@@ -956,7 +979,13 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                           class="h-5 w-5"
                           icon="material-symbols:menu-book-rounded"
                       /></span>
-                      <b>{{ a.title }}</b> ({{ a.source }})
+                      <span class="flex flex-row">
+                        <b class="mr-1">{{ a.title }}</b> (<RouterLink
+                          class="link"
+                          :to="`/scan/${a.scan}`"
+                          >{{ a.source }}</RouterLink
+                        >)
+                      </span>
                     </a>
                   </li>
                 </span>

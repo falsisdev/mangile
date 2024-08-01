@@ -129,19 +129,18 @@
 }
 </style>
 <script>
+//////////////////////////////////////////////////////////
 import { Swiper, SwiperSlide } from "swiper/vue";
-
-// Import Swiper styles
 import "swiper/css";
-
 import "swiper/css/scrollbar";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
-
-// import required modules
 import { Autoplay, Scrollbar, FreeMode, Pagination } from "swiper/modules";
 import { useRoute } from "vue-router";
-
+import { useTitle } from "@vueuse/core";
+//////////////////////////////////////////////////////////
+useTitle("Anasayfa", { titleTemplate: "%s | Mangile" });
+//////////////////////////////////////////////////////////
 export default {
   components: {
     Swiper,

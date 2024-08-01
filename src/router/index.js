@@ -118,6 +118,17 @@ const router = createRouter({
       ],
     },
     {
+      path: "/scan",
+      name: "scan",
+      component: () => import("../views/DefaultView.vue"),
+      children: [
+        {
+          path: ":name",
+          component: () => import("../components/Scans/View.vue"),
+        },
+      ],
+    },
+    {
       path: "/user",
       name: "user",
       component: () => DefaultView,

@@ -1,18 +1,21 @@
 <script setup>
 import { useCookies } from "vue3-cookies";
 import { RouterLink } from "vue-router";
+//////////////////////////////////////////////////////////
 import { getIDByEmail, getUser } from "../firebase";
-
+//////////////////////////////////////////////////////////
 const { cookies } = useCookies();
-
+//////////////////////////////////////////////////////////
 let loggeduser;
 let id;
+//////////////////////////////////////////////////////////
 if (cookies.get("email")) {
   loggeduser = await getUser(cookies.get("email"));
   id = await getIDByEmail(cookies.get("email"));
 } else {
   loggeduser = null;
 }
+//////////////////////////////////////////////////////////
 </script>
 <template>
   <span class="hover:bg-base-100 text-sm/6">
