@@ -6,6 +6,7 @@ import {
   getUserByID,
   likeList,
   unlikeList,
+  getUsersLikedList,
 } from "../../firebase";
 import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
@@ -16,6 +17,7 @@ const route = useRoute();
 const { cookies } = useCookies();
 const list = await getListById(route.params.id, route.params.listid);
 const listuser = await getUserByID(route.params.id);
+const users = await getUsersLikedList(route.params.id, route.params.listid);
 
 let cover = [];
 let manga = [];
@@ -87,8 +89,8 @@ const like = async () => {
       >
         <Icon icon="solar:heart-lock-bold" class="h-5 w-5 mr-1" />
         {{ likes }}
-      </div></label
-    >
+      </div>
+    </label>
     <label v-else class="swap btn btn-ghost">
       <input id="likes" @click="like()" type="checkbox" />
       <span class="swap-off flex flex-row"
@@ -105,6 +107,37 @@ const like = async () => {
         />
         {{ likes + 1 }}</span
       >
+    </label>
+    <label
+      v-if="route.params.id == cookedid"
+      class="btn btn-ghost hover:bg-transparent"
+    >
+      <div
+        data-tip="Listeyi Beğenenler (yalnızca sen görebilirsin)"
+        class="tooltip dropdown dropdown-bottom dropdown-end"
+      >
+        <div tabindex="0" role="button">
+          <Icon icon="mdi:account-heart" class="h-5 w-5" />
+        </div>
+        <ul
+          tabindex="0"
+          class="dropdown-content menu bg-base-100 rounded-box z-[1] w-64 p-2 shadow no-animation"
+        >
+          <li>Listeyi Beğenenler</li>
+          <li
+            v-for="item of users"
+            :key="item"
+            class="no-underline flex flex-row no-animation"
+          >
+            <span class="w-full"
+              ><Icon icon="material-symbols:account-box" class="h-5 w-5" /><span
+                class="mb-1"
+                >{{ item.username }}</span
+              ></span
+            >
+          </li>
+        </ul>
+      </div>
     </label>
     <label
       :for="route.params.listid + 'edit'"

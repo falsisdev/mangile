@@ -1,5 +1,6 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import "firebase/compat/storage";
 import { getCountFromServer } from "firebase/firestore";
 import { ref, onUnmounted } from "vue";
 //import { getAnalytics } from "firebase/analytics";
@@ -15,6 +16,7 @@ const config = {
 
 const firebaseApp = firebase.initializeApp(config);
 const db = firebaseApp.firestore();
+const storage = firebase.storage();
 const usersCollection = db.collection("users");
 const mangasCollection = db.collection("mangas");
 const lastsCollection = db.collection("lastchapters");
@@ -22,6 +24,11 @@ const lastsCollection = db.collection("lastchapters");
 export const addManga = async (data, mangadexID) => {
   await setDoc(doc(db, "mangas", mangadexID), data);
   return;
+};
+
+export const getEpub = async (mangaid, vol, ep) => {
+  var file = storage.ref(`mangas/${mangaid}/${vol}/${ep}.epub`);
+  return file;
 };
 
 export const getManga = async (mangadexID) => {
@@ -88,6 +95,18 @@ export const getListsById = async (userid) => {
       .doc("collection")
       .get()
   ).data().lists;
+};
+
+export const getUsersLikedList = async (userid, listid) => {
+  let col = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let list = col["lists"].find((x) => x.id == listid);
+  return list;
 };
 
 export const editManga = (mangadexID, newData) => {
@@ -360,11 +379,14 @@ export const likeList = async (userid, authorid, listid) => {
       .doc("collection")
       .get()
   ).data();
-  let colauthornew = colauthor["lists"]
-    .find((x) => x.id == listid)
-    ["likes"].push(userid);
+  colauthor["lists"].find((x) => x.id == listid)["likes"].push(userid);
   console.log(colauthor);
-  let colusernew = coluser["liked"].push(listid);
+  coluser["liked"].push([
+    {
+      userid: authorid,
+      listid: listid,
+    },
+  ]);
   await usersCollection
     .doc(authorid)
     .collection("library")
@@ -398,7 +420,10 @@ export const unlikeList = async (userid, authorid, listid) => {
       colauthor["lists"].find((x) => x.id == listid)["likes"].indexOf(userid),
       1
     );
-  let colusernew = coluser["liked"].splice(coluser["liked"].indexOf(listid), 1);
+  let colusernew = coluser["liked"].splice(
+    coluser["liked"].indexOf([{ userid: authorid, listid: listid }]),
+    1
+  );
   await usersCollection
     .doc(authorid)
     .collection("library")

@@ -1,105 +1,96 @@
 <template>
   <!--page view-->
-  <div class="card lg:card-side bg-base-100 p-[10px]">
+  <div class="card lg:card-side bg-base-100">
     <div class="card-body">
-      <RouterLink class="link link-hover" :to="`/manga/${route.params.id}`">{{
-        JSON.parse(info.data.value).data.attributes.title.en
-      }}</RouterLink>
-      <article class="prose max-w-none">
-        <h1>{{ epp.title }}</h1>
-      </article>
-      <span class="flex flex-row">
-        <span>Çeviri Ekibi: {{ epp.source }}</span>
-        <span class="grow"></span>
-        <span>Sayfa Sayısı: {{ epp["pages"].length }}</span>
-      </span>
-      <span class="flex flex-row">
-        <button @click="onceki()" class="btn btn-ghost btn-sm">
-          <Icon
-            icon="material-symbols:drive-file-move-rtl-rounded"
-            class="h-5 w-5"
-          />
-          Önceki Bölüm
-        </button>
-        <div class="grow"></div>
-        <button @click="sonraki()" class="btn btn-ghost btn-sm">
-          Sonraki Bölüm
-          <Icon icon="material-symbols:drive-file-move" class="h-5 w-5" />
-        </button>
-      </span>
-
-      <span class="flex flex-row">
-        <!--<span class="btn btn ghost btn-sm" @click="ilk()">İlk Sayfaya git</span>
-        <span class="btn btn ghost btn-sm" @click="son()">Son Sayfaya git</span>-->
-        <span class="grow" />
-        <span id="current">Şuanki Sayfa: {{ currentsayfa + 1 }}</span>
-      </span>
-      <div class="divider"></div>
-      <span class="flex flex-row">
-        <button
-          @click="sayfa('geri')"
-          class="btn btn-ghost btn-sm btn-disabled"
-          id="geri"
-        >
-          <Icon icon="material-symbols:arrow-back" class="h-5 w-5" /> Önceki
-          Sayfa
-        </button>
-        <div class="grow"></div>
-        <button @click="sayfa('ileri')" class="btn btn-ghost btn-sm" id="ileri">
-          Sonraki Sayfa
-          <Icon icon="material-symbols:arrow-forward" class="h-5 w-5" />
-        </button>
-      </span>
+      <Flipbook
+        class="flipbook"
+        v-slot="flipbook"
+        :pages="pages"
+        forwardDirection="left"
+        wheel="zoom"
+      >
+        <RouterLink class="link link-hover" :to="`/manga/${route.params.id}`">{{
+          JSON.parse(info.data.value).data.attributes.title.en
+        }}</RouterLink>
+        <article class="prose max-w-none">
+          <h1>{{ epp.title }}</h1>
+        </article>
+        <span class="flex flex-row">
+          <span>Çeviri Ekibi: {{ epp.source }}</span>
+          <span class="grow" />
+          <span
+            >Sayfa: {{ flipbook.numPages }} - {{ flipbook.numPages - 1 }}/{{
+              flipbook.page + 1
+            }}
+            - {{ flipbook.page }}</span
+          >
+        </span>
+        <span class="flex flex-row">
+          <button @click="onceki()" class="btn btn-ghost btn-sm">
+            <Icon
+              icon="material-symbols:drive-file-move-rtl-rounded"
+              class="h-5 w-5"
+            />
+            Önceki Bölüm
+          </button>
+          <div class="grow"></div>
+          <button @click="sonraki()" class="btn btn-ghost btn-sm">
+            Sonraki Bölüm
+            <Icon icon="material-symbols:drive-file-move" class="h-5 w-5" />
+          </button>
+        </span>
+        <div class="divider"></div>
+        <div role="alert" class="alert bg-base-400 shadow-lg">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="h-6 w-6 shrink-0 stroke-current"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span
+            >Manga okumak, Türkçe yazılmış bir çizgi roman, kitap veya dergi
+            okumaktan farklıdır. Mangalar geleneksel olarak sağdan sola,
+            yukarıdan aşağıya doğru okunur. Dolayısıyla sayfayı soldan sağa
+            doğru çevirmeniz gerekiyor. Hala anlamadıysanız
+            <a
+              href="https://www.google.com/search?q=Manga+panelleri+nasıl+okunmalıdır%3F"
+              class="link"
+              target="_blank"
+              >ufak bir araştırma</a
+            >
+            yapabilirsiniz.</span
+          >
+        </div>
+      </Flipbook>
       <br />
-      <div v-if="statuscode == 200" class="flex flex-col flex-wrap">
-        <img
-          :src="
-            epp.pages[currentsayfa].replace(
-              'https://mediacdn.falsisdev.repl.co',
-              'https://6f2d7581-440f-4b4c-9e11-b25bda6e21ff-00-s1of6dthubzs.kirk.replit.dev/'
-            )
-          "
-          id="pages"
-          class="object-contain"
-        />
-      </div>
-      <br />
       <div class="divider"></div>
-      <span class="flex flex-row">
-        <button @click="onceki()" class="btn btn-ghost btn-sm">
-          <Icon
-            icon="material-symbols:drive-file-move-rtl-rounded"
-            class="h-5 w-5"
-          />
-          Önceki Bölüm
-        </button>
-        <div class="grow"></div>
-        <button @click="sonraki()" class="btn btn-ghost btn-sm">
-          Sonraki Bölüm
-          <Icon icon="material-symbols:drive-file-move" class="h-5 w-5" />
-        </button>
-      </span>
     </div>
   </div>
 </template>
+<style scoped>
+.flipbook {
+  width: 67vw;
+  height: 60vw;
+}
+</style>
 <script setup>
 import { useRoute, RouterLink } from "vue-router";
 import { useFetch } from "@vueuse/core";
-import { getManga, getVol } from "../../firebase";
+import { /*getManga,*/ getVol } from "../../firebase";
+import Flipbook from "flipbook-vue";
 
 const route = useRoute();
 const info = await useFetch(
   `https://api.mangadex.org/manga/${route.params.id}`
 );
-const mangadata = await getManga(route.params.id);
-/*const episodedata = await useFetch(
-  `${import.meta.env.VITE_BASEURL}/mangile/manga?token=${
-    import.meta.env.VITE_TOKEN
-  }&id=${route.params.id}`
-);*/
-let statuscode = mangadata == null ? 404 : 200;
-//const epdata = JSON.parse(episodedata.data.value).data.result;
-
+//const mangadata = await getManga(route.params.id);
 async function getVolData(i) {
   const voldata = await getVol(route.params.id, i);
   return voldata;
@@ -111,55 +102,64 @@ for (let item of Object(await Object(getVolData(route.params.vol))).episodes) {
     epp = item;
   }
 }
-function onceki() {
-  window.location.href = `/manga/${route.params.id}/read/${route.params.vol}/${
-    parseInt(route.params.ep) - 1
-  }`;
+
+let pages = [];
+for (var i = 0; i < epp.page; i++) {
+  pages.push(
+    `https://firebasestorage.googleapis.com/v0/b/mangile-2229f.appspot.com/o/mangas%2F${route.params.id}%2F${route.params.vol}%2F${route.params.ep}%2F${i}_0.png?alt=media&token=a5def522-8428-4c79-9f9b-d5ca4c750624`
+  );
 }
-function sonraki() {
-  window.location.href = `/manga/${route.params.id}/read/${route.params.vol}/${
-    parseInt(route.params.ep) + 1
-  }`;
-}
-let currentsayfa = 0;
-function sayfa(yon) {
-  if (yon == "ileri") {
-    if (parseInt(currentsayfa) + 1 == epp["pages"].length) {
-      document.getElementById("ileri").className =
-        "btn btn-ghost btn-sm btn-disabled";
+
+async function onceki() {
+  try {
+    if (
+      Object(await Object(getVolData(route.params.vol)))["episodes"].some(
+        (x) => x.ep == parseInt(route.params.ep) - 1
+      )
+    ) {
+      window.location.href = `/manga/${route.params.id}/read/${
+        route.params.vol
+      }/${parseInt(route.params.ep) - 1}`;
+    } else if (
+      Object(await Object(getVolData(parseInt(route.params.vol) - 1)))[
+        "episodes"
+      ].some((x) => x.ep == parseInt(route.params.ep) - 1)
+    ) {
+      window.location.href = `/manga/${route.params.id}/read/${
+        route.params.vol - 1
+      }/${parseInt(route.params.ep) - 1}`;
     } else {
-      if (parseInt(currentsayfa) == 0) {
-        document.getElementById("geri").className = "btn btn-ghost btn-sm";
-      }
-      currentsayfa++;
-      document.getElementById("pages").src = epp.pages[currentsayfa];
-      document.getElementById("current").innerText =
-        "Şuanki Sayfa: " + (currentsayfa + 1);
+      window.location.href = `/manga/${route.params.id}`;
     }
-  } else if (yon == "geri") {
-    if (parseInt(currentsayfa) == 1) {
-      document.getElementById("geri").className =
-        "btn btn-ghost btn-sm btn-disabled";
-    } else {
-      if (parseInt(currentsayfa) + 1 == epp["pages"].length)
-        document.getElementById("ileri").className = "btn btn-ghost btn-sm";
-    }
-    currentsayfa -= 1;
-    document.getElementById("pages").src = epp.pages[currentsayfa];
-    document.getElementById("current").innerText =
-      "Şuanki Sayfa: " + (currentsayfa + 1);
+  } catch (err) {
+    window.location.href = `/manga/${route.params.id}`;
   }
 }
-function son() {
-  currentsayfa = epp["pages"].length - 1;
-  document.getElementById("pages").src = epp.pages[currentsayfa];
-  document.getElementById("current").innerText =
-    "Şuanki Sayfa: " + (currentsayfa + 1);
+async function sonraki() {
+  try {
+    if (
+      Object(await Object(getVolData(route.params.vol)))["episodes"].some(
+        (x) => x.ep == parseInt(route.params.ep) + 1
+      )
+    ) {
+      window.location.href = `/manga/${route.params.id}/read/${
+        route.params.vol
+      }/${parseInt(route.params.ep) + 1}`;
+    } else if (
+      Object(await Object(getVolData(parseInt(route.params.vol) + 1)))[
+        "episodes"
+      ].some((x) => x.ep == parseInt(route.params.ep) + 1)
+    ) {
+      window.location.href = `/manga/${route.params.id}/read/${
+        parseInt(route.params.vol) + 1
+      }/${parseInt(route.params.ep) + 1}`;
+    } else {
+      window.location.href = `/manga/${route.params.id}`;
+    }
+  } catch (err) {
+    window.location.href = `/manga/${route.params.id}`;
+  }
 }
-function ilk() {
-  currentsayfa = 0;
-  document.getElementById("pages").src = epp.pages[currentsayfa];
-  document.getElementById("current").innerText =
-    "Şuanki Sayfa: " + (currentsayfa + 1);
-}
+
+let current = 0;
 </script>

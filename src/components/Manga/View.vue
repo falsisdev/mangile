@@ -127,7 +127,6 @@ for (let item of genres) {
     warning = ref(1);
   }
 }
-
 let chapterlist;
 let chaps;
 if (statuscode != 200) {
@@ -948,7 +947,7 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                   <li class="menu-title">
                     <span>{{ titles[episodes.indexOf(i)] }}</span>
                   </li>
-                  <li v-for="a of i" :key="a">
+                  <li v-for="a of i.reverse()" :key="a">
                     <a
                       :href="`/manga/${route.params.id}/read/${a.vol}/${a.ep}`"
                     >

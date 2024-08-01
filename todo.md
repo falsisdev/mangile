@@ -2,8 +2,6 @@
 
 Eklenecekler:
 
-- Giriş gerektiren sayfalar router'a eklenecek (Tahmini: Temmuz 2024)
-- Listeler sekmesine beğenilen listeler eklenecek (Tahmini: Temmuz 2024)
 - Favoriler sekmesine manga, bölüm ve panel eklenecek (Tahmini: Ağustos 2024)
 - Mangayı favorileme eklenecek (Tahmini: Ağustos 2024)
 - Bölümü favorileme eklenecek (Tahmini: Ağustos 2024)
@@ -18,7 +16,6 @@ Eklenecekler:
 - Yorum beğenme eklenecek (Tahmini: Şubat 2025)
 - Favoriler sekmesine yorumlar eklenecek (Tahmini: Şubat 2025)
 - Yorum yapma eklenecek (Tahmini: Şubat 2025)
-- Manga okuyucu eklentisi eklenecek (Tahmini: Kasım 2024)
 - Bildirimler eklenecek (Tahmini: Haziran 2025)
 - Dashboardla bildirimler entegre edilecek (Tahmini: Haziran 2025)
 - Raporlama sistemi eklenecek (Tahmini: Haziran 2025)
@@ -26,6 +23,7 @@ Eklenecekler:
 
 Sorun çözüm:
 
+- Liste Beğenme Sorunu Çözülecek (Tahmini: Ağustos 2024)
 - Türler sayfası sorunları çözülecek (Tahmini: Ağustos 2026)
 - Manga sayfasındaki durum dizininin rastgele gelmesi düzeltilecek (Tahmini: Ağustos 2024)
 

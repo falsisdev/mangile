@@ -1,10 +1,9 @@
-import { createRouter, createWebHistory, useRoute } from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import { getUser } from "../firebase";
 import { useCookies } from "vue3-cookies";
 import DefaultView from "../views/DefaultView.vue";
 
 const { cookies } = useCookies();
-const route = useRoute();
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,7 +87,13 @@ const router = createRouter({
         },
         {
           path: ":id/read/:vol/:ep",
-          component: () => import("../components/Manga/Read.vue"),
+          component: () => {
+            if (cookies.get("email")) {
+              return import("../components/Manga/Read.vue");
+            } else {
+              window.location.href = "/auth/signup";
+            }
+          },
         },
         {
           path: "random",
@@ -119,7 +124,13 @@ const router = createRouter({
       children: [
         {
           path: ":id",
-          component: () => import("../components/Profile/View.vue"),
+          component: () => {
+            if (cookies.get("email")) {
+              return import("../components/Profile/View.vue");
+            } else {
+              window.location.href = "/auth/signup";
+            }
+          },
           children: [
             {
               path: "edit",
@@ -152,7 +163,7 @@ const router = createRouter({
             return import("../components/Profile/View.vue");
           }
         } else {
-          return import("../components/AuthForm.vue");
+          window.location.href = "/auth/signup";
         }
       },
     },

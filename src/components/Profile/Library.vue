@@ -6,6 +6,7 @@ import {
   getUser,
   getBookCaseById,
   getCollectionById,
+  getUsersLikedList,
 } from "../../firebase";
 import { useCookies } from "vue3-cookies";
 import Card from "../Manga/Card.vue";
@@ -30,6 +31,7 @@ let covers = {
   planned: [],
   rereading: [],
   lists: [],
+  liked: [],
 };
 
 const user = await getUserByID(id);
@@ -40,6 +42,32 @@ if (cookies.get("email")) {
 }
 const bookcase = await getBookCaseById(id);
 const collection = await getCollectionById(id);
+const likedids = collection.liked;
+let likedlists = [];
+for (let item of likedids) {
+  likedlists.push(await getUsersLikedList(item.userid, item.listid));
+}
+
+for (let item of likedlists) {
+  if (item.series[0]) {
+    const info = await useFetch(
+      `https://api.mangadex.org/manga/${item.series[0]}`
+    );
+    let coverartid;
+    for (let item of JSON.parse(info.data.value).data.relationships) {
+      coverartid;
+      if (item.type == "cover_art") {
+        coverartid = item.id;
+      }
+    }
+    const cover = await useFetch(
+      `https://api.mangadex.org/cover/${coverartid}`
+    );
+    covers["liked"].push(JSON.parse(cover.data.value).data.attributes.fileName);
+  } else {
+    covers["liked"].push("e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3");
+  }
+}
 
 for (let item of collection.lists) {
   if (item.series[0]) {
@@ -200,7 +228,10 @@ for (let item of bookcase.rereading) {
                 Okunuyor ({{ bookcase["reading"].length }}) </span
               ><span class="divider"></span>
             </h2>
-            <div class="flex flex-row flex-wrap">
+            <div v-if="!bookcase['reading'].length">
+              Okumakta olduğunuz bir seri yok.
+            </div>
+            <div v-else class="flex flex-row flex-wrap">
               <Card
                 v-for="item of bookcase.reading"
                 class="m-2"
@@ -239,7 +270,10 @@ for (let item of bookcase.rereading) {
                 Bitirildi ({{ bookcase["completed"].length }})</span
               ><span class="divider"></span>
             </h2>
-            <div class="flex flex-row flex-wrap">
+            <div v-if="!bookcase['completed'].length">
+              Daha önce hiçbir manga bitirmediniz.
+            </div>
+            <div v-else class="flex flex-row flex-wrap">
               <Card
                 v-for="item of bookcase.completed"
                 class="m-2"
@@ -283,7 +317,10 @@ for (let item of bookcase.rereading) {
                 Bekletiliyor ({{ bookcase["onhold"].length }}) </span
               ><span class="divider"></span>
             </h2>
-            <div class="flex flex-row flex-wrap">
+            <div v-if="!bookcase['onhold'].length">
+              Bekletmekte olduğunuz bir seri yok.
+            </div>
+            <div v-else class="flex flex-row flex-wrap">
               <Card
                 v-for="item of bookcase.onhold"
                 class="m-2"
@@ -322,7 +359,10 @@ for (let item of bookcase.rereading) {
                 Bırakıldı ({{ bookcase["dropped"].length }}) </span
               ><span class="divider"></span>
             </h2>
-            <div class="flex flex-row flex-wrap">
+            <div v-if="!bookcase['dropped'].length">
+              Bırakıtğınız bir seri yok.
+            </div>
+            <div v-else class="flex flex-row flex-wrap">
               <Card
                 v-for="item of bookcase.dropped"
                 class="m-2"
@@ -364,7 +404,10 @@ for (let item of bookcase.rereading) {
                 Planlandı ({{ bookcase["plantoread"].length }}) </span
               ><span class="divider"></span>
             </h2>
-            <div class="flex flex-row flex-wrap">
+            <div v-if="!bookcase['plantoread'].length">
+              Okumayı planladığınız bir seri yok.
+            </div>
+            <div v-else class="flex flex-row flex-wrap">
               <Card
                 v-for="item of bookcase.plantoread"
                 class="m-2"
@@ -404,7 +447,10 @@ for (let item of bookcase.rereading) {
                 Yeniden Okunuyor ({{ bookcase["rereading"].length }})</span
               ><span class="divider"></span>
             </h2>
-            <div class="flex flex-row flex-wrap">
+            <div v-if="!bookcase['rereading'].length">
+              Yeniden okuyor olduğunuz bir seri yok.
+            </div>
+            <div v-else class="flex flex-row flex-wrap">
               <Card
                 v-for="item of bookcase.rereading"
                 class="m-2"
@@ -444,12 +490,13 @@ for (let item of bookcase.rereading) {
         <h1>
           <span class="flex flex-row"
             ><Icon icon="material-symbols:list-alt" class="h-8 w-8 m-2" />
-            Listeler
+            Oluşturulan Listeler
           </span>
           <span class="divider"></span>
         </h1>
       </article>
-      <div class="flex flex-row flex-wrap">
+      <div v-if="!collection['lists'].length">Hiç liste oluşturmamışsınız.</div>
+      <div v-else class="flex flex-row flex-wrap">
         <Card
           v-for="item of collection.lists"
           class="m-2"
@@ -468,8 +515,40 @@ for (let item of bookcase.rereading) {
               : '8e67e13e-fdeb-44f5-8ecb-c4609df6b02c'
           "
           :name="item.title"
+        />
+      </div>
+      <article class="prose mt-5">
+        <h1>
+          <span class="flex flex-row"
+            ><Icon icon="material-symbols:list-alt" class="h-8 w-8 m-2" />
+            Beğenilen Listeler
+          </span>
+          <span class="divider"></span>
+        </h1>
+      </article>
+      <div v-if="likedids.length" class="flex flex-row flex-wrap">
+        <Card
+          v-for="item of likedlists"
+          class="m-2"
+          :key="item"
+          :isOwner="user.email == loggeduser.email"
+          :isLib="true"
+          :isList="true"
+          :isLiked="true"
+          :likes="item['likes'].length"
+          :id="item.id"
+          :userid="likedids[likedlists.indexOf(item)].userid"
+          :description="item.description"
+          :cover="covers.liked[likedlists.indexOf(item)]"
+          :coverid="
+            item.series[0]
+              ? item.series[0]
+              : '8e67e13e-fdeb-44f5-8ecb-c4609df6b02c'
+          "
+          :name="item.title"
         /><!--window.crypto.randomUUID()-->
       </div>
+      <div v-else>Beğendiğiniz liste bulunmamaktadır.</div>
     </div>
     <input
       type="radio"
@@ -488,7 +567,7 @@ for (let item of bookcase.rereading) {
           <span class="divider"></span>
         </h1>
       </article>
-      Tab content 3
+      Yakında...
     </div>
   </div>
 </template>
