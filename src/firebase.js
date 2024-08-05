@@ -167,6 +167,22 @@ export const getLastChapter = async (firebaseid) => {
   return chapter.exists ? chapter.data() : null;
 };
 ///////////////////////// ---- LASTUPLOADS FONKSİYONLARI ---- /////////////////////////
+///////////////////////// ---- FAVORILER FONKSİYONLARI ---- /////////////////////////
+export const getFavoriteMangas = async (userid) => {
+  const mangasSnapshot = await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .get();
+  const mangas = mangasSnapshot.data().mangas;
+  let favmangas = [];
+  for (let mangaRef of mangas) {
+    const mangaDoc = await mangaRef.get(); // Belge referansını al ve verisini çek
+    favmangas.push(mangaDoc.data());
+  }
+  return favmangas;
+};
+///////////////////////// ---- FAVORILER FONKSİYONLARI ---- /////////////////////////
 ///////////////////////// ---- KULLANICI FONKSİYONLARI ---- /////////////////////////
 export const createUser = async (user) => {
   let a = usersCollection.add(user);
@@ -181,6 +197,15 @@ export const createUser = async (user) => {
       plantoread: [],
       reading: [],
       rereading: [],
+    });
+  await usersCollection
+    .doc(await getIDByEmail(user.email))
+    .collection("library")
+    .doc("favorites")
+    .set({
+      chapters: [],
+      mangas: [], //güncellenirken türü Referans olarak belirlenmeli ve işaret edilmeli
+      panels: [],
     });
   await usersCollection
     .doc(await getIDByEmail(user.email))

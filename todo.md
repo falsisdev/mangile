@@ -2,9 +2,9 @@
 
 Eklenecekler:
 
-- Favoriler sekmesine manga, bölüm ve panel eklenecek (Tahmini: Ağustos 2024)
-- Mangayı favorileme eklenecek (Tahmini: Ağustos 2024)
-- Bölümü favorileme eklenecek (Tahmini: Ağustos 2024)
+- Mangayı favorileme ve favoriyi kaldırma eklenecek (Tahmini: Ağustos 2024)
+- Favoriler sekmesine bölüm ve panel eklenecek (Tahmini: Ağustos 2024)
+- Bölümü favorileme ve favoriyi kaldırma eklenecek (Tahmini: Ağustos 2024)
 - Profil fotoğrafı ekleme eklenecek (Tahmini: Ağustos 2024)
 - Dashboard ile analytics entegre edilecek (Tahmini: Nisan 2025)
 - Dashboarda kullanıcı paneli eklenecek (Tahmini: Nisan 2025)

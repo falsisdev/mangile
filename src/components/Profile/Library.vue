@@ -9,8 +9,12 @@ import {
   getBookCaseById,
   getCollectionById,
   getUsersLikedList,
+  getFavoriteMangas,
 } from "../../firebase";
-import Card from "../Manga/Card.vue";
+import Card from "../Profile/Card/Library.vue";
+import LikedCard from "../List/Card/Liked.vue";
+import CreatedCard from "../List/Card/Created.vue";
+import FavMangaCard from "../Profile/Card/FavManga.vue";
 //////////////////////////////////////////////////////////
 const { cookies } = useCookies();
 const route = useRoute();
@@ -35,17 +39,34 @@ let covers = {
   rereading: [],
   lists: [],
   liked: [],
+  favmangas: [],
 };
 //////////////////////////////////////////////////////////
 const user = await getUserByID(id);
 const bookcase = await getBookCaseById(id);
 const collection = await getCollectionById(id);
+const favmangas = await getFavoriteMangas(id);
 const likedids = collection.liked;
 //////////////////////////////////////////////////////////
 if (cookies.get("email")) {
   loggeduser = await getUser(cookies.get("email"));
 } else {
   loggeduser = null;
+}
+//////////////////////////////////////////////////////////
+for (let item of favmangas) {
+  const info = await useFetch(`https://api.mangadex.org/manga/${item.mangaid}`);
+  let coverartid;
+  for (let item of JSON.parse(info.data.value).data.relationships) {
+    coverartid;
+    if (item.type == "cover_art") {
+      coverartid = item.id;
+    }
+  }
+  const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
+  covers["favmangas"].push(
+    JSON.parse(cover.data.value).data.attributes.fileName
+  );
 }
 //////////////////////////////////////////////////////////
 for (let item of likedids) {
@@ -241,7 +262,6 @@ for (let item of bookcase.rereading) {
                 class="m-2"
                 :key="item"
                 :isOwner="user.email == loggeduser.email"
-                :isLib="true"
                 :id="item"
                 :userid="id"
                 status="reading"
@@ -283,7 +303,6 @@ for (let item of bookcase.rereading) {
                 class="m-2"
                 :key="item"
                 :isOwner="user.email == loggeduser.email"
-                :isLib="true"
                 :id="item"
                 :userid="id"
                 status="completed"
@@ -330,7 +349,6 @@ for (let item of bookcase.rereading) {
                 class="m-2"
                 :key="item"
                 :isOwner="user.email == loggeduser.email"
-                :isLib="true"
                 :id="item"
                 :userid="id"
                 status="onhold"
@@ -372,7 +390,6 @@ for (let item of bookcase.rereading) {
                 class="m-2"
                 :key="item"
                 :isOwner="user.email == loggeduser.email"
-                :isLib="true"
                 :id="item"
                 :userid="id"
                 status="dropped"
@@ -417,7 +434,6 @@ for (let item of bookcase.rereading) {
                 class="m-2"
                 :key="item"
                 :isOwner="user.email == loggeduser.email"
-                :isLib="true"
                 :id="item"
                 :userid="id"
                 status="plantoread"
@@ -460,7 +476,6 @@ for (let item of bookcase.rereading) {
                 class="m-2"
                 :key="item"
                 :isOwner="user.email == loggeduser.email"
-                :isLib="true"
                 :id="item"
                 :userid="id"
                 status="rereading"
@@ -501,16 +516,14 @@ for (let item of bookcase.rereading) {
       </article>
       <div v-if="!collection['lists'].length">Hiç liste oluşturmamışsınız.</div>
       <div v-else class="flex flex-row flex-wrap">
-        <Card
+        <CreatedCard
           v-for="item of collection.lists"
           class="m-2"
           :key="item"
-          :isOwner="user.email == loggeduser.email"
-          :isLib="true"
-          :isList="true"
           :likes="item['likes'].length"
           :id="item.id"
           :userid="id"
+          :isOwner="user.email == loggeduser.email"
           :description="item.description"
           :cover="covers.lists[collection['lists'].indexOf(item)]"
           :coverid="
@@ -531,15 +544,10 @@ for (let item of bookcase.rereading) {
         </h1>
       </article>
       <div v-if="likedids.length" class="flex flex-row flex-wrap">
-        <Card
+        <LikedCard
           v-for="item of likedlists"
           class="m-2"
           :key="item"
-          :isOwner="user.email == loggeduser.email"
-          :isLib="true"
-          :isList="true"
-          :isLiked="true"
-          :likes="item['likes'].length"
           :id="item.id"
           :userid="likedids[likedlists.indexOf(item)].userid"
           :description="item.description"
@@ -550,7 +558,7 @@ for (let item of bookcase.rereading) {
               : '8e67e13e-fdeb-44f5-8ecb-c4609df6b02c'
           "
           :name="item.title"
-        /><!--window.crypto.randomUUID()-->
+        />
       </div>
       <div v-else>Beğendiğiniz liste bulunmamaktadır.</div>
     </div>
@@ -561,17 +569,29 @@ for (let item of bookcase.rereading) {
       class="tab"
       aria-label="Favoriler"
     />
-    <div role="tabpanel" class="tab-content p-10">
+    <div role="tabpanel" class="tab-content">
       <article class="prose mt-5">
         <h1>
           <span class="flex flex-row"
-            ><Icon icon="material-symbols:favorite" class="h-8 w-8 m-2" />
-            Favoriler
+            ><Icon icon="mdi:book-heart" class="h-8 w-8 m-2" />
+            Favori Mangalar
           </span>
           <span class="divider"></span>
         </h1>
       </article>
-      Yakında...
+      <div v-if="favmangas[0]" class="flex flex-row flex-wrap">
+        <FavMangaCard
+          v-for="item of favmangas"
+          class="m-2"
+          :key="item"
+          :isOwner="user.email == loggeduser.email"
+          :id="item.mangaid"
+          :description="item.description"
+          :cover="covers.favmangas[favmangas.indexOf(item)]"
+          :name="item.title"
+        />
+      </div>
+      <div v-else>Seçtiğiniz bir manga bulunmamaktadır.</div>
     </div>
   </div>
 </template>

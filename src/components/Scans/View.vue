@@ -3,7 +3,7 @@ import { useFetch, useTitle } from "@vueuse/core";
 import { useRoute } from "vue-router";
 //////////////////////////////////////////////////////////
 import { getScan } from "../../firebase";
-import Card from "../Manga/Card.vue";
+import Card from "./Card.vue";
 //////////////////////////////////////////////////////////
 const route = useRoute();
 const scan = await getScan(route.params.name);
@@ -64,8 +64,6 @@ for (let item of scan.series) {
     v-for="item of scan.series"
     class="m-2"
     :key="item"
-    :isOwner="false"
-    :isScanned="true"
     :id="item"
     :cover="covers[scan['series'].indexOf(item)]"
     :name="
