@@ -109,7 +109,7 @@ export const addMangaToBC = async (userid, mangaid, status) => {
       .doc("bookcase")
       .get()
   ).data();
-  let bcnew = bc[status].push(mangaid);
+  bc[status].push(mangaid);
   await usersCollection
     .doc(userid)
     .collection("library")
@@ -132,6 +132,10 @@ export const checkMangaInBC = async (userid, mangaid) => {
   let ind = i == -1;
   let st = ind ? false : Object.keys(bc)[i];
   return [Object.values(bc).some((array) => array.includes(mangaid)), st];
+};
+/* ------------------------------------------- */
+export const checkMangaExists = async (mangaid) => {
+  return (await mangasCollection.doc(mangaid).get()).data();
 };
 ///////////////////////// ---- MANGA FONKSİYONLARI ---- /////////////////////////
 ///////////////////////// ---- LASTUPLOADS FONKSİYONLARI ---- /////////////////////////
@@ -181,6 +185,61 @@ export const getFavoriteMangas = async (userid) => {
     favmangas.push(mangaDoc.data());
   }
   return favmangas;
+};
+/* ------------------------------------------- */
+export const likeManga = async (userid, mangaid) => {
+  const mangasSnapshot = await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .get();
+  const mangas = mangasSnapshot.data().mangas;
+  mangas.push(db.doc(`/mangas/${mangaid}`));
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .update({
+      chapters: mangasSnapshot.data().chapters,
+      mangas: mangas,
+      panels: mangasSnapshot.data().panels,
+    });
+};
+/* ------------------------------------------- */
+export const unlikeManga = async (userid, mangaid) => {
+  const mangasSnapshot = await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .get();
+  let mangas = mangasSnapshot.data().mangas;
+  mangas.splice(
+    mangas.indexOf(mangas.find((x) => x == db.doc(`/mangas/${mangaid}`))),
+    1
+  );
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .update({
+      chapters: mangasSnapshot.data().chapters,
+      mangas: mangas,
+      panels: mangasSnapshot.data().panels,
+    });
+};
+/* ------------------------------------------- */
+export const checkMangaInFavorites = async (userid, mangaid) => {
+  const mangasSnapshot = await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .get();
+  const mangas = mangasSnapshot.data().mangas;
+  return mangas.some(
+    async (x) =>
+      (await x.get()).data().mangaid ==
+      (await mangasCollection.doc(mangaid).get()).data().mangaid
+  );
 };
 ///////////////////////// ---- FAVORILER FONKSİYONLARI ---- /////////////////////////
 ///////////////////////// ---- KULLANICI FONKSİYONLARI ---- /////////////////////////
@@ -287,6 +346,18 @@ export const getUsersLikedList = async (userid, listid) => {
       .get()
   ).data();
   let list = col["lists"].find((x) => x.id == listid);
+  return list;
+};
+/* ------------------------------------------- */
+export const isUserLikedTheList = async (userid, listid) => {
+  let col = (
+    await usersCollection
+      .doc(userid)
+      .collection("library")
+      .doc("collection")
+      .get()
+  ).data();
+  let list = col["liked"].some((x) => x.listid == listid);
   return list;
 };
 /* ------------------------------------------- */
@@ -423,7 +494,6 @@ export const likeList = async (userid, authorid, listid) => {
       .get()
   ).data();
   colauthor["lists"].find((x) => x.id == listid)["likes"].push(userid);
-  console.log(colauthor);
   coluser["liked"].push([
     {
       userid: authorid,

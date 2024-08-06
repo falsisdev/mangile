@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useFetch, useTitle } from "@vueuse/core";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useCookies } from "vue3-cookies";
 //////////////////////////////////////////////////////////
 import Tags from "../Tags.vue";
@@ -14,6 +14,10 @@ import {
   removeMangaFromBC,
   addMangaToList,
   getListsById,
+  checkMangaInFavorites,
+  likeManga,
+  unlikeManga,
+  checkMangaExists,
 } from "../../firebase";
 import LibEdit from "../Profile/LibEdit.vue";
 //////////////////////////////////////////////////////////
@@ -53,6 +57,8 @@ if (cookies.get("email")) {
 let checkmangainbc = loggeduser
   ? await checkMangaInBC(id, route.params.id)
   : null;
+let exists = await checkMangaExists(route.params.id);
+let isFav = ref(await checkMangaInFavorites(id, route.params.id));
 //////////////////////////////////////////////////////////
 const remove = async () => {
   await removeMangaFromBC(id, route.params.id, checkmangainbc[1]);
@@ -74,6 +80,15 @@ const ekle = async () => {
       route.params.id
     );
     window.location.reload();
+  }
+};
+const likeSwitch = async () => {
+  if (isFav.value) {
+    await unlikeManga(id, route.params.id);
+    isFav.value = false;
+  } else {
+    await likeManga(id, route.params.id);
+    isFav.value = true;
   }
 };
 //////////////////////////////////////////////////////////
@@ -798,59 +813,85 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
               <span class="divider" />
               <article v-if="loggeduser" class="prose my-3">
                 <h1>Eylemler</h1>
-                <span class="grid grid-cols-4">
-                  <label
-                    for="list"
-                    class="col-span-1 col-start-1 col-end-2 btn btn-ghost"
-                    ><Icon icon="material-symbols:add" class="h-5 w-5" />
-                    Ekle</label
+                <span class="flex flex-row">
+                  <span
+                    v-if="exists"
+                    class="tooltip"
+                    data-tip="Favorilere Ekle"
                   >
-                  <label
-                    :for="route.params.id + 'edit'"
-                    :class="`col-span-3 col-start-2 col-end-5 mx-1 btn ${
-                      checkmangainbc[0]
-                        ? checkmangainbc[1] == 'reading'
-                          ? 'btn-success'
-                          : checkmangainbc[1] == 'completed'
-                          ? 'btn-info'
-                          : checkmangainbc[1] == 'onhold'
-                          ? 'btn-warning'
-                          : checkmangainbc[1] == 'dropped'
-                          ? 'btn-error'
-                          : checkmangainbc[1] == 'plantoread'
-                          ? 'btn-primary'
-                          : checkmangainbc[1] == 'rereading'
-                          ? 'btn-accent'
+                    <label @click="likeSwitch()" class="btn btn-secondary"
+                      ><Icon
+                        v-if="isFav"
+                        id="fav"
+                        icon="material-symbols:favorite"
+                        class="h-5 w-5" /><Icon
+                        v-else
+                        id="unfav"
+                        icon="material-symbols:favorite-outline"
+                        class="h-5 w-5"
+                    /></label>
+                  </span>
+                  <span class="tooltip" data-tip="Listeye Ekle">
+                    <label for="list" class="btn btn-ghost mx-1"
+                      ><Icon
+                        icon="material-symbols:playlist-add-rounded"
+                        class="h-5 w-5"
+                      />Listeye Ekle</label
+                    >
+                  </span>
+                  <span class="tooltip" data-tip="Okuma Durumunu Düzenle">
+                    <label
+                      :for="route.params.id + 'edit'"
+                      :class="`btn ${
+                        checkmangainbc[0]
+                          ? checkmangainbc[1] == 'reading'
+                            ? 'btn-success'
+                            : checkmangainbc[1] == 'completed'
+                            ? 'btn-info'
+                            : checkmangainbc[1] == 'onhold'
+                            ? 'btn-warning'
+                            : checkmangainbc[1] == 'dropped'
+                            ? 'btn-error'
+                            : checkmangainbc[1] == 'plantoread'
+                            ? 'btn-primary'
+                            : checkmangainbc[1] == 'rereading'
+                            ? 'btn-accent'
+                            : 'btn-neutral'
                           : 'btn-neutral'
-                        : 'btn-neutral'
-                    }`"
-                  >
-                    <Icon icon="material-symbols:library-add" class="h-4 w-4" />
-                    {{
-                      checkmangainbc[0]
-                        ? checkmangainbc[1] == "reading"
-                          ? "Okunuyor"
-                          : checkmangainbc[1] == "completed"
-                          ? "Bitirildi"
-                          : checkmangainbc[1] == "onhold"
-                          ? "Bekletiliyor"
-                          : checkmangainbc[1] == "dropped"
-                          ? "Bırakıldı"
-                          : checkmangainbc[1] == "plantoread"
-                          ? "Planlandı"
-                          : checkmangainbc[1] == "rereading"
-                          ? "Yeniden Okunuyor"
+                      }`"
+                    >
+                      <Icon
+                        icon="material-symbols:library-add"
+                        class="h-4 w-4"
+                      />
+                      {{
+                        checkmangainbc[0]
+                          ? checkmangainbc[1] == "reading"
+                            ? "Okunuyor"
+                            : checkmangainbc[1] == "completed"
+                            ? "Bitirildi"
+                            : checkmangainbc[1] == "onhold"
+                            ? "Bekletiliyor"
+                            : checkmangainbc[1] == "dropped"
+                            ? "Bırakıldı"
+                            : checkmangainbc[1] == "plantoread"
+                            ? "Planlandı"
+                            : checkmangainbc[1] == "rereading"
+                            ? "Yeniden Okunuyor"
+                            : "Kitaplığa Ekle"
                           : "Kitaplığa Ekle"
-                        : "Kitaplığa Ekle"
-                    }}
-                  </label>
-                  <label
-                    v-if="checkmangainbc[0]"
-                    for="id"
-                    class="col-span-1 col-start-5 col-end-5 btn btn-error"
-                    ><Icon icon="material-symbols:delete" class="h-5 w-5" />
-                    Sil</label
-                  >
+                      }}
+                    </label>
+                  </span>
+                  <span class="tooltip" data-tip="Kitaplıktan Kaldır">
+                    <label
+                      v-if="checkmangainbc[0]"
+                      for="id"
+                      class="btn btn-error mx-1"
+                      ><Icon icon="material-symbols:delete" class="h-5 w-5" />
+                      Kaldır</label
+                    >
+                  </span>
                 </span>
                 <input type="checkbox" id="id" class="modal-toggle" />
                 <div class="modal" role="dialog">

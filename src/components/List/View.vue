@@ -7,10 +7,12 @@ import {
   likeList,
   unlikeList,
   getUsersLikedList,
+  isUserLikedTheList,
 } from "../../firebase";
 import { useRoute } from "vue-router";
 import { useFetch } from "@vueuse/core";
 import { useCookies } from "vue3-cookies";
+import { ref } from "vue";
 import ListEdit from "./Edit.vue";
 
 const route = useRoute();
@@ -49,14 +51,17 @@ if (list.series[0]) {
   //
 }
 
-let likes = list["likes"].length;
+let likes = ref(list["likes"].length);
+let isLiked = ref(await isUserLikedTheList(cookedid, route.params.listid));
 const like = async () => {
-  if (document.getElementById("likes").value == "on") {
-    document.getElementById("likes").value = "off";
-    await likeList(cookedid, route.params.id, list.id);
+  if (isLiked.value) {
+    await unlikeList(cookedid, route.params.id, list.id);
+    isLiked.value = false;
+    likes.value -= 1;
   } else {
-    document.getElementById("likes").value = "on";
-    await unlikeList(cookedid, route.params.id, route.params.listid);
+    await likeList(cookedid, route.params.id, route.params.listid);
+    isLiked.value = true;
+    likes.value += 1;
   }
 };
 </script>
@@ -93,20 +98,20 @@ const like = async () => {
     </label>
     <label v-else class="swap btn btn-ghost">
       <input id="likes" @click="like()" type="checkbox" />
-      <span class="swap-off flex flex-row"
-        ><Icon
-          icon="material-symbols:favorite-outline"
-          class="h-5 w-5 mr-1 p-[0.5px]"
-        />
-        {{ likes }}</span
-      >
-      <span class="swap-on flex flex-row"
-        ><Icon
+      <span class="flex flex-row">
+        <Icon
+          v-if="isLiked"
+          id="fav"
           icon="material-symbols:favorite"
-          class="h-5 w-5 mr-1 p-[0.5px]"
+          class="h-5 w-5"
+        /><Icon
+          v-else
+          id="unfav"
+          icon="material-symbols:favorite-outline"
+          class="h-5 w-5"
         />
-        {{ likes + 1 }}</span
-      >
+        {{ likes }}
+      </span>
     </label>
     <label
       v-if="route.params.id == cookedid"
