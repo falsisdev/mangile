@@ -3,7 +3,7 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 import { getCountFromServer } from "firebase/firestore";
-import { ref, onUnmounted } from "vue";
+import bcrypt from "bcryptjs";
 /////////////////////////////////////////////////////////////////////////////////
 const config = {
   apiKey: import.meta.env.VITE_FIREBASEAPIKEY,
@@ -247,8 +247,11 @@ export const checkUser = async (form) => {
   if (user.empty == true) {
     return true;
   } else if (
-    form.password ==
-    atob((await usersCollection.doc(user.docs[0].id).get()).data().password)
+    (bcrypt.compare(
+      form.password,
+      (await usersCollection.doc(user.docs[0].id).get()).data().password
+    ),
+    (err, result) => result)
   ) {
     return false;
   } else {

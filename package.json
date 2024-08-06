@@ -10,6 +10,7 @@
   "dependencies": {
     "@vueuse/core": "^10.11.0",
     "axios": "^1.7.2",
+    "bcryptjs": "^2.4.3",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
     "firebase": "^10.12.4",

@@ -5,6 +5,7 @@ import { reactive } from "vue";
 import { useCookies } from "vue3-cookies";
 import { socket } from "@/socket";
 import { useTitle } from "@vueuse/core";
+import bcrypt from "bcryptjs";
 //////////////////////////////////////////////////////////
 import { createUser as create, checkUser } from "../firebase";
 //////////////////////////////////////////////////////////
@@ -14,6 +15,11 @@ useTitle(route.params.type == "signup" ? "Kayıt Ol" : "Giriş Yap", {
   titleTemplate: "%s | Mangile",
 });
 const form = reactive({ email: "", password: "" });
+//////////////////////////////////////////////////////////
+const encryptPassword = (password) => {
+  const salt = bcrypt.genSaltSync(10);
+  return bcrypt.hashSync(password, salt);
+};
 //////////////////////////////////////////////////////////
 const onSubmit = async () => {
   if (route.params.type == "signup") {
@@ -39,7 +45,7 @@ const onSubmit = async () => {
         uploads: 0,
         roles: ["user"],
         pfp: pfps[Math.floor(Math.random() * pfps.length)],
-        password: btoa(form.password),
+        password: encryptPassword(form.password),
         lists: 0,
         email: form.email,
       });
