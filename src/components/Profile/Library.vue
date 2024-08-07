@@ -8,14 +8,15 @@ import {
   getUser,
   getBookCaseById,
   getCollectionById,
-  getUsersLikedList,
   getFavoriteMangas,
   getListById,
+  getFavoriteChapters,
 } from "../../firebase";
 import Card from "../Profile/Card/Library.vue";
 import LikedCard from "../List/Card/Liked.vue";
 import CreatedCard from "../List/Card/Created.vue";
 import FavMangaCard from "../Profile/Card/FavManga.vue";
+import FavChapterTable from "../Profile/Table/FavChapters.vue";
 //////////////////////////////////////////////////////////
 const { cookies } = useCookies();
 const route = useRoute();
@@ -42,12 +43,14 @@ let covers = {
   lists: [],
   liked: [],
   favmangas: [],
+  favchapters: [],
 };
 //////////////////////////////////////////////////////////
 const user = await getUserByID(id);
 const bookcase = await getBookCaseById(id);
 const collection = await getCollectionById(id);
 const favmangas = await getFavoriteMangas(id);
+const favchapters = await getFavoriteChapters(id);
 const likedids = collection.liked;
 //////////////////////////////////////////////////////////
 if (cookies.get("email")) {
@@ -67,6 +70,21 @@ for (let item of favmangas) {
   }
   const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
   covers["favmangas"].push(
+    JSON.parse(cover.data.value).data.attributes.fileName
+  );
+}
+//////////////////////////////////////////////////////////
+for (let item of favchapters) {
+  const info = await useFetch(`https://api.mangadex.org/manga/${item.mangaid}`);
+  let coverartid;
+  for (let item of JSON.parse(info.data.value).data.relationships) {
+    coverartid;
+    if (item.type == "cover_art") {
+      coverartid = item.id;
+    }
+  }
+  const cover = await useFetch(`https://api.mangadex.org/cover/${coverartid}`);
+  covers["favchapters"].push(
     JSON.parse(cover.data.value).data.attributes.fileName
   );
 }
@@ -608,6 +626,23 @@ for (let item of bookcase.rereading) {
         />
       </div>
       <div v-else>Seçtiğiniz bir manga bulunmamaktadır.</div>
+      <article class="prose mt-5">
+        <h1>
+          <span class="flex flex-row"
+            ><Icon icon="material-symbols:bookmark-heart" class="h-8 w-8 m-2" />
+            Favori Bölümler
+          </span>
+          <span class="divider"></span>
+        </h1>
+      </article>
+      <div v-if="favchapters[0]" class="flex flex-row flex-wrap">
+        <FavChapterTable
+          :isOwner="user.email == loggeduser.email"
+          :infos="favchapters"
+          :covers="covers.favchapters"
+        />
+      </div>
+      <div v-else>Seçtiğiniz bir bölüm bulunmamaktadır.</div>
     </div>
   </div>
 </template>

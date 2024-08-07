@@ -184,6 +184,16 @@ export const getFavoriteMangas = async (userid) => {
   return favmangas;
 };
 /* ------------------------------------------- */
+export const getFavoriteChapters = async (userid) => {
+  const chaptersSnapshot = await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .get();
+  const chapters = chaptersSnapshot.data().chapters;
+  return chapters;
+};
+/* ------------------------------------------- */
 export const likeManga = async (userid, mangaid) => {
   const mangasSnapshot = await usersCollection
     .doc(userid)
@@ -241,6 +251,61 @@ export const checkMangaInFavorites = async (userid, mangaid) => {
     mangaIDs.push((await item.get()).data().mangaid);
   }
   return mangaIDs.includes(mangaid);
+};
+/* ------------------------------------------- */
+export const likeChapter = async (userid, item) => {
+  const chaptersSnapshot = await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .get();
+  let chapters = chaptersSnapshot.data().chapters;
+  chapters.push({
+    ep: item.ep,
+    mangaid: item.mangaid,
+    vol: item.vol,
+  });
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .update({
+      chapters: chapters,
+      mangas: chaptersSnapshot.data().mangas,
+      panels: chaptersSnapshot.data().panels,
+    });
+};
+/* ------------------------------------------- */
+export const unlikeChapter = async (userid, title) => {
+  const chaptersSnapshot = await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .get();
+  let chapters = chaptersSnapshot.data().chapters;
+  chapters.splice(
+    chapters.find((x) => x.title == title),
+    1
+  );
+  await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .update({
+      chapters: chapters,
+      mangas: chaptersSnapshot.data().mangas,
+      panels: chaptersSnapshot.data().panels,
+    });
+};
+/* ------------------------------------------- */
+export const checkChapterInFavorites = async (userid, title) => {
+  const chaptersSnapshot = await usersCollection
+    .doc(userid)
+    .collection("library")
+    .doc("favorites")
+    .get();
+  const chapters = chaptersSnapshot.data().chapters;
+  return chapters.some((x) => x.title == title);
 };
 ///////////////////////// ---- FAVORILER FONKSİYONLARI ---- /////////////////////////
 ///////////////////////// ---- KULLANICI FONKSİYONLARI ---- /////////////////////////

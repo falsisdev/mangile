@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { useFetch, useTitle } from "@vueuse/core";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useCookies } from "vue3-cookies";
 //////////////////////////////////////////////////////////
 import Tags from "../Tags.vue";
@@ -1015,18 +1015,19 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                     <a
                       :href="`/manga/${route.params.id}/read/${a.vol}/${a.ep}`"
                     >
-                      <span
-                        ><Icon
-                          class="h-5 w-5"
-                          icon="material-symbols:menu-book-rounded"
-                      /></span>
                       <span class="flex flex-row">
+                        <span
+                          ><Icon
+                            class="h-5 w-5 mr-1"
+                            icon="material-symbols:menu-book-rounded"
+                        /></span>
                         <b class="mr-1">{{ a.title }}</b> (<RouterLink
                           class="link"
                           :to="`/scan/${a.scan}`"
                           >{{ a.source }}</RouterLink
                         >)
                       </span>
+                      <span class="grow"></span>
                     </a>
                   </li>
                 </span>
