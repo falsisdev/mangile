@@ -25,12 +25,17 @@ let cover = [];
 let manga = [];
 let loggeduser;
 let cookedid;
+let likess = [];
 
 if (cookies.get("email")) {
   loggeduser = await getUser(cookies.get("email"));
   cookedid = await getIDByEmail(cookies.get("email"));
 } else {
   loggeduser = null;
+}
+
+for (let item of users) {
+  likess.push(await getUserByID(item));
 }
 
 if (list.series[0]) {
@@ -130,7 +135,7 @@ const like = async () => {
         >
           <li>Listeyi Beğenenler</li>
           <li
-            v-for="item of users"
+            v-for="item of likess"
             :key="item"
             class="no-underline flex flex-row no-animation"
           >

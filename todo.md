@@ -22,7 +22,6 @@ Eklenecekler:
 
 Sorun çözüm:
 
-- Liste Beğenme Sorunu Çözülecek (Tahmini: Ağustos 2024)
 - Türler sayfası sorunları çözülecek (Tahmini: Ağustos 2026)
 - Manga sayfasındaki durum dizininin rastgele gelmesi düzeltilecek (Tahmini: Ağustos 2024)
 

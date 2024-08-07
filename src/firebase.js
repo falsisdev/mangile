@@ -345,7 +345,7 @@ export const getUsersLikedList = async (userid, listid) => {
       .doc("collection")
       .get()
   ).data();
-  let list = col["lists"].find((x) => x.id == listid);
+  let list = col["lists"].find((x) => x.id == listid).likes;
   return list;
 };
 /* ------------------------------------------- */
@@ -494,12 +494,10 @@ export const likeList = async (userid, authorid, listid) => {
       .get()
   ).data();
   colauthor["lists"].find((x) => x.id == listid)["likes"].push(userid);
-  coluser["liked"].push([
-    {
-      userid: authorid,
-      listid: listid,
-    },
-  ]);
+  coluser["liked"].push({
+    userid: authorid,
+    listid: listid,
+  });
   await usersCollection
     .doc(authorid)
     .collection("library")

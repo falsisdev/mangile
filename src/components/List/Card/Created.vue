@@ -35,7 +35,7 @@ const deletelist = async () => {
         <h2 class="card-title font-bold">{{ name }}</h2>
         <p>{{ description }}</p>
         <div class="card-actions grid grid-cols-7">
-          <label class="btn btn-ghost col-span-2 col-start-6"
+          <label class="btn btn-ghost col-span-2 col-start-1"
             ><div
               class="tooltip flex flex-row"
               data-tip="Beğenmek için listeyi görüntülemeniz gerekmektedir"
@@ -53,15 +53,17 @@ const deletelist = async () => {
             class="col-start-1 col-end-3 btn btn-accent"
             ><Icon icon="material-symbols:edit" class="h-5 w-5"
           /></label>
-          <a
-            class="col-start-3 col-end-6 btn btn-primary"
-            :href="`/user/${userid}/list/${id}`"
-            >Görüntüle</a
+          <label
+            ><a
+              class="col-start-3 col-end-6 btn btn-primary"
+              :href="`/user/${userid}/list/${id}`"
+              >Görüntüle</a
+            ></label
           >
           <label
             :for="id"
             v-if="isOwner"
-            class="col-start-6 col-end-8 btn btn-error"
+            class="ml-1 col-start-6 col-end-8 btn btn-error"
             ><Icon icon="material-symbols:delete" class="h-5 w-5"
           /></label>
         </div>
