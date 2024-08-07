@@ -338,6 +338,7 @@ export const getListsById = async (userid) => {
 };
 /* ------------------------------------------- */
 export const getUsersLikedList = async (userid, listid) => {
+  //anlam karmaşası olmasın, get users liked list = get users who liked the list
   let col = (
     await usersCollection
       .doc(userid)

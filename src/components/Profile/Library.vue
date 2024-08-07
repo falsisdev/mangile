@@ -10,6 +10,7 @@ import {
   getCollectionById,
   getUsersLikedList,
   getFavoriteMangas,
+  getListById,
 } from "../../firebase";
 import Card from "../Profile/Card/Library.vue";
 import LikedCard from "../List/Card/Liked.vue";
@@ -21,6 +22,7 @@ const route = useRoute();
 //////////////////////////////////////////////////////////
 let id = route.params.id;
 let loggeduser;
+let series0;
 let likedlists = [];
 let infos = {
   reading: [],
@@ -70,47 +72,65 @@ for (let item of favmangas) {
 }
 //////////////////////////////////////////////////////////
 for (let item of likedids) {
-  likedlists.push(await getUsersLikedList(item.userid, item.listid));
+  likedlists.push(await getListById(item.userid, item.listid));
 }
 for (let item of likedlists) {
-  if (item.series[0]) {
-    const info = await useFetch(
-      `https://api.mangadex.org/manga/${item.series[0]}`
-    );
-    let coverartid;
-    for (let item of JSON.parse(info.data.value).data.relationships) {
-      coverartid;
-      if (item.type == "cover_art") {
-        coverartid = item.id;
+  try {
+    if (item.series[0]) {
+      const info = await useFetch(
+        `https://api.mangadex.org/manga/${item.series[0]}`
+      );
+      let coverartid;
+      for (let item of JSON.parse(info.data.value).data.relationships) {
+        coverartid;
+        if (item.type == "cover_art") {
+          coverartid = item.id;
+        }
       }
+      const cover = await useFetch(
+        `https://api.mangadex.org/cover/${coverartid}`
+      );
+      covers["liked"].push(
+        JSON.parse(cover.data.value).data.attributes.fileName
+      );
+      series0 = item.series[0];
+    } else {
+      covers["liked"].push("e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3");
+      series0 = false;
     }
-    const cover = await useFetch(
-      `https://api.mangadex.org/cover/${coverartid}`
-    );
-    covers["liked"].push(JSON.parse(cover.data.value).data.attributes.fileName);
-  } else {
+  } catch (err) {
     covers["liked"].push("e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3");
+    series0 = false;
   }
 }
 //////////////////////////////////////////////////////////
 for (let item of collection.lists) {
-  if (item.series[0]) {
-    const info = await useFetch(
-      `https://api.mangadex.org/manga/${item.series[0]}`
-    );
-    let coverartid;
-    for (let item of JSON.parse(info.data.value).data.relationships) {
-      coverartid;
-      if (item.type == "cover_art") {
-        coverartid = item.id;
+  try {
+    if (item.series[0]) {
+      const info = await useFetch(
+        `https://api.mangadex.org/manga/${item.series[0]}`
+      );
+      let coverartid;
+      for (let item of JSON.parse(info.data.value).data.relationships) {
+        coverartid;
+        if (item.type == "cover_art") {
+          coverartid = item.id;
+        }
       }
+      const cover = await useFetch(
+        `https://api.mangadex.org/cover/${coverartid}`
+      );
+      covers["lists"].push(
+        JSON.parse(cover.data.value).data.attributes.fileName
+      );
+      series0 = item.series[0];
+    } else {
+      covers["lists"].push("e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3");
+      series0 = false;
     }
-    const cover = await useFetch(
-      `https://api.mangadex.org/cover/${coverartid}`
-    );
-    covers["lists"].push(JSON.parse(cover.data.value).data.attributes.fileName);
-  } else {
+  } catch (err) {
     covers["lists"].push("e68fa7e9-9e7e-40d6-9a31-ada9d37a57e3");
+    series0 = false;
   }
 }
 //////////////////////////////////////////////////////////
@@ -543,7 +563,8 @@ for (let item of bookcase.rereading) {
           <span class="divider"></span>
         </h1>
       </article>
-      <div v-if="likedids.length" class="flex flex-row flex-wrap">
+      <div v-if="!series0">Hiç liste beğenmemişsiniz.</div>
+      <div v-else class="flex flex-row flex-wrap">
         <LikedCard
           v-for="item of likedlists"
           class="m-2"
@@ -552,15 +573,10 @@ for (let item of bookcase.rereading) {
           :userid="likedids[likedlists.indexOf(item)].userid"
           :description="item.description"
           :cover="covers.liked[likedlists.indexOf(item)]"
-          :coverid="
-            item.series[0]
-              ? item.series[0]
-              : '8e67e13e-fdeb-44f5-8ecb-c4609df6b02c'
-          "
+          :coverid="series0 ? series0 : '8e67e13e-fdeb-44f5-8ecb-c4609df6b02c'"
           :name="item.title"
         />
       </div>
-      <div v-else>Beğendiğiniz liste bulunmamaktadır.</div>
     </div>
     <input
       type="radio"

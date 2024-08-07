@@ -38,7 +38,7 @@
     <h1>İçerik <span class="divider" /></h1>
     <span
       v-if="collection['lists'].find((x) => x.id == id).series[0]"
-      class="flex flex-row flex-wrap"
+      class="flex flex-col"
     >
       <Card
         v-for="item of collection['lists'].find((x) => x.id == id).series"
@@ -78,7 +78,7 @@
 </template>
 <script setup>
 import { getCollectionById, updateList } from "../../firebase";
-import Card from "../Manga/Card.vue";
+import Card from "../List/Card/Edit.vue";
 import { useFetch } from "@vueuse/core";
 import { reactive } from "vue";
 

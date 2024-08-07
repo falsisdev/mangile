@@ -47,12 +47,17 @@ if (isLogged) {
         >
       </li>
       <li>
+        <RouterLink :to="`/user/${id}/library`">
+          <Icon icon="material-symbols:library-books" /> Kütüphane</RouterLink
+        >
+      </li>
+      <li>
         <a onclick="listcreate.showModal()">
           <Icon icon="material-symbols:list-alt-add" /> Liste Oluştur
         </a>
       </li>
       <li>
-        <a onclick="my_modal_3.showModal()">
+        <a onclick="settings.showModal()">
           <Icon icon="material-symbols:settings" /> Ayarlar
         </a>
       </li>
@@ -62,7 +67,7 @@ if (isLogged) {
         </button>
       </li>
     </ul>
-    <dialog id="my_modal_3" class="modal">
+    <dialog id="settings" class="modal">
       <div class="modal-box">
         <form method="dialog">
           <button

@@ -43,10 +43,6 @@ async function create() {
       <label @click="create()" class="btn btn-success"
         ><Icon icon="material-symbols:save" class="h-5 w-5" /> Kaydet</label
       >
-      <label for="listcreate" class="btn"
-        ><Icon icon="material-symbols:cancel" class="h-5 w-5" /> Kaydetmeden
-        Çık</label
-      >
     </div>
   </span>
 </template>

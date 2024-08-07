@@ -139,11 +139,14 @@ const like = async () => {
             :key="item"
             class="no-underline flex flex-row no-animation"
           >
-            <span class="w-full"
+            <a
+              :href="`/user/${users[likess.indexOf(item)]}`"
+              target="_blank"
+              class="w-full no-underline"
               ><Icon icon="material-symbols:account-box" class="h-5 w-5" /><span
                 class="mb-1"
                 >{{ item.username }}</span
-              ></span
+              ></a
             >
           </li>
         </ul>
