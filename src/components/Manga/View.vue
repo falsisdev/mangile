@@ -819,14 +819,14 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                     class="tooltip"
                     data-tip="Favorilere Ekle"
                   >
-                    <label @click="likeSwitch()" class="btn btn-secondary"
+                    <label
+                      v-if="isFav"
+                      @click="likeSwitch()"
+                      class="btn btn-secondary"
+                      ><Icon icon="material-symbols:favorite" class="h-5 w-5"
+                    /></label>
+                    <label v-else @click="likeSwitch()" class="btn btn-ghost"
                       ><Icon
-                        v-if="isFav"
-                        id="fav"
-                        icon="material-symbols:favorite"
-                        class="h-5 w-5" /><Icon
-                        v-else
-                        id="unfav"
                         icon="material-symbols:favorite-outline"
                         class="h-5 w-5"
                     /></label>

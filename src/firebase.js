@@ -118,7 +118,6 @@ export const addMangaToBC = async (userid, mangaid, status) => {
 };
 /* ------------------------------------------- */
 export const checkMangaInBC = async (userid, mangaid) => {
-  //bu fonksiyonda arrayin sıralaması konusunda sorun bulunuyor, çözülecek
   let bc = (
     await usersCollection
       .doc(userid)
@@ -126,12 +125,10 @@ export const checkMangaInBC = async (userid, mangaid) => {
       .doc("bookcase")
       .get()
   ).data();
-  let i = Object.values(bc).findIndex((index) =>
-    Object.values(bc).some((x) => x.includes(mangaid)) ? index : false
-  );
-  let ind = i == -1;
-  let st = ind ? false : Object.keys(bc)[i];
-  return [Object.values(bc).some((array) => array.includes(mangaid)), st];
+  let foundKey = Object.keys(bc).find((key) => bc[key].includes(mangaid));
+  let mangaExists = foundKey !== undefined;
+  let shelfName = mangaExists ? foundKey : false;
+  return [mangaExists, shelfName];
 };
 /* ------------------------------------------- */
 export const checkMangaExists = async (mangaid) => {
@@ -213,8 +210,12 @@ export const unlikeManga = async (userid, mangaid) => {
     .doc("favorites")
     .get();
   let mangas = mangasSnapshot.data().mangas;
+  let mangaIDs = [];
+  for (let item of mangas) {
+    mangaIDs.push((await item.get()).data().mangaid);
+  }
   mangas.splice(
-    mangas.indexOf(mangas.find((x) => x == db.doc(`/mangas/${mangaid}`))),
+    mangaIDs.find((x) => x == mangaid),
     1
   );
   await usersCollection
@@ -235,11 +236,11 @@ export const checkMangaInFavorites = async (userid, mangaid) => {
     .doc("favorites")
     .get();
   const mangas = mangasSnapshot.data().mangas;
-  return mangas.some(
-    async (x) =>
-      (await x.get()).data().mangaid ==
-      (await mangasCollection.doc(mangaid).get()).data().mangaid
-  );
+  let mangaIDs = [];
+  for (let item of mangas) {
+    mangaIDs.push((await item.get()).data().mangaid);
+  }
+  return mangaIDs.includes(mangaid);
 };
 ///////////////////////// ---- FAVORILER FONKSİYONLARI ---- /////////////////////////
 ///////////////////////// ---- KULLANICI FONKSİYONLARI ---- /////////////////////////

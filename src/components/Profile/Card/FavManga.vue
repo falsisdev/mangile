@@ -21,7 +21,7 @@ const props = defineProps({
     <div class="card-body">
       <h2 class="card-title">{{ name }}</h2>
       <p>
-        {{ description.substring(0, 200) + "..." }}
+        {{ description.substring(0, 150) + "..." }}
       </p>
       <div class="card-actions justify-start">
         <!--<label @click="likeSwitch()" v-if="isOwner" class="btn btn-accent"
