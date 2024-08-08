@@ -7,7 +7,7 @@ const props = defineProps({
 </script>
 <template>
   <div
-    class="basis-1/4 card card-compact card-side w-96 bg-base-100 m-5 p-5 border border-base-100 rounded-lg"
+    class="basis-1/4 card card-compact card-side w-96 bg-base-200 m-5 p-5 border border-base-100 rounded-lg"
   >
     <figure>
       <img

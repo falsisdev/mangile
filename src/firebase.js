@@ -264,6 +264,7 @@ export const likeChapter = async (userid, item) => {
     ep: item.ep,
     mangaid: item.mangaid,
     vol: item.vol,
+    title: item.title,
   });
   await usersCollection
     .doc(userid)
@@ -284,7 +285,7 @@ export const unlikeChapter = async (userid, title) => {
     .get();
   let chapters = chaptersSnapshot.data().chapters;
   chapters.splice(
-    chapters.find((x) => x.title == title),
+    chapters.findIndex((x) => x.title == title),
     1
   );
   await usersCollection
@@ -305,7 +306,7 @@ export const checkChapterInFavorites = async (userid, title) => {
     .doc("favorites")
     .get();
   const chapters = chaptersSnapshot.data().chapters;
-  return chapters.some((x) => x.title == title);
+  return chapters.find((x) => x.title == title) ? true : false;
 };
 ///////////////////////// ---- FAVORILER FONKSİYONLARI ---- /////////////////////////
 ///////////////////////// ---- KULLANICI FONKSİYONLARI ---- /////////////////////////

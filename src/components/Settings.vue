@@ -29,13 +29,12 @@ const theme = () => {
         ? "autumn"
         : document.getElementById("theme").value == "Kış (Aydınlık)"
         ? "winter"
-        : document.getElementById("theme").value ==
-          "Loş (Karanlık) [Önerilen] [Varsayılan]"
+        : document.getElementById("theme").value == "Loş (Karanlık) [Önerilen]"
         ? "dim"
         : document.getElementById("theme").value == "Kuz (Aydınlık)"
         ? "nord"
         : document.getElementById("theme").value ==
-          "Gün Batımı (Karanlık) [Önerilen]"
+          "Gün Batımı (Karanlık) [Önerilen] [Varsayılan]"
         ? "sunset"
         : "dim"
     );
@@ -68,9 +67,9 @@ const theme = () => {
       <option id="garden">Bahçe (Aydınlık)</option>
       <option id="autumn">Güz (Aydınlık)</option>
       <option id="winter">Kış (Aydınlık)</option>
-      <option id="dim">Loş (Karanlık) [Önerilen] [Varsayılan]</option>
+      <option id="dim">Loş (Karanlık) [Önerilen]</option>
       <option id="nord">Kuz (Aydınlık)</option>
-      <option id="sunset">Gün Batımı (Karanlık) [Önerilen]</option>
+      <option id="sunset">Gün Batımı (Karanlık) [Önerilen] [Varsayılan]</option>
     </select>
   </p>
   <h2>Tema Önizlemeleri:</h2>

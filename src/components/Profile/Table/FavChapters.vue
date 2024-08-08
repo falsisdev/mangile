@@ -103,8 +103,67 @@ for (let item of props.infos) {
                 </div>
                 <div class="text-sm opacity-50">
                   {{
-                    JSON.parse(infos[epps.indexOf(item)].data.value).data
-                      .attributes.title.en
+                    (!JSON.parse(
+                      infos[epps.indexOf(item)].data.value
+                    ).data.attributes["altTitles"].some((x) => x.tr)
+                      ? !JSON.parse(infos[epps.indexOf(item)].data.value).data
+                          .attributes.title["en"]
+                        ? !JSON.parse(infos[epps.indexOf(item)].data.value).data
+                            .attributes.title["ja-ro"]
+                          ? !JSON.parse(infos[epps.indexOf(item)].data.value)
+                              .data.attributes.title["ja"]
+                            ? "Bilinmeyen Başlık"
+                            : JSON.parse(infos[epps.indexOf(item)].data.value)
+                                .data.attributes.title["ja"]
+                          : JSON.parse(infos[epps.indexOf(item)].data.value)
+                              .data.attributes.title["ja-ro"]
+                        : JSON.parse(infos[epps.indexOf(item)].data.value).data
+                            .attributes.title["en"]
+                      : JSON.parse(
+                          infos[epps.indexOf(item)].data.value
+                        ).data.attributes["altTitles"].find((x) => x.tr).tr
+                    ).length >= 17
+                      ? (!JSON.parse(
+                          infos[epps.indexOf(item)].data.value
+                        ).data.attributes["altTitles"].some((x) => x.tr)
+                          ? !JSON.parse(infos[epps.indexOf(item)].data.value)
+                              .data.attributes.title["en"]
+                            ? !JSON.parse(infos[epps.indexOf(item)].data.value)
+                                .data.attributes.title["ja-ro"]
+                              ? !JSON.parse(
+                                  infos[epps.indexOf(item)].data.value
+                                ).data.attributes.title["ja"]
+                                ? "Bilinmeyen Başlık"
+                                : JSON.parse(
+                                    infos[epps.indexOf(item)].data.value
+                                  ).data.attributes.title["ja"]
+                              : JSON.parse(infos[epps.indexOf(item)].data.value)
+                                  .data.attributes.title["ja-ro"]
+                            : JSON.parse(infos[epps.indexOf(item)].data.value)
+                                .data.attributes.title["en"]
+                          : JSON.parse(
+                              infos[epps.indexOf(item)].data.value
+                            ).data.attributes["altTitles"].find((x) => x.tr).tr
+                        ).substring(0, 17) + "..."
+                      : !JSON.parse(
+                          infos[epps.indexOf(item)].data.value
+                        ).data.attributes["altTitles"].some((x) => x.tr)
+                      ? !JSON.parse(infos[epps.indexOf(item)].data.value).data
+                          .attributes.title["en"]
+                        ? !JSON.parse(infos[epps.indexOf(item)].data.value).data
+                            .attributes.title["ja-ro"]
+                          ? !JSON.parse(infos[epps.indexOf(item)].data.value)
+                              .data.attributes.title["ja"]
+                            ? "Bilinmeyen Başlık"
+                            : JSON.parse(infos[epps.indexOf(item)].data.value)
+                                .data.attributes.title["ja"]
+                          : JSON.parse(infos[epps.indexOf(item)].data.value)
+                              .data.attributes.title["ja-ro"]
+                        : JSON.parse(infos[epps.indexOf(item)].data.value).data
+                            .attributes.title["en"]
+                      : JSON.parse(
+                          infos[epps.indexOf(item)].data.value
+                        ).data.attributes["altTitles"].find((x) => x.tr).tr
                   }}
                 </div>
               </div>

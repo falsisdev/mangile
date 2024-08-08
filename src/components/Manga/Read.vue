@@ -9,12 +9,27 @@
         forwardDirection="left"
         wheel="zoom"
       >
-        <RouterLink class="link link-hover" :to="`/manga/${route.params.id}`">{{
-          JSON.parse(info.data.value).data.attributes.title.en
-        }}</RouterLink>
-        <article class="prose max-w-none">
-          <h1>{{ epp.title }}</h1>
-        </article>
+        <span class="flex flex-row">
+          <span>
+            <RouterLink
+              class="link link-hover"
+              :to="`/manga/${route.params.id}`"
+              >{{
+                JSON.parse(info.data.value).data.attributes.title.en
+              }}</RouterLink
+            >
+            <article class="prose max-w-none">
+              <h1>{{ epp.title }}</h1>
+            </article>
+          </span>
+          <span class="grow"></span>
+          <label v-if="isFav" @click="likeSwitch()" class="btn btn-secondary"
+            ><Icon icon="material-symbols:favorite" class="h-5 w-5"
+          /></label>
+          <label v-else @click="likeSwitch()" class="btn btn-ghost"
+            ><Icon icon="material-symbols:favorite-outline" class="h-5 w-5"
+          /></label>
+        </span>
         <span class="flex flex-row">
           <span
             >Çeviri Ekibi:
@@ -88,11 +103,21 @@
 <script setup>
 import { useRoute, RouterLink } from "vue-router";
 import { useFetch, useTitle } from "@vueuse/core";
+import { useCookies } from "vue3-cookies";
+import { ref } from "vue";
 import Flipbook from "flipbook-vue";
 //////////////////////////////////////////////////////////
-import { /*getManga,*/ getVol } from "../../firebase";
+import {
+  checkChapterInFavorites,
+  unlikeChapter,
+  likeChapter,
+  getVol,
+  getUser,
+  getIDByEmail,
+} from "../../firebase";
 //////////////////////////////////////////////////////////
 const route = useRoute();
+const { cookies } = useCookies();
 const info = await useFetch(
   `https://api.mangadex.org/manga/${route.params.id}`
 );
@@ -114,6 +139,15 @@ useTitle(
         ". Bölüm",
   { titleTemplate: "%s | Mangile" }
 );
+let loggeduser;
+let id;
+//////////////////////////////////////////////////////////
+if (cookies.get("email")) {
+  loggeduser = await getUser(cookies.get("email"));
+  id = await getIDByEmail(cookies.get("email"));
+} else {
+  loggeduser = null;
+}
 //////////////////////////////////////////////////////////
 async function getVolData(i) {
   const voldata = await getVol(route.params.id, i);
@@ -126,6 +160,24 @@ for (let item of Object(await Object(getVolData(route.params.vol))).episodes) {
     epp = item;
   }
 }
+
+let isFav = ref(await checkChapterInFavorites(id, epp.title));
+
+const likeSwitch = async () => {
+  if (isFav.value) {
+    await unlikeChapter(id, epp.title);
+    isFav.value = false;
+  } else {
+    let item = {
+      ep: parseInt(route.params.ep),
+      mangaid: route.params.id,
+      vol: parseInt(route.params.vol),
+      title: epp.title,
+    };
+    await likeChapter(id, item);
+    isFav.value = true;
+  }
+};
 
 let pages = [];
 for (var i = 0; i < epp.page; i++) {

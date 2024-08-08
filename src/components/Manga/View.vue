@@ -18,6 +18,9 @@ import {
   likeManga,
   unlikeManga,
   checkMangaExists,
+  checkChapterInFavorites,
+  unlikeChapter,
+  likeChapter,
 } from "../../firebase";
 import LibEdit from "../Profile/LibEdit.vue";
 //////////////////////////////////////////////////////////
@@ -134,8 +137,8 @@ const getVolData = async (i) => {
   return voldata;
 };
 //////////////////////////////////////////////////////////
-let titles = new Array();
-let episodes = new Array();
+let titles = new Array(); //cilt başlıkları
+let episodes = new Array(); //ciltler
 //////////////////////////////////////////////////////////
 try {
   for (var i = 0; i < mangadata.volumes; i++) {
@@ -160,6 +163,43 @@ for (let item of genres) {
     warning = ref(1);
   }
 }
+//////////////////////////////////////////////////////////
+let checkChapterInFavs = [];
+let chapters = [];
+for (let vol of episodes) {
+  //her bir cilt
+  for (let chapter of vol.reverse()) {
+    //her bir bölüm
+    chapters.push(chapter);
+    checkChapterInFavs.push(
+      ref(await checkChapterInFavorites(id, chapter.title))
+    );
+  }
+}
+const likeChapterSwitch = async (a) => {
+  if (
+    checkChapterInFavs[chapters.findIndex((x) => x.title === a.title)].value
+  ) {
+    await unlikeChapter(
+      id,
+      chapters[chapters.findIndex((x) => x.title === a.title)].title
+    );
+    checkChapterInFavs[
+      chapters.findIndex((x) => x.title === a.title)
+    ].value = false;
+  } else {
+    let item = {
+      ep: chapters[chapters.findIndex((x) => x.title === a.title)].ep,
+      mangaid: route.params.id,
+      vol: chapters[chapters.findIndex((x) => x.title === a.title)].vol,
+      title: chapters[chapters.findIndex((x) => x.title === a.title)].title,
+    };
+    await likeChapter(id, item);
+    checkChapterInFavs[
+      chapters.findIndex((x) => x.title === a.title)
+    ].value = true;
+  }
+};
 //////////////////////////////////////////////////////////
 let chapterlist;
 let chaps;
@@ -1012,23 +1052,43 @@ for (let item of JSON.parse(info.data.value).data.attributes.altTitles) {
                     <span>{{ titles[episodes.indexOf(i)] }}</span>
                   </li>
                   <li v-for="a of i.reverse()" :key="a">
-                    <a
-                      :href="`/manga/${route.params.id}/read/${a.vol}/${a.ep}`"
-                    >
-                      <span class="flex flex-row">
-                        <span
-                          ><Icon
-                            class="h-5 w-5 mr-1"
-                            icon="material-symbols:menu-book-rounded"
-                        /></span>
-                        <b class="mr-1">{{ a.title }}</b> (<RouterLink
-                          class="link"
-                          :to="`/scan/${a.scan}`"
-                          >{{ a.source }}</RouterLink
-                        >)
-                      </span>
+                    <span class="flex flex-row">
+                      <a
+                        :href="`/manga/${route.params.id}/read/${a.vol}/${a.ep}`"
+                      >
+                        <span class="flex flex-row">
+                          <span
+                            ><Icon
+                              class="h-5 w-5 mr-1"
+                              icon="material-symbols:menu-book-rounded"
+                          /></span>
+                          <b class="mr-1">{{ a.title }}</b> (<RouterLink
+                            class="link"
+                            :to="`/scan/${a.scan}`"
+                            >{{ a.source }}</RouterLink
+                          >)
+                        </span>
+                      </a>
                       <span class="grow"></span>
-                    </a>
+                      <label
+                        v-if="
+                          checkChapterInFavs[
+                            chapters.findIndex((x) => x.title === a.title)
+                          ].value
+                        "
+                        @click="likeChapterSwitch(a)"
+                        class="btn btn-secondary btn-xs"
+                        ><Icon icon="material-symbols:favorite" class="h-3 w-3"
+                      /></label>
+                      <label
+                        v-else
+                        @click="likeChapterSwitch(a)"
+                        class="btn btn-ghost btn-xs"
+                        ><Icon
+                          icon="material-symbols:favorite-outline"
+                          class="h-3 w-3"
+                      /></label>
+                    </span>
                   </li>
                 </span>
               </ul>

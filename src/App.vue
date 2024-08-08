@@ -15,7 +15,7 @@ const forward = () => router.forward();
 <template>
   <div
     class="grid grid-cols-10"
-    :data-theme="cookies.get('theme') == null ? 'dim' : cookies.get('theme')"
+    :data-theme="cookies.get('theme') == null ? 'sunset' : cookies.get('theme')"
   >
     <div class="mx-20 my-5 col-span-8 col-start-2 col-end-10">
       <Navbar />

@@ -102,7 +102,7 @@ try {
     </div>
     <div class="divider" />
     <article class="prose max-w-none p-5">
-      <h1>Aramaya göre Yapımda Emeği Geçenler</h1>
+      <h1>Aramaya göre Kişiler</h1>
       Arama İfadesi: {{ route.query["q"].replaceAll("+", " ") }}
     </article>
     <div v-if="statuscode == 200" class="flex flex-row flex-wrap">
