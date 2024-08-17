@@ -1,13 +1,22 @@
-# Mangile Değişime Açık
+# Mangile
+
+**DEPODA GÖRDÜĞÜNÜZ SÜRÜMÜN GELİŞTİRİLMESİ DURDURULMUŞTUR.**
+
+## 📣 Mangile-RC Sürüm Planlaması (17.08.2024)
+
+**Sistem değişikliği:** Firebase sistemi auth için logto'ya, bölüm verileri için sanity'e aktarılacak. Arama için algolia düşünülebilir. Route değişiklikleri de yapılacak ama sitenin ana çerçevesi aynı kalacak. Icon kütüphanesi nuxt-icon aracılığıyla elde edilecek. 
+
+Planlanan branch: `rc`
+
+
+## 📣 Mangile Değişime Açık (16.08.2024)
 
 Mangile sistemi görmüş olduğunuz Github deposunda Vue 3 + Vite, halihazırda geliştiriliyor olan kapalı sürümde Nuxt 3 kullanmakta. Ancak sitenin bütün arayüz tasarımı ve arka-yüz sisteminin değiştirilmesi düşünülüyor. Düşünce ve desteklerinize değer veriyoruz.
 
-Aklımdaki arka-yüz framework'ü: Nuxt 3, <br>
-          kullanıcı arayüzü kütüphanesi: DaisyUI devam,<br>
-          sistem değişikliği: Firebase sistemi auth için logto'ya, bölüm verileri için sanity'e aktarılacak. Arama için algolia düşünülebilir. Route değişiklikleri de yapılacak ama sitenin ana çerçevesi aynı kalacak.
 --------------------
 **14 AĞUSTOS ÖNCESİ SİSTEM:**
 --------------------
+`README.md`
 
 # Mangile Açık Beta
 
