@@ -3,9 +3,8 @@
 Mangile sistemi görmüş olduğunuz Github deposunda Vue 3 + Vite, halihazırda geliştiriliyor olan kapalı sürümde Nuxt 3 kullanmakta. Ancak sitenin bütün arayüz tasarımı ve arka-yüz sisteminin değiştirilmesi düşünülüyor. Düşünce ve desteklerinize değer veriyoruz.
 
 Aklımdaki arka-yüz framework'ü: Nuxt 3, <br>
-          kullanıcı arayüzü kütüphanesi: Material 3 Web,<br>
-          sistem değişikliği: Tachiyomi/Mihon/Cloud Stream mantığında çeviri ekiplerinin genel ağ adreslerinden otomatik bölüm çekme.
-
+          kullanıcı arayüzü kütüphanesi: DaisyUI devam,<br>
+          sistem değişikliği: Firebase sistemi auth için logto'ya, bölüm verileri için sanity'e aktarılacak. Arama için algolia düşünülebilir. Route değişiklikleri de yapılacak ama sitenin ana çerçevesi aynı kalacak.
 --------------------
 **14 AĞUSTOS ÖNCESİ SİSTEM:**
 --------------------
