@@ -1,35 +1,32 @@
 {
   "name": "mangile",
-  "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@vueuse/core": "^10.11.0",
-    "axios": "^1.7.2",
+    "@nuxt/icon": "^1.4.10",
+    "@vueuse/core": "^11.0.3",
+    "@vueuse/nuxt": "^11.0.3",
     "bcryptjs": "^2.4.3",
-    "crypto-js": "^4.2.0",
-    "dotenv": "^16.4.5",
-    "firebase": "^10.12.4",
-    "flipbook-vue": "^1.0.0-beta.4",
-    "socket.io-client": "^4.7.5",
-    "swiper": "^10.3.1",
-    "vue": "^3.4.33",
-    "vue-axios": "^3.5.2",
-    "vue-router": "^4.4.0",
-    "vue3-cookies": "^1.0.6"
+    "flipbook-vue": "1.0.0-beta.4",
+    "nuxt": "^3.13.0",
+    "nuxt-swiper": "^1.2.2",
+    "vue": "latest"
   },
+  "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf",
   "devDependencies": {
-    "@iconify/vue": "^4.1.2",
-    "@tailwindcss/typography": "^0.5.13",
-    "@vitejs/plugin-vue": "^4.6.2",
-    "autoprefixer": "^10.4.19",
+    "@iconify-json/material-symbols": "^1.1.89",
+    "@iconify-json/mdi": "^1.1.68",
+    "@tailwindcss/typography": "^0.5.14",
+    "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.10",
-    "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.6",
-    "vite": "^4.5.3"
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.10"
   }
 }
