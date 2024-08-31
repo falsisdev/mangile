@@ -1,93 +1,76 @@
 <script setup>
 import { data } from "@/assets/data.ts";
+import { useAsyncData } from "#app";
 
 const route = useRoute();
-const mangaID = ref(route.params.mangaID); //ref içinde çünkü watcher kullanılıyor
-const manga = ref([]); //manganın <template> içerisinde kullanılacak bütün MAL verileri bu ref'in içerisine kaydolacak
+const mangaID = ref(route.params.mangaID);
+const manga = ref([]);
 const images = ref([]);
 const recommendations = ref([]);
 const relations = ref([]);
 const warning = ref([]);
 
-const recommendationsData = await $fetch(
-  `https://api.jikan.moe/v4/manga/${mangaID.value}/recommendations`
+// Manga verilerini asenkron olarak yükle
+const { data: mangaData } = await useAsyncData(`manga-${mangaID.value}`, () =>
+  $fetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/full`)
 );
-recommendations.value = recommendationsData.data;
 
-function moveElementToIndex(arr, value, targetIndex) {
-  const currentIndex = arr.indexOf(value);
+const { data: imagesData } = await useAsyncData(
+  `manga-images-${mangaID.value}`,
+  () => $fetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/pictures`)
+);
 
-  if (currentIndex === -1) {
-    console.log("Değer bulunamadı.");
-    return arr;
+const { data: recommendationsData } = await useAsyncData(
+  `manga-recommendations-${mangaID.value}`,
+  () =>
+    $fetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/recommendations`)
+);
+
+recommendations.value = recommendationsData.value.data;
+manga.value = mangaData.value.data;
+images.value = moveElementToIndex(
+  imagesData.value.data,
+  imagesData.value.data.find(
+    (x) => x.jpg.large_image_url == manga.value.images.jpg.large_image_url
+  ),
+  0
+);
+
+manga.value.themes?.forEach((x) => {
+  if (data.warnmessages[x.mal_id]) {
+    warning.value.push(data.warnmessages[x.mal_id]);
   }
+});
 
-  const [removedElement] = arr.splice(currentIndex, 1);
+if (manga.value.relations) {
+  const tempRelations = [];
 
-  arr.splice(targetIndex, 0, removedElement);
-
-  return arr;
-}
-
-//fonksiyon içinde çünkü watcher ile izlenmesi gerekiyor
-async function fetchManga() {
-  try {
-    const mangaData = await $fetch(
-      `https://api.jikan.moe/v4/manga/${mangaID.value}/full`
-    );
-    const imagesData = await $fetch(
-      `https://api.jikan.moe/v4/manga/${mangaID.value}/pictures`
-    );
-    manga.value = mangaData.data;
-    images.value = moveElementToIndex(
-      imagesData.data,
-      imagesData["data"].find(
-        (x) => x.jpg.large_image_url == manga.value.images.jpg.large_image_url
-      ),
-      0
-    );
-
-    manga.value.themes?.forEach((x) => {
-      if (data.warnmessages[x.mal_id]) {
-        warning.value.push(data.warnmessages[x.mal_id]);
+  for (let relation of manga.value.relations) {
+    for (let entry of relation.entry) {
+      if (
+        entry.type === "manga" &&
+        !tempRelations.some((e) => e.entry.mal_id === entry.mal_id)
+      ) {
+        const { data: entryData } = await useAsyncData(
+          `relation-${entry.mal_id}`,
+          () => $fetch(`https://api.jikan.moe/v4/manga/${entry.mal_id}/full`)
+        );
+        tempRelations.push({
+          relation: relation.relation,
+          entry: entryData.value.data,
+        });
       }
-    });
-
-    if (manga.value.relations) {
-      const tempRelations = [];
-
-      for (let relation of manga.value.relations) {
-        for (let entry of relation.entry) {
-          if (
-            entry.type === "manga" &&
-            !tempRelations.some((e) => e.entry.mal_id === entry.mal_id)
-          ) {
-            const entryData = await $fetch(
-              `https://api.jikan.moe/v4/manga/${entry.mal_id}/full`
-            );
-            tempRelations.push({
-              relation: relation.relation,
-              entry: entryData.data,
-            });
-          }
-        }
-      }
-
-      relations.value = tempRelations;
     }
-  } catch (error) {
-    console.error("Veri çekme hatası:", error);
   }
+  relations.value = tempRelations;
 }
 
 watch(mangaID, async (newID, oldID) => {
   if (newID !== oldID) {
-    await fetchManga();
+    await fetchManga(); // watch tetiklendiğinde manga verilerini tekrar çek
   }
-}); //mangaID değiştiğinde tekrar fetch'le
-onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
+});
 </script>
-
 <template>
   <main class="grid grid-cols-11">
     <div

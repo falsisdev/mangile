@@ -2,20 +2,17 @@
 // Öne çıkan mangalar
 let highlights = ref([]);
 
-const { data: highlightsData } = await useAsyncData(
-  "highlights",
-  () =>
-    $fetch("https://api.jikan.moe/v4/manga", {
-      params: {
-        type: "manga",
-        limit: 20,
-        sfw: true,
-        genres_exclude: "28,26,9,49,12,53,44,35,65,74,15",
-        order_by: "popularity",
-        sort: "asc",
-      },
-    }),
+const { data: highlightsData } = await useFetch(
+  "https://api.jikan.moe/v4/manga",
   {
+    params: {
+      type: "manga",
+      limit: 20,
+      sfw: true,
+      genres_exclude: "28,26,9,49,12,53,44,35,65,74,15",
+      order_by: "popularity",
+      sort: "asc",
+    },
     key: "highlights",
     staleTime: 1000 * 60 * 10, // 10 dakika taze kalacak
     cacheTime: 1000 * 60 * 60 * 24, // 24 saat boyunca önbellekte kalacak
@@ -38,20 +35,18 @@ for (let item of highlightsData.value.data) {
 // En yüksek puanlı mangalar
 let topMangas = ref([]);
 
-const { data: topMangasData } = await useAsyncData(
-  "top-mangas",
-  () =>
-    $fetch("https://api.jikan.moe/v4/top/manga", {
-      params: {
-        type: "manga",
-      },
-    }),
+const { data: topMangasData } = await useFetch(
+  "https://api.jikan.moe/v4/top/manga",
   {
+    params: {
+      type: "manga",
+    },
     key: "top-mangas",
     staleTime: 1000 * 60 * 10, // 10 dakika taze kalacak
     cacheTime: 1000 * 60 * 60 * 24, // 24 saat boyunca önbellekte kalacak
   }
 );
+
 for (let item of topMangasData.value.data) {
   topMangas.value.push({
     name: item.title,
@@ -68,21 +63,19 @@ for (let item of topMangasData.value.data) {
 // Yayınlanıyor olan mangalar
 let pubs = ref([]);
 
-const { data: pubsData } = await useAsyncData(
-  "publishing-mangas",
-  () =>
-    $fetch("https://api.jikan.moe/v4/top/manga", {
-      params: {
-        type: "manga",
-        filter: "publishing",
-      },
-    }),
+const { data: pubsData } = await useFetch(
+  "https://api.jikan.moe/v4/top/manga",
   {
+    params: {
+      type: "manga",
+      filter: "publishing",
+    },
     key: "publishing-mangas",
     staleTime: 1000 * 60 * 10,
     cacheTime: 1000 * 60 * 60 * 24,
   }
 );
+
 for (let item of pubsData.value.data) {
   pubs.value.push({
     name: item.title,
@@ -96,21 +89,19 @@ for (let item of pubsData.value.data) {
   });
 }
 
-// En yüksek puanlı mangalar
+// Rastgele manga
 let randomManga = ref([]);
 
-const { data: randomMangaData } = await useAsyncData(
-  "random-manga",
-  () =>
-    $fetch("https://api.jikan.moe/v4/random/manga", {
-      params: {
-        sfw: true,
-      },
-    }),
+const { data: randomMangaData } = await useFetch(
+  "https://api.jikan.moe/v4/random/manga",
   {
+    params: {
+      sfw: true,
+    },
     key: "random-manga",
   }
 );
+
 randomManga.value.push({
   name: randomMangaData.value.data.title,
   description: randomMangaData.value.data.synopsis,
@@ -122,7 +113,6 @@ randomManga.value.push({
   id: randomMangaData.value.data.mal_id,
 });
 </script>
-
 <template>
   <main>
     <br />
