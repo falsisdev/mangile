@@ -70,26 +70,28 @@ const props = defineProps({
                     <span
                       v-for="genre of item.genres"
                       :key="genre"
-                      class="badge badge-neutral gap-2 mr-1 tooltip"
+                      class="badge badge-neutral gap-2 mr-1 mb-1 tooltip"
                       :data-tip="data.malgenres[String(genre.name)]"
                       >{{ data.malgenres[String(genre.name)] }}</span
                     >
                   </span>
-                  {{
-                    `${item["date"].from.day} ${
-                      data.months[parseInt(item["date"].from.month) - 1]
-                    } ${item["date"].from.year}'den ${
-                      item["date"].to.day ? item["date"].to.day : ""
-                    } ${
-                      item["date"].to.month
-                        ? data.months[parseInt(item["date"].to.month) - 1]
-                        : ""
-                    } ${item["date"].to.year ? item["date"].to.year : ""}${
-                      item.date.to.year
-                        ? "'e kadar yayınlandı"
-                        : " günümüze kadar yayınını sürdürüyor"
-                    }`
-                  }}
+                  <span class="-mt-1">
+                    {{
+                      `${item["date"].from.day} ${
+                        data.months[parseInt(item["date"].from.month) - 1]
+                      } ${item["date"].from.year}'den ${
+                        item["date"].to.day ? item["date"].to.day : ""
+                      } ${
+                        item["date"].to.month
+                          ? data.months[parseInt(item["date"].to.month) - 1]
+                          : ""
+                      } ${item["date"].to.year ? item["date"].to.year : ""}${
+                        item.date.to.year
+                          ? "'e kadar yayınlandı"
+                          : " günümüze kadar yayınını sürdürüyor"
+                      }`
+                    }}
+                  </span>
                   <p class="max-h-32 overflow-auto">
                     {{ item.description }}
                   </p>

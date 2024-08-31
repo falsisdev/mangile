@@ -4,6 +4,7 @@ import { data } from "@/assets/data.ts";
 const route = useRoute();
 const mangaID = ref(route.params.mangaID); //ref içinde çünkü watcher kullanılıyor
 const manga = ref([]); //manganın <template> içerisinde kullanılacak bütün MAL verileri bu ref'in içerisine kaydolacak
+const images = ref([]);
 const recommendations = ref([]);
 const relations = ref([]);
 const warning = ref([]);
@@ -13,13 +14,38 @@ const recommendationsData = await $fetch(
 );
 recommendations.value = recommendationsData.data;
 
+function moveElementToIndex(arr, value, targetIndex) {
+  const currentIndex = arr.indexOf(value);
+
+  if (currentIndex === -1) {
+    console.log("Değer bulunamadı.");
+    return arr;
+  }
+
+  const [removedElement] = arr.splice(currentIndex, 1);
+
+  arr.splice(targetIndex, 0, removedElement);
+
+  return arr;
+}
+
 //fonksiyon içinde çünkü watcher ile izlenmesi gerekiyor
 async function fetchManga() {
   try {
     const mangaData = await $fetch(
       `https://api.jikan.moe/v4/manga/${mangaID.value}/full`
     );
+    const imagesData = await $fetch(
+      `https://api.jikan.moe/v4/manga/${mangaID.value}/pictures`
+    );
     manga.value = mangaData.data;
+    images.value = moveElementToIndex(
+      imagesData.data,
+      imagesData["data"].find(
+        (x) => x.jpg.large_image_url == manga.value.images.jpg.large_image_url
+      ),
+      0
+    );
 
     manga.value.themes?.forEach((x) => {
       if (data.warnmessages[x.mal_id]) {
@@ -67,7 +93,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
     <div
       v-if="warning.length > 0"
       role="alert"
-      class="alert alert-warning col-start-1 col-end-11 mx-5"
+      class="alert alert-warning col-start-1 col-end-11 mx-5 mt-2"
     >
       <Icon name="material-symbols:warning" class="w-5 h-5 -mr-2" />
       <span
@@ -76,21 +102,42 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       >
     </div>
     <div
+      v-if="manga.type != 'Manga'"
+      role="alert"
+      class="alert alert-info col-start-1 col-end-11 mx-5 mt-2"
+    >
+      <Icon name="material-symbols:info" class="w-5 h-5 -mr-2" />
+      <span
+        >Bilgi: Bu seri bir
+        {{
+          manga.type == "Light Novel"
+            ? "Hafif Roman'dır"
+            : manga.type == "Manhwa"
+            ? "Manhwa'dır"
+            : "Manga Değildir"
+        }}</span
+      >
+    </div>
+    <div
       v-if="manga && manga.images && manga.images.jpg"
       class="card lg:card-side bg-base-100 col-start-1 col-end-11 m-5 grid grid-cols-12"
     >
       <article class="prose flex flex-col col-start-1 col-end-5">
-        <figure class="indicator">
-          <span
-            v-if="manga.demographics && manga.demographics[0]"
-            class="indicator-item indicator-center indicator-bottom badge badge-base-100 mb-2 rounded-b-none"
-            >{{ manga.demographics[0].name }}</span
-          >
-          <img
-            class="rounded shadow-md w-72 h-auto"
-            :src="manga.images.jpg.large_image_url"
-          />
-        </figure>
+        <swiper :centeredSlides="true" :loop="true" class="w-[287px]">
+          <swiper-slide v-for="image of images" :key="image">
+            <figure class="indicator">
+              <span
+                v-if="manga.demographics && manga.demographics[0]"
+                class="indicator-item indicator-center indicator-bottom badge badge-base-100 mb-2 rounded-b-none"
+                >{{ manga.demographics[0].name }}</span
+              >
+              <img
+                class="rounded shadow-md w-72 h-auto"
+                :src="image.jpg.large_image_url"
+              />
+            </figure>
+          </swiper-slide>
+        </swiper>
         <span class="-mt-2">
           <h1>Başlıklar</h1>
           <div class="w-72 -m-2 -mt-5">
@@ -233,7 +280,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             >
               <input type="checkbox" class="peer" />
               <div class="collapse-title text-xl">Arkaplan Bilgisi</div>
-              <div class="collapse-content">
+              <div class="collapse-content -mt-5">
                 <p>
                   {{ manga.background }}
                 </p>
@@ -474,7 +521,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               </div>
               <div class="stat-title">Üye</div>
               <div class="stat-value">{{ manga.members }}</div>
-              <div class="stat-desc">kişi bu seriyi okuyor</div>
+              <div class="stat-desc">kişinin kitaplığında</div>
             </div>
             <div class="stat">
               <div class="stat-figure text-warning">
