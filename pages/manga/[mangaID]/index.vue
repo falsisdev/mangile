@@ -117,6 +117,38 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             </table>
           </div>
         </span>
+        <span class="-mt-2">
+          <h1>Sanatçılar</h1>
+          <div class="w-72 -m-2 -mt-5">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Ad</th>
+                  <th>Soyad</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="author of manga['authors']" :key="author">
+                  <td
+                    v-for="item of author['name'].split(', ').sort()"
+                    :key="item"
+                  >
+                    {{ item }}
+                  </td>
+                  <td>
+                    <NuxtLink
+                      class="btn btn-xs btn-ghost"
+                      :to="`/person/${author.mal_id}`"
+                    >
+                      Görüntüle
+                    </NuxtLink>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </span>
       </article>
       <div class="card-body col-start-5 col-end-12">
         <article class="prose">
@@ -195,7 +227,193 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             <br /><br />
             <span v-if="manga.synopsis">{{ manga.synopsis }}</span>
             <br /><br />
-            <span v-if="manga.background">{{ manga.background }}</span>
+            <div
+              v-if="manga.background"
+              class="collapse collapse-arrow -mx-2 -mt-5"
+            >
+              <input type="checkbox" class="peer" />
+              <div class="collapse-title text-xl">Arkaplan Bilgisi</div>
+              <div class="collapse-content">
+                <p>
+                  {{ manga.background }}
+                </p>
+              </div>
+            </div>
+            <article class="prose mt-5">
+              <h1>Veri Tabanı</h1>
+            </article>
+            <span class="divider" />
+            <ul class="menu menu-sm rounded-lg w-full">
+              <li>
+                <details>
+                  <summary>
+                    <Icon name="mdi:book-open-blank-variant" class="h-5 w-5" />
+                    Bölümler
+                  </summary>
+                  <ul>
+                    <li>
+                      <details>
+                        <summary>
+                          <Icon name="mdi:file-document" class="h-5 w-5" />
+                          Bölüm 3
+                        </summary>
+                        <ul>
+                          <li>
+                            <NuxtLink class="no-underline flex flex-row">
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              Tempest Fansub
+                            </NuxtLink>
+                          </li>
+                          <li>
+                            <NuxtLink class="no-underline flex flex-row">
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              Manga Şehri
+                            </NuxtLink>
+                          </li>
+                          <li>
+                            <NuxtLink class="no-underline flex flex-row">
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              Sad Scans
+                            </NuxtLink>
+                          </li>
+                        </ul>
+                      </details>
+                    </li>
+                    <li>
+                      <details>
+                        <summary>
+                          <Icon name="mdi:file-document" class="h-5 w-5" />
+                          Bölüm 2
+                        </summary>
+                        <ul>
+                          <li>
+                            <NuxtLink class="no-underline flex flex-row">
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              Tempest Fansub
+                            </NuxtLink>
+                          </li>
+                          <li>
+                            <NuxtLink class="no-underline flex flex-row">
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              Manga Şehri
+                            </NuxtLink>
+                          </li>
+                        </ul>
+                      </details>
+                    </li>
+                    <li>
+                      <details>
+                        <summary>
+                          <Icon name="mdi:file-document" class="h-5 w-5" />
+                          Bölüm 1
+                        </summary>
+                        <ul>
+                          <li>
+                            <NuxtLink class="no-underline flex flex-row">
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              Tempest Fansub
+                            </NuxtLink>
+                          </li>
+                          <li>
+                            <NuxtLink class="no-underline flex flex-row">
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              Sad Scans
+                            </NuxtLink>
+                          </li>
+                        </ul>
+                      </details>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+              <li>
+                <details>
+                  <summary>
+                    <Icon name="mdi:file-document-edit" class="h-5 w-5" />
+                    Çeviri Ekipleri
+                  </summary>
+                  <ul>
+                    <li>
+                      <NuxtLink class="no-underline flex flex-row">
+                        <Icon
+                          name="mdi:file-document-arrow-right"
+                          class="h-5 w-5 mr-1"
+                        />
+                        Tempest Fansub
+                      </NuxtLink>
+                    </li>
+                    <li>
+                      <NuxtLink class="no-underline flex flex-row">
+                        <Icon
+                          name="mdi:file-document-arrow-right"
+                          class="h-5 w-5 mr-1"
+                        />
+                        Manga Şehri
+                      </NuxtLink>
+                    </li>
+                    <li>
+                      <NuxtLink class="no-underline flex flex-row">
+                        <Icon
+                          name="mdi:file-document-arrow-right"
+                          class="h-5 w-5 mr-1"
+                        />
+                        Sad Scans
+                      </NuxtLink>
+                    </li>
+                  </ul>
+                </details>
+              </li>
+              <li v-for="link of manga.external" :key="link">
+                <NuxtLink :to="link.url" class="no-underline flex flex-row">
+                  <Icon
+                    :name="
+                      link['url'].includes('twitter')
+                        ? 'mdi:twitter'
+                        : link['name']
+                            .replaceAll('Official Site', 'mdi:web')
+                            .replaceAll('Wikipedia', 'mdi:wikipedia')
+                    "
+                    class="h-5 w-5 mr-1"
+                  />
+                  {{
+                    link["name"]
+                      .replaceAll("Official Site", "Resmi Genel Ağ Adresi")
+                      .replaceAll("Wikipedia", "Vikipedi")
+                  }}
+                </NuxtLink>
+              </li>
+              <li v-for="link of manga.serializations" :key="link">
+                <NuxtLink :to="link.url" class="no-underline flex flex-row">
+                  <Icon name="mdi:library" class="h-5 w-5 mr-1" />
+                  {{
+                    link["name"]
+                      .replaceAll("Weekly", "Haftalık")
+                      .replaceAll("Monthly", "Aylık")
+                  }}
+                </NuxtLink>
+              </li>
+            </ul>
           </span>
         </article>
       </div>
@@ -300,6 +518,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   .replaceAll("Prequel", "Önceki Seri")
                   .replaceAll("Side Story", "Yan Öykü")
                   .replaceAll("Alternative Version", "Alternatif Yorum")
+                  .replaceAll("Parent Story", "Ana Öykü")
               }}
             </h1>
           </article>
@@ -317,7 +536,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </span>
       </span>
     </div>
-    <div class="col-start-1 col-end-12">
+    <div v-if="recommendations[0]" class="col-start-1 col-end-12">
       <article class="prose max-w-none px-5">
         <h1 class="flex flex-row">İlginizi çekebilir</h1>
       </article>
