@@ -1,6 +1,7 @@
 <script setup>
 import { data } from "@/assets/data.ts";
 
+const { isMobileOrTablet } = useDevice();
 const props = defineProps({
   itemData: Object,
 });
@@ -17,32 +18,33 @@ const props = defineProps({
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
       ><div
-        class="hero bg-base-200 h-auto"
+        class="hero bg-base-200 lg:h-auto h-[30rem]"
         :style="`background-image: url(${item.image});`"
       >
         <div class="hero-overlay bg-opacity-90 bg-base-200"></div>
-        <div class="hero-content flex flex-row-reverse mx-10">
+        <div class="hero-content flex flex-row-reverse lg:mx-10">
           <img
+            v-if="!isMobileOrTablet"
             :src="item.image"
             class="max-w-sm h-[500px] rounded-lg shadow-2xl"
           />
           <div>
             <h1 class="text-5xl font-bold">{{ item.name }}</h1>
-            <span class="flex mt-5">
+            <span class="flex flex-row flex-wrap mt-5">
               <span
-                class="badge badge-accent gap-2 tooltip tooltip-accent"
+                class="badge badge-accent tooltip tooltip-accent mb-1"
                 :data-tip="data['malstatus'][String(item.status)]"
                 >{{ data["malstatus"][String(item.status)] }}</span
               >
               <span
                 v-for="genre of item.genres"
                 :key="genre"
-                class="badge badge-neutral gap-2 mx-1 tooltip"
+                class="badge badge-neutral mx-1 tooltip"
                 :data-tip="data.malgenres[String(genre.name)]"
                 >{{ data.malgenres[String(genre.name)] }}</span
               >
             </span>
-            <p class="max-h-48 overflow-auto my-2">
+            <p class="max-h-48 overflow-auto lg:my-2 my-3">
               {{ item.description }}
             </p>
             <div class="dropdown dropdown-hover dropdown-top">

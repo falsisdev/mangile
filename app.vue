@@ -1,9 +1,16 @@
 <script setup>
 import { data } from "@/assets/data.ts";
+
+const { isMobileOrTablet } = useDevice();
 const cookies = {
   theme: useCookie("theme").value,
 };
 const theme = cookies["theme"] == null ? "sunset" : cookies["theme"];
+
+let layout = ref("default");
+if (isMobileOrTablet) {
+  layout.value = "mobile";
+}
 </script>
 <template>
   <main :data-theme="theme">
@@ -12,7 +19,7 @@ const theme = cookies["theme"] == null ? "sunset" : cookies["theme"];
       :errorcolor="data['themes'][theme].error"
       :duration="5000"
     />
-    <NuxtLayout>
+    <NuxtLayout :name="layout">
       <NuxtPage />
     </NuxtLayout>
   </main>

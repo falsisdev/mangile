@@ -1,14 +1,21 @@
 <script setup>
 import { data } from "@/assets/data.ts";
 
+const { isMobileOrTablet } = useDevice();
+
 const props = defineProps({
   itemData: Object,
 });
 </script>
 <template>
-  <swiper :spaceBetween="20" :slidesPerView="4">
+  <swiper
+    :spaceBetween="isMobileOrTablet ? 0 : 20"
+    :slidesPerView="isMobileOrTablet ? 1 : 4"
+  >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
-      ><div class="card w-72 bg-base-100 shadow-lg rounded-lg shadow-base-300">
+      ><div
+        class="card lg:w-72 lg:m-0 m-5 bg-base-100 shadow-lg rounded-lg shadow-base-300"
+      >
         <figure class="w-full h-56">
           <img class="w-full rounded shadow-md" :src="item.image" />
         </figure>

@@ -1,4 +1,5 @@
 <script setup>
+const { isMobileOrTablet } = useDevice();
 // Öne çıkan mangalar
 let highlights = ref([]);
 
@@ -115,11 +116,12 @@ randomManga.value.push({
 </script>
 <template>
   <main>
-    <br />
+    <br v-if="!isMobileOrTablet" />
     <HeroCard :itemData="highlights" />
-    <div class="divider"></div>
+    <div class="divider" />
     <article class="prose max-w-none px-5">
-      <h1>En Yüksek Puanlı Mangalar</h1>
+      <h1 v-if="!isMobileOrTablet">En Yüksek Puanlı Mangalar</h1>
+      <h1 v-if="isMobileOrTablet">En Yüksek Puan</h1>
     </article>
     <br />
     <FreeSwiper :itemData="topMangas" />

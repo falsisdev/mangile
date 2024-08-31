@@ -1,11 +1,13 @@
 <script setup>
+const { isMobileOrTablet } = useDevice();
+
 const props = defineProps({
   itemData: Object,
 });
 </script>
 <template>
   <swiper
-    :slidesPerView="4"
+    :slidesPerView="isMobileOrTablet ? 1 : 4"
     :autoplay="{
       delay: 5000,
       disableOnInteraction: false,
@@ -14,7 +16,9 @@ const props = defineProps({
     :modules="[SwiperAutoplay]"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
-      ><div class="card w-72 bg-base-100 rounded-lg shadow-base-300">
+      ><div
+        class="card lg:w-72 lg:m-0 mx-5 bg-base-100 rounded-lg shadow-base-300"
+      >
         <figure class="w-full h-56">
           <img
             lass="w-full rounded shadow-md"

@@ -8,7 +8,7 @@ const props = defineProps({
 </script>
 <template>
   <div
-    class="card lg:w-[285px] w-72 bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
+    class="card lg:w-[285px] bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
   >
     <figure class="w-full h-56">
       <img
