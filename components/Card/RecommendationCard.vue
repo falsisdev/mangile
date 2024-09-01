@@ -7,6 +7,7 @@ const props = defineProps({
 </script>
 <template>
   <swiper
+    :spaceBetween="0"
     :slidesPerView="isMobileOrTablet ? 1 : 4"
     :autoplay="{
       delay: 5000,

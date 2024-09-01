@@ -17,33 +17,29 @@ const recommendationsData = await $fetch(
 recommendations.value = recommendationsData.data;
 
 function moveElementToIndex(arr, value, targetIndex) {
-  const currentIndex = arr.indexOf(value);
-
-  if (currentIndex === -1) {
-    console.log("Değer bulunamadı.");
+  const currentIndex = arr.findIndex(
+    (el) => el.jpg.large_image_url === value.jpg.large_image_url
+  );
+  if (currentIndex === -1 || currentIndex === targetIndex) {
     return arr;
   }
-
   const [removedElement] = arr.splice(currentIndex, 1);
-
   arr.splice(targetIndex, 0, removedElement);
-
   return arr;
 }
 
 //fonksiyon içinde çünkü watcher ile izlenmesi gerekiyor
 async function fetchManga() {
   try {
-    const mangaData = await $fetch(
-      `https://api.jikan.moe/v4/manga/${mangaID.value}/full`
-    );
-    const imagesData = await $fetch(
-      `https://api.jikan.moe/v4/manga/${mangaID.value}/pictures`
-    );
+    const [mangaData, imagesData] = await Promise.all([
+      $fetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/full`),
+      $fetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/pictures`),
+    ]);
+
     manga.value = mangaData.data;
     images.value = moveElementToIndex(
       imagesData.data,
-      imagesData["data"].find(
+      imagesData.data.find(
         (x) => x.jpg.large_image_url == manga.value.images.jpg.large_image_url
       ),
       0
@@ -81,6 +77,42 @@ async function fetchManga() {
     console.error("Veri çekme hatası:", error);
   }
 }
+watchEffect(() => {
+  if (manga.value?.title) {
+    const seoMeta = [
+      {
+        property: "title",
+        content: manga.value.title + " | Mangile",
+      },
+      {
+        property: "og:title",
+        content: manga.value.title,
+      },
+      {
+        property: "description",
+        content:
+          manga.value.synopsis ||
+          `${manga.value.title} adlı mangaya Mangile'da göz at!`,
+      },
+      {
+        property: "og:description",
+        content: `${manga.value.title} adlı mangaya ait bilgilere, bölümlere ve benzeri bir çok veriye ulaş ve manganın Türkçe bölümlerine Mangile'da eriş!`,
+      },
+      {
+        property: "og:image",
+        url: manga.value.images.jpg.large_image_url,
+      },
+      {
+        property: "twitterCard",
+        url: manga.value.images.jpg.large_image_url,
+      },
+    ];
+    useHead({
+      title: manga.value.title,
+      meta: seoMeta,
+    });
+  }
+});
 
 watch(mangaID, async (newID, oldID) => {
   if (newID !== oldID) {
@@ -127,7 +159,12 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       class="card lg:card-side bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12"
     >
       <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5">
-        <swiper :centeredSlides="true" :loop="true" class="lg:w-[287px] w-72">
+        <swiper
+          :spaceBetween="0"
+          :centeredSlides="true"
+          :loop="true"
+          class="lg:w-[287px] w-72"
+        >
           <swiper-slide v-for="image of images" :key="image">
             <figure class="indicator">
               <span
@@ -577,6 +614,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   .replaceAll("Side Story", "Yan Öykü")
                   .replaceAll("Alternative Version", "Alternatif Yorum")
                   .replaceAll("Parent Story", "Ana Öykü")
+                  .replaceAll("Character", "Karakter")
               }}
             </h1>
           </article>

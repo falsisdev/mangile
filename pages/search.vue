@@ -49,9 +49,66 @@ async function fetchData() {
   }
 }
 
+watchEffect(() => {
+  if (q.value) {
+    const seoMeta = [
+      {
+        property: "title",
+        content: "Ara: " + q.value + " | Mangile",
+      },
+      {
+        property: "og:title",
+        content: "Mangile'da Ara",
+      },
+      {
+        property: "description",
+        content:
+          "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi. ",
+      },
+      {
+        property: "og:description",
+        content: `Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi. `,
+      },
+    ];
+    useHead({
+      title: `Arama Sorgusu: ${q.value}`,
+      meta: seoMeta,
+    });
+  }
+});
 watch([page, q], fetchData, { immediate: true });
 onMounted(() => {
-  fetchData;
+  const seoMeta = [
+    {
+      property: "title",
+      content: "Keşfet | Mangile",
+    },
+    {
+      property: "og:title",
+      content: "Keşfet",
+    },
+    {
+      property: "description",
+      content: `Mangaları Keşfet!`,
+    },
+    {
+      property: "og:description",
+      content: `Mangile'ın engin veri tabanında mangaları keşfet!`,
+    },
+    {
+      property: "og:image",
+      url: "https://raw.githubusercontent.com/falsisdev/mangile/beta/src/assets/mangile_sun.svg",
+    },
+    {
+      property: "twitterCard",
+      url: "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
+    },
+  ];
+  fetchData();
+  useHead({
+    title: "Keşfet",
+    meta: seoMeta,
+  });
 });
 </script>
 

@@ -11,6 +11,14 @@ let layout = ref("default");
 if (isMobileOrTablet) {
   layout.value = "mobile";
 }
+
+useHead({
+  titleTemplate: (titleChunk) => {
+    return titleChunk
+      ? `${titleChunk} | Mangile`
+      : "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi.";
+  },
+});
 </script>
 <template>
   <main :data-theme="theme">

@@ -113,6 +113,38 @@ randomManga.value.push({
   url: randomMangaData.value.data.url,
   id: randomMangaData.value.data.mal_id,
 });
+
+const seoMeta = [
+  {
+    property: "title",
+    content: "Ana Sayfa | Mangile",
+  },
+  {
+    property: "og:title",
+    content: "Mangile",
+  },
+  {
+    property: "description",
+    content:
+      "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi. ",
+  },
+  {
+    property: "og:description",
+    content: `Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi. `,
+  },
+  {
+    property: "og:image",
+    url: "https://raw.githubusercontent.com/falsisdev/mangile/beta/src/assets/mangile_sun.svg",
+  },
+  {
+    property: "twitterCard",
+    url: "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
+  },
+];
+useHead({
+  title: "Ana Sayfa",
+  meta: seoMeta,
+});
 </script>
 <template>
   <main>
