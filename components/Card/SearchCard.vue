@@ -8,7 +8,7 @@ const props = defineProps({
 </script>
 <template>
   <div
-    class="card lg:w-[285px] bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
+    class="card lg:w-[285px] bg-base-100 rounded-lg lg:mx-2 mx-5 mb-2 shadow-lg shadow-base-300"
   >
     <figure class="w-full h-56">
       <img
@@ -25,13 +25,13 @@ const props = defineProps({
         }}
       </h2>
       <p>
-        <span class="badge badge-accent gap-2 mr-1">{{
+        <span class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1">{{
           data["malstatus"][String(itemData.status)]
         }}</span>
         <span
           v-for="genre of itemData.genres"
           :key="genre"
-          class="badge badge-neutral gap-2 my-1 mr-1"
+          class="badge badge-neutral badge-sm lg:badge-md gap-2 my-1 mr-1"
           >{{ data.malgenres[String(genre.name)] }}</span
         >
       </p>
@@ -42,7 +42,7 @@ const props = defineProps({
           }`"
         >
           <NuxtLink
-            class="btn btn-primary flex flex-row"
+            class="btn btn-primary lg:btn-md btn-sm flex flex-row"
             :href="`/manga/${itemData.mal_id}`"
             ><Icon
               name="material-symbols:visibility-rounded"

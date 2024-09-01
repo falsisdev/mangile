@@ -4,11 +4,9 @@ const search = () => {
   input.addEventListener("keypress", async function (event) {
     if (event.key === "Enter") {
       event.preventDefault();
-      localStorage.setItem(
-        "searchQuery",
-        document.getElementById("searchbar").value
+      await navigateTo(
+        `/search?q=${document.getElementById("searchbar").value}`
       );
-      await navigateTo(`/search`);
     }
   });
 };
@@ -21,8 +19,8 @@ const logout = () => {
 };
 </script>
 <template>
-  <main>
-    <label class="input input-bordered input-sm flex items-center m-2">
+  <main class="pt-2 px-2">
+    <label class="input input-bordered input-sm flex items-center mb-2">
       <input
         id="searchbar"
         type="text"

@@ -25,18 +25,18 @@ const props = defineProps({
         </figure>
         <div class="card-body">
           <h2 class="card-title">{{ item.name }}</h2>
-          <p class="max-h-32 overflow-auto my-2">
+          <p class="max-h-32 overflow-auto my-2 text-sm lg:text-md">
             {{ item.description }}
           </p>
           <div class="flex justify-end">
             <NuxtLink
-              class="btn btn-ghost flex flex-row mx-1 tooltip"
+              class="btn btn-ghost lg:btn-md btn-sm flex flex-row mx-1 tooltip"
               data-tip="MyAnimeList sayfasını görüntüle"
               :href="item.url"
               ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
             /></NuxtLink>
             <NuxtLink
-              class="btn btn-primary flex flex-row tooltip"
+              class="btn btn-primary lg:btn-md btn-sm flex flex-row tooltip"
               data-tip="Mangile sayfasını Görüntüle"
               :href="`/manga/${item.id}`"
               ><Icon

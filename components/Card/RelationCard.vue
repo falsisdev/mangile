@@ -1,5 +1,6 @@
 <script setup>
 import { data } from "@/assets/data.ts";
+const { isMobileOrTablet } = useDevice();
 
 const props = defineProps({
   itemData: Object,
@@ -8,15 +9,17 @@ const props = defineProps({
 </script>
 <template>
   <div
-    class="card card-side w-96 bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
+    :class="`card lg:card-side lg:w-96 bg-base-100 lg:rounded-lg lg:mx-2 mb-2 shadow-lg shadow-base-300 ${
+      isMobileOrTablet ? 'image-full' : ''
+    }`"
   >
-    <figure class="w-64 h-full">
+    <figure class="lg:w-64 lg:h-full w-full h-64">
       <img
-        class="h-full w-48 rounded shadow-md"
+        class="lg:h-full lg:w-48 w-full rounded shadow-md"
         :src="itemData.images.jpg.large_image_url"
       />
     </figure>
-    <div class="card-body h-64 w-96">
+    <div class="card-body h-64 lg:w-96">
       <h2 class="card-title">
         {{
           itemData["title"].length >= 61

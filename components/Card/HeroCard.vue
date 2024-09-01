@@ -29,26 +29,28 @@ const props = defineProps({
             class="max-w-sm h-[500px] rounded-lg shadow-2xl"
           />
           <div>
-            <h1 class="text-5xl font-bold">{{ item.name }}</h1>
+            <h1 class="lg:text-5xl text-3xl font-bold">{{ item.name }}</h1>
             <span class="flex flex-row flex-wrap mt-5">
               <span
-                class="badge badge-accent tooltip tooltip-accent mb-1"
+                class="badge badge-accent badge-sm lg:badge-md tooltip tooltip-accent mb-1"
                 :data-tip="data['malstatus'][String(item.status)]"
                 >{{ data["malstatus"][String(item.status)] }}</span
               >
               <span
                 v-for="genre of item.genres"
                 :key="genre"
-                class="badge badge-neutral mx-1 tooltip"
+                class="badge badge-neutral badge-sm lg:badge-md mx-1 tooltip"
                 :data-tip="data.malgenres[String(genre.name)]"
                 >{{ data.malgenres[String(genre.name)] }}</span
               >
             </span>
-            <p class="max-h-48 overflow-auto lg:my-2 my-3">
+            <p class="max-h-48 overflow-auto lg:my-2 my-3 text-sm lg:text-md">
               {{ item.description }}
             </p>
             <div class="dropdown dropdown-hover dropdown-top">
-              <NuxtLink class="btn btn-primary" :href="`/manga/${item.id}`"
+              <NuxtLink
+                class="btn btn-primary btn-sm lg:btn-md"
+                :href="`/manga/${item.id}`"
                 ><Icon
                   name="material-symbols:visibility-rounded"
                   class="h-4 w-4"

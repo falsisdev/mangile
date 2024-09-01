@@ -8,8 +8,8 @@
  * order_by: sıralama tipi
  * sort: sıralama yönü
  */
-const query = localStorage.getItem("searchQuery");
-const q = ref(query);
+const route = useRoute();
+const q = ref(route.query.q);
 const page = ref(1);
 const searchData = ref(null);
 const pagination = ref(null);
@@ -51,7 +51,6 @@ async function fetchData() {
 
 watch([page, q], fetchData, { immediate: true });
 onMounted(() => {
-  localStorage.removeItem("searchQuery");
   fetchData;
 });
 </script>
@@ -168,7 +167,7 @@ onMounted(() => {
         </h1>
       </article>
       <br />
-      <div class="flex flex-row flex-wrap">
+      <div class="flex flex-row flex-wrap justify-center">
         <SearchCard
           v-for="manga in searchData"
           :key="manga.mal_id"
@@ -209,7 +208,7 @@ onMounted(() => {
           </option>
         </select>
       </div>
-      <div class="flex flex-row flex-wrap">
+      <div class="flex flex-row flex-wrap justify-center">
         <SearchCard
           v-for="manga in searchData"
           :key="manga.mal_id"

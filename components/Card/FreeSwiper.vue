@@ -21,7 +21,7 @@ const props = defineProps({
         </figure>
         <div class="card-body h-72">
           <h2 class="card-title">{{ item.name }}</h2>
-          <p>
+          <p class="text-sm lg:text-md">
             {{
               item.description ? item.description.substring(0, 75) + "..." : ""
             }}
@@ -33,7 +33,7 @@ const props = defineProps({
               }`"
             >
               <NuxtLink
-                class="btn btn-primary flex flex-row"
+                class="btn btn-primary lg:btn-md btn-sm flex flex-row"
                 :href="`/manga/${item.id}`"
                 ><Icon
                   name="material-symbols:visibility-rounded"

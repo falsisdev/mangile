@@ -2,6 +2,8 @@
 import { data } from "@/assets/data.ts";
 
 const route = useRoute();
+const { isMobileOrTablet } = useDevice();
+
 const mangaID = ref(route.params.mangaID); //ref içinde çünkü watcher kullanılıyor
 const manga = ref([]); //manganın <template> içerisinde kullanılacak bütün MAL verileri bu ref'in içerisine kaydolacak
 const images = ref([]);
@@ -89,41 +91,43 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 </script>
 
 <template>
-  <main class="grid grid-cols-11">
-    <div
-      v-if="warning.length > 0"
-      role="alert"
-      class="alert alert-warning col-start-1 col-end-11 mx-5 mt-2"
-    >
-      <Icon name="material-symbols:warning" class="w-5 h-5 -mr-2" />
-      <span
-        >UYARI: Bu seri
-        {{ [...new Set(warning)].join(", ") }} içermektedir.</span
+  <main class="lg:grid lg:grid-cols-11">
+    <div class="lg:mx-0 mx-5 lg:col-start-1 lg:col-end-12">
+      <div
+        v-if="warning.length > 0"
+        role="alert"
+        class="alert alert-warning lg:text-md text-sm lg:mx-5 lg:mt-2 px-5 text-start flex"
       >
-    </div>
-    <div
-      v-if="manga.type != 'Manga'"
-      role="alert"
-      class="alert alert-info col-start-1 col-end-11 mx-5 mt-2"
-    >
-      <Icon name="material-symbols:info" class="w-5 h-5 -mr-2" />
-      <span
-        >Bilgi: Bu seri bir
-        {{
-          manga.type == "Light Novel"
-            ? "Hafif Roman'dır"
-            : manga.type == "Manhwa"
-            ? "Manhwa'dır"
-            : "Manga Değildir"
-        }}</span
+        <Icon name="material-symbols:warning" class="w-5 h-5 lg:-mr-2" />
+        <span
+          >UYARI: Bu seri
+          {{ [...new Set(warning)].join(", ") }} içermektedir.</span
+        >
+      </div>
+      <div
+        v-if="manga.type != 'Manga'"
+        role="alert"
+        class="alert alert-info lg:mx-5 mt-2"
       >
+        <Icon name="material-symbols:info" class="w-5 h-5 -mr-2" />
+        <span
+          >Bilgi: Bu seri bir
+          {{
+            manga.type == "Light Novel"
+              ? "Hafif Roman'dır"
+              : manga.type == "Manhwa"
+              ? "Manhwa'dır"
+              : "Manga Değildir"
+          }}</span
+        >
+      </div>
     </div>
     <div
       v-if="manga && manga.images && manga.images.jpg"
-      class="card lg:card-side bg-base-100 col-start-1 col-end-11 m-5 grid grid-cols-12"
+      class="card lg:card-side bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12"
     >
-      <article class="prose flex flex-col col-start-1 col-end-5">
-        <swiper :centeredSlides="true" :loop="true" class="w-[287px]">
+      <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5">
+        <swiper :centeredSlides="true" :loop="true" class="lg:w-[287px] w-72">
           <swiper-slide v-for="image of images" :key="image">
             <figure class="indicator">
               <span
@@ -138,7 +142,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             </figure>
           </swiper-slide>
         </swiper>
-        <span class="-mt-2">
+        <span v-if="!isMobileOrTablet" class="-mt-2">
           <h1>Başlıklar</h1>
           <div class="w-72 -m-2 -mt-5">
             <table class="table">
@@ -164,7 +168,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             </table>
           </div>
         </span>
-        <span class="-mt-2">
+        <span v-if="!isMobileOrTablet" class="-mt-2">
           <h1>Sanatçılar</h1>
           <div class="w-72 -m-2 -mt-5">
             <table class="table">
@@ -197,11 +201,11 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           </div>
         </span>
       </article>
-      <div class="card-body col-start-5 col-end-12">
+      <div class="card-body lg:col-start-5 lg:col-end-12">
         <article class="prose">
-          <span v-if="manga.authors" class="card-title -my-7">
+          <span v-if="manga.authors" class="card-title lg:-my-7 -mt-16 -my-10">
             <h1 class="flex flex-col">
-              <span class="text-sm text-gray-400 flex flex-row mx-1 -mb-2">
+              <span class="text-sm text-gray-400 flex flex-row lg:mx-1 -mb-2">
                 <span
                   v-for="author of manga.authors"
                   :key="author"
@@ -229,24 +233,26 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   manga['title'].toLowerCase() !=
                   manga['title_japanese'].toLowerCase()
                 "
-                class="text-gray-400 text-xl mx-1"
+                class="text-gray-400 lg:text-xl text-lg mx-1"
               >
                 {{ manga.title_japanese }}
               </span>
             </h1>
           </span>
           <span>
-            <span v-if="manga.status" class="badge badge-accent gap-2 mr-1">{{
-              data["malstatus"][String(manga.status)]
-            }}</span>
+            <span
+              v-if="manga.status"
+              class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1"
+              >{{ data["malstatus"][String(manga.status)] }}</span
+            >
             <span
               v-for="genre of manga.genres"
               :key="genre"
-              class="badge badge-neutral gap-2 my-1 mr-1"
+              class="badge badge-neutral badge-sm lg:badge-md gap-2 my-1 mr-1"
               >{{ data.malgenres[String(genre.name)] }}</span
             >
             <br />
-            <span v-if="manga.published">
+            <span v-if="manga.published" class="text-sm lg:text-md">
               {{
                 `${manga["published"].prop.from.day} ${
                   data.months[parseInt(manga["published"].prop.from.month) - 1]
@@ -271,16 +277,20 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                 }`
               }}
             </span>
-            <br /><br />
-            <span v-if="manga.synopsis">{{ manga.synopsis }}</span>
+            <br /><br v-if="!isMobileOrTablet" />
+            <span v-if="manga.synopsis" class="text-sm lg:text-md">{{
+              manga.synopsis
+            }}</span>
             <br /><br />
             <div
               v-if="manga.background"
               class="collapse collapse-arrow -mx-2 -mt-5"
             >
-              <input type="checkbox" class="peer" />
-              <div class="collapse-title text-xl">Arkaplan Bilgisi</div>
-              <div class="collapse-content -mt-5">
+              <input type="checkbox" class="lg:text-xl text-lg peer" />
+              <div class="collapse-title lg:text-xl text-lg">
+                Arkaplan Bilgisi
+              </div>
+              <div class="collapse-content text-sm lg:text-md -mt-5">
                 <p>
                   {{ manga.background }}
                 </p>
@@ -290,7 +300,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               <h1>Veri Tabanı</h1>
             </article>
             <span class="divider" />
-            <ul class="menu menu-sm rounded-lg w-full">
+            <ul class="menu menu-sm rounded-lg lg:w-full">
               <li>
                 <details>
                   <summary>
@@ -473,12 +483,12 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           manga.members &&
           manga.favorites
         "
-        class="col-start-12 col-end-12"
+        class="lg:col-start-12 lg:col-end-12"
       >
         <div class="stats">
-          <span class="flex flex-col">
+          <span class="flex lg:flex-col flex-row flex-wrap">
             <article class="prose text-center">
-              <h2>MAL İstatistikleri</h2>
+              <h2 class="lg:m-0 mx-5">MAL İstatistikleri</h2>
             </article>
             <div class="stat">
               <div class="stat-figure text-warning">
@@ -537,22 +547,23 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </div>
       </div>
     </div>
-    <div v-if="relations[0]" class="col-start-1 col-end-11 mx-5">
-      <article class="prose max-w-none px-5">
-        <h1 class="flex flex-row">Bağlantılı Seriler</h1>
+    <div v-if="relations[0]" class="lg:col-start-1 lg:col-end-11 px-5">
+      <article class="prose max-w-none lg:px-5">
+        <h1 class="lg:flex lg:flex-row">Bağlantılı Seriler</h1>
       </article>
       <span
         v-for="relation of manga.relations"
         :key="relation"
-        class="my-5 flex flex-row"
+        class="lg:my-5 lg:flex lg:flex-row"
       >
         <span
           v-if="
             relations.filter((x) => x.relation == relation.relation).length != 0
           "
-          class="mr-5 flex items-center"
+          class="lg:mr-5 lg:flex lg:items-center"
         >
           <article
+            v-if="!isMobileOrTablet"
             class="prose rotate-180"
             style="text-orientation: sideways; writing-mode: vertical-lr"
           >
@@ -569,8 +580,27 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               }}
             </h1>
           </article>
+          <article v-else class="prose mt-5">
+            <h1>
+              {{
+                relation["relation"]
+                  .replaceAll("Other", "Diğer")
+                  .replaceAll("Adaptation", "Adaptasyon")
+                  .replaceAll("Sequel", "Devam Serisi")
+                  .replaceAll("Prequel", "Önceki Seri")
+                  .replaceAll("Side Story", "Yan Öykü")
+                  .replaceAll("Alternative Version", "Alternatif Yorum")
+                  .replaceAll("Parent Story", "Ana Öykü")
+              }}
+            </h1>
+            <span class="divider -my-5" />
+          </article>
         </span>
-        <span class="divider divider-horizontal ml-2" />
+        <br v-if="isMobileOrTablet" />
+        <span
+          v-if="!isMobileOrTablet"
+          class="divider divider-horizontal lg:ml-2"
+        />
         <span class="flex flex-row flex-wrap">
           <RelationCard
             v-for="entry of relations.filter(
@@ -583,7 +613,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </span>
       </span>
     </div>
-    <div v-if="recommendations[0]" class="col-start-1 col-end-12">
+    <div v-if="recommendations[0]" class="lg:col-start-1 lg:col-end-12">
       <article class="prose max-w-none px-5">
         <h1 class="flex flex-row">İlginizi çekebilir</h1>
       </article>
