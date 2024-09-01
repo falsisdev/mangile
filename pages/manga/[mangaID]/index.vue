@@ -203,7 +203,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       </article>
       <div class="card-body lg:col-start-5 lg:col-end-12">
         <article class="prose">
-          <span v-if="manga.authors" class="card-title lg:-my-7 -mt-16 -my-10">
+          <span v-if="manga.authors" class="card-title lg:-my-7 -mt-12 -my-10">
             <h1 class="flex flex-col">
               <span class="text-sm text-gray-400 flex flex-row lg:mx-1 -mb-2">
                 <span
@@ -613,7 +613,10 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </span>
       </span>
     </div>
-    <div v-if="recommendations[0]" class="lg:col-start-1 lg:col-end-12">
+    <div
+      v-if="recommendations[0]"
+      class="lg:col-start-1 lg:col-end-12 lg:mt-0 mt-2"
+    >
       <article class="prose max-w-none px-5">
         <h1 class="flex flex-row">İlginizi çekebilir</h1>
       </article>
