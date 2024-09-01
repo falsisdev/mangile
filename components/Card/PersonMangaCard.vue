@@ -29,7 +29,9 @@ const props = defineProps({
           <h2 class="card-title">{{ item.manga.title }}</h2>
           <p class="max-h-32 overflow-auto my-2 text-sm lg:text-md">
             Söz konusu kişi bu seride "{{
-              item["position"].replaceAll("Story", "Yazar")
+              item["position"]
+                .replaceAll("Story", "Yazar")
+                .replaceAll("Art", "Çizer")
             }}" pozisyonunda görev almış.
           </p>
           <div class="flex justify-end">
