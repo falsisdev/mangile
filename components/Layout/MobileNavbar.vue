@@ -196,7 +196,7 @@ const logout = () => {
           </li>
         </ul>
       </button>
-      <button class="dropdown dropdown-end" v-if="Boolean(user)">
+      <button class="dropdown dropdown-end dropdown-top" v-if="Boolean(user)">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar btn-md mx-2">
           <div class="w-10 rounded-full">
             <img
