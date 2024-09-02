@@ -103,7 +103,7 @@ const search = () => {
                 <ul>
                   <li>
                     <NuxtLink
-                      :to="loggeduser ? `/user/userid/library` : ''"
+                      :to="Boolean(user) ? `/user/${user.sub}/library` : ''"
                       class="text-sm/6"
                       ><Icon
                         name="material-symbols:library-books-rounded"
