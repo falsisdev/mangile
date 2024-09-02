@@ -267,7 +267,7 @@ const logout = () => {
       <button v-else>
         <a class="flex flex-col items-center" href="/sign-in">
           <Icon name="material-symbols:login" class="w-5 h-5" />
-          <span class="text-sm/6">Giriş Yap</span></NuxtLink
+          <span class="text-sm/6">Giriş Yap</span></a
         >
       </button>
     </div>
