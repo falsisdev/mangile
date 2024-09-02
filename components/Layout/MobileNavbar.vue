@@ -1,4 +1,5 @@
 <script setup>
+const user = useLogtoUser()
 const search = () => {
   var input = document.getElementById("searchbar");
   input.addEventListener("keypress", async function (event) {
@@ -100,7 +101,7 @@ const logout = () => {
             <ul>
               <li>
                 <NuxtLink
-                  :to="loggeduser ? `/user/userid/library` : ''"
+                  :to="Boolean(user) ? `/user/${user.sub}/library` : ''"
                   class="text-sm/6"
                   ><Icon
                     name="material-symbols:library-books-rounded"
@@ -195,11 +196,11 @@ const logout = () => {
           </li>
         </ul>
       </button>
-      <button class="dropdown dropdown-end" v-if="isLogged">
+      <button class="dropdown dropdown-end" v-if="Boolean(user)">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar btn-md mx-2">
           <div class="w-10 rounded-full">
             <img
-              src="https://media.discordapp.net/attachments/775822548519616562/1133357825700139088/RDT_20230725_0000086929169197605575505.jpg?ex=66cd0d7a&is=66cbbbfa&hm=28398039ad91160087129b657d0a65d76305ce493cd69bbbb4b718cc1c63d285&=&format=webp&width=312&height=468"
+              :src="user.picture || 'https://media.discordapp.net/attachments/775822548519616562/1274408624768417915/mangile_6FCE43F.png?ex=66d73d05&is=66d5eb85&hm=b0e1936e88485a4f1643a152edb224d695dc9e8cc4a129e26deafedf8a8a5d7e&'"
               title="Profil Fotoğrafı"
             />
           </div>
@@ -209,15 +210,15 @@ const logout = () => {
           class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52 z-50"
         >
           <li>
-            <b>Kullanıcı Adı</b>
+            <b>{{ user.name ? user.name : user.username }}</b>
           </li>
           <li>
-            <NuxtLink to="`/user/userid`">
+            <NuxtLink :to="`/user/${user.sub}`">
               <Icon name="material-symbols:person" /> Profil</NuxtLink
             >
           </li>
           <li>
-            <NuxtLink to="`/user/userid/library`">
+            <NuxtLink :to="`/user/${user.sub}/library`">
               <Icon name="material-symbols:library-books" />
               Kütüphane</NuxtLink
             >
@@ -233,9 +234,9 @@ const logout = () => {
             </a>
           </li>
           <li>
-            <button @click="logout()">
+            <a href="/sign-out">
               <Icon name="material-symbols:logout" /> Çıkış Yap
-            </button>
+            </a>
           </li>
         </ul>
         <dialog id="settings" class="modal">
@@ -264,7 +265,7 @@ const logout = () => {
         </dialog>
       </button>
       <button v-else>
-        <NuxtLink class="flex flex-col items-center" to="/auth/login">
+        <a class="flex flex-col items-center" href="/sign-in">
           <Icon name="material-symbols:login" class="w-5 h-5" />
           <span class="text-sm/6">Giriş Yap</span></NuxtLink
         >
