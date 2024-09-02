@@ -1,4 +1,5 @@
 <script setup>
+const user = useLogtoUser();
 const search = () => {
   var input = document.getElementById("searchbar");
   input.addEventListener("keypress", async function (event) {
@@ -12,11 +13,6 @@ const search = () => {
 };
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-let isLogged = false;
-const logout = () => {
-  alert("çalışıyor");
-};
 </script>
 <template>
   <div class="navbar bg-base-100">
@@ -218,14 +214,17 @@ const logout = () => {
           />
           <Icon name="material-symbols:search" class="h-4 w-4" />
         </label>
-        <div class="dropdown dropdown-end" v-if="isLogged">
+        <div class="dropdown dropdown-end" v-if="Boolean(user)">
           <label
             tabindex="0"
-            class="btn btn-ghost btn-circle avatar btn-md mx-2"
+            class="btn btn-ghost btn-circle avatar btn-md mx-2 mt-1"
           >
-            <div class="w-10 rounded-full">
+            <div class="w-8 rounded-full">
               <img
-                src="https://media.discordapp.net/attachments/775822548519616562/1133357825700139088/RDT_20230725_0000086929169197605575505.jpg?ex=66cd0d7a&is=66cbbbfa&hm=28398039ad91160087129b657d0a65d76305ce493cd69bbbb4b718cc1c63d285&=&format=webp&width=312&height=468"
+                :src="
+                  user.picture ||
+                  'https://static.vecteezy.com/system/resources/previews/020/765/399/original/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'
+                "
                 title="Profil Fotoğrafı"
               />
             </div>
@@ -235,15 +234,15 @@ const logout = () => {
             class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52 z-50"
           >
             <li>
-              <b>Kullanıcı Adı</b>
+              <b>{{ user.name || user.username }}</b>
             </li>
             <li>
-              <NuxtLink to="`/user/userid`">
+              <NuxtLink :to="`/user/${user.sub}`">
                 <Icon name="material-symbols:person" /> Profil</NuxtLink
               >
             </li>
             <li>
-              <NuxtLink to="`/user/userid/library`">
+              <NuxtLink :to="`/user/${user.sub}/library`">
                 <Icon name="material-symbols:library-books" />
                 Kütüphane</NuxtLink
               >
@@ -259,9 +258,9 @@ const logout = () => {
               </a>
             </li>
             <li>
-              <button @click="logout()">
+              <a href="/sign-out">
                 <Icon name="material-symbols:logout" /> Çıkış Yap
-              </button>
+              </a>
             </li>
           </ul>
           <dialog id="settings" class="modal">
@@ -289,10 +288,10 @@ const logout = () => {
             </div>
           </dialog>
         </div>
-        <NuxtLink v-else to="/auth/login">
+        <a v-else href="/sign-in">
           <button class="btn btn-ghost btn-sm mt-3">
             <Icon name="material-symbols:login" /> Giriş Yap
-          </button></NuxtLink
+          </button></a
         >
       </ul>
     </div>

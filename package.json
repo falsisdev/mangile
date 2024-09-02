@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@logto/nuxt": "^0.3.4",
     "@nuxt/icon": "^1.4.10",
     "@nuxtjs/device": "^3.2.2",
     "@vueuse/core": "^11.0.3",
