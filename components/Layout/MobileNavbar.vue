@@ -1,5 +1,8 @@
 <script setup>
-const user = useLogtoUser()
+import { data } from "@/assets/data.ts";
+
+const user = useLogtoUser();
+
 const search = () => {
   var input = document.getElementById("searchbar");
   input.addEventListener("keypress", async function (event) {
@@ -11,12 +14,20 @@ const search = () => {
     }
   });
 };
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-let isLogged = false;
-const logout = () => {
-  alert("çalışıyor");
+
+const themeSelect = () => {
+  const themeCookie = useCookie("theme", {
+    sameSite: "None",
+    secure: true,
+  });
+  const form = document.getElementById("themeSelector");
+  const option = form.options[form.selectedIndex];
+  themeCookie.value = option.id;
+};
+
+const save = () => {
+  themeSelect();
+  reloadNuxtApp();
 };
 </script>
 <template>
@@ -200,7 +211,10 @@ const logout = () => {
         <label tabindex="0" class="btn btn-ghost btn-circle avatar btn-md mx-2">
           <div class="w-10 rounded-full">
             <img
-              :src="user.picture || 'https://media.discordapp.net/attachments/775822548519616562/1274408624768417915/mangile_6FCE43F.png?ex=66d73d05&is=66d5eb85&hm=b0e1936e88485a4f1643a152edb224d695dc9e8cc4a129e26deafedf8a8a5d7e&'"
+              :src="
+                user.picture ||
+                'https://media.discordapp.net/attachments/775822548519616562/1274408624768417915/mangile_6FCE43F.png?ex=66d73d05&is=66d5eb85&hm=b0e1936e88485a4f1643a152edb224d695dc9e8cc4a129e26deafedf8a8a5d7e&'
+              "
               title="Profil Fotoğrafı"
             />
           </div>
@@ -248,7 +262,87 @@ const logout = () => {
                 ✕
               </button>
             </form>
-            <!--<Settings />-->
+            <div>
+              <article class="prose max-w-none mb-2">
+                <h1 class="mb-2">Ayarlar</h1>
+                Mangile ayarlarına hoşgeldiniz. Sistemle ilgili mevcut
+                özelleştirme ve ayarlar aşağıdadır.
+              </article>
+              Uygulanmasını istediğiniz temayı seçin:
+              <br />
+              <select
+                id="themeSelector"
+                class="select select-bordered select-sm w-full max-w-xs my-2"
+              >
+                <option disabled selected>Tema Seçin</option>
+                <option
+                  v-for="theme of data.themeselect"
+                  :key="theme"
+                  :id="theme.id"
+                >
+                  {{ theme.title }} ({{
+                    theme["scheme"]
+                      .replaceAll("dark", "Karanlık")
+                      .replaceAll("light", "Aydınlık")
+                  }})
+                  {{
+                    theme.status
+                      ? `[${theme["status"]
+                          .replaceAll("recommended", "Önerilen")
+                          .replaceAll("default", "Varsayılan")
+                          .replaceAll("amoled", "Amoled")
+                          .replaceAll("high-contrast", "Yüksek Karşıtlık")}]`
+                      : ""
+                  }}
+                </option>
+              </select>
+              <br />
+              Tema Önizlemeleri:
+              <div class="flex flex-row overflow-x-auto">
+                <div
+                  v-for="theme of data.themeselect"
+                  :key="theme"
+                  :data-theme="theme.id"
+                  class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"
+                >
+                  <div class="font-bold">{{ theme.title }}</div>
+                  <div class="flex flex-row gap-1">
+                    <div
+                      class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"
+                    >
+                      <div class="text-primary-content text-sm font-bold">
+                        A
+                      </div>
+                    </div>
+                    <div
+                      class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"
+                    >
+                      <div class="text-secondary-content text-sm font-bold">
+                        J
+                      </div>
+                    </div>
+                    <div
+                      class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"
+                    >
+                      <div class="text-accent-content text-sm font-bold">W</div>
+                    </div>
+                    <div
+                      class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"
+                    >
+                      <div class="text-neutral-content text-sm font-bold">
+                        R
+                      </div>
+                    </div>
+                  </div>
+                  <div></div>
+                </div>
+              </div>
+              <div class="modal-action m-2">
+                <label for="settingsModal" class="btn" @click="save()"
+                  >Değişiklikleri Kaydet</label
+                >
+              </div>
+            </div>
           </div>
         </dialog>
         <dialog id="listcreate" class="modal">
