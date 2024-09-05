@@ -111,7 +111,7 @@ export const data = {
     autumn: {
       id: "autumn",
       title: "Güz",
-      scheme: "dark",
+      scheme: "light",
       status: null,
     },
     business: {
