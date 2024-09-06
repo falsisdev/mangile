@@ -98,7 +98,7 @@ export const data = {
     },
     wireframe: {
       id: "wireframe",
-      title: "Akgün",
+      title: "Manga",
       scheme: "light",
       status: null,
     },

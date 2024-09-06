@@ -6,4 +6,4 @@ Geliştirilen son sürüm olacak. Bundan sonra yeni bir branch oluşturulmayacak
 
 Sıradaki geliştirme işlemleri için projects sayfasına bakabilirsiniz.
 
-Önizleme Bağlantısı: [mangile.vercel.app](https://mangile.vercel.app)
+Önizleme Bağlantısı: [mangile.vercel.app](https://mangile.vercel.app) (Mobil sürümünde bilinen çeşitli hatalar mevcut)

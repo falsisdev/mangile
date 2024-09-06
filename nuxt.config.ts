@@ -9,11 +9,14 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     logto: {
-      endpoint: process.env.NUXT_LOGTO_ENDPOINT,
-      appId: process.env.NUXT_LOGTO_APP_ID,
-      appSecret: process.env.NUXT_LOGTO_APP_SECRET,
-      cookieEncryptionKey: process.env.NUXT_LOGTO_COOKIE_ENCRYPTION_KEY,
+      endpoint: "",
+      appId: "",
+      appSecret: "",
+      cookieEncryptionKey: "",
     },
+    subjectToken: "",
+    m2mAppID: "",
+    m2mAppSecret: "",
   },
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
