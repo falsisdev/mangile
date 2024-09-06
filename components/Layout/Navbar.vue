@@ -223,7 +223,9 @@ const save = () => {
             </ul>
           </div>
         </ul>
-        <label class="input input-bordered input-sm flex items-center mt-3">
+        <label
+          class="input input-bordered input-sm rounded-full flex items-center mt-3"
+        >
           <input
             id="searchbar"
             type="text"
@@ -235,9 +237,9 @@ const save = () => {
         <div class="dropdown dropdown-end" v-if="Boolean(user)">
           <label
             tabindex="0"
-            class="btn btn-ghost btn-circle avatar btn-md mx-2 mt-1"
+            class="w-10 btn btn-circle btn-ghost hover:bg-transparent hover:-rotate-6 duration-500 avatar mx-2 mt-1"
           >
-            <div class="w-8 rounded-full">
+            <div class="rounded-full">
               <img
                 :src="
                   user.picture ||
@@ -251,17 +253,31 @@ const save = () => {
             tabindex="0"
             class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52 z-50"
           >
-            <li>
-              <b>{{ user.name || user.username }}</b>
-            </li>
-            <li>
-              <NuxtLink :to="`/user/${user.sub}`">
-                <Icon name="material-symbols:person" /> Profil</NuxtLink
-              >
-            </li>
+            <span class="divide-y divide-base-content divide-opacity-25">
+              <li>
+                <b>
+                  <span class="avatar w-5">
+                    <div class="rounded-full">
+                      <img
+                        :src="
+                          user.picture ||
+                          'https://static.vecteezy.com/system/resources/previews/020/765/399/original/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'
+                        "
+                      />
+                    </div>
+                  </span>
+                  {{ user.name || user.username }}</b
+                >
+              </li>
+              <li>
+                <a :href="`/user/${user.sub}`">
+                  <Icon name="material-symbols:person" /> Profil</a
+                >
+              </li>
+            </span>
             <li>
               <NuxtLink :to="`/user/${user.sub}/library`">
-                <Icon name="material-symbols:library-books" />
+                <Icon name="mdi:library" />
                 Kütüphane</NuxtLink
               >
             </li>
