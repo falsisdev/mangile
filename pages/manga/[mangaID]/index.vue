@@ -100,11 +100,11 @@ watchEffect(() => {
       },
       {
         property: "og:image",
-        url: manga.value.images.jpg.large_image_url,
+        content: `/api/canvas/manga/${mangaID}`,
       },
       {
-        property: "twitterCard",
-        url: manga.value.images.jpg.large_image_url,
+        property: "twitter:image",
+        content: `/api/canvas/manga/${mangaID}`,
       },
     ];
     useHead({

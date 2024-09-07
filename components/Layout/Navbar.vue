@@ -251,7 +251,7 @@ const save = () => {
           </label>
           <ul
             tabindex="0"
-            class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52 z-50"
+            class="mt-3 p-2 drop-shadow-lg border-2 border-base-200 menu menu-compact dropdown-content bg-base-100 rounded-box w-52 z-50"
           >
             <span class="divide-y divide-base-content divide-opacity-25">
               <li>

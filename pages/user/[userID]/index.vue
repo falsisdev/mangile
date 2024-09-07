@@ -13,7 +13,9 @@ const { data: userData } = await useFetch(`/api/users/${route.params.userID}`, {
 <template>
   <main>
     <div class="card card-compact bg-base-100 w-full">
-      <figure class="h-72 shadow-inner">
+      <figure
+        class="h-72 shadow-inner border-2 border-neutral-content border-opacity-50"
+      >
         <img
           class="w-full opacity-75 object-cover object-center shadow-inner"
           :src="
