@@ -27,6 +27,7 @@
     "@iconify-json/flag": "^1.1.54",
     "@iconify-json/material-symbols": "^1.1.89",
     "@iconify-json/mdi": "^1.1.68",
+    "@iconify-json/simple-icons": "^1.2.1",
     "@tailwindcss/typography": "^0.5.14",
     "autoprefixer": "^10.4.20",
     "daisyui": "^4.12.10",
