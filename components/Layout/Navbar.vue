@@ -270,8 +270,8 @@ const save = () => {
                 >
               </li>
               <li>
-                <a :href="`/user/${user.sub}`">
-                  <Icon name="material-symbols:person" /> Profil</a
+                <NuxtLink :href="`/user/${user.sub}`">
+                  <Icon name="material-symbols:person" /> Profil</NuxtLink
                 >
               </li>
             </span>
