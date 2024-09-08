@@ -1,41 +1,17 @@
 <template>
-  <footer class="footer p-10 bg-base-100 text-base-content">
-    <aside>
-      <NuxtLink to="/"
-        ><img
-          src="https://raw.githubusercontent.com/falsisdev/mangile/beta/src/assets/mangile_sun.svg"
-          class="w-20 h-20"
-          title="Logo"
-      /></NuxtLink>
-      <p><b>Mangile</b><br />2022'den beri hizmetinizdeyiz!</p>
+  <footer class="footer items-center p-4">
+    <aside class="grid-flow-col items-center">
+      <img
+        class="w-12"
+        src="https://4.downloader.disk.yandex.com.tr/preview/0cde9015df4cf0977d74f075076cec95bb9156642d1d14afb5e74973c589cb31/inf/e2iZnEpvvOVGbSuOJVicgxtqiXUwMKZwcXupGnsxUVZCsN-Hf_I7NHLfgvSc7YsOrzBn1qavoB3P_EhDeN6eAQ%3D%3D?uid=1129069430&filename=mangairu%20%5B45119B2%5D.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=1129069430&tknv=v2&size=1708x794"
+      />
+      <span class="flex flex-col">
+        <span class="font-semibold">Mangile</span>
+        <span>2022'den beri</span></span
+      >
     </aside>
-    <nav>
-      <header class="footer-title">Veritabanı</header>
-      <a class="link link-hover">Son Eklenen Seriler</a>
-      <a class="link link-hover">Son Eklenen Bölümler</a>
-      <a class="link link-hover">Güncelleme Notları</a>
-    </nav>
-    <nav>
-      <header class="footer-title">Seriler</header>
-      <a class="link link-hover">Keşfet</a>
-      <a class="link link-hover">Türler</a>
-      <a class="link link-hover">Yazarlar ve Çizerler</a>
-      <a class="link link-hover">Karakterler</a>
-    </nav>
-    <nav>
-      <header class="footer-title">Mangile</header>
-      <NuxtLink to="/article/rules" class="link link-hover"
-        >Site Kuralları</NuxtLink
-      >
-      <a class="link link-hover">Gizlilik Prensipleri</a>
-      <a class="link link-hover">Güvenlik İpuçları</a>
-      <a class="link link-hover">Kullanıcı Sözleşmesi</a>
-      <NuxtLink to="/article/about" class="link link-hover"
-        >Hakkımızda</NuxtLink
-      >
-      <NuxtLink to="/article/contact" class="link link-hover"
-        >İletişim</NuxtLink
-      >
+    <nav class="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
+      Copyright © {{ new Date().getFullYear() }} - Some rights reserved
     </nav>
   </footer>
 </template>

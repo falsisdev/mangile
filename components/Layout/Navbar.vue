@@ -39,9 +39,8 @@ const save = () => {
         :to="'/'"
         class="btn btn-ghost no-animation hover:bg-[transparent] bg-base-100 normal-case font-bold text-[20px]"
         ><img
-          width="60"
-          src="https://firebasestorage.googleapis.com/v0/b/mangile-2229f.appspot.com/o/assets%2Fimages%2Fmangile_logo.png?alt=media&token=0c80a04f-0611-425f-bad4-7d7339751aaa"
-          title="logo"
+          src="https://1.downloader.disk.yandex.com.tr/preview/0e23273a79bfc4985c2562811d7742cbeb4aad26b9695361d4b061f398bda0e8/inf/W16LLPH0jdSky6AlmpUp6BtqiXUwMKZwcXupGnsxUVbd-mPi1eOUmhKsgEcn7_VSkb3VQM9IA3pKrFwC6CsX4w%3D%3D?uid=1129069430&filename=mangile%20%5B6FCE43F%5D.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=1129069430&tknv=v2&size=1708x794"
+          class="w-12"
         />
       </NuxtLink>
     </div>
@@ -63,10 +62,7 @@ const save = () => {
           <div class="dropdown dropdown-hover dropdown-bottom dropdown-end">
             <li class="tab-index-0">
               <a>
-                <Icon
-                  name="material-symbols:collections-bookmark"
-                  class="h-5 w-5"
-                />
+                <Icon name="material-symbols:database" class="h-5 w-5" />
                 <span class="text-sm/6">Veritabanı</span>
               </a>
             </li>
@@ -108,15 +104,13 @@ const save = () => {
               <li>
                 <span class="hover:bg-base-100 text-sm/6">
                   <Icon
-                    name="material-symbols:local-library"
+                    name="material-symbols:manage-accounts"
                     class="h-5 w-5" /><span class="flex flex-row"
-                    >Kütüphane</span
+                    >Kullanıcı</span
                   ><span
-                    class="tooltip tooltip-accent"
+                    class="tooltip tooltip-secondary badge badge-secondary"
                     data-tip="Kullanıcı girişi gerektiriyor!"
-                    ><Icon
-                      name="material-symbols:person-alert"
-                      class="badge badge-accent" /></span
+                    ><Icon name="material-symbols:person-alert" /></span
                 ></span>
                 <ul>
                   <li>
@@ -124,7 +118,7 @@ const save = () => {
                       :to="Boolean(user) ? `/user/${user.sub}/library` : ''"
                       class="text-sm/6"
                       ><Icon
-                        name="material-symbols:library-books-rounded"
+                        name="material-symbols:local-library"
                         class="h-5 w-5"
                       />Kütüphane</NuxtLink
                     >
@@ -142,13 +136,15 @@ const save = () => {
             </ul>
           </div>
           <div class="dropdown dropdown-hover dropdown-end dropdown-bottom">
-            <li class="tab-index-0">
+            <li
+              class="tab-index-0 tooltip mt-[2px] -mx-1"
+              data-tip="Sistem Hakkında"
+            >
               <a>
                 <Icon
                   name="material-symbols:supervised-user-circle"
                   class="h-5 w-5"
                 />
-                <span class="text-sm/6">Mangile</span>
               </a>
             </li>
             <ul
@@ -311,7 +307,10 @@ const save = () => {
           </button></a
         >
         <a onclick="settings.showModal()">
-          <button class="btn btn-ghost btn-sm mt-3 -ml-2">
+          <button
+            class="btn btn-ghost btn-sm mt-[13px] -ml-2 tooltip"
+            data-tip="Site Ayarları"
+          >
             <Icon name="material-symbols:settings" />
           </button>
         </a>
