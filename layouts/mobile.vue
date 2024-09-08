@@ -3,6 +3,6 @@
     <MobileNavbar />
     <slot />
     <div class="divider" />
-    <Footer />
+    <div class="divider" />
   </main>
 </template>

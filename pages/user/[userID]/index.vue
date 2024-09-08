@@ -28,19 +28,21 @@ watch([userData], fetchData, { immediate: true });
 </script>
 <template>
   <main v-if="userData">
-    <div class="card card-compact bg-base-100 w-full">
+    <div
+      class="card card-compact bg-base-100 w-full lg:rounded-2xl rounded-none"
+    >
       <figure
-        class="h-72 shadow-inner border-2 border-neutral-content border-opacity-50"
+        class="h-72 shadow-inner lg:border-2 lg:border-neutral-content lg:border-opacity-50"
       >
         <img
-          class="w-full opacity-75 object-cover object-center shadow-inner"
+          class="w-full lg:h-auto h-full opacity-75 object-cover object-center shadow-inner"
           :src="
             userData.customData.userBanner ||
             'https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed'
           "
         />
         <span
-          class="absolute top-0 end-0 bg-base-100 rounded-bl-lg p-1 tooltip tooltip-bottom border-2 border-r-0 border-t-0 border-neutral-content border-opacity-75"
+          class="absolute top-0 end-0 bg-base-100 rounded-bl-lg p-1 tooltip tooltip-bottom lg:border-2 lg:border-r-0 lg:border-t-0 lg:border-neutral-content lg:border-opacity-75"
           :data-tip="`Kullanıcı Cinsiyetini '${userData.profile['gender']
             .replaceAll('male', 'Eril')
             .replaceAll('female', 'Dişil')}' olarak belirtmiş`"
@@ -51,7 +53,7 @@ watch([userData], fetchData, { immediate: true });
           />
         </span>
         <button
-          class="btn bg-base-100 hover:bg-base-100 border-2 border-b-0 border-r-0 border-neutral-content border-opacity-50 hover:border-neutral-content hover:border-opacity-50 shadow-none absolute bottom-[100px] rounded-tl-2xl rounded-r-none rounded-b-none no-animation end-0"
+          class="btn lg:btn-md btn-sm bg-base-100 hover:bg-base-100 border-2 border-b-0 border-r-0 border-neutral-content border-opacity-50 hover:border-neutral-content hover:border-opacity-50 shadow-none absolute lg:bottom-[100px] bottom-[92px] rounded-tl-2xl rounded-r-none rounded-b-none no-animation end-0 lg:text-md text-xs"
         >
           <span
             class="flex tooltip"
@@ -81,7 +83,7 @@ watch([userData], fetchData, { immediate: true });
       >
         <h2 class="card-title">
           <div
-            class="avatar absolute lg:mb-16 bg-base-100 rounded-full border-t-2 border-t-neutral-content border-opacity-100"
+            class="avatar absolute lg:mb-16 mb-20 bg-base-100 rounded-full border-t-2 border-t-neutral-content border-opacity-100"
           >
             <div
               class="w-24 lg:w-36 rounded-full border-8 border-base-100 hover:border-8 hover:border-base-100"
@@ -95,12 +97,17 @@ watch([userData], fetchData, { immediate: true });
               />
             </div>
           </div>
-          <div class="lg:ml-40 lg:-my-2 prose flex flex-col">
+          <div
+            class="lg:ml-40 ml-24 -mt-4 lg:-mt-0 lg:-my-2 prose flex flex-col"
+          >
             <span class="text-xs -mb-2">@{{ userData.username }}</span>
             <h1>{{ userData.name }}</h1>
           </div>
           <span class="grow" />
-          <span class="tooltip" data-tip="Kullanıcının kütüphanesini görüntüle">
+          <span
+            class="tooltip lg:-mt-0 -mt-2"
+            data-tip="Kullanıcının kütüphanesini görüntüle"
+          >
             <NuxtLink class="btn btn-ghost">
               <Icon name="mdi:library" class="w-5 h-5" />
               Kütüphane
@@ -108,7 +115,7 @@ watch([userData], fetchData, { immediate: true });
           </span>
           <span
             v-if="Boolean(user) && user.sub == route.params.userID"
-            class="tooltip"
+            class="tooltip lg:-mt-0 -mt-2"
             data-tip="Profili Düzenle"
           >
             <NuxtLink class="btn btn-primary">

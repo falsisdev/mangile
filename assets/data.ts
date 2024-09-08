@@ -56,7 +56,7 @@ export const data = {
     },
     halloween: {
       id: "halloween",
-      title: "Cadılar Bayramı",
+      title: "Bal Kabağı",
       scheme: "dark",
       status: null,
     },

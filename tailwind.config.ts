@@ -95,6 +95,7 @@ export const daisyui = {
     "sunset",
     {
       geist: {
+        ...require("daisyui/src/theming/themes")["black"],
         primary: "#ffffff",
         "primary-content": "#000000",
         secondary: "#10233d",
