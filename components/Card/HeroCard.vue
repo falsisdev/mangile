@@ -29,7 +29,10 @@ const props = defineProps({
             class="max-w-sm h-[500px] rounded-lg shadow-2xl"
           />
           <div>
-            <h1 class="lg:text-5xl text-3xl font-bold">{{ item.name }}</h1>
+            <span class="flex flex-col">
+              <h1 class="lg:text-5xl text-3xl font-bold">{{ item.name }}</h1>
+              <span class="text-xs -mt-1">{{ item.type }}</span>
+            </span>
             <span class="flex flex-row flex-wrap mt-5">
               <span
                 class="badge badge-accent badge-sm lg:badge-md tooltip tooltip-accent mb-1"

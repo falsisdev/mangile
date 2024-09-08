@@ -21,7 +21,6 @@ async function fetchData() {
         params: {
           q: q.value,
           page: page.value,
-          type: "manga",
           sfw: true,
           order_by: "score",
           sort: "desc",
@@ -37,7 +36,6 @@ async function fetchData() {
       const response = await $fetch(`https://api.jikan.moe/v4/top/manga`, {
         params: {
           page: page.value,
-          type: "manga",
           sfw: true,
         },
       });

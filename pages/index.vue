@@ -7,7 +7,6 @@ const { data: highlightsData } = await useFetch(
   "https://api.jikan.moe/v4/manga",
   {
     params: {
-      type: "manga",
       limit: 20,
       sfw: true,
       genres_exclude: "28,26,9,49,12,53,44,35,65,74,15",
@@ -24,6 +23,7 @@ for (let item of highlightsData.value.data) {
   highlights.value.push({
     name: item.title,
     description: item.synopsis,
+    type: item.type,
     image: item.images.jpg.large_image_url,
     date: item.published.prop,
     status: item.status,
@@ -39,9 +39,6 @@ let topMangas = ref([]);
 const { data: topMangasData } = await useFetch(
   "https://api.jikan.moe/v4/top/manga",
   {
-    params: {
-      type: "manga",
-    },
     key: "top-mangas",
     staleTime: 1000 * 60 * 10, // 10 dakika taze kalacak
     cacheTime: 1000 * 60 * 60 * 24, // 24 saat boyunca önbellekte kalacak
@@ -52,6 +49,7 @@ for (let item of topMangasData.value.data) {
   topMangas.value.push({
     name: item.title,
     description: item.synopsis,
+    type: item.type,
     image: item.images.jpg.large_image_url,
     date: item.published.prop,
     status: item.status,
@@ -68,7 +66,6 @@ const { data: pubsData } = await useFetch(
   "https://api.jikan.moe/v4/top/manga",
   {
     params: {
-      type: "manga",
       filter: "publishing",
     },
     key: "publishing-mangas",
@@ -81,6 +78,7 @@ for (let item of pubsData.value.data) {
   pubs.value.push({
     name: item.title,
     description: item.synopsis,
+    type: item.type,
     image: item.images.jpg.large_image_url,
     date: item.published.prop,
     status: item.status,
@@ -106,6 +104,7 @@ const { data: randomMangaData } = await useFetch(
 randomManga.value.push({
   name: randomMangaData.value.data.title,
   description: randomMangaData.value.data.synopsis,
+  type: randomMangaData.value.data.type,
   image: randomMangaData.value.data.images.jpg.large_image_url,
   date: randomMangaData.value.data.published.prop,
   status: randomMangaData.value.data.status,

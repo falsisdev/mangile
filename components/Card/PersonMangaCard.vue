@@ -4,6 +4,18 @@ const { isMobileOrTablet } = useDevice();
 const props = defineProps({
   itemData: Object,
 });
+
+onMounted(() => {
+  const textElements = document.querySelectorAll("#marquee-text");
+  textElements.forEach((textElement) => {
+    const containerWidth = textElement.parentElement.offsetWidth;
+    const textWidth = textElement.scrollWidth;
+
+    if (textWidth > containerWidth) {
+      textElement.classList.add("animate-marquee");
+    }
+  });
+});
 </script>
 <template>
   <swiper
@@ -26,13 +38,20 @@ const props = defineProps({
           />
         </figure>
         <div class="card-body h-72">
-          <h2 class="card-title">{{ item.manga.title }}</h2>
+          <span class="flex flex-col w-full overflow-hidden relative">
+            <h2 class="card-title whitespace-nowrap overflow-hidden">
+              <span id="marquee-text" class="inline-block">
+                {{ item.manga.title }}
+              </span>
+            </h2>
+            <span class="text-sm -mt-1">{{ item.manga.type }}</span>
+          </span>
           <p class="max-h-32 overflow-auto my-2 text-sm lg:text-md">
-            Söz konusu kişi bu seride "{{
+            {{
               item["position"]
                 .replaceAll("Story", "Yazar")
                 .replaceAll("Art", "Çizer")
-            }}" pozisyonunda görev almış.
+            }}
           </p>
           <div class="flex justify-end">
             <NuxtLink
@@ -56,3 +75,18 @@ const props = defineProps({
     </swiper-slide>
   </swiper>
 </template>
+<style>
+@keyframes marquee {
+  0% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 10s linear infinite;
+  animation-delay: 0.5s;
+}
+</style>

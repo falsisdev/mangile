@@ -24,7 +24,10 @@ const props = defineProps({
           <img class="w-full lg:h-full rounded shadow-md" :src="item.image" />
         </figure>
         <div class="card-body">
-          <h2 class="card-title">{{ item.name }}</h2>
+          <span class="flex flex-col">
+            <h2 class="card-title">{{ item.name }}</h2>
+            <span class="text-xs -mt-1">{{ item.type }}</span>
+          </span>
           <p class="max-h-32 overflow-auto my-2 text-sm lg:text-md">
             {{ item.description }}
           </p>

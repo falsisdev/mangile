@@ -6,6 +6,18 @@ const { isMobileOrTablet } = useDevice();
 const props = defineProps({
   itemData: Object,
 });
+
+onMounted(() => {
+  const textElements = document.querySelectorAll("#marquee-text");
+  textElements.forEach((textElement) => {
+    const containerWidth = textElement.parentElement.offsetWidth;
+    const textWidth = textElement.scrollWidth;
+
+    if (textWidth > containerWidth) {
+      textElement.classList.add("animate-marquee");
+    }
+  });
+});
 </script>
 <template>
   <swiper
@@ -20,7 +32,14 @@ const props = defineProps({
           <img class="w-full rounded shadow-md" :src="item.image" />
         </figure>
         <div class="card-body h-72">
-          <h2 class="card-title">{{ item.name }}</h2>
+          <span class="flex flex-col w-full overflow-hidden relative">
+            <h2 class="card-title whitespace-nowrap overflow-hidden">
+              <span id="marquee-text" class="inline-block">
+                {{ item.name }}
+              </span>
+            </h2>
+            <span class="text-xs -mt-1">{{ item.type }}</span>
+          </span>
           <p class="text-sm lg:text-md">
             {{
               item.description ? item.description.substring(0, 75) + "..." : ""
@@ -112,3 +131,18 @@ const props = defineProps({
     <br />
   </swiper>
 </template>
+<style>
+@keyframes marquee {
+  0% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 10s linear infinite;
+  animation-delay: 0.5s;
+}
+</style>

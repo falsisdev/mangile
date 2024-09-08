@@ -5,6 +5,18 @@ const props = defineProps({
   itemData: Object,
   index: Number,
 });
+
+onMounted(() => {
+  const textElements = document.querySelectorAll("#marquee-text");
+  textElements.forEach((textElement) => {
+    const containerWidth = textElement.parentElement.offsetWidth;
+    const textWidth = textElement.scrollWidth;
+
+    if (textWidth > containerWidth) {
+      textElement.classList.add("animate-marquee");
+    }
+  });
+});
 </script>
 <template>
   <div
@@ -17,13 +29,14 @@ const props = defineProps({
       />
     </figure>
     <div class="card-body h-72">
-      <h2 class="card-title">
-        {{
-          itemData["title"].length >= 61
-            ? itemData["title"].substring(0, 60) + "..."
-            : itemData["title"]
-        }}
-      </h2>
+      <span class="flex flex-col w-full overflow-hidden relative">
+        <h2 class="card-title whitespace-nowrap overflow-hidden">
+          <span id="marquee-text" class="inline-block">
+            {{ itemData.title }}
+          </span>
+        </h2>
+        <span class="text-xs -mt-1">{{ itemData.type }}</span>
+      </span>
       <p>
         <span class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1">{{
           data["malstatus"][String(itemData.status)]
@@ -126,3 +139,18 @@ const props = defineProps({
     </div>
   </div>
 </template>
+<style>
+@keyframes marquee {
+  0% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 10s linear infinite;
+  animation-delay: 0.5s;
+}
+</style>
