@@ -114,8 +114,8 @@ onMounted(() => {
 
 <template>
   <main>
-    <div class="flex justify-center my-5">
-      <article class="prose">
+    <div class="flex justify-center">
+      <article class="prose my-5">
         <h1 class="text-5xl">Keşfet</h1>
       </article>
     </div>
@@ -235,7 +235,7 @@ onMounted(() => {
       <div
         v-if="pagination"
         role="tablist"
-        class="tabs tabs-boxed justify-center bg-transparent"
+        class="tabs tabs-boxed justify-center bg-transparent lg:mb-0 mb-20 flex flex-row flex-wrap"
       >
         <NuxtLink
           v-for="tab in pagination.last_visible_page"
