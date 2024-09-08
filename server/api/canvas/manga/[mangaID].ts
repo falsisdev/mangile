@@ -109,7 +109,7 @@ export default defineEventHandler(async (event) => {
     lineHeight
   );
 
-  ctx.font = "bold 16px GeistMedium";
+  ctx.font = "bold 16px Sans";
   ctx.fillText("MANGILE by falsisdev", 75, 600);
 
   const imageData = canvas.toBuffer("image/png");
