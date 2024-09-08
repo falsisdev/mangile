@@ -38,10 +38,7 @@ const save = () => {
       <NuxtLink
         :to="'/'"
         class="btn btn-ghost no-animation hover:bg-[transparent] bg-base-100 normal-case font-bold text-[20px]"
-        ><img
-          src="https://1.downloader.disk.yandex.com.tr/preview/0e23273a79bfc4985c2562811d7742cbeb4aad26b9695361d4b061f398bda0e8/inf/W16LLPH0jdSky6AlmpUp6BtqiXUwMKZwcXupGnsxUVbd-mPi1eOUmhKsgEcn7_VSkb3VQM9IA3pKrFwC6CsX4w%3D%3D?uid=1129069430&filename=mangile%20%5B6FCE43F%5D.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=1129069430&tknv=v2&size=1708x794"
-          class="w-12"
-        />
+        ><img src="/assets/images/logo_latin.png" class="w-12" />
       </NuxtLink>
     </div>
     <div class="flex-none hidden lg:block">
