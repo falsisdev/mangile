@@ -1,20 +1,5 @@
-import { createCanvas, loadImage, registerFont } from "canvas";
+import { createCanvas, loadImage } from "canvas";
 import { send } from "h3";
-import path from "path";
-
-try {
-  registerFont(path.resolve("./assets/fonts/Geist-Black.ttf"), {
-    family: "GeistBlack",
-  });
-  registerFont(path.resolve("./assets/fonts/Geist-Medium.ttf"), {
-    family: "GeistMedium",
-  });
-  registerFont(path.resolve("./assets/fonts/Geist-Light.ttf"), {
-    family: "GeistLight",
-  });
-} catch (error) {
-  console.error("Font kaydedilirken bir hata oluştu:", error);
-}
 
 function wrapText(
   ctx: any,
@@ -93,7 +78,7 @@ export default defineEventHandler(async (event) => {
     console.error("Kapak resmi çizilirken bir hata oluştu:", error);
   }
 
-  ctx.font = "bold 64px GeistBlack"; // Başlık font ve boyut ayarı
+  ctx.font = "bold 64px Sans"; // Başlık font ve boyut ayarı
   ctx.fillStyle = "white"; // Yazı rengi
   ctx.textAlign = "left"; // Metni sola hizala
   ctx.textBaseline = "top"; // Metni üstten hizala
@@ -106,11 +91,11 @@ export default defineEventHandler(async (event) => {
     75
   ); // Başlığı sol üst köşeye (x=75, y=75) yaz
 
-  ctx.font = "italic 32px GeistMedium"; // Yazar adı font ve boyut ayarı
+  ctx.font = "italic 32px Sans"; // Yazar adı font ve boyut ayarı
   const author = mangaData.data.authors[0]?.name || "Bilinmiyor"; // Yazar adı manga verisinden al
   ctx.fillText(author, 75, 135); // Yazar adını başlığın altına (x=75, y=135) yaz
 
-  ctx.font = "16px GeistLight";
+  ctx.font = "16px Sans";
   const synopsis = mangaData.data.synopsis || "Mangaya Mangile'da göz at!";
   const maxWidth = 600; // Yazının maksimum genişliği
   const lineHeight = 24; // Satır yüksekliği

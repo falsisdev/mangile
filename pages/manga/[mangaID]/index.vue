@@ -81,18 +81,8 @@ watchEffect(() => {
   if (manga.value?.title) {
     const seoMeta = [
       {
-        property: "title",
-        content: manga.value.title + " | Mangile",
-      },
-      {
         property: "og:title",
-        content: manga.value.title,
-      },
-      {
-        property: "description",
-        content:
-          manga.value.synopsis ||
-          `${manga.value.title} adlı mangaya Mangile'da göz at!`,
+        content: manga.value.title + " | Mangile",
       },
       {
         property: "og:description",
@@ -100,11 +90,15 @@ watchEffect(() => {
       },
       {
         property: "og:image",
-        content: `/api/canvas/manga/${mangaID}`,
+        content: `https://mangile.vercel.app/api/canvas/manga/${mangaID.value}`,
       },
       {
-        property: "twitter:image",
-        content: `/api/canvas/manga/${mangaID}`,
+        name: "twitter:card",
+        content: `https://mangile.vercel.app/api/canvas/manga/${mangaID.value}`,
+      },
+      {
+        name: "theme-color",
+        content: "#0a0a0a",
       },
     ];
     useHead({
