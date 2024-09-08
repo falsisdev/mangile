@@ -4,14 +4,30 @@ const route = useRoute();
 const config = useRuntimeConfig();
 const user = useLogtoUser();
 
-const { data: userData } = await useFetch(`/api/users/${route.params.userID}`, {
-  query: {
-    appSecret: config.m2mAppSecret,
-  },
+const userData = ref(null);
+
+async function fetchData() {
+  try {
+    const { data: response } = await useFetch(
+      `/api/users/${route.params.userID}?appSecret=${
+        toRaw(config.public).m2mAppSecret
+      }`
+    );
+
+    userData.value = toRaw(response.value);
+  } catch (err) {
+    console.error("Fetch Hatası:", err);
+  }
+}
+
+onMounted(async () => {
+  fetchData();
 });
+
+watch([userData], fetchData, { immediate: true });
 </script>
 <template>
-  <main>
+  <main v-if="userData">
     <div class="card card-compact bg-base-100 w-full">
       <figure
         class="h-72 shadow-inner border-2 border-neutral-content border-opacity-50"
@@ -104,4 +120,7 @@ const { data: userData } = await useFetch(`/api/users/${route.params.userID}`, {
       </div>
     </div>
   </main>
+  <div v-else>
+    <p>Yükleniyor...</p>
+  </div>
 </template>

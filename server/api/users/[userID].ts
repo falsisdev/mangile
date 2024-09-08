@@ -3,13 +3,13 @@ export default defineEventHandler(async (event) => {
   const userID = getRouterParam(event, "userID");
   const query = getQuery(event);
 
-  if (query.appSecret == config.m2mAppSecret) {
+  if (query.appSecret == config.public.m2mAppSecret) {
     const accessTokenData = await fetch(`${config.logto.endpoint}/oidc/token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Authorization: `Basic ${Buffer.from(
-          `${config.m2mAppID}:${config.m2mAppSecret}`
+          `${config.public.m2mAppID}:${config.public.m2mAppSecret}`
         ).toString("base64")}`,
       },
       body: new URLSearchParams({
