@@ -5,7 +5,7 @@ const { isMobileOrTablet } = useDevice();
 const cookies = {
   theme: useCookie("theme").value,
 };
-const theme = cookies["theme"] == null ? "sunset" : cookies["theme"];
+const theme = cookies["theme"] == null ? "geist" : cookies["theme"];
 
 let layout = ref("default");
 if (isMobileOrTablet) {

@@ -287,110 +287,11 @@ const save = () => {
               </a>
             </li>
             <li>
-              <a onclick="settings.showModal()">
-                <Icon name="material-symbols:settings" /> Ayarlar
-              </a>
-            </li>
-            <li>
               <a href="/sign-out">
                 <Icon name="material-symbols:logout" /> Çıkış Yap
               </a>
             </li>
           </ul>
-          <dialog id="settings" class="modal">
-            <div class="modal-box">
-              <form method="dialog">
-                <button
-                  class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                >
-                  ✕
-                </button>
-              </form>
-              <div>
-                <article class="prose max-w-none mb-2">
-                  <h1 class="mb-2">Ayarlar</h1>
-                  Mangile ayarlarına hoşgeldiniz. Sistemle ilgili mevcut
-                  özelleştirme ve ayarlar aşağıdadır.
-                </article>
-                Uygulanmasını istediğiniz temayı seçin:
-                <br />
-                <select
-                  id="themeSelector"
-                  class="select select-bordered select-sm w-full max-w-xs my-2"
-                >
-                  <option disabled selected>Tema Seçin</option>
-                  <option
-                    v-for="theme of data.themeselect"
-                    :key="theme"
-                    :id="theme.id"
-                  >
-                    {{ theme.title }} ({{
-                      theme["scheme"]
-                        .replaceAll("dark", "Karanlık")
-                        .replaceAll("light", "Aydınlık")
-                    }})
-                    {{
-                      theme.status
-                        ? `[${theme["status"]
-                            .replaceAll("recommended", "Önerilen")
-                            .replaceAll("default", "Varsayılan")
-                            .replaceAll("amoled", "Amoled")
-                            .replaceAll("high-contrast", "Yüksek Karşıtlık")}]`
-                        : ""
-                    }}
-                  </option>
-                </select>
-                <br />
-                Tema Önizlemeleri:
-                <div class="flex flex-row max-w-full overflow-x-auto">
-                  <div
-                    v-for="theme of data.themeselect"
-                    :key="theme"
-                    :data-theme="theme.id"
-                    class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"
-                  >
-                    <div class="font-bold">{{ theme.title }}</div>
-                    <div class="flex flex-row gap-1">
-                      <div
-                        class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"
-                      >
-                        <div class="text-primary-content text-sm font-bold">
-                          A
-                        </div>
-                      </div>
-                      <div
-                        class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"
-                      >
-                        <div class="text-secondary-content text-sm font-bold">
-                          J
-                        </div>
-                      </div>
-                      <div
-                        class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"
-                      >
-                        <div class="text-accent-content text-sm font-bold">
-                          W
-                        </div>
-                      </div>
-                      <div
-                        class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"
-                      >
-                        <div class="text-neutral-content text-sm font-bold">
-                          R
-                        </div>
-                      </div>
-                    </div>
-                    <div></div>
-                  </div>
-                </div>
-                <div class="modal-action m-2">
-                  <label for="settingsModal" class="btn" @click="save()"
-                    >Değişiklikleri Kaydet</label
-                  >
-                </div>
-              </div>
-            </div>
-          </dialog>
           <dialog id="listcreate" class="modal">
             <div class="modal-box">
               <form method="dialog">
@@ -409,6 +310,103 @@ const save = () => {
             <Icon name="material-symbols:login" /> Giriş Yap
           </button></a
         >
+        <a onclick="settings.showModal()">
+          <button class="btn btn-ghost btn-sm mt-3 -ml-2">
+            <Icon name="material-symbols:settings" />
+          </button>
+        </a>
+        <dialog id="settings" class="modal">
+          <div class="modal-box">
+            <form method="dialog">
+              <button
+                class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              >
+                ✕
+              </button>
+            </form>
+            <div>
+              <article class="prose max-w-none mb-2">
+                <h1 class="mb-2">Ayarlar</h1>
+                Mangile ayarlarına hoşgeldiniz. Sistemle ilgili mevcut
+                özelleştirme ve ayarlar aşağıdadır.
+              </article>
+              Uygulanmasını istediğiniz temayı seçin:
+              <br />
+              <select
+                id="themeSelector"
+                class="select select-bordered select-sm w-full max-w-xs my-2"
+              >
+                <option disabled selected>Tema Seçin</option>
+                <option
+                  v-for="theme of data.themeselect"
+                  :key="theme"
+                  :id="theme.id"
+                >
+                  {{ theme.title }} ({{
+                    theme["scheme"]
+                      .replaceAll("dark", "Karanlık")
+                      .replaceAll("light", "Aydınlık")
+                  }})
+                  {{
+                    theme.status
+                      ? `[${theme["status"]
+                          .replaceAll("recommended", "Önerilen")
+                          .replaceAll("default", "Varsayılan")
+                          .replaceAll("amoled", "Amoled")
+                          .replaceAll("high-contrast", "Yüksek Karşıtlık")}]`
+                      : ""
+                  }}
+                </option>
+              </select>
+              <br />
+              Tema Önizlemeleri:
+              <div class="flex flex-row max-w-full overflow-x-auto">
+                <div
+                  v-for="theme of data.themeselect"
+                  :key="theme"
+                  :data-theme="theme.id"
+                  class="bg-base-100 col-span-4 col-start-2 row-span-3 row-start-1 flex flex-col gap-1 p-2 m-2"
+                >
+                  <div class="font-bold">{{ theme.title }}</div>
+                  <div class="flex flex-row gap-1">
+                    <div
+                      class="bg-primary flex aspect-square w-5 items-center justify-center rounded lg:w-6"
+                    >
+                      <div class="text-primary-content text-sm font-bold">
+                        A
+                      </div>
+                    </div>
+                    <div
+                      class="bg-secondary flex aspect-square w-5 items-center justify-center rounded lg:w-6"
+                    >
+                      <div class="text-secondary-content text-sm font-bold">
+                        J
+                      </div>
+                    </div>
+                    <div
+                      class="bg-accent flex aspect-square w-5 items-center justify-center rounded lg:w-6"
+                    >
+                      <div class="text-accent-content text-sm font-bold">W</div>
+                    </div>
+                    <div
+                      class="bg-neutral flex aspect-square w-5 items-center justify-center rounded lg:w-6"
+                    >
+                      <div class="text-neutral-content text-sm font-bold">
+                        R
+                      </div>
+                    </div>
+                  </div>
+                  <div></div>
+                </div>
+              </div>
+              <div class="modal-action m-2">
+                <label for="settingsModal" class="btn" @click="save()"
+                  >Değişiklikleri Kaydet</label
+                >
+              </div>
+            </div>
+          </div>
+        </dialog>
       </ul>
     </div>
   </div>

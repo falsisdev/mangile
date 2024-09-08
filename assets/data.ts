@@ -1,22 +1,16 @@
 export const data = {
   themeselect: {
-    sunset: {
-      id: "sunset",
-      title: "Gün Batımı",
+    dark: {
+      id: "geist",
+      title: "Karanlık",
       scheme: "dark",
       status: "default",
     },
-    dark: {
-      id: "dark",
-      title: "Karanlık",
-      scheme: "dark",
-      status: null,
-    },
-    nord: {
-      id: "nord",
+    lofi: {
+      id: "lofi",
       title: "Aydınlık",
       scheme: "light",
-      status: null,
+      status: "recommended",
     },
     black: {
       id: "black",
@@ -24,11 +18,11 @@ export const data = {
       scheme: "dark",
       status: "amoled",
     },
-    lofi: {
-      id: "lofi",
-      title: "Aydınlık",
-      scheme: "light",
-      status: "high-contrast",
+    sunset: {
+      id: "sunset",
+      title: "Gün Batımı",
+      scheme: "dark",
+      status: "recommended",
     },
     dracula: {
       id: "dracula",
@@ -774,6 +768,31 @@ export const data = {
       "--rounded-btn": "0.8rem",
       "--rounded-badge": "0.4rem",
       "--tab-radius": "0.7rem",
+    },
+    geist: {
+      primary: "#ffffff",
+      "primary-content": "#000000",
+      secondary: "#10233d",
+      "secondary-content": "#3e80c6",
+      accent: "#2e1938",
+      "accent-content": "#8b57af",
+      info: "#0057ff",
+      "info-content": "#ffffff",
+      success: "#429e53",
+      "success-content": "#e5fbea",
+      warning: "#291800",
+      "warning-content": "#8b5a05",
+      error: "#d32e34",
+      "error-content": "#ff6166",
+      neutral: "#242424",
+      "neutral-content": "#a1a1a1",
+      "base-100": "#1a1a1a",
+      "base-200": "#1f1f1f",
+      "base-300": "#292929",
+      "base-content": "#ededed",
+      "--rounded-box": "1em",
+      "--rounded-btn": "0.5rem",
+      "--rounded-badge": "0.5rem",
     },
   },
 };

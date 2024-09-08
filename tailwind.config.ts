@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+import typography from "@tailwindcss/typography";
+import daisy from "daisyui";
+
 export const content = [
   "./components/**/*.{js,vue,ts}",
   "./layouts/**/*.vue",
@@ -10,10 +13,9 @@ export const content = [
 export const theme = {
   extend: {},
 };
-export const plugins = [require("@tailwindcss/typography"), require("daisyui")];
+export const plugins = [typography, daisy];
 export const daisyui = {
   themes: [
-    "dark",
     "emerald",
     "synthwave",
     "retro",
@@ -90,15 +92,34 @@ export const daisyui = {
       },
     },
     "dim",
+    "sunset",
     {
-      nord: {
-        ...require("daisyui/src/theming/themes")["nord"],
-        primary: "#45aeee",
-        info: "#89e0eb",
+      geist: {
+        primary: "#ffffff",
+        "primary-content": "#000000",
+        secondary: "#10233d",
+        "secondary-content": "#3e80c6",
+        accent: "#2e1938",
+        "accent-content": "#bf7af0",
+        info: "#0f1c2e",
+        "info-content": "#4894e3",
+        success: "#1a9338",
+        "success-content": "#e5fbea",
+        warning: "#291800",
+        "warning-content": "#f2a20d",
+        error: "#2a1314",
+        "error-content": "#e5484d",
+        neutral: "#242424",
+        "neutral-content": "#a1a1a1",
+        "base-100": "#0a0a0a",
+        "base-200": "#0f0f0f",
+        "base-300": "#000000",
+        "base-content": "#ededed",
+        "--rounded-box": "1em",
         "--rounded-btn": "0.5rem",
+        "--rounded-badge": "0.5rem",
       },
     },
-    "sunset",
   ],
   base: true,
   styled: true,

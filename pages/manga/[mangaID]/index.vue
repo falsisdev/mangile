@@ -139,7 +139,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       <div
         v-if="manga.type != 'Manga'"
         role="alert"
-        class="alert alert-info lg:mx-5 mt-2"
+        class="alert alert-info lg:text-md text-sm lg:mx-5 lg:mt-2 px-5 text-start flex"
       >
         <Icon name="material-symbols:info" class="w-5 h-5 -mr-2" />
         <span
@@ -528,7 +528,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               <h2 class="lg:m-0 mx-5">MAL İstatistikleri</h2>
             </article>
             <div class="stat">
-              <div class="stat-figure text-warning">
+              <div class="stat-figure">
                 <Icon name="material-symbols:star" class="w-8 h-8" />
               </div>
               <div class="stat-title">Puan Ortalaması</div>
@@ -536,7 +536,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               <div class="stat-desc">puan ortalamasına sahip</div>
             </div>
             <div class="stat">
-              <div class="stat-figure text-warning">
+              <div class="stat-figure">
                 <Icon name="mdi:account-star" class="w-8 h-8" />
               </div>
               <div class="stat-title">Kamuoyu</div>
@@ -544,7 +544,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               <div class="stat-desc">kişi tarafından puanlandı</div>
             </div>
             <div class="stat">
-              <div class="stat-figure text-warning">
+              <div class="stat-figure">
                 <Icon name="material-symbols:tag" class="w-8 h-8" />
               </div>
               <div class="stat-title">Sıralama</div>
@@ -552,7 +552,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               <div class="stat-desc">sırada</div>
             </div>
             <div class="stat">
-              <div class="stat-figure text-warning">
+              <div class="stat-figure">
                 <Icon
                   name="material-symbols:auto-awesome-rounded"
                   class="w-8 h-8"
@@ -563,7 +563,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               <div class="stat-desc">aktif en popüler manga</div>
             </div>
             <div class="stat">
-              <div class="stat-figure text-warning">
+              <div class="stat-figure">
                 <Icon name="mdi:account-group" class="w-8 h-8" />
               </div>
               <div class="stat-title">Üye</div>
@@ -571,7 +571,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               <div class="stat-desc">kişinin kitaplığında</div>
             </div>
             <div class="stat">
-              <div class="stat-figure text-warning">
+              <div class="stat-figure">
                 <Icon name="material-symbols:favorite" class="w-8 h-8" />
               </div>
               <div class="stat-title">Favori</div>
