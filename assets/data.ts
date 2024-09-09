@@ -1,4 +1,7 @@
 export const data = {
+  scans: {
+    "turkce-light-novels": "Türkçe Light Novels",
+  },
   themeselect: {
     dark: {
       id: "geist",
@@ -168,23 +171,6 @@ export const data = {
     Korean: ["Korece", "kr"],
     Arabic: ["Arapça", "ly"],
   },
-  swiperdata: [
-    "119022",
-    "126146",
-    "162479",
-    "11514",
-    "87609",
-    "62795",
-    "642",
-    "116778",
-    "13",
-    "43661",
-    "2",
-    "70941",
-    "656",
-    "102343",
-    "3",
-  ],
   months: [
     "Ocak",
     "Şubat",

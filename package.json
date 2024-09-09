@@ -13,6 +13,8 @@
     "@logto/nuxt": "^0.3.4",
     "@nuxt/icon": "^1.4.10",
     "@nuxtjs/device": "^3.2.2",
+    "@nuxtjs/sanity": "^1.12.1",
+    "@sanity/client": "^6.21.3",
     "@vueuse/core": "^11.0.3",
     "@vueuse/nuxt": "^11.0.3",
     "bcryptjs": "^2.4.3",
@@ -20,6 +22,7 @@
     "flipbook-vue": "1.0.0-beta.4",
     "nuxt": "^3.13.0",
     "nuxt-swiper": "^1.2.2",
+    "sanity": "^3.57.1",
     "vue": "latest"
   },
   "packageManager": "pnpm@9.7.0+sha512.dc09430156b427f5ecfc79888899e1c39d2d690f004be70e05230b72cb173d96839587545d09429b55ac3c429c801b4dc3c0e002f653830a420fa2dd4e3cf9cf",

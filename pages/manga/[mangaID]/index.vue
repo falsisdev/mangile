@@ -4,6 +4,37 @@ import { data } from "@/assets/data.ts";
 const route = useRoute();
 const { isMobileOrTablet } = useDevice();
 
+const query = groq`*[myAnimeListId == ${route.params.mangaID}]`;
+const { data: preSanityData, refresh } = useSanityQuery(query);
+
+const sanityData = ref([]);
+const groupedChapters = ref([]);
+const scans = ref([]);
+
+const groupChaptersByNumber = (chapters) => {
+  const groupedChapters = {};
+  chapters.forEach((chapter) => {
+    const { chapterNumber } = chapter;
+    if (!groupedChapters[chapterNumber]) {
+      groupedChapters[chapterNumber] = [];
+    }
+    groupedChapters[chapterNumber].push(chapter);
+  });
+  return Object.values(groupedChapters);
+};
+
+watchEffect(() => {
+  if (preSanityData.value) {
+    const fetchedData = toRaw(preSanityData.value);
+    sanityData.value = fetchedData;
+
+    if (fetchedData.length > 0) {
+      groupedChapters.value = groupChaptersByNumber(fetchedData[0].chapters);
+      fetchedData[0]["chapters"].forEach((x) => scans.value.push(x.source));
+    }
+  }
+});
+
 const mangaID = ref(route.params.mangaID); //ref içinde çünkü watcher kullanılıyor
 const manga = ref([]); //manganın <template> içerisinde kullanılacak bütün MAL verileri bu ref'in içerisine kaydolacak
 const images = ref([]);
@@ -142,8 +173,8 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             manga.type == "Light Novel"
               ? "Hafif Roman'dır"
               : manga.type == "Manhwa"
-              ? "Manhwa'dır"
-              : "Manga Değildir"
+                ? "Manhwa'dır"
+                : "Manga Değildir"
           }}</span
         >
       </div>
@@ -338,135 +369,68 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                     <Icon name="mdi:book-open-blank-variant" class="h-5 w-5" />
                     Bölümler
                   </summary>
-                  <ul>
-                    <li>
+                  <ul v-if="sanityData != String([])">
+                    <li v-for="chapter of groupedChapters" :key="chapter">
                       <details>
                         <summary>
                           <Icon name="mdi:file-document" class="h-5 w-5" />
-                          Bölüm 3
+                          Bölüm
+                          {{
+                            chapter[0]
+                              ? chapter[0].chapterNumber
+                              : chapter.chapterNumber
+                          }}
                         </summary>
                         <ul>
-                          <li>
-                            <NuxtLink class="no-underline flex flex-row">
-                              <Icon
-                                name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
-                              />
-                              Tempest Fansub
-                            </NuxtLink>
-                          </li>
-                          <li>
-                            <NuxtLink class="no-underline flex flex-row">
-                              <Icon
-                                name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
-                              />
-                              Manga Şehri
-                            </NuxtLink>
-                          </li>
-                          <li>
-                            <NuxtLink class="no-underline flex flex-row">
-                              <Icon
-                                name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
-                              />
-                              Sad Scans
-                            </NuxtLink>
-                          </li>
-                        </ul>
-                      </details>
-                    </li>
-                    <li>
-                      <details>
-                        <summary>
-                          <Icon name="mdi:file-document" class="h-5 w-5" />
-                          Bölüm 2
-                        </summary>
-                        <ul>
-                          <li>
-                            <NuxtLink class="no-underline flex flex-row">
-                              <Icon
-                                name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
-                              />
-                              Tempest Fansub
-                            </NuxtLink>
-                          </li>
-                          <li>
-                            <NuxtLink class="no-underline flex flex-row">
-                              <Icon
-                                name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
-                              />
-                              Manga Şehri
-                            </NuxtLink>
-                          </li>
-                        </ul>
-                      </details>
-                    </li>
-                    <li>
-                      <details>
-                        <summary>
-                          <Icon name="mdi:file-document" class="h-5 w-5" />
-                          Bölüm 1
-                        </summary>
-                        <ul>
-                          <li>
-                            <NuxtLink class="no-underline flex flex-row">
-                              <Icon
-                                name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
-                              />
-                              Tempest Fansub
-                            </NuxtLink>
-                          </li>
-                          <li>
-                            <NuxtLink class="no-underline flex flex-row">
-                              <Icon
-                                name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
-                              />
-                              Sad Scans
-                            </NuxtLink>
+                          <li v-for="ch of chapter" :key="ch">
+                            <details>
+                              <summary>
+                                <NuxtLink class="no-underline flex flex-row">
+                                  <Icon
+                                    name="mdi:file-document-arrow-right"
+                                    class="h-5 w-5 mr-1"
+                                  />
+                                  {{ data.scans[ch.source] }}
+                                </NuxtLink>
+                              </summary>
+                              <ul>
+                                <li>
+                                  <NuxtLink class="no-underline flex flex-row">
+                                    <Icon
+                                      name="mdi:file-document-arrow-right"
+                                      class="h-5 w-5 mr-1"
+                                    />
+                                    {{ ch.title }}
+                                  </NuxtLink>
+                                </li>
+                              </ul>
+                            </details>
                           </li>
                         </ul>
                       </details>
                     </li>
                   </ul>
+                  <span v-else class="mx-3 prose">
+                    <span class="mt-1">
+                      Üzgünüz. Görünüşe göre bu seride hiç bölüm yüklenmemiş.
+                    </span>
+                  </span>
                 </details>
               </li>
-              <li>
+              <li v-if="sanityData != String([])">
                 <details>
                   <summary>
                     <Icon name="mdi:file-document-edit" class="h-5 w-5" />
                     Çeviri Ekipleri
                   </summary>
                   <ul>
-                    <li>
+                    <li v-for="scan of new Set(scans)" :key="scan">
                       <NuxtLink class="no-underline flex flex-row">
                         <Icon
                           name="mdi:file-document-arrow-right"
                           class="h-5 w-5 mr-1"
                         />
-                        Tempest Fansub
-                      </NuxtLink>
-                    </li>
-                    <li>
-                      <NuxtLink class="no-underline flex flex-row">
-                        <Icon
-                          name="mdi:file-document-arrow-right"
-                          class="h-5 w-5 mr-1"
-                        />
-                        Manga Şehri
-                      </NuxtLink>
-                    </li>
-                    <li>
-                      <NuxtLink class="no-underline flex flex-row">
-                        <Icon
-                          name="mdi:file-document-arrow-right"
-                          class="h-5 w-5 mr-1"
-                        />
-                        Sad Scans
+                        {{ data.scans[scan] }}
                       </NuxtLink>
                     </li>
                   </ul>

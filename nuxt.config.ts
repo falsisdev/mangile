@@ -6,13 +6,20 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxtjs/device",
     "@logto/nuxt",
+    "@nuxtjs/sanity",
   ],
+  sanity: {
+    projectId: process.env.NUXT_SANITY_PROJECT_ID,
+  },
   runtimeConfig: {
     logto: {
       endpoint: "",
       appId: "",
       appSecret: "",
       cookieEncryptionKey: "",
+    },
+    sanity: {
+      token: process.env.NUXT_SANITY_TOKEN,
     },
     public: {
       subjectToken: process.env.NUXT_SUBJECT_TOKEN,
