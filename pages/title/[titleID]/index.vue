@@ -340,7 +340,10 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               }}
             </span>
             <br /><br v-if="!isMobileOrTablet" />
-            <span v-if="manga.synopsis" class="text-sm lg:text-md">{{
+            <span v-if="sanityData != String([])" class="text-sm lg:text-md">{{
+              sanityData[0].description
+            }}</span>
+            <span v-else-if="manga.synopsis" class="text-sm lg:text-md">{{
               manga.synopsis
             }}</span>
             <br /><br />
