@@ -53,7 +53,7 @@ const props = defineProps({
             <div class="dropdown dropdown-hover dropdown-top">
               <NuxtLink
                 class="btn btn-primary btn-sm lg:btn-md"
-                :href="`/manga/${item.id}`"
+                :href="`/title/${item.id}`"
                 ><Icon
                   name="material-symbols:visibility-rounded"
                   class="h-4 w-4"
@@ -112,7 +112,7 @@ const props = defineProps({
                     <NuxtLink
                       class="btn btn-primary flex flex-row tooltip"
                       data-tip="Mangile sayfasını görüntüle"
-                      :href="`/manga/${item.id}`"
+                      :href="`/title/${item.id}`"
                       ><Icon
                         name="material-symbols:visibility-rounded"
                         class="h-4 w-4"

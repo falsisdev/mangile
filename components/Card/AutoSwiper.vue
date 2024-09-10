@@ -41,7 +41,7 @@ const props = defineProps({
             <NuxtLink
               class="btn btn-primary lg:btn-md btn-sm flex flex-row tooltip"
               data-tip="Mangile sayfasını Görüntüle"
-              :href="`/manga/${item.id}`"
+              :href="`/title/${item.id}`"
               ><Icon
                 name="material-symbols:visibility-rounded"
                 class="h-4 w-4"

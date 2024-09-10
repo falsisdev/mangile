@@ -59,7 +59,7 @@ onMounted(() => {
         >
           <NuxtLink
             class="btn btn-primary flex flex-row"
-            :to="`/manga/${itemData.mal_id}`"
+            :to="`/title/${itemData.mal_id}`"
             ><Icon
               name="material-symbols:visibility-rounded"
               class="h-4 w-4"
@@ -128,7 +128,7 @@ onMounted(() => {
                 /></NuxtLink>
                 <NuxtLink
                   class="btn btn-primary flex flex-row"
-                  :to="`/manga/${itemData.mal_id}`"
+                  :to="`/title/${itemData.mal_id}`"
                   ><Icon
                     name="material-symbols:visibility-rounded"
                     class="h-4 w-4"

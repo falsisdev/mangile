@@ -4,7 +4,7 @@ import { data } from "@/assets/data.ts";
 const route = useRoute();
 const { isMobileOrTablet } = useDevice();
 
-const query = groq`*[myAnimeListId == ${route.params.mangaID}]`;
+const query = groq`*[myAnimeListId == ${route.params.titleID}]`;
 const { data: preSanityData, refresh } = useSanityQuery(query);
 
 const sanityData = ref([]);
@@ -35,7 +35,7 @@ watchEffect(() => {
   }
 });
 
-const mangaID = ref(route.params.mangaID); //ref içinde çünkü watcher kullanılıyor
+const mangaID = ref(route.params.titleID); //ref içinde çünkü watcher kullanılıyor
 const manga = ref([]); //manganın <template> içerisinde kullanılacak bütün MAL verileri bu ref'in içerisine kaydolacak
 const images = ref([]);
 const recommendations = ref([]);
@@ -383,7 +383,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                         </summary>
                         <ul>
                           <li v-for="ch of chapter" :key="ch">
-                            <details>
+                            <details v-if="Array(new Set(scans)).length != 1">
                               <summary>
                                 <NuxtLink class="no-underline flex flex-row">
                                   <Icon
@@ -395,7 +395,10 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                               </summary>
                               <ul>
                                 <li>
-                                  <NuxtLink class="no-underline flex flex-row">
+                                  <NuxtLink
+                                    :to="`/title/${route.params.titleID}/read/${ch._key}`"
+                                    class="no-underline flex flex-row"
+                                  >
                                     <Icon
                                       name="mdi:file-document-arrow-right"
                                       class="h-5 w-5 mr-1"
@@ -405,6 +408,17 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                                 </li>
                               </ul>
                             </details>
+                            <NuxtLink
+                              v-else
+                              :to="`/title/${route.params.titleID}/read/${ch._key}`"
+                              class="no-underline flex flex-row"
+                            >
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              {{ ch.title }}
+                            </NuxtLink>
                           </li>
                         </ul>
                       </details>

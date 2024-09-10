@@ -33,7 +33,7 @@ function wrapText(
 export default defineEventHandler(async (event) => {
   const canvas = createCanvas(1200, 630);
   const ctx = canvas.getContext("2d");
-  const mangaID = getRouterParam(event, "mangaID");
+  const mangaID = getRouterParam(event, "titleID");
 
   const mangaData = await fetch(
     `https://api.jikan.moe/v4/manga/${mangaID}/full`
