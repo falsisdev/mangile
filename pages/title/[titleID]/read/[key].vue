@@ -1,4 +1,5 @@
 <script setup>
+import { data } from "@/assets/data.ts";
 import toMarkdown from "@sanity/block-content-to-markdown";
 import { marked } from "marked";
 
@@ -35,16 +36,33 @@ watchEffect(() => {
       <article class="prose max-w-none flex flex-col">
         <h1 class="flex flex-col">
           <span class="text-3xl">{{ sanityData[0].title }}</span>
-          <span class="text-2xl mt-1">
-            <span class="kbd kbd-md -mt-1"
-              ><span
-                class="tooltip"
-                :data-tip="`Bölüm ${chapter.chapterNumber}`"
-                >{{ chapter.chapterNumber }}</span
-              ></span
+          <span class="flex flex-row">
+            <span class="text-2xl mt-1">
+              <span class="kbd kbd-md -mt-1"
+                ><span
+                  class="tooltip"
+                  :data-tip="`Bölüm ${chapter.chapterNumber}`"
+                  >{{ chapter.chapterNumber }}</span
+                ></span
+              >
+              - {{ chapter.title }}</span
             >
-            - {{ chapter.title }}</span
-          >
+            <span class="grow" />
+            <select class="select select-xs lg:select-sm max-w-xs">
+              <option disabled selected>Bölüm</option>
+              <option
+                v-for="chapter of sanityData[0].chapters"
+                :key="chapter"
+                @click.prevent="
+                  navigateTo(
+                    `/title/${route.params.titleID}/read/${chapter._key}`
+                  )
+                "
+              >
+                {{ chapter.chapterNumber }}
+              </option>
+            </select>
+          </span>
         </h1>
         <span class="flex flex-row -mt-5">
           <NuxtLink
@@ -60,7 +78,7 @@ watchEffect(() => {
                 : `/title/${route.params.titleID}/read/${sanityData[0]['chapters'][parseInt(sanityData[0]['chapters'].indexOf(chapter)) - 1]._key}`
             "
             :class="`btn btn-ghost ${sanityData[0]['chapters'].indexOf(chapter) == 0 ? 'btn-disabled' : ''}`"
-            >Önceki Bölüm</NuxtLink
+            ><Icon name="material-symbols:arrow-back" /> Önceki Bölüm</NuxtLink
           >
           <span class="grow" />
           <NuxtLink
@@ -71,8 +89,8 @@ watchEffect(() => {
                 : `/title/${route.params.titleID}/read/${sanityData[0]['chapters'][parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1]._key}`
             "
             :class="`btn btn-ghost ${parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1 == sanityData[0]['chapters'].length ? 'btn-disabled' : ''}`"
-            >Sonraki Bölüm</NuxtLink
-          >
+            >Sonraki Bölüm <Icon name="material-symbols:arrow-forward"
+          /></NuxtLink>
         </span>
       </article>
       <div class="divider" />
@@ -80,9 +98,51 @@ watchEffect(() => {
         <div
           v-for="item of chapter.content"
           :key="item"
-          v-html="marked(toMarkdown(item, { serializers }))"
+          v-html="
+            marked(
+              item.markDefs.length != 0
+                ? `<img src='${item.markDefs[0].href}' width='400'/>`
+                : toMarkdown(item, {
+                    serializers,
+                  })
+            )
+          "
         ></div>
       </article>
+      <div class="divider" />
+      <article class="prose max-w-none mb-5">
+        <h3 class="text-lg">
+          Bu seri {{ data.scans[chapter.source] }} tarafından çevrilmiştir
+        </h3>
+      </article>
+      <span class="flex flex-row">
+        <NuxtLink
+          :to="`/title/${route.params.titleID}`"
+          class="btn btn-primary"
+        >
+          <Icon name="material-symbols:book-rounded" />
+        </NuxtLink>
+        <NuxtLink
+          :to="
+            sanityData[0]['chapters'].indexOf(chapter) == 0
+              ? ''
+              : `/title/${route.params.titleID}/read/${sanityData[0]['chapters'][parseInt(sanityData[0]['chapters'].indexOf(chapter)) - 1]._key}`
+          "
+          :class="`btn btn-ghost ${sanityData[0]['chapters'].indexOf(chapter) == 0 ? 'btn-disabled' : ''}`"
+          ><Icon name="material-symbols:arrow-back" /> Önceki Bölüm</NuxtLink
+        >
+        <span class="grow" />
+        <NuxtLink
+          :to="
+            parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1 ==
+            sanityData[0]['chapters'].length
+              ? ''
+              : `/title/${route.params.titleID}/read/${sanityData[0]['chapters'][parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1]._key}`
+          "
+          :class="`btn btn-ghost ${parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1 == sanityData[0]['chapters'].length ? 'btn-disabled' : ''}`"
+          >Sonraki Bölüm <Icon name="material-symbols:arrow-forward"
+        /></NuxtLink>
+      </span>
     </div>
   </main>
   <main v-else>Yükleniyor...</main>
