@@ -29,6 +29,48 @@ watchEffect(() => {
     }
   }
 });
+
+watchEffect(() => {
+  if (chapter.value) {
+    const seoMeta = [
+      {
+        property: "og:title",
+        content:
+          chapter.value.chapterNumber +
+          "-" +
+          chapter.value.title +
+          "--" +
+          sanityData.value[0].title +
+          " | Mangile",
+      },
+      {
+        property: "og:description",
+        content: sanityData.value[0].title + chapter.value.title + " Oku",
+      },
+      {
+        property: "og:image",
+        content: `https://mangile.vercel.app/api/canvas/manga/${route.params.titleID}`,
+      },
+      {
+        name: "twitter:card",
+        content: `https://mangile.vercel.app/api/canvas/manga/${route.params.titleID}`,
+      },
+      {
+        name: "theme-color",
+        content: "#0a0a0a",
+      },
+    ];
+    useHead({
+      title:
+        chapter.value.chapterNumber +
+        "-" +
+        chapter.value.title +
+        "--" +
+        sanityData.value[0].title,
+      meta: seoMeta,
+    });
+  }
+});
 </script>
 <template>
   <main v-if="chapter" class="lg:m-0 mx-5">
