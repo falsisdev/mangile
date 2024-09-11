@@ -26,6 +26,9 @@ importers:
       '@sanity/client':
         specifier: ^6.21.3
         version: 6.21.3(debug@4.3.6)
+      '@sanity/image-url':
+        specifier: ^1.0.2
+        version: 1.0.2
       '@vueuse/core':
         specifier: ^11.0.3
         version: 11.0.3(vue@3.4.38(typescript@5.5.4))

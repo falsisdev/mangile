@@ -1,9 +1,14 @@
 <script setup>
 import { data } from "@/assets/data.ts";
 import toMarkdown from "@sanity/block-content-to-markdown";
+import imageUrlBuilder from "@sanity/image-url";
 import { marked } from "marked";
+import Flipbook from "flipbook-vue";
 
 const route = useRoute();
+const { isMobileOrTablet } = useDevice();
+const builder = imageUrlBuilder(useSanity().config);
+
 const serializers = {
   types: {
     code: (props) =>
@@ -12,10 +17,11 @@ const serializers = {
 };
 
 const query = groq`*[myAnimeListId == ${route.params.titleID}]`;
-const { data: preSanityData, refresh } = useSanityQuery(query);
+const { data: preSanityData } = useSanityQuery(query);
 
 const sanityData = ref([]);
 const chapter = ref(null);
+const images = ref([]);
 
 watchEffect(() => {
   if (preSanityData.value) {
@@ -26,6 +32,13 @@ watchEffect(() => {
       fetchedData[0]["chapters"].forEach((x) =>
         x._key == route.params.key ? (chapter.value = x) : ""
       );
+      if (sanityData.value[0]._type == "manga") {
+        for (let image of chapter.value.pages) {
+          images.value.push(
+            builder.image(image.asset._ref).auto("format").url()
+          );
+        }
+      }
     }
   }
 });
@@ -74,7 +87,7 @@ watchEffect(() => {
 </script>
 <template>
   <main v-if="chapter" class="lg:m-0 mx-5">
-    <div v-if="sanityData[0]._type == 'lightNovel'" class="lg:pt-0 pt-5">
+    <div class="lg:pt-0 pt-5">
       <article class="prose max-w-none flex flex-col">
         <h1 class="flex flex-col">
           <span class="text-3xl">{{ sanityData[0].title }}</span>
@@ -136,20 +149,31 @@ watchEffect(() => {
         </span>
       </article>
       <div class="divider" />
-      <article class="prose max-w-none lg:mb-0 mb-20">
+      <article
+        v-if="sanityData[0]._type == 'lightNovel'"
+        class="prose max-w-none lg:mb-0 mb-20"
+      >
+        <SanityContent :blocks="chapter.content"></SanityContent>
+      </article>
+      <article v-else-if="sanityData[0]._type == 'manga'">
         <div
-          v-for="item of chapter.content"
-          :key="item"
-          v-html="
-            marked(
-              item.markDefs.length != 0
-                ? `<img src='${item.markDefs[0].href}' width='400'/>`
-                : toMarkdown(item, {
-                    serializers,
-                  })
-            )
-          "
-        ></div>
+          role="alert"
+          class="alert alert-info lg:text-md text-sm lg:mt-2 px-5 text-start flex"
+        >
+          <Icon name="material-symbols:info" class="w-5 h-5 lg:-mr-2" />
+          <span
+            >Bilgi: Mangalar Türkçe kitapların aksine soldan sağa değil sağdan
+            sola okunur. Yakınlaştırmak için üzerine tıklamanız veya fare
+            tekerleğini kullanmanız yeterlidir.</span
+          >
+        </div>
+        <Flipbook
+          class="flipbook"
+          :pages="[...new Set(images)]"
+          :singlePage="isMobileOrTablet"
+          forwardDirection="left"
+          wheel="zoom"
+        />
       </article>
       <div class="divider" />
       <article class="prose max-w-none mb-5">
@@ -189,3 +213,9 @@ watchEffect(() => {
   </main>
   <main v-else>Yükleniyor...</main>
 </template>
+<style scoped>
+.flipbook {
+  width: 67vw;
+  height: 60vw;
+}
+</style>
