@@ -20,7 +20,7 @@ onMounted(() => {
 </script>
 <template>
   <div
-    class="card lg:w-[285px] bg-base-100 rounded-lg lg:mx-2 mx-5 mb-2 shadow-lg shadow-base-300"
+    class="card w-[285px] bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
   >
     <figure class="w-full h-56">
       <img
@@ -29,7 +29,7 @@ onMounted(() => {
       />
     </figure>
     <div class="card-body h-72">
-      <span class="flex flex-col w-full overflow-hidden relative">
+      <span class="flex flex-col overflow-hidden relative">
         <h2 class="card-title whitespace-nowrap overflow-hidden">
           <span id="marquee-text" class="inline-block">
             {{ itemData.title }}
