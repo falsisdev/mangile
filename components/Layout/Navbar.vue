@@ -147,14 +147,6 @@ const save = () => {
                 >
                 <ul>
                   <li>
-                    <NuxtLink to="/article/rules" class="text-sm/6"
-                      ><Icon
-                        name="material-symbols:warning"
-                        class="h-5 w-5"
-                      />Site Kuralları</NuxtLink
-                    >
-                  </li>
-                  <li>
                     <NuxtLink to="/article/about" class="text-sm/6"
                       ><Icon
                         name="material-symbols:person-pin-rounded"
