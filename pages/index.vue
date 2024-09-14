@@ -1,5 +1,58 @@
 <script setup>
+import imageUrlBuilder from "@sanity/image-url";
+
 const { isMobileOrTablet } = useDevice();
+const builder = imageUrlBuilder(useSanity().config);
+
+const queryCreated = groq`*[_type == 'manga' || _type == 'lightNovel'] | order(_createdAt desc)`;
+const queryUpdated = groq`*[_type == 'manga' || _type == 'lightNovel'] | order(_updatedAt desc)`;
+const { data: preCreatedData } = useSanityQuery(queryCreated);
+const { data: preUpdatedData } = useSanityQuery(queryCreated);
+
+const createdSanityData = ref([]);
+const updatedSanityData = ref([]);
+
+watchEffect(() => {
+  if (preCreatedData.value) {
+    const fetchedData = toRaw(preCreatedData.value);
+    createdSanityData.value = fetchedData;
+  }
+  if (preUpdatedData.value) {
+    const fetchedData = toRaw(preUpdatedData.value);
+    updatedSanityData.value = fetchedData;
+  }
+});
+
+//Son Eklenen Seriler
+let createdSeries = ref([]);
+
+for (let item of createdSanityData.value) {
+  createdSeries.value.push({
+    name: item.title,
+    description: item.description,
+    type: item._type,
+    image: builder.image(item.coverImage.asset._ref).auto("format").url(),
+    date: item._createdAt,
+    genres: item.tags,
+    id: item.myAnimeListId,
+  });
+}
+
+//Son Güncellenen Seriler
+let updatedSeries = ref([]);
+
+for (let item of updatedSanityData.value) {
+  updatedSeries.value.push({
+    name: item.title,
+    description: item.description,
+    type: item._type,
+    image: builder.image(item.coverImage.asset._ref).auto("format").url(),
+    date: item._updatedAt,
+    genres: item.tags,
+    id: item.myAnimeListId,
+  });
+}
+
 // Öne çıkan mangalar
 let highlights = ref([]);
 
@@ -23,7 +76,9 @@ for (let item of highlightsData.value.data) {
   highlights.value.push({
     name: item.title,
     description: item.synopsis,
-    type: item.type,
+    type: item["type"]
+      .replaceAll("Light Novel", "Hafif Roman")
+      .replaceAll("Novel", "Roman"),
     image: item.images.jpg.large_image_url,
     date: item.published.prop,
     status: item.status,
@@ -49,7 +104,9 @@ for (let item of topMangasData.value.data) {
   topMangas.value.push({
     name: item.title,
     description: item.synopsis,
-    type: item.type,
+    type: item["type"]
+      .replaceAll("Light Novel", "Hafif Roman")
+      .replaceAll("Novel", "Roman"),
     image: item.images.jpg.large_image_url,
     date: item.published.prop,
     status: item.status,
@@ -78,7 +135,9 @@ for (let item of pubsData.value.data) {
   pubs.value.push({
     name: item.title,
     description: item.synopsis,
-    type: item.type,
+    type: item["type"]
+      .replaceAll("Light Novel", "Hafif Roman")
+      .replaceAll("Novel", "Roman"),
     image: item.images.jpg.large_image_url,
     date: item.published.prop,
     status: item.status,
@@ -168,6 +227,18 @@ useHead({
     </article>
     <br />
     <HeroCard :itemData="randomManga" />
+    <div class="divider" />
+    <article class="prose max-w-none px-5">
+      <h1>Son Eklenen Seriler</h1>
+    </article>
+    <br />
+    <LastsSwiper :itemData="createdSeries" />
+    <div class="divider" />
+    <article class="prose max-w-none px-5">
+      <h1>Son Güncellenen Seriler</h1>
+    </article>
+    <br />
+    <LastsSwiper :itemData="updatedSeries" />
   </main>
 </template>
 

@@ -73,27 +73,20 @@ const save = () => {
                 >
                 <ul>
                   <li>
-                    <NuxtLink to="/lastuploads/manga" class="text-sm/6"
-                      ><Icon
-                        name="material-symbols:drive-folder-upload"
-                        class="h-5 w-5"
-                      />Son Eklenen Seriler</NuxtLink
-                    >
-                  </li>
-                  <li>
-                    <NuxtLink to="/lastuploads/chapters" class="text-sm/6"
-                      ><Icon
-                        name="material-symbols:restore-page-rounded"
-                        class="h-5 w-5"
-                      />Son Eklenen Bölümler</NuxtLink
-                    >
-                  </li>
-                  <li>
                     <a class="text-sm/6"
                       ><Icon
                         name="material-symbols:add-notes"
                         class="h-5 w-5"
                       />Güncelleme Notları</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://github.com/falsisdev/mangile"
+                      target="_blank"
+                      class="text-sm/6"
+                      ><Icon name="simple-icons:github" class="h-5 w-5" />GitHub
+                      Deposu</a
                     >
                   </li>
                 </ul>
