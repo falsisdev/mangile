@@ -1,20 +1,11 @@
 <script setup>
 import { data } from "@/assets/data.ts";
-import toMarkdown from "@sanity/block-content-to-markdown";
 import imageUrlBuilder from "@sanity/image-url";
-import { marked } from "marked";
 import Flipbook from "flipbook-vue";
 
 const route = useRoute();
 const { isMobileOrTablet } = useDevice();
 const builder = imageUrlBuilder(useSanity().config);
-
-const serializers = {
-  types: {
-    code: (props) =>
-      "```" + props.node.language + "\n" + props.node.code + "\n```",
-  },
-};
 
 const query = groq`*[myAnimeListId == ${route.params.titleID}]`;
 const { data: preSanityData } = useSanityQuery(query);

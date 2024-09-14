@@ -20,9 +20,6 @@ importers:
       '@nuxtjs/sanity':
         specifier: ^1.12.1
         version: 1.12.1(magicast@0.3.4)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.21.0)
-      '@sanity/block-content-to-markdown':
-        specifier: ^0.0.5
-        version: 0.0.5
       '@sanity/client':
         specifier: ^6.21.3
         version: 6.21.3(debug@4.3.6)
@@ -44,9 +41,6 @@ importers:
       flipbook-vue:
         specifier: 1.0.0-beta.4
         version: 1.0.0-beta.4(vue@3.4.38(typescript@5.5.4))
-      marked:
-        specifier: ^14.1.2
-        version: 14.1.2
       nuxt:
         specifier: ^3.13.0
         version: 3.13.0(@parcel/watcher@2.4.1)(@types/node@22.5.0)(eslint@9.9.1(jiti@1.21.6))(ioredis@5.4.1)(magicast@0.3.4)(meow@9.0.0)(optionator@0.9.4)(rollup@4.21.0)(terser@5.31.6)(typescript@5.5.4)(vite@4.5.3(@types/node@22.5.0)(terser@5.31.6))
@@ -2083,12 +2077,6 @@ packages:
   '@sanity/bifur-client@0.4.1':
     resolution: {integrity: sha512-mHM8WR7pujbIw2qxuV0lzinS1izOoyLza/ejWV6quITTLpBhUoPIQGPER3Ar0SON5JV0VEEqkJGa1kjiYYgx2w==}
 
-  '@sanity/block-content-to-hyperscript@2.0.10':
-    resolution: {integrity: sha512-xT3iEmZkK0fvO5PDFpn9GMWGfvOopvbrRCBU48XxpFoTxRrfsHhxbRy8J0eND1HGXHUENkIKv5jbohtGd1MiVg==}
-
-  '@sanity/block-content-to-markdown@0.0.5':
-    resolution: {integrity: sha512-wnBfusG67TU2+MXcDSNDtEdE5MMYXQ9t5hHtU+0dQ2MUHPbF6FfX0nfX0IvjfNWGpMEniCOtmJR0k71maO9zYA==}
-
   '@sanity/block-tools@3.57.1':
     resolution: {integrity: sha512-qGfc1nuwuZdthf2DQVEbMJyU97FXrWh/69FOc3pVmmLMXQDbuGHGq6TClnhcKBxBCd3y7GAB/J0cuy5h04b4vA==}
 
@@ -2130,9 +2118,6 @@ packages:
     resolution: {integrity: sha512-mqb6HvzjNGh3J4zjT4hOPh4ZTPOVwYsS5DJ3v24S5uETlIodMmDlY/DBmudlZmQxqoWqqX/hsVxKC0WskuPsYg==}
     engines: {node: '>=18'}
 
-  '@sanity/generate-help-url@0.140.0':
-    resolution: {integrity: sha512-H/G/WA9S22TXcXST52CIiTsHx3S2hH0gvK7LnI5w76vfKS0obnDPh8jrPg4xeNRYGPuV9MHYRlyERGpRGoo4Qw==}
-
   '@sanity/generate-help-url@3.0.0':
     resolution: {integrity: sha512-wtMYcV5GIDIhVyF/jjmdwq1GdlK07dRL40XMns73VbrFI7FteRltxv48bhYVZPcLkRXb0SHjpDS/icj9/yzbVA==}
 
@@ -2141,10 +2126,6 @@ packages:
     engines: {node: '>=14.0.0'}
     peerDependencies:
       react: ^18.3 || >=19.0.0-rc
-
-  '@sanity/image-url@0.140.22':
-    resolution: {integrity: sha512-CAmQZnj+KM7FSEYiWlIGDit072syicYuAw0w7R2ctMzHiZ4p9mE/g6dBnYqrqFUrw2J+GpJgPt+RVspKP8vdqA==}
-    engines: {node: '>=10.0.0'}
 
   '@sanity/image-url@1.0.2':
     resolution: {integrity: sha512-C4+jb2ny3ZbMgEkLd7Z3C75DsxcTEoE+axXQJsQ75ou0AKWGdVsP351hqK6mJUUxn5HCSlu3vznoh7Yljye4cQ==}
@@ -2841,9 +2822,6 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  browser-split@0.0.0:
-    resolution: {integrity: sha512-CNXO3AXAS1H/kOGQkPjucm1161/XoF3aVkMfujqwk85XN/D/MkQMvoB81lXyX/2rerZS+hPAYYRR3mAW05awjQ==}
-
   browserify-zlib@0.1.4:
     resolution: {integrity: sha512-19OEpq7vWgsH6WkvkBJQDFvJS1uPcbFOQ4v9CU839dO+ZZXUZO6XpE6hNCqvlIIj+4fZvRiJ6DsAQ382GwiyTQ==}
 
@@ -2995,9 +2973,6 @@ packages:
 
   citty@0.1.6:
     resolution: {integrity: sha512-tskPPKEs8D2KPafUypv2gxwJP8h/OaJmC82QQGGDQcHvXX43xF2VDACcJVmZ0EuSxkpO9Kc4MlrA3q0+FG58AQ==}
-
-  class-list@0.1.1:
-    resolution: {integrity: sha512-zqR0uW+VsLtyQhixBhkdQ+z6B8+Y8HTh28kdSVjJ4zTTKM7Xz2asAQSya9VI6m/34F6N6Ktm0mrchKB+E5a8Xw==}
 
   classnames@2.5.1:
     resolution: {integrity: sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==}
@@ -4129,10 +4104,6 @@ packages:
   hotscript@1.0.13:
     resolution: {integrity: sha512-C++tTF1GqkGYecL+2S1wJTfoH6APGAsbb7PAWQ3iVIwgG/EFseAfEVOKFgAFq4yK3+6j1EjUD4UQ9dRJHX/sSQ==}
 
-  html-element@2.3.1:
-    resolution: {integrity: sha512-xnFt2ZkbFcjc+JoAtg3Hl89VeEZDjododu4VCPkRvFmBTHHA9U1Nt6hLUWfW2O+6Sl/rT1hHK/PivleX3PdBJQ==}
-    engines: {node: '>=4.2'}
-
   html-encoding-sniffer@4.0.0:
     resolution: {integrity: sha512-Y22oTqIU4uuPgEemfz7NDJz6OeKf12Lsu+QC+s3BVpda64lTiMYCyGwg5ki4vFxkMwQdeZDl2adZoqUgdFuTgQ==}
     engines: {node: '>=18'}
@@ -4182,9 +4153,6 @@ packages:
   humanize-list@1.0.1:
     resolution: {integrity: sha512-4+p3fCRF21oUqxhK0yZ6yaSP/H5/wZumc7q1fH99RkW7Q13aAxDeP78BKjoR+6y+kaHqKF/JWuQhsNuuI2NKtA==}
 
-  hyperscript@2.0.2:
-    resolution: {integrity: sha512-uggBAYfHFC5WyZQXlJ61BNZbPmJbschcvfYNhYdZWCp+0J8KYb5Du8nQuk8Ru+ThoCNb01B0tPtnTRqnrFBkVg==}
-
   i18next@23.15.0:
     resolution: {integrity: sha512-saeTb1tIQT+W/3xMivWSEVdpjyiEbj0IeK8eI/PB8jyr5gSQF5qxWLlGLEgRa5od3lvMfvW+ituhrf2VCNfTuw==}
 
@@ -4216,9 +4184,6 @@ packages:
   indent-string@4.0.0:
     resolution: {integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==}
     engines: {node: '>=8'}
-
-  indexof@0.0.1:
-    resolution: {integrity: sha512-i0G7hLJ1z0DE8dsqJa2rycj9dBmNKgXBvotXtZYXakU9oivfB9Uj2ZBC27qqef2U58/ZLwalxa1X/RDCdkHtVg==}
 
   inflight@1.0.6:
     resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
@@ -4656,11 +4621,6 @@ packages:
   map-obj@4.3.0:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
-
-  marked@14.1.2:
-    resolution: {integrity: sha512-f3r0yqpz31VXiDB/wj9GaOB0a2PRLQl6vJmXiFrniNwjkKdvakqJRULhjFKJpxOchlCRiG5fcacoUZY5Xa6PEQ==}
-    engines: {node: '>= 18'}
-    hasBin: true
 
   md5-o-matic@0.1.1:
     resolution: {integrity: sha512-QBJSFpsedXUl/Lgs4ySdB2XCzUEcJ3ujpbagdZCkRaYIaC0kFnID8jhc84KEiVv6dNFtIrmW7bqow0lDxgJi6A==}
@@ -9264,17 +9224,6 @@ snapshots:
       nanoid: 3.3.7
       rxjs: 7.8.1
 
-  '@sanity/block-content-to-hyperscript@2.0.10':
-    dependencies:
-      '@sanity/generate-help-url': 0.140.0
-      '@sanity/image-url': 0.140.22
-      hyperscript: 2.0.2
-      object-assign: 4.1.1
-
-  '@sanity/block-content-to-markdown@0.0.5':
-    dependencies:
-      '@sanity/block-content-to-hyperscript': 2.0.10
-
   '@sanity/block-tools@3.57.1(debug@4.3.6)':
     dependencies:
       '@sanity/types': 3.57.1(debug@4.3.6)
@@ -9372,15 +9321,11 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sanity/generate-help-url@0.140.0': {}
-
   '@sanity/generate-help-url@3.0.0': {}
 
   '@sanity/icons@3.4.0(react@18.3.1)':
     dependencies:
       react: 18.3.1
-
-  '@sanity/image-url@0.140.22': {}
 
   '@sanity/image-url@1.0.2': {}
 
@@ -10344,8 +10289,6 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  browser-split@0.0.0: {}
-
   browserify-zlib@0.1.4:
     dependencies:
       pako: 0.2.9
@@ -10526,10 +10469,6 @@ snapshots:
   citty@0.1.6:
     dependencies:
       consola: 3.2.3
-
-  class-list@0.1.1:
-    dependencies:
-      indexof: 0.0.1
 
   classnames@2.5.1: {}
 
@@ -11870,10 +11809,6 @@ snapshots:
 
   hotscript@1.0.13: {}
 
-  html-element@2.3.1:
-    dependencies:
-      class-list: 0.1.1
-
   html-encoding-sniffer@4.0.0:
     dependencies:
       whatwg-encoding: 3.1.1
@@ -11925,12 +11860,6 @@ snapshots:
 
   humanize-list@1.0.1: {}
 
-  hyperscript@2.0.2:
-    dependencies:
-      browser-split: 0.0.0
-      class-list: 0.1.1
-      html-element: 2.3.1
-
   i18next@23.15.0:
     dependencies:
       '@babel/runtime': 7.25.6
@@ -11955,8 +11884,6 @@ snapshots:
   imurmurhash@0.1.4: {}
 
   indent-string@4.0.0: {}
-
-  indexof@0.0.1: {}
 
   inflight@1.0.6:
     dependencies:
@@ -12357,8 +12284,6 @@ snapshots:
   map-obj@1.0.1: {}
 
   map-obj@4.3.0: {}
-
-  marked@14.1.2: {}
 
   md5-o-matic@0.1.1: {}
 
