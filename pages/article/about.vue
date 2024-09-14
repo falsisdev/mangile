@@ -58,13 +58,13 @@
     <p>
       Kimlik bilgilerimi size sızdıracağımı falan düşünmeyin. Kısaca kendimden
       bahsedeyim: Ben Falsis, Falsis Kremlin. Gerçek adım Kerem. İzmir,
-      Türkiye'de yaşıyorum. Bu yazıyı yazarken 9. sınıfa giden bir lise
-      öğrencisinden ibaretim. Yazılıma 5. sınıfta babamın çok meraklılığıyla
-      başladım. Aslında babam başladı, 1 hafta sonra bıraktı gerçi ama... Ben
-      devam ettim. Bu siteyi yapana kadar devam ettim. Hala daha devam ediyorum.
-      Yeni şeyler öğrenmeyi seviyorum, tabiki ilgi çekici olmak şartıyla.
-      Araştırmak hobimdir, ayrıca boş zamanımda Pes 2017 falan oynarım. Benimle
-      ilgili daha fazla bilgi istiyorsan seni meraklı okuyucu,
+      Türkiye'de yaşıyorum. Bu yazıyı yazarken (2022 4. Çeyrek) 9. sınıfa giden
+      bir lise öğrencisinden ibaretim. Yazılıma 5. sınıfta babamın çok
+      meraklılığıyla başladım. Aslında babam başladı, 1 hafta sonra bıraktı
+      gerçi ama... Ben devam ettim. Bu siteyi yapana kadar devam ettim. Hala
+      daha devam ediyorum. Yeni şeyler öğrenmeyi seviyorum, tabiki ilgi çekici
+      olmak şartıyla. Araştırmak hobimdir, ayrıca boş zamanımda Pes 2017 falan
+      oynarım. Benimle ilgili daha fazla bilgi istiyorsan seni meraklı okuyucu,
       <a href="https://falsisdev.netlify.app" class="link link-primary"
         >buraya</a
       >

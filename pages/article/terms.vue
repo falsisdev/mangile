@@ -9,7 +9,7 @@
         <p>
             Sevgili ziyaretçimiz, lütfen web sitemizi ziyaret etmeden önce kullanım koşulları sözleşmesini dikkatlice okuyunuz. Siteye erişiminiz tamamen bu sözleşmeyi kabulünüze ve bu sözleşme ile belirlenen şartlara uymanıza bağlıdır. Şayet bu sözleşmede yazan herhangi bir koşulu kabul etmiyorsanız, lütfen siteye erişiminizi sonlandırınız. Siteye erişiminizi sürdürdüğünüz takdirde, koşulsuz ve kısıtlamasız olarak, sözleşme metninin tamamını kabul ettiğinizin, tarafımızca varsayılacağını lütfen unutmayınız.
 
-            https://mangile.ga web sitesi Mangile Organizasyonu tarafından yönetilmekte olup, bundan sonra Mangile olarak anılacaktır. Bu siteye ilişkin Kullanım Koşulları, yayınlanmakla yürürlüğe girer. Değişiklik yapma hakkı, tek taraflı olarak Mangile'a aittir ve Mangile üzerinden güncel olarak paylaşılacak olan bu değişiklikleri, tüm kullanıcılarımız baştan kabul etmiş sayılır.
+            https://mangile.vercel.app web sitesi Mangile Organizasyonu tarafından yönetilmekte olup, bundan sonra Mangile olarak anılacaktır. Bu siteye ilişkin Kullanım Koşulları, yayınlanmakla yürürlüğe girer. Değişiklik yapma hakkı, tek taraflı olarak Mangile'a aittir ve Mangile üzerinden güncel olarak paylaşılacak olan bu değişiklikleri, tüm kullanıcılarımız baştan kabul etmiş sayılır.
         </p>
         <h2>Gizlilik</h2>
         <p>
