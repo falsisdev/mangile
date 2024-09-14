@@ -7,7 +7,7 @@ const builder = imageUrlBuilder(useSanity().config);
 const queryCreated = groq`*[_type == 'manga' || _type == 'lightNovel'] | order(_createdAt desc)`;
 const queryUpdated = groq`*[_type == 'manga' || _type == 'lightNovel'] | order(_updatedAt desc)`;
 const { data: preCreatedData } = useSanityQuery(queryCreated);
-const { data: preUpdatedData } = useSanityQuery(queryCreated);
+const { data: preUpdatedData } = useSanityQuery(queryUpdated);
 
 const createdSanityData = ref([]);
 const updatedSanityData = ref([]);
