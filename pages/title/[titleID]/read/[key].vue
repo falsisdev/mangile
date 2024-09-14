@@ -146,26 +146,38 @@ watchEffect(() => {
       >
         <SanityContent :blocks="chapter.content"></SanityContent>
       </article>
-      <article v-else-if="sanityData[0]._type == 'manga'">
+      <div v-else-if="sanityData[0]._type == 'manga'">
         <div
           role="alert"
           class="alert alert-info lg:text-md text-sm lg:mt-2 px-5 text-start flex"
         >
-          <Icon name="material-symbols:info" class="w-5 h-5 lg:-mr-2" />
+          <Icon
+            v-if="!isMobileOrTablet"
+            name="material-symbols:info"
+            class="w-5 h-5 lg:-mr-2"
+          />
           <span
             >Bilgi: Mangalar Türkçe kitapların aksine soldan sağa değil sağdan
-            sola okunur. Yakınlaştırmak için üzerine tıklamanız veya fare
-            tekerleğini kullanmanız yeterlidir.</span
+            sola okunur. Yakınlaştırmak için üzerine tıklamanız
+            yeterlidir.</span
           >
         </div>
         <Flipbook
-          class="flipbook"
+          v-if="!isMobileOrTablet"
+          class="flipbook mt-2"
           :pages="[...new Set(images)]"
-          :singlePage="isMobileOrTablet"
+          :flipDuration="500"
           forwardDirection="left"
-          wheel="zoom"
+          :singlePage="true"
         />
-      </article>
+        <Flipbook
+          v-else
+          class="flipbook-mobile mt-2"
+          :pages="[...new Set(images)]"
+          :singlePage="true"
+          forwardDirection="left"
+        />
+      </div>
       <div class="divider" />
       <article class="prose max-w-none mb-5">
         <h3 class="text-lg">
@@ -201,6 +213,8 @@ watchEffect(() => {
         /></NuxtLink>
       </span>
     </div>
+    <br v-if="isMobileOrTablet" />
+    <br v-if="isMobileOrTablet" />
   </main>
   <main v-else>Yükleniyor...</main>
 </template>
@@ -208,5 +222,9 @@ watchEffect(() => {
 .flipbook {
   width: 67vw;
   height: 60vw;
+}
+.flipbook-mobile {
+  width: 80vw;
+  height: 120vw;
 }
 </style>
