@@ -210,6 +210,12 @@ useHead({
     <HeroCard :itemData="highlights" />
     <div class="divider" />
     <article class="prose max-w-none px-5">
+      <h1>Son Güncellenen Seriler</h1>
+    </article>
+    <br />
+    <LastsSwiper :itemData="updatedSeries" />
+    <div class="divider" />
+    <article class="prose max-w-none px-5">
       <h1 v-if="!isMobileOrTablet">En Yüksek Puanlı Mangalar</h1>
       <h1 v-if="isMobileOrTablet">En Yüksek Puan</h1>
     </article>
@@ -223,22 +229,16 @@ useHead({
     <AutoSwiper :itemData="pubs" />
     <div class="divider" />
     <article class="prose max-w-none px-5">
-      <h1 class="flex flex-row">Rastgele Manga</h1>
-    </article>
-    <br />
-    <HeroCard :itemData="randomManga" />
-    <div class="divider" />
-    <article class="prose max-w-none px-5">
       <h1>Son Eklenen Seriler</h1>
     </article>
     <br />
     <LastsSwiper :itemData="createdSeries" />
     <div class="divider" />
     <article class="prose max-w-none px-5">
-      <h1>Son Güncellenen Seriler</h1>
+      <h1 class="flex flex-row">Rastgele Manga</h1>
     </article>
     <br />
-    <LastsSwiper :itemData="updatedSeries" />
+    <HeroCard :itemData="randomManga" />
   </main>
 </template>
 
