@@ -1,10 +1,13 @@
 <script setup>
+import { data } from "@/assets/data.ts";
+
 //0 = Normal kullanıcı, >= 1 Bölüm Yönetim İzni, >= 2 Kişi Yönetim İzni, >= 3 Üst Düzey Yönetici
 const route = useRoute();
 const config = useRuntimeConfig();
 const user = useLogtoUser();
 
 const userData = ref(null);
+const favManga = ref(null);
 
 async function fetchData() {
   try {
@@ -15,6 +18,14 @@ async function fetchData() {
     );
 
     userData.value = toRaw(response.value);
+
+    if (Boolean(toRaw(response.value).customData.userFavoriteTitle)) {
+      const { data: favMangaData } = await useFetch(
+        `https://api.jikan.moe/v4/manga/${userData.value.customData.userFavoriteTitle}`
+      );
+
+      favManga.value = toRaw(favMangaData.value);
+    }
   } catch (err) {
     console.error("Fetch Hatası:", err);
   }
@@ -24,7 +35,7 @@ onMounted(async () => {
   fetchData();
 });
 
-watch([userData], fetchData, { immediate: true });
+watch([userData, favManga], fetchData, { immediate: true });
 </script>
 <template>
   <main v-if="userData">
@@ -57,7 +68,7 @@ watch([userData], fetchData, { immediate: true });
           class="btn lg:btn-md btn-sm bg-base-100 hover:bg-base-100 border-2 border-t-0 border-r-0 border-neutral-content border-opacity-50 hover:border-neutral-content hover:border-opacity-50 shadow-none absolute top-0 rounded-bl-2xl rounded-r-none rounded-t-none no-animation end-0 lg:text-md text-xs"
         >
           <span
-            class="flex tooltip"
+            class="flex tooltip tooltip-bottom"
             :data-tip="`Kullanıcı ${userData.customData['userFollows'] ? userData.customData['userFollows'].length : 0} Kişiyi Takip Ediyor`"
           >
             <Icon name="material-symbols:person-add" class="w-5 h-5 mr-1" />
@@ -71,7 +82,7 @@ watch([userData], fetchData, { immediate: true });
             </span>
           </span>
           <span
-            class="flex mx-2 tooltip"
+            class="flex mx-2 tooltip tooltip-bottom"
             :data-tip="`Kullanıcının ${userData.customData['userFollowers'] ? userData.customData['userFollowers'].length : 0} Takipçisi Var`"
           >
             <Icon
@@ -139,6 +150,69 @@ watch([userData], fetchData, { immediate: true });
             userData.customData.userAbout ? userData.customData.userAbout : ""
           }}
         </p>
+      </div>
+      <div v-if="favManga">
+        <article class="prose my-5">
+          <h1>
+            {{ userData.name ? userData.name : userData.username }}'in Favori
+            Serisi
+          </h1>
+        </article>
+        <div
+          class="card lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg p-3 rounded-lg shadow-base-300 mt-5"
+        >
+          <figure class="w-full lg:h-auto h-72">
+            <img
+              class="w-full lg:h-full rounded shadow-md"
+              :src="favManga.data.images.jpg.large_image_url"
+            />
+          </figure>
+          <div class="card-body">
+            <span class="flex flex-col">
+              <h2 class="card-title">{{ favManga.data.title }}</h2>
+              <span class="text-md text-neutral-content">{{
+                favManga.data["type"]
+                  .replaceAll("Light Novel", "Hafif Roman")
+                  .replaceAll("Novel", "Roman")
+              }}</span>
+            </span>
+            <span class="flex flex-row flex-wrap">
+              <span
+                class="badge badge-accent gap-2 mr-1 mt-1 tooltip tooltip-accent"
+                :data-tip="data['malstatus'][String(favManga.data.status)]"
+                >{{ data["malstatus"][String(favManga.data.status)] }}</span
+              >
+              <span
+                v-for="genre of favManga.data.genres"
+                :key="genre"
+                class="badge badge-neutral gap-2 my-1 mr-1 tooltip"
+                :data-tip="data.malgenres[String(genre.name)]"
+                >{{ data.malgenres[String(genre.name)] }}</span
+              >
+              <br /><br />
+            </span>
+            <p class="max-h-64 overflow-auto text-sm lg:text-md">
+              {{ favManga.data.synopsis }}
+            </p>
+            <div class="flex justify-end">
+              <NuxtLink
+                class="btn btn-ghost flex flex-row mx-1 tooltip"
+                data-tip="MyAnimeList sayfasını görüntüle"
+                :href="favManga.data.url"
+                ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
+              /></NuxtLink>
+              <NuxtLink
+                class="btn btn-primary flex flex-row tooltip"
+                data-tip="Mangile sayfasını görüntüle"
+                :href="`/title/${favManga.data.mal_id}`"
+                ><Icon
+                  name="material-symbols:visibility-rounded"
+                  class="h-4 w-4"
+                />Görüntüle</NuxtLink
+              >
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </main>
