@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     "@nuxtjs/device",
     "@logto/nuxt",
     "@nuxtjs/sanity",
+    "@nuxt/content",
   ],
   sanity: {
     projectId: process.env.NUXT_SANITY_PROJECT_ID,

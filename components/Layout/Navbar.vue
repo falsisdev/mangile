@@ -147,7 +147,7 @@ const save = () => {
                 >
                 <ul>
                   <li>
-                    <NuxtLink to="/article/about" class="text-sm/6"
+                    <NuxtLink to="/articles/about" class="text-sm/6"
                       ><Icon
                         name="material-symbols:person-pin-rounded"
                         class="h-5 w-5"
@@ -155,7 +155,7 @@ const save = () => {
                     >
                   </li>
                   <li>
-                    <NuxtLink to="/article/contact" class="text-sm/6"
+                    <NuxtLink to="mailto: falsis@proton.me" class="text-sm/6"
                       ><Icon
                         name="material-symbols:phone-enabled"
                         class="h-5 w-5"
@@ -173,7 +173,7 @@ const save = () => {
                 >
                 <ul>
                   <li>
-                    <NuxtLink to="/article/privacy" class="text-sm/6"
+                    <NuxtLink to="" class="text-sm/6"
                       ><Icon
                         name="material-symbols:privacy-tip"
                         class="h-5 w-5"
@@ -181,7 +181,7 @@ const save = () => {
                     >
                   </li>
                   <li>
-                    <NuxtLink to="/article/security" class="text-sm/6"
+                    <NuxtLink to="" class="text-sm/6"
                       ><Icon
                         name="material-symbols:verified-user"
                         class="h-5 w-5"
@@ -189,7 +189,7 @@ const save = () => {
                     >
                   </li>
                   <li>
-                    <NuxtLink to="/article/terms" class="text-sm/6"
+                    <NuxtLink to="/articles/terms" class="text-sm/6"
                       ><Icon
                         name="material-symbols:contract"
                         class="h-5 w-5"
