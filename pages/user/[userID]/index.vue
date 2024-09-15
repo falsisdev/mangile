@@ -42,7 +42,8 @@ watch([userData], fetchData, { immediate: true });
           "
         />
         <span
-          class="absolute top-0 end-0 bg-base-100 rounded-bl-lg p-1 tooltip tooltip-bottom lg:border-2 lg:border-r-0 lg:border-t-0 lg:border-neutral-content lg:border-opacity-75"
+          v-if="userData.profile['gender']"
+          class="absolute top-0 start-0 bg-base-100 rounded-br-lg p-1 tooltip tooltip-bottom lg:border-2 lg:border-l-0 lg:border-t-0 lg:border-neutral-content lg:border-opacity-75"
           :data-tip="`Kullanıcı Cinsiyetini '${userData.profile['gender']
             .replaceAll('male', 'Eril')
             .replaceAll('female', 'Dişil')}' olarak belirtmiş`"
@@ -53,27 +54,37 @@ watch([userData], fetchData, { immediate: true });
           />
         </span>
         <button
-          class="btn lg:btn-md btn-sm bg-base-100 hover:bg-base-100 border-2 border-b-0 border-r-0 border-neutral-content border-opacity-50 hover:border-neutral-content hover:border-opacity-50 shadow-none absolute lg:bottom-[100px] bottom-[92px] rounded-tl-2xl rounded-r-none rounded-b-none no-animation end-0 lg:text-md text-xs"
+          class="btn lg:btn-md btn-sm bg-base-100 hover:bg-base-100 border-2 border-t-0 border-r-0 border-neutral-content border-opacity-50 hover:border-neutral-content hover:border-opacity-50 shadow-none absolute top-0 rounded-bl-2xl rounded-r-none rounded-t-none no-animation end-0 lg:text-md text-xs"
         >
           <span
             class="flex tooltip"
-            :data-tip="`Kullanıcı ${userData.customData['userFollows'].length} Kişiyi Takip Ediyor`"
+            :data-tip="`Kullanıcı ${userData.customData['userFollows'] ? userData.customData['userFollows'].length : 0} Kişiyi Takip Ediyor`"
           >
             <Icon name="material-symbols:person-add" class="w-5 h-5 mr-1" />
             <span class="mt-[3px]">
-              {{ userData.customData["userFollows"].length }} Takip
+              {{
+                userData.customData["userFollows"]
+                  ? userData.customData["userFollows"].length
+                  : 0
+              }}
+              Takip
             </span>
           </span>
           <span
             class="flex mx-2 tooltip"
-            :data-tip="`Kullanıcının ${userData.customData['userFollowers'].length} Takipçisi Var`"
+            :data-tip="`Kullanıcının ${userData.customData['userFollowers'] ? userData.customData['userFollowers'].length : 0} Takipçisi Var`"
           >
             <Icon
               name="material-symbols:supervisor-account"
               class="w-5 h-5 mr-1"
             />
             <span class="mt-[3px]">
-              {{ userData.customData["userFollowers"].length }} Takipçi
+              {{
+                userData.customData["userFollowers"]
+                  ? userData.customData["userFollowers"].length
+                  : 0
+              }}
+              Takipçi
             </span>
           </span>
         </button>
@@ -101,7 +112,7 @@ watch([userData], fetchData, { immediate: true });
             class="lg:ml-40 ml-24 -mt-4 lg:-mt-0 lg:-my-2 prose flex flex-col"
           >
             <span class="text-xs -mb-2">@{{ userData.username }}</span>
-            <h1>{{ userData.name }}</h1>
+            <h1>{{ userData.name ? userData.name : userData.username }}</h1>
           </div>
           <span class="grow" />
           <span
@@ -123,7 +134,11 @@ watch([userData], fetchData, { immediate: true });
             </NuxtLink>
           </span>
         </h2>
-        <p class="lg:ml-40 -mt-3">{{ userData.customData.userAbout }}</p>
+        <p class="lg:ml-40 -mt-3">
+          {{
+            userData.customData.userAbout ? userData.customData.userAbout : ""
+          }}
+        </p>
       </div>
     </div>
   </main>
