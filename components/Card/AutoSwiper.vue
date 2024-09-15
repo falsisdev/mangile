@@ -18,7 +18,7 @@ const props = defineProps({
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
       ><div
-        class="card lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg p-[10px] rounded-lg shadow-base-300"
+        class="card lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 p-[10px] rounded-lg shadow-base-300"
       >
         <figure class="w-full lg:h-auto h-72">
           <img class="w-full lg:h-full rounded shadow-md" :src="item.image" />
