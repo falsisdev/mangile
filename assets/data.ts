@@ -3,6 +3,8 @@ export const data = {
     "turkce-light-novels": "Türkçe Light Novels",
     tortuga: "Tortuga Çeviri",
     epiknovel: "Epik Novel",
+    novelaozora: "Novel Aozora",
+    serinovel: "Seri Novel",
   },
   themeselect: {
     dark: {
