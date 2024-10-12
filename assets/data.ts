@@ -2,6 +2,7 @@ export const data = {
   scans: {
     "turkce-light-novels": "Türkçe Light Novels",
     tortuga: "Tortuga Çeviri",
+    epiknovel: "Epik Novel",
   },
   themeselect: {
     dark: {
