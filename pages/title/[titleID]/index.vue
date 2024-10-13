@@ -9,6 +9,7 @@ const { data: preSanityData, refresh } = useSanityQuery(query);
 
 const sanityData = ref([]);
 const groupedChapters = ref([]);
+const unGroupedChapters = ref([]);
 const scans = ref([]);
 
 const groupChaptersByNumber = (chapters) => {
@@ -30,6 +31,7 @@ watchEffect(() => {
 
     if (fetchedData.length > 0) {
       groupedChapters.value = groupChaptersByNumber(fetchedData[0].chapters);
+      unGroupedChapters.value = fetchedData[0].chapters;
       fetchedData[0]["chapters"].forEach((x) => scans.value.push(x.source));
     }
   }
@@ -442,13 +444,50 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   </summary>
                   <ul>
                     <li v-for="scan of new Set(scans)" :key="scan">
-                      <NuxtLink class="no-underline flex flex-row">
-                        <Icon
-                          name="mdi:file-document-arrow-right"
-                          class="h-5 w-5 mr-1"
-                        />
-                        {{ data.scans[scan] }}
-                      </NuxtLink>
+                      <details>
+                        <summary>
+                          <NuxtLink class="no-underline flex flex-row">
+                            <Icon
+                              name="mdi:file-document-arrow-right"
+                              class="h-5 w-5 mr-1"
+                            />
+                            {{ data.scans[scan] }}
+                          </NuxtLink>
+                        </summary>
+                        <ul>
+                          <li
+                            v-for="chapter of unGroupedChapters.filter(
+                              (x) => x.source == scan
+                            )"
+                            :key="chapter"
+                          >
+                            <details>
+                              <summary>
+                                <Icon
+                                  name="mdi:file-document"
+                                  class="h-5 w-5"
+                                />
+                                Bölüm
+                                {{ chapter.chapterNumber }}
+                              </summary>
+                              <ul>
+                                <li>
+                                  <NuxtLink
+                                    :to="`/title/${route.params.titleID}/read/${chapter._key}`"
+                                    class="no-underline flex flex-row"
+                                  >
+                                    <Icon
+                                      name="mdi:file-document"
+                                      class="h-5 w-5"
+                                    />
+                                    {{ chapter.title }}
+                                  </NuxtLink>
+                                </li>
+                              </ul>
+                            </details>
+                          </li>
+                        </ul>
+                      </details>
                     </li>
                   </ul>
                 </details>
