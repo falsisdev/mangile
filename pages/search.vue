@@ -222,7 +222,7 @@ onMounted(() => {
         </h1>
       </article>
       <br />
-      <div class="flex flex-row flex-wrap justify-center">
+      <div class="flex flex-row flex-wrap">
         <SearchCard
           v-for="manga in searchData"
           :key="manga.mal_id"
@@ -263,7 +263,7 @@ onMounted(() => {
           </option>
         </select>
       </div>
-      <div class="flex flex-row flex-wrap justify-center">
+      <div class="flex flex-row flex-wrap">
         <SearchCard
           v-for="manga in searchData"
           :key="manga.mal_id"

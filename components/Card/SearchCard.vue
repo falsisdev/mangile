@@ -20,7 +20,7 @@ onMounted(() => {
 </script>
 <template>
   <div
-    class="card w-[285px] bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
+    class="card w-[275px] bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
   >
     <figure class="w-full h-56">
       <img
