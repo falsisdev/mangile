@@ -94,20 +94,6 @@ watchEffect(() => {
               - {{ chapter.title }}</span
             >
             <span class="grow" />
-            <select class="select select-xs lg:select-sm max-w-xs">
-              <option disabled selected>Bölüm</option>
-              <option
-                v-for="chapter of sanityData[0].chapters"
-                :key="chapter"
-                @click.prevent="
-                  navigateTo(
-                    `/title/${route.params.titleID}/read/${chapter._key}`
-                  )
-                "
-              >
-                {{ chapter.chapterNumber }}
-              </option>
-            </select>
           </span>
         </h1>
         <span class="flex flex-row -mt-5">
@@ -138,6 +124,11 @@ watchEffect(() => {
             >Sonraki Bölüm <Icon name="material-symbols:arrow-forward"
           /></NuxtLink>
         </span>
+      </article>
+      <article class="prose max-w-none mt-5">
+        <h3 class="text-lg">
+          Bu bölüm {{ data.scans[chapter.source] }} tarafından çevrilmiştir
+        </h3>
       </article>
       <div class="divider" />
       <article
@@ -181,7 +172,7 @@ watchEffect(() => {
       <div class="divider" />
       <article class="prose max-w-none mb-5">
         <h3 class="text-lg">
-          Bu seri {{ data.scans[chapter.source] }} tarafından çevrilmiştir
+          Bu bölüm {{ data.scans[chapter.source] }} tarafından çevrilmiştir
         </h3>
       </article>
       <span class="flex flex-row">
