@@ -386,7 +386,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                         </summary>
                         <ul>
                           <li v-for="ch of chapter" :key="ch">
-                            <details v-if="Array(new Set(scans)).length != 1">
+                            <details v-if="[...new Set(scans)].length != 1">
                               <summary>
                                 <NuxtLink class="no-underline flex flex-row">
                                   <Icon
