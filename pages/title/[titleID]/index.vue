@@ -163,23 +163,6 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           {{ [...new Set(warning)].join(", ") }} içermektedir.</span
         >
       </div>
-      <div
-        v-if="manga.type != 'Manga'"
-        role="alert"
-        class="alert alert-info lg:text-md text-sm lg:mx-5 lg:mt-2 px-5 text-start flex"
-      >
-        <Icon name="material-symbols:info" class="w-5 h-5 -mr-2" />
-        <span
-          >Bilgi: Bu seri bir
-          {{
-            manga.type == "Light Novel"
-              ? "Hafif Roman'dır"
-              : manga.type == "Manhwa"
-                ? "Manhwa'dır"
-                : "Manga Değildir"
-          }}</span
-        >
-      </div>
     </div>
     <div
       v-if="manga && manga.images && manga.images.jpg"
@@ -538,6 +521,21 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       >
         <div class="stats">
           <span class="flex lg:flex-col flex-row flex-wrap">
+            <span class="ml-1">
+              <span
+                class="btn btn-sm no-animation btn-ghost hover:bg-transparent border-0"
+              >
+                <Icon name="material-symbols:book-6" class="w-5 h-5 -mr-1" />
+                <span class="mb-[0.5px]">{{
+                  manga.type == "Light Novel"
+                    ? "Hafif Roman"
+                    : manga.type == "Novel"
+                      ? "Roman"
+                      : manga.type
+                }}</span>
+              </span>
+            </span>
+            <div class="divider -my-[1px]" />
             <article class="prose text-center">
               <h2 class="lg:m-0 mx-5">MAL İstatistikleri</h2>
             </article>

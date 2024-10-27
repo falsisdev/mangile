@@ -209,27 +209,43 @@ useHead({
     <br v-if="!isMobileOrTablet" />
     <HeroCard :itemData="highlights" />
     <div class="divider" />
-    <article class="prose max-w-none px-5">
+    <article class="prose max-w-none px-5 flex flex-row -mb-7">
       <h1>Son Güncellenen Seriler</h1>
+      <span class="grow" />
+      <h1>
+        <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
+      </h1>
     </article>
     <br />
     <LastsSwiper :itemData="updatedSeries" />
     <div class="divider" />
-    <article class="prose max-w-none px-5">
+    <article class="prose max-w-none px-5 flex flex-row -mb-7">
       <h1 v-if="!isMobileOrTablet">En Yüksek Puanlı Mangalar</h1>
       <h1 v-if="isMobileOrTablet">En Yüksek Puan</h1>
+      <span class="grow" />
+      <h1>
+        <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
+      </h1>
     </article>
     <br />
     <FreeSwiper :itemData="topMangas" />
     <div class="divider" />
-    <article class="prose max-w-none px-5 pt-5">
+    <article class="prose max-w-none px-5 pt-5 flex flex-row -mb-7">
       <h1>Yayınlanıyor</h1>
+      <span class="grow" />
+      <h1>
+        <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
+      </h1>
     </article>
     <br />
     <AutoSwiper :itemData="pubs" />
     <div class="divider" />
-    <article class="prose max-w-none px-5">
+    <article class="prose max-w-none px-5 flex flex-row -mb-7">
       <h1>Son Eklenen Seriler</h1>
+      <span class="grow" />
+      <h1>
+        <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
+      </h1>
     </article>
     <br />
     <LastsSwiper :itemData="createdSeries" />
