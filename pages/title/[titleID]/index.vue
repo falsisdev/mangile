@@ -11,6 +11,10 @@ const sanityData = ref([]);
 const groupedChapters = ref([]);
 const unGroupedChapters = ref([]);
 const scans = ref([]);
+const userData = ref(null);
+
+const config = useRuntimeConfig();
+const user = useLogtoUser();
 
 const groupChaptersByNumber = (chapters) => {
   const groupedChapters = {};
@@ -106,8 +110,40 @@ async function fetchManga() {
 
       relations.value = tempRelations;
     }
+
+    if (Boolean(user)) {
+      const { data: response } = await useFetch(
+        `/api/users/${user.sub}?appSecret=${toRaw(config.public).m2mAppSecret}`
+      );
+
+      userData.value = toRaw(response.value);
+    }
   } catch (error) {
     console.error("Veri çekme hatası:", error);
+  }
+}
+
+async function setFavorite() {
+  try {
+    let customData = userData.value.customData;
+
+    if (toRaw(customData).userFavoriteTitle !== route.params.titleID) {
+      toRaw(customData).userFavoriteTitle = null;
+      toRaw(customData).userFavoriteTitle = route.params.titleID;
+    } else {
+      toRaw(customData).userFavoriteTitle = null;
+    }
+    const { data: resp } = await useFetch(
+      `/api/users/${user.sub}?appSecret=${toRaw(config.public).m2mAppSecret}`,
+      {
+        method: "PATCH",
+        body: {
+          customData,
+        },
+      }
+    );
+  } catch (err) {
+    console.error("Patch Hatası:", err);
   }
 }
 watchEffect(() => {
@@ -141,11 +177,11 @@ watchEffect(() => {
   }
 });
 
-watch(mangaID, async (newID, oldID) => {
+watch([mangaID, userData], async (newID, oldID) => {
   if (newID !== oldID) {
     await fetchManga();
   }
-}); //mangaID değiştiğinde tekrar fetch'le
+});
 onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 </script>
 
@@ -475,6 +511,21 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   </ul>
                 </details>
               </li>
+              <li>
+                <NuxtLink class="no-underline flex flex-row">
+                  <Icon
+                    name="material-symbols:type-specimen"
+                    class="h-5 w-5 mr-1"
+                  />
+                  {{
+                    manga.type == "Light Novel"
+                      ? "Hafif Roman"
+                      : manga.type == "Novel"
+                        ? "Roman"
+                        : manga.type
+                  }}
+                </NuxtLink>
+              </li>
               <li v-for="link of manga.external" :key="link">
                 <NuxtLink :to="link.url" class="no-underline flex flex-row">
                   <Icon
@@ -520,78 +571,92 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         class="lg:col-start-12 lg:col-end-12"
       >
         <div class="stats">
-          <span class="flex lg:flex-col flex-row flex-wrap">
+          <span class="flex flex-col">
             <span class="ml-1">
-              <span
-                class="btn btn-sm no-animation btn-ghost hover:bg-transparent border-0"
-              >
-                <Icon name="material-symbols:book-6" class="w-5 h-5 -mr-1" />
-                <span class="mb-[0.5px]">{{
-                  manga.type == "Light Novel"
-                    ? "Hafif Roman"
-                    : manga.type == "Novel"
-                      ? "Roman"
-                      : manga.type
-                }}</span>
+              <span v-if="Boolean(user)">
+                <button @click="setFavorite()" class="btn btn-sm btn-ghost">
+                  <Icon
+                    name="material-symbols:award-star"
+                    class="w-5 h-5 -mr-1"
+                  />
+                  <span
+                    v-if="
+                      userData.customData.userFavoriteTitle !==
+                      route.params.titleID
+                    "
+                    class="mb-[0.5px]"
+                    >Favorin Olarak Seç</span
+                  >
+                  <span
+                    v-if="
+                      userData.customData.userFavoriteTitle ==
+                      route.params.titleID
+                    "
+                    class="mb-[0.5px]"
+                    >Favori Seçimini Kaldır</span
+                  >
+                </button>
               </span>
             </span>
-            <div class="divider -my-[1px]" />
-            <article class="prose text-center">
-              <h2 class="lg:m-0 mx-5">MAL İstatistikleri</h2>
-            </article>
-            <div class="stat">
-              <div class="stat-figure">
-                <Icon name="material-symbols:star" class="w-8 h-8" />
+            <div class="divider" />
+            <span class="flex lg:flex-col flex-row flex-wrap">
+              <article class="prose text-center">
+                <h2 class="lg:m-0 mx-5">MAL İstatistikleri</h2>
+              </article>
+              <div class="stat">
+                <div class="stat-figure">
+                  <Icon name="material-symbols:star" class="w-8 h-8" />
+                </div>
+                <div class="stat-title">Puan Ortalaması</div>
+                <div class="stat-value">{{ manga.score }}</div>
+                <div class="stat-desc">puan ortalamasına sahip</div>
               </div>
-              <div class="stat-title">Puan Ortalaması</div>
-              <div class="stat-value">{{ manga.score }}</div>
-              <div class="stat-desc">puan ortalamasına sahip</div>
-            </div>
-            <div class="stat">
-              <div class="stat-figure">
-                <Icon name="mdi:account-star" class="w-8 h-8" />
+              <div class="stat">
+                <div class="stat-figure">
+                  <Icon name="mdi:account-star" class="w-8 h-8" />
+                </div>
+                <div class="stat-title">Kamuoyu</div>
+                <div class="stat-value">{{ manga.scored_by }}</div>
+                <div class="stat-desc">kişi tarafından puanlandı</div>
               </div>
-              <div class="stat-title">Kamuoyu</div>
-              <div class="stat-value">{{ manga.scored_by }}</div>
-              <div class="stat-desc">kişi tarafından puanlandı</div>
-            </div>
-            <div class="stat">
-              <div class="stat-figure">
-                <Icon name="material-symbols:tag" class="w-8 h-8" />
+              <div class="stat">
+                <div class="stat-figure">
+                  <Icon name="material-symbols:tag" class="w-8 h-8" />
+                </div>
+                <div class="stat-title">Sıralama</div>
+                <div class="stat-value">{{ manga.rank }}.</div>
+                <div class="stat-desc">sırada</div>
               </div>
-              <div class="stat-title">Sıralama</div>
-              <div class="stat-value">{{ manga.rank }}.</div>
-              <div class="stat-desc">sırada</div>
-            </div>
-            <div class="stat">
-              <div class="stat-figure">
-                <Icon
-                  name="material-symbols:auto-awesome-rounded"
-                  class="w-8 h-8"
-                />
+              <div class="stat">
+                <div class="stat-figure">
+                  <Icon
+                    name="material-symbols:auto-awesome-rounded"
+                    class="w-8 h-8"
+                  />
+                </div>
+                <div class="stat-title">Popülerlik</div>
+                <div class="stat-value">{{ manga.popularity }}.</div>
+                <div class="stat-desc">aktif en popüler manga</div>
               </div>
-              <div class="stat-title">Popülerlik</div>
-              <div class="stat-value">{{ manga.popularity }}.</div>
-              <div class="stat-desc">aktif en popüler manga</div>
-            </div>
-            <div class="stat">
-              <div class="stat-figure">
-                <Icon name="mdi:account-group" class="w-8 h-8" />
+              <div class="stat">
+                <div class="stat-figure">
+                  <Icon name="mdi:account-group" class="w-8 h-8" />
+                </div>
+                <div class="stat-title">Üye</div>
+                <div class="stat-value">{{ manga.members }}</div>
+                <div class="stat-desc">kişinin kitaplığında</div>
               </div>
-              <div class="stat-title">Üye</div>
-              <div class="stat-value">{{ manga.members }}</div>
-              <div class="stat-desc">kişinin kitaplığında</div>
-            </div>
-            <div class="stat">
-              <div class="stat-figure">
-                <Icon name="material-symbols:favorite" class="w-8 h-8" />
+              <div class="stat">
+                <div class="stat-figure">
+                  <Icon name="material-symbols:favorite" class="w-8 h-8" />
+                </div>
+                <div class="stat-title">Favori</div>
+                <div class="stat-value">{{ manga.favorites }}</div>
+                <div class="stat-desc">
+                  <div class="stat-desc">kişinin favori mangası</div>
+                </div>
               </div>
-              <div class="stat-title">Favori</div>
-              <div class="stat-value">{{ manga.favorites }}</div>
-              <div class="stat-desc">
-                <div class="stat-desc">kişinin favori mangası</div>
-              </div>
-            </div>
+            </span>
           </span>
         </div>
       </div>
@@ -651,7 +716,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           v-if="!isMobileOrTablet"
           class="divider divider-horizontal lg:ml-2"
         />
-        <span class="flex flex-row flex-wrap">
+        <span class="flex lg:flex-row flex-col flex-wrap">
           <RelationCard
             v-for="entry of relations.filter(
               (x) => x.relation == relation.relation

@@ -28,7 +28,19 @@ export default defineEventHandler(async (event) => {
       },
     }).then((response) => response.json());
 
-    return data;
+    if (event.method == "GET") {
+      return data;
+    } else if (event.method == "PATCH") {
+      const body = await readBody(event).catch(() => {});
+      const resp = await fetch(`${config.logto.endpoint}/api/users/${userID}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+    }
   } else {
     setResponseStatus(event, 401, "Yetkisiz.");
     return { response: "Yetkisiz." };

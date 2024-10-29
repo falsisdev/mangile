@@ -25,6 +25,8 @@ async function fetchData() {
       );
 
       favManga.value = toRaw(favMangaData.value);
+    } else {
+      favManga.value = null;
     }
   } catch (err) {
     console.error("Fetch Hatası:", err);
