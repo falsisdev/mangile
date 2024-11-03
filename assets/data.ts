@@ -5,6 +5,7 @@ export const data = {
     epiknovel: "Epik Novel",
     novelaozora: "Novel Aozora",
     serinovel: "Seri Novel",
+    lngatari: "LNGatari"
   },
   themeselect: {
     dark: {
