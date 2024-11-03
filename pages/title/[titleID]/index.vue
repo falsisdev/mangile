@@ -354,7 +354,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                     ? manga["published"].prop.to.year
                     : ""
                 }${
-                  manga.published.prop.year
+                  manga.published.prop.to.year
                     ? "'e kadar yayınlandı"
                     : " günümüze kadar yayınını sürdürüyor"
                 }`
