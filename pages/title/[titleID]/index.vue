@@ -360,7 +360,8 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                 }`
               }}
             </span>
-            <br /><br v-if="!isMobileOrTablet" />
+            <br />
+            <span class="divider py-3" />
             <span v-if="sanityData != String([])" class="text-sm lg:text-md">{{
               sanityData[0].description
             }}</span>
@@ -369,23 +370,22 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             }}</span>
             <br /><br />
             <div
-              v-if="manga.background"
+              v-if="sanityData[0].notes"
               class="collapse collapse-arrow -mx-2 -mt-5"
             >
               <input type="checkbox" class="lg:text-xl text-lg peer" />
               <div class="collapse-title lg:text-xl text-lg">
-                Arkaplan Bilgisi
+                <Icon name="material-symbols:clinical-notes" class="h-5 w-5" />
+                Notlar
               </div>
-              <div class="collapse-content text-sm lg:text-md -mt-5">
-                <p>
-                  {{ manga.background }}
-                </p>
+              <div class="collapse-content text-sm lg:text-md">
+                <SanityContent :blocks="sanityData[0].notes" />
               </div>
             </div>
-            <article class="prose mt-5">
+            <span class="divider py-3" />
+            <article class="prose">
               <h1>Veri Tabanı</h1>
             </article>
-            <span class="divider" />
             <ul class="menu menu-sm rounded-lg lg:w-full">
               <li>
                 <details>
