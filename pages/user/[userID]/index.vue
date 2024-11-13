@@ -132,7 +132,10 @@ watch([userData, favManga], fetchData, { immediate: true });
             class="tooltip lg:-mt-0 -mt-2"
             data-tip="Kullanıcının kütüphanesini görüntüle"
           >
-            <NuxtLink class="btn btn-ghost">
+            <NuxtLink
+              :to="`/user/${route.params.userID}/library`"
+              class="btn btn-ghost"
+            >
               <Icon name="mdi:library" class="w-5 h-5" />
               Kütüphane
             </NuxtLink>
