@@ -222,6 +222,6 @@ watch([userData, favManga], fetchData, { immediate: true });
     </div>
   </main>
   <div v-else>
-    <p>Yükleniyor...</p>
+    <Icon name="mdi-light:loading" class="animate-spin w-full h-64" />
   </div>
 </template>

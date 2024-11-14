@@ -101,10 +101,52 @@ watch([userData, favManga], fetchData, { immediate: true });
             <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
           </h1>
         </article>
+        <article class="prose max-w-none px-5">
+          Bu özellik henüz desteklenmemektedir.
+        </article>
+        <article class="prose max-w-none px-5 flex flex-row -mb-7">
+          <h1>Kitaplık</h1>
+          <span class="grow" />
+          <ul class="menu menu-xs menu-horizontal rounded-box -mt-2">
+            <li>
+              <NuxtLink class="tooltip" data-tip="Okunuyor">
+                <Icon name="material-symbols:play-arrow" class="w-5 h-5 mt-1" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink class="tooltip" data-tip="Tamamlandı">
+                <Icon name="material-symbols:check" class="w-5 h-5 mt-1" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink class="tooltip" data-tip="Beklemede">
+                <Icon name="material-symbols:pause" class="w-5 h-5 mt-1" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink class="tooltip" data-tip="Bırakıldı">
+                <Icon name="material-symbols:delete" class="w-5 h-5 mt-1" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink class="tooltip" data-tip="Planlandı">
+                <Icon name="material-symbols:timer" class="w-5 h-5 mt-1" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink class="tooltip" data-tip="Yeniden Okunuyor">
+                <Icon name="material-symbols:refresh" class="w-5 h-5 mt-1" />
+              </NuxtLink>
+            </li>
+          </ul>
+        </article>
+        <article class="prose max-w-none px-5">
+          Bu özellik henüz desteklenmemektedir.
+        </article>
       </div>
     </div>
   </main>
   <div v-else>
-    <p>Yükleniyor...</p>
+    <Icon name="mdi-light:loading" class="animate-spin w-full h-64" />
   </div>
 </template>
