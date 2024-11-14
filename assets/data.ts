@@ -5,8 +5,16 @@ export const data = {
     epiknovel: "Epik Novel",
     novelaozora: "Novel Aozora",
     serinovel: "Seri Novel",
-    lngatari: "LNGatari"
+    lngatari: "LNGatari",
   },
+  status: [
+    "Okunuyor",
+    "Tamamlandı",
+    "Beklemede",
+    "Bırakıldı",
+    "Planlandı",
+    "Yeniden Okunuyor",
+  ],
   themeselect: {
     dark: {
       id: "geist",

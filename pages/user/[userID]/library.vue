@@ -1,13 +1,14 @@
 <script setup>
 import { data } from "@/assets/data.ts";
 
-//0 = Normal kullanıcı, >= 1 Bölüm Yönetim İzni, >= 2 Kişi Yönetim İzni, >= 3 Üst Düzey Yönetici
+//0 = Okunuyor, 1 = Tamamlandı, 2 = Bekletiliyor, 3 = Bırakıldı, 4 = Planlandı, 5 = Yeniden Okunuyor
 const route = useRoute();
 const config = useRuntimeConfig();
 const user = useLogtoUser();
 
 const userData = ref(null);
-const favManga = ref(null);
+const bookcaseData = ref([]);
+const tab = ref(0);
 
 async function fetchData() {
   try {
@@ -19,14 +20,19 @@ async function fetchData() {
 
     userData.value = toRaw(response.value);
 
-    if (Boolean(toRaw(response.value).customData.userFavoriteTitle)) {
-      const { data: favMangaData } = await useFetch(
-        `https://api.jikan.moe/v4/manga/${userData.value.customData.userFavoriteTitle}`
-      );
+    if (
+      toRaw(response.value).customData.userBookcase != [] &&
+      Boolean(toRaw(response.value).customData.userBookcase)
+    ) {
+      for (let serie of toRaw(response.value).customData.userBookcase) {
+        const { data: bookCase } = await useFetch(
+          `https://api.jikan.moe/v4/manga/${serie.id}`
+        );
 
-      favManga.value = toRaw(favMangaData.value);
+        bookcaseData.value.push(toRaw(bookCase.value).data);
+      }
     } else {
-      favManga.value = null;
+      bookcaseData.value = null;
     }
   } catch (err) {
     console.error("Fetch Hatası:", err);
@@ -37,7 +43,7 @@ onMounted(async () => {
   fetchData();
 });
 
-watch([userData, favManga], fetchData, { immediate: true });
+watch([userData], fetchData, { immediate: true });
 </script>
 <template>
   <main v-if="userData">
@@ -109,39 +115,91 @@ watch([userData, favManga], fetchData, { immediate: true });
           <span class="grow" />
           <ul class="menu menu-xs menu-horizontal rounded-box -mt-2">
             <li>
-              <NuxtLink class="tooltip" data-tip="Okunuyor">
+              <NuxtLink class="tooltip" @click="tab = 0" data-tip="Okunuyor">
                 <Icon name="material-symbols:play-arrow" class="w-5 h-5 mt-1" />
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink class="tooltip" data-tip="Tamamlandı">
+              <NuxtLink class="tooltip" @click="tab = 1" data-tip="Tamamlandı">
                 <Icon name="material-symbols:check" class="w-5 h-5 mt-1" />
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink class="tooltip" data-tip="Beklemede">
+              <NuxtLink class="tooltip" @click="tab = 2" data-tip="Beklemede">
                 <Icon name="material-symbols:pause" class="w-5 h-5 mt-1" />
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink class="tooltip" data-tip="Bırakıldı">
+              <NuxtLink class="tooltip" @click="tab = 3" data-tip="Bırakıldı">
                 <Icon name="material-symbols:delete" class="w-5 h-5 mt-1" />
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink class="tooltip" data-tip="Planlandı">
+              <NuxtLink class="tooltip" @click="tab = 4" data-tip="Planlandı">
                 <Icon name="material-symbols:timer" class="w-5 h-5 mt-1" />
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink class="tooltip" data-tip="Yeniden Okunuyor">
+              <NuxtLink
+                class="tooltip"
+                @click="tab = 5"
+                data-tip="Yeniden Okunuyor"
+              >
                 <Icon name="material-symbols:refresh" class="w-5 h-5 mt-1" />
               </NuxtLink>
             </li>
           </ul>
         </article>
-        <article class="prose max-w-none px-5">
-          Bu özellik henüz desteklenmemektedir.
+        <article
+          v-if="userData.customData.userBookcase"
+          class="prose max-w-none px-5"
+        >
+          <div class="lg:col-start-1 lg:col-end-11">
+            <article class="prose mt-5">
+              <h1>
+                {{ data.status[tab] }}
+              </h1>
+              <span class="divider -my-5" />
+            </article>
+            <br />
+            <span class="flex flex-wrap flex-row -mx-5">
+              <span
+                v-for="serie of userData.customData.userBookcase.filter(
+                  (x) => x.status == tab
+                )"
+                :key="serie"
+              >
+                <BookcaseCard
+                  v-if="
+                    [...new Set(bookcaseData)].findIndex(
+                      (x) => x.mal_id == serie.id
+                    ) > -1
+                  "
+                  :itemData="
+                    [...new Set(bookcaseData)].find((x) => x.mal_id == serie.id)
+                  "
+                  :index="
+                    [...new Set(bookcaseData)].findIndex(
+                      (x) => x.mal_id == serie.id
+                    )
+                  "
+                />
+              </span>
+              <span
+                v-if="
+                  userData.customData.userBookcase.findIndex(
+                    (x) => x.status == tab
+                  ) == -1
+                "
+                class="prose max-w-none px-5"
+              >
+                {{ data.status[tab] }} durumunda hiç seri yok.
+              </span>
+            </span>
+          </div>
+        </article>
+        <article v-else class="prose max-w-none px-5">
+          Kullanıcı henüz kitaplık özelliğini kullanmaya başlamamış.
         </article>
       </div>
     </div>
