@@ -1,5 +1,4 @@
 <script setup>
-import { Analytics } from "@vercel/analytics/nuxt";
 import { data } from "@/assets/data.ts";
 
 const { isMobileOrTablet } = useDevice();
@@ -28,7 +27,6 @@ useHead({
       :errorcolor="data['themes'][theme].error"
       :duration="5000"
     />
-    <Analytics />
     <NuxtLayout :name="layout">
       <NuxtPage />
     </NuxtLayout>
