@@ -369,18 +369,23 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               manga.synopsis
             }}</span>
             <br /><br />
-            <div
-              v-if="sanityData[0].notes"
-              class="collapse collapse-arrow -mx-2 -mt-5"
-            >
-              <input type="checkbox" class="lg:text-xl text-lg peer" />
-              <div class="collapse-title lg:text-xl text-lg">
-                <Icon name="material-symbols:clinical-notes" class="h-5 w-5" />
-                Notlar
-              </div>
-              <div class="collapse-content text-sm lg:text-md">
-                <SanityContent :blocks="sanityData[0].notes" />
-              </div>
+            <div v-if="sanityData != String([])">
+              <span
+                v-if="sanityData[0].notes"
+                class="collapse collapse-arrow -mx-2 -mt-5"
+              >
+                <input type="checkbox" class="lg:text-xl text-lg peer" />
+                <div class="collapse-title lg:text-xl text-lg">
+                  <Icon
+                    name="material-symbols:clinical-notes"
+                    class="h-5 w-5"
+                  />
+                  Notlar
+                </div>
+                <div class="collapse-content text-sm lg:text-md">
+                  <SanityContent :blocks="sanityData[0].notes" />
+                </div>
+              </span>
             </div>
             <span class="divider py-3" />
             <article class="prose">
