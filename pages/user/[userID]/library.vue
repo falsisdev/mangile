@@ -25,11 +25,13 @@ async function fetchData() {
       Boolean(toRaw(response.value).customData.userBookcase)
     ) {
       for (let serie of toRaw(response.value).customData.userBookcase) {
-        const { data: bookCase } = await useFetch(
-          `https://api.jikan.moe/v4/manga/${serie.id}`
-        );
+        setTimeout(async () => {
+          const { data: bookCase } = await useFetch(
+            `https://api.jikan.moe/v4/manga/${serie.id}`
+          );
 
-        bookcaseData.value.push(toRaw(bookCase.value).data);
+          bookcaseData.value.push(toRaw(bookCase.value).data);
+        }, 750);
       }
     } else {
       bookcaseData.value = null;
@@ -178,6 +180,7 @@ watch([userData], fetchData, { immediate: true });
                   :itemData="
                     [...new Set(bookcaseData)].find((x) => x.mal_id == serie.id)
                   "
+                  :entryData="serie"
                   :index="
                     [...new Set(bookcaseData)].findIndex(
                       (x) => x.mal_id == serie.id

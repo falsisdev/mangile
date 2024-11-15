@@ -4,6 +4,7 @@ const { isMobileOrTablet } = useDevice();
 
 const props = defineProps({
   itemData: Object,
+  entryData: Object,
   index: Number,
 });
 
@@ -21,121 +22,62 @@ onMounted(() => {
 </script>
 <template>
   <div
-    :class="`card bg-base-100 h-full lg:rounded-lg lg:mx-2 mb-2 shadow-lg shadow-base-300 image-full`"
+    class="card bg-base-100 h-72 w-96 lg:mx-2 mb-2 shadow-lg shadow-base-300 image-full"
   >
-    <figure class="w-96 h-72">
-      <img
-        class="w-96 rounded shadow-md"
-        :src="itemData.images.jpg.large_image_url"
-      />
+    <figure class="h-full -my-0">
+      <img class="w-full" :src="itemData.images.jpg.large_image_url" />
     </figure>
-    <div class="card-body w-96 h-72">
+    <div class="card-body w-96 -mt-6">
       <span class="flex flex-col overflow-hidden relative">
         <h2 class="card-title whitespace-nowrap overflow-hidden">
           <span id="marquee-text" class="inline-block">
             {{ itemData.title }}
           </span>
         </h2>
-        <span class="text-xs -mt-1">{{ itemData.type }}</span>
       </span>
-      <p>
-        <span class="badge badge-accent gap-2 mr-1">{{
-          data["malstatus"][String(itemData.status)]
-        }}</span>
-        <span
-          v-for="genre of itemData.genres"
-          :key="genre"
-          class="badge badge-neutral gap-2 my-1 mr-1"
-          >{{ data.malgenres[String(genre.name)] }}</span
-        >
+      <p class="-mt-2 flex flex-col">
+        <span class="flex flex-row">
+          <span class="badge badge-secondary gap-2 mr-1">
+            {{ data.status[String(entryData.status)] }}
+          </span>
+          <span class="grow" />
+          <span
+            class="badge badge-neutral gap-2 tooltip"
+            data-tip="İzlenen Bölümler"
+          >
+            {{ entryData.chapters }}/{{
+              itemData.chapters ? itemData.chapters : "?"
+            }}
+          </span>
+          <span class="badge badge-accent gap-2 mx-1">
+            {{ data["malstatus"][String(itemData.status)] }}
+          </span>
+        </span>
+        <span class="flex flex-row mt-1">
+          <span
+            class="badge badge-neutral gap-2 mx-1 flex flex-row tooltip"
+            data-tip="Yeniden Okunma Sayısı"
+          >
+            <Icon
+              name="material-symbols:refresh"
+              class="w-[3.5] h-[3.5] -mx-1"
+            />
+            {{ entryData.reread }}
+          </span>
+        </span>
       </p>
       <div class="flex justify-end">
-        <div
-          :class="`dropdown dropdown-hover dropdown-top ${
-            index % 4 > 1 ? 'dropdown-end' : 'dropdown-start'
-          }`"
-        >
-          <NuxtLink
-            class="btn btn-primary flex flex-row"
-            :to="`/title/${itemData.mal_id}`"
-            ><Icon
-              name="material-symbols:visibility-rounded"
-              class="h-4 w-4"
-            />Görüntüle</NuxtLink
-          >
-          <div
-            tabindex="0"
-            class="dropdown-content card lg:card-side image-full card-compact bg-base-200 lg:w-[700px] z-[1] shadow"
-          >
-            <figure class="h-96">
-              <img
-                class="rounded shadow-md"
-                :src="itemData.images.jpg.large_image_url"
-              />
-            </figure>
-            <div class="card-body">
-              <h3 class="card-title text-white">
-                {{ itemData["title"] }}
-              </h3>
-              <p class="text-white">
-                <span class="badge badge-accent gap-2 mr-1">{{
-                  data["malstatus"][String(itemData.status)]
-                }}</span>
-                <span
-                  v-for="genre of itemData.genres"
-                  :key="genre"
-                  class="badge badge-neutral gap-2 my-1 mr-1"
-                  >{{ data.malgenres[String(genre.name)] }}</span
-                >
-                <br /><br />
-                {{
-                  `${itemData["published"].prop.from.day} ${
-                    data.months[
-                      parseInt(itemData["published"].prop.from.month) - 1
-                    ]
-                  } ${itemData["published"].prop.from.year}'den ${
-                    itemData["published"].prop.to.day
-                      ? itemData["published"].prop.to.day
-                      : ""
-                  } ${
-                    itemData["published"].prop.to.month
-                      ? data.months[
-                          parseInt(itemData["published"].prop.to.month) - 1
-                        ]
-                      : ""
-                  } ${
-                    itemData["published"].prop.to.year
-                      ? itemData["published"].prop.to.year
-                      : ""
-                  }${
-                    itemData.published.prop.year
-                      ? "'e kadar yayınlandı"
-                      : " günümüze kadar yayınını sürdürüyor"
-                  }`
-                }}
-                <br />
-                {{ itemData["synopsis"] }}
-              </p>
-              <div class="flex justify-end">
-                <NuxtLink
-                  class="btn btn-ghost flex flex-row mx-1"
-                  :href="itemData.url"
-                  ><Icon
-                    name="simple-icons:myanimelist"
-                    class="h-6 w-6 text-white"
-                /></NuxtLink>
-                <NuxtLink
-                  class="btn btn-primary flex flex-row"
-                  :to="`/title/${itemData.mal_id}`"
-                  ><Icon
-                    name="material-symbols:visibility-rounded"
-                    class="h-4 w-4"
-                  />Görüntüle</NuxtLink
-                >
-              </div>
-            </div>
-          </div>
-        </div>
+        <NuxtLink
+          class="btn btn-primary flex flex-row mx-1"
+          :to="`/title/${itemData.mal_id}`"
+          ><Icon name="material-symbols:visibility-rounded" class="h-4 w-4"
+        /></NuxtLink>
+        <NuxtLink class="btn btn-warning flex flex-row"
+          ><Icon name="material-symbols:edit" class="h-4 w-4"
+        /></NuxtLink>
+        <NuxtLink class="btn btn-error flex flex-row mx-1"
+          ><Icon name="material-symbols:delete" class="h-4 w-4"
+        /></NuxtLink>
       </div>
     </div>
   </div>
