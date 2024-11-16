@@ -204,7 +204,7 @@ onMounted(() => {
           </ul>
         </span>
         <div class="divider divider-horizontal -mx-1" />
-        <Icon name="material-symbols:search" class="h-5 w-5 ml-2 mt-[1px]" />
+        <Icon name="material-symbols:search" class="h-5 w-5 ml-2 mt-1" />
       </span>
     </label>
     <div v-if="q">
@@ -222,7 +222,7 @@ onMounted(() => {
         </h1>
       </article>
       <br />
-      <div class="flex flex-row flex-wrap">
+      <div class="flex flex-row flex-wrap justify-center">
         <SearchCard
           v-for="manga in searchData"
           :key="manga.mal_id"
@@ -248,22 +248,27 @@ onMounted(() => {
     </div>
     <div v-else>
       <div v-if="pagination" class="flex flex-row my-2">
+        <NuxtLink
+          class="btn btn-ghost"
+          @click.prevent="page == 1 ? null : (page -= 1)"
+        >
+          <Icon name="material-symbols:arrow-back" class="h-5 w-5" />
+        </NuxtLink>
         <span class="grow" />
         <span class="label">
-          <span class="label-text">Sayfa:</span>
+          <span class="label-text">Sayfa {{ page }}</span>
         </span>
-        <select class="select select-sm justify-center">
-          x
-          <option
-            v-for="tab in pagination.last_visible_page"
-            :key="tab"
-            @click.prevent="page = tab"
-          >
-            {{ tab }}
-          </option>
-        </select>
+        <span class="grow" />
+        <NuxtLink
+          class="btn btn-ghost"
+          @click.prevent="
+            page == pagination.last_visible_page ? null : (page += 1)
+          "
+        >
+          <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
+        </NuxtLink>
       </div>
-      <div class="flex flex-row flex-wrap">
+      <div class="flex flex-row flex-wrap justify-center">
         <SearchCard
           v-for="manga in searchData"
           :key="manga.mal_id"

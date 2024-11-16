@@ -1,6 +1,8 @@
 <script setup>
 import { data } from "@/assets/data.ts";
 
+const { isMobileOrTablet } = useDevice();
+
 const props = defineProps({
   itemData: Object,
   index: Number,
@@ -20,11 +22,11 @@ onMounted(() => {
 </script>
 <template>
   <div
-    class="card w-[275px] bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
+    class="card lg:w-[275px] w-full bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
   >
-    <figure class="w-full h-56">
+    <figure class="lg:w-full h-56">
       <img
-        class="w-full rounded shadow-md"
+        class="lg:w-full rounded shadow-md"
         :src="itemData.images.jpg.large_image_url"
       />
     </figure>
@@ -50,7 +52,7 @@ onMounted(() => {
       </p>
       <div class="flex justify-end">
         <div
-          :class="`dropdown dropdown-hover dropdown-top ${
+          :class="`lg:dropdown lg:dropdown-hover lg:dropdown-top lg:${
             index % 4 > 1 ? 'dropdown-end' : 'dropdown-start'
           }`"
         >
@@ -63,6 +65,7 @@ onMounted(() => {
             />Görüntüle</NuxtLink
           >
           <div
+            v-if="!isMobileOrTablet"
             tabindex="0"
             class="dropdown-content card lg:card-side image-full card-compact bg-base-200 lg:w-[700px] z-[1] shadow"
           >
