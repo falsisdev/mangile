@@ -284,7 +284,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           </div>
         </span>
       </article>
-      <div class="card-body lg:col-start-5 lg:col-end-12">
+      <div class="card-body lg:col-start-5 lg:col-end-12 lg:-mx-0 -mx-4">
         <article class="prose">
           <span v-if="manga.authors" class="card-title lg:-my-7 -mt-12 -my-10">
             <h1 class="flex flex-col">
@@ -308,8 +308,16 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                 </span>
                 <span class="-ml-1">'dan</span>
               </span>
-              <span>
-                {{ manga.title }}
+              <span class="flex flex-col relative">
+                <span
+                  class="lg:text-3xl text-xl mx-1 whitespace-nowrap overflow-hidden"
+                >
+                  <span
+                    :class="`inline-block ${manga['title'].length >= 32 ? 'animate-marquee' : ''} lg:w-[35rem] w-80`"
+                  >
+                    {{ manga.title }}
+                  </span>
+                </span>
               </span>
               <span
                 v-if="
@@ -666,6 +674,9 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </div>
       </div>
     </div>
+    <div class="lg:col-start-1 lg:col-end-11 lg:m-5" v-else>
+      <Icon name="mdi-light:loading" class="animate-spin w-full h-64" />
+    </div>
     <div v-if="relations[0]" class="lg:col-start-1 lg:col-end-11 px-5">
       <article class="prose max-w-none lg:px-5">
         <h1 class="lg:flex lg:flex-row">Bağlantılı Seriler</h1>
@@ -733,6 +744,9 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </span>
       </span>
     </div>
+    <div class="lg:col-start-1 lg:col-end-11 px-5" v-else>
+      <Icon name="mdi-light:loading" class="animate-spin w-full h-64" />
+    </div>
     <div
       v-if="recommendations[0]"
       class="lg:col-start-1 lg:col-end-12 lg:mt-0 mt-2"
@@ -744,3 +758,18 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
     </div>
   </main>
 </template>
+<style>
+@keyframes marquee {
+  0% {
+    transform: translateX(50%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 10s linear infinite;
+  animation-delay: 0.5s;
+}
+</style>

@@ -31,7 +31,7 @@ onMounted(() => {
         :src="itemData.images.jpg.large_image_url"
       />
     </figure>
-    <div class="card-body h-64 lg:w-96 w-72">
+    <div class="card-body h-64 lg:w-96 w-80">
       <span class="flex flex-col overflow-hidden relative">
         <h2 class="card-title whitespace-nowrap overflow-hidden">
           <span id="marquee-text" class="inline-block">
