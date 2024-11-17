@@ -117,37 +117,57 @@ watch([userData], fetchData, { immediate: true });
           <span class="grow" />
           <ul class="menu menu-xs menu-horizontal rounded-box -mt-2">
             <li>
-              <NuxtLink class="tooltip" @click="tab = 0" data-tip="Okunuyor">
-                <Icon name="material-symbols:play-arrow" class="w-5 h-5 mt-1" />
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink class="tooltip" @click="tab = 1" data-tip="Tamamlandı">
-                <Icon name="material-symbols:check" class="w-5 h-5 mt-1" />
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink class="tooltip" @click="tab = 2" data-tip="Beklemede">
-                <Icon name="material-symbols:pause" class="w-5 h-5 mt-1" />
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink class="tooltip" @click="tab = 3" data-tip="Bırakıldı">
-                <Icon name="material-symbols:delete" class="w-5 h-5 mt-1" />
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink class="tooltip" @click="tab = 4" data-tip="Planlandı">
-                <Icon name="material-symbols:timer" class="w-5 h-5 mt-1" />
+              <NuxtLink
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 0 ? 'btn-secondary' : 'btn-ghost'}`"
+                @click="tab = 0"
+                data-tip="Okunuyor"
+              >
+                <Icon name="material-symbols:play-arrow" class="w-5 h-5" />
               </NuxtLink>
             </li>
             <li>
               <NuxtLink
-                class="tooltip"
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 1 ? 'btn-secondary' : 'btn-ghost'}`"
+                @click="tab = 1"
+                data-tip="Tamamlandı"
+              >
+                <Icon name="material-symbols:check" class="w-5 h-5" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 2 ? 'btn-secondary' : 'btn-ghost'}`"
+                @click="tab = 2"
+                data-tip="Beklemede"
+              >
+                <Icon name="material-symbols:pause" class="w-5 h-5" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 3 ? 'btn-secondary' : 'btn-ghost'}`"
+                @click="tab = 3"
+                data-tip="Bırakıldı"
+              >
+                <Icon name="material-symbols:delete" class="w-5 h-5" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 4 ? 'btn-secondary' : 'btn-ghost'}`"
+                @click="tab = 4"
+                data-tip="Planlandı"
+              >
+                <Icon name="material-symbols:timer" class="w-5 h-5" />
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 5 ? 'btn-secondary' : 'btn-ghost'}`"
                 @click="tab = 5"
                 data-tip="Yeniden Okunuyor"
               >
-                <Icon name="material-symbols:refresh" class="w-5 h-5 mt-1" />
+                <Icon name="material-symbols:refresh" class="w-5 h-5" />
               </NuxtLink>
             </li>
           </ul>
