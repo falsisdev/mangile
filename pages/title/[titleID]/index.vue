@@ -5,7 +5,7 @@ const route = useRoute();
 const { isMobileOrTablet } = useDevice();
 
 const query = groq`*[myAnimeListId == ${route.params.titleID}]`;
-const { data: preSanityData, refresh } = useSanityQuery(query);
+const { data: preSanityData } = useSanityQuery(query);
 
 const sanityData = ref([]);
 const groupedChapters = ref([]);
@@ -674,10 +674,10 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </div>
       </div>
     </div>
-    <div class="lg:col-start-1 lg:col-end-11 lg:m-5" v-else>
-      <Icon name="mdi-light:loading" class="animate-spin w-full h-64" />
-    </div>
-    <div v-if="relations[0]" class="lg:col-start-1 lg:col-end-11 px-5">
+    <div
+      v-if="relations[0] && manga && manga.images && manga.images.jpg"
+      class="lg:col-start-1 lg:col-end-11 px-5"
+    >
       <article class="prose max-w-none lg:px-5">
         <h1 class="lg:flex lg:flex-row">Bağlantılı Seriler</h1>
       </article>
@@ -744,8 +744,8 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </span>
       </span>
     </div>
-    <div class="lg:col-start-1 lg:col-end-11 px-5" v-else>
-      <Icon name="mdi-light:loading" class="animate-spin w-full h-64" />
+    <div class="lg:col-start-2 lg:col-end-11 lg:m-5" v-else>
+      <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />
     </div>
     <div
       v-if="recommendations[0]"

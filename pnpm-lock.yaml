@@ -8,6 +8,21 @@ importers:
 
   .:
     dependencies:
+      '@iconify-json/flag':
+        specifier: ^1.1.54
+        version: 1.2.0
+      '@iconify-json/material-symbols':
+        specifier: ^1.1.89
+        version: 1.2.1
+      '@iconify-json/mdi':
+        specifier: ^1.1.68
+        version: 1.2.0
+      '@iconify-json/mingcute':
+        specifier: ^1.2.1
+        version: 1.2.1
+      '@iconify-json/simple-icons':
+        specifier: ^1.2.1
+        version: 1.2.3
       '@logto/nuxt':
         specifier: ^0.3.4
         version: 0.3.4(magicast@0.3.5)(rollup@4.21.3)
@@ -57,18 +72,6 @@ importers:
         specifier: latest
         version: 3.5.6(typescript@5.5.4)
     devDependencies:
-      '@iconify-json/flag':
-        specifier: ^1.1.54
-        version: 1.2.0
-      '@iconify-json/material-symbols':
-        specifier: ^1.1.89
-        version: 1.2.1
-      '@iconify-json/mdi':
-        specifier: ^1.1.68
-        version: 1.2.0
-      '@iconify-json/simple-icons':
-        specifier: ^1.2.1
-        version: 1.2.3
       '@tailwindcss/typography':
         specifier: ^0.5.14
         version: 0.5.15(tailwindcss@3.4.11)
@@ -1570,6 +1573,9 @@ packages:
 
   '@iconify-json/mdi@1.2.0':
     resolution: {integrity: sha512-E9/3l5Syg3wfuarorFodhn4s8YorxhH3U3U20LaNBNiqw1kFNIDWhF6HymuzAD35k7RH0OBasJ+ZUyFtVVV6eg==}
+
+  '@iconify-json/mingcute@1.2.1':
+    resolution: {integrity: sha512-rv682dBsjKUs1/AVg5tOegAunjCLuqyQufXU0D6Kbmgg5jMoUcl/9K2C+9MAiepBP0Eyb05YwXQvGaXMLPu/YA==}
 
   '@iconify-json/simple-icons@1.2.3':
     resolution: {integrity: sha512-KZpqyPkDdyAvrpMz9/FYovwFsr3xrHf9esJeBng3iqNInhuZhF33XO1k6Yf8g2p10ynUW7AYEiGJkYzDi4DENQ==}
@@ -8842,6 +8848,10 @@ snapshots:
       '@iconify/types': 2.0.0
 
   '@iconify-json/mdi@1.2.0':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/mingcute@1.2.1':
     dependencies:
       '@iconify/types': 2.0.0
 
