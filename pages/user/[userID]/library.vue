@@ -10,6 +10,20 @@ const userData = ref(null);
 const bookcaseData = ref([]);
 const tab = ref(0);
 
+const chars = "abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGH";
+const rand = (min = 0, max = 1000) =>
+  Math.floor(Math.random() * (max - min) + min);
+const randChar = (length = 24) => {
+  const randchars = [];
+  for (let i = 0; i < length; i++) {
+    randchars.push(chars[rand(0, chars.length)]);
+  }
+
+  return randchars.join("");
+};
+
+console.log(randChar());
+
 async function fetchData() {
   try {
     const { data: response } = await useFetch(
@@ -109,8 +123,16 @@ watch([userData], fetchData, { immediate: true });
             <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
           </h1>
         </article>
-        <article class="prose max-w-none px-5">
-          Bu özellik henüz desteklenmemektedir.
+        <article
+          v-if="userData.customData.userLists"
+          class="prose max-w-none px-5 flex flex-row"
+        >
+          <span v-for="list of userData.customData.userLists" :key="list">
+            <ListsCard :itemData="list" />
+          </span>
+        </article>
+        <article v-else class="prose max-w-none px-5">
+          Kullanıcı henüz listeler özelliğini kullanmaya başlamamış.
         </article>
         <article class="prose max-w-none px-5 flex flex-row -mb-7">
           <h1>Kitaplık</h1>
