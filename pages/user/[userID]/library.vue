@@ -228,6 +228,6 @@ watch([userData], fetchData, { immediate: true });
     </div>
   </main>
   <div v-else>
-    <Icon name="mdi-light:loading" class="animate-spin w-full h-64" />
+    <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />
   </div>
 </template>
