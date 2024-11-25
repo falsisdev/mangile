@@ -123,14 +123,16 @@ watch([userData], fetchData, { immediate: true });
             <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
           </h1>
         </article>
-        <article
-          v-if="userData.customData.userLists"
-          class="prose max-w-none px-5 flex flex-row"
-        >
-          <span v-for="list of userData.customData.userLists" :key="list">
-            <ListsCard :itemData="list" />
-          </span>
-        </article>
+        <div v-if="userData.customData.userLists">
+          <swiper :slidesPerView="isMobileOrTablet ? 1 : 4">
+            <swiper-slide
+              v-for="list of userData.customData.userLists"
+              :key="list"
+            >
+              <ListsCard :itemData="list"
+            /></swiper-slide>
+          </swiper>
+        </div>
         <article v-else class="prose max-w-none px-5">
           Kullanıcı henüz listeler özelliğini kullanmaya başlamamış.
         </article>

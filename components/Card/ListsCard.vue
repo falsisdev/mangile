@@ -28,12 +28,12 @@ watch([props.itemData], coverGet, { immediate: true });
 </script>
 <template>
   <div
-    class="card bg-base-100 h-72 w-96 lg:mr-2 my-3 shadow-lg shadow-base-300 image-full"
+    class="card bg-base-100 h-96 w-64 my-3 shadow-lg shadow-base-300 image-full"
   >
     <figure class="h-full -my-0">
-      <img class="w-full" :src="cover" />
+      <img class="h-full w-full" :src="cover" />
     </figure>
-    <div class="card-body w-96 -mt-6">
+    <div class="prose card-body -mt-6">
       <span class="flex flex-col overflow-hidden relative">
         <h2 class="card-title whitespace-nowrap overflow-hidden">
           <span id="marquee-text" class="inline-block">
