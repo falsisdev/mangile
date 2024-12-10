@@ -65,8 +65,7 @@ export default defineEventHandler(async (event) => {
     console.error("Kapak resmi çizilirken bir hata oluştu:", error);
   }
 
-  // Varsayılan fontlardan birini kullan
-  ctx.font = "bold 64px sans-serif"; // sans-serif sistem fontu
+  ctx.font = "bold 64px Arial";
   ctx.fillStyle = "white";
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
@@ -78,11 +77,11 @@ export default defineEventHandler(async (event) => {
     75
   );
 
-  ctx.font = "italic 32px sans-serif"; // sans-serif sistem fontu
+  ctx.font = "italic 32px Arial";
   const author = mangaData.data.authors[0]?.name || "Bilinmiyor";
   ctx.fillText(author, 75, 135);
 
-  ctx.font = "16px sans-serif"; // sans-serif sistem fontu
+  ctx.font = "16px Arial";
   const synopsis = mangaData.data.synopsis || "Mangaya Mangile'da göz at!";
   const maxWidth = 600;
   const lineHeight = 24;
@@ -96,7 +95,7 @@ export default defineEventHandler(async (event) => {
     lineHeight
   );
 
-  ctx.font = "bold 16px sans-serif";
+  ctx.font = "bold 16px Arial";
   ctx.fillText("MANGILE by falsisdev", 75, 600);
 
   const imageData = canvas.toBuffer("image/png");
