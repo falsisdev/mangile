@@ -16,11 +16,17 @@ export const data = {
     "Yeniden Okunuyor",
   ],
   themeselect: {
+    sunset: {
+      id: "sunset",
+      title: "Gün Batımı",
+      scheme: "dark",
+      status: "default",
+    },
     dark: {
       id: "geist",
       title: "Karanlık",
       scheme: "dark",
-      status: "default",
+      status: "recommended",
     },
     lofi: {
       id: "lofi",
@@ -33,12 +39,6 @@ export const data = {
       title: "Karanlık",
       scheme: "dark",
       status: "amoled",
-    },
-    sunset: {
-      id: "sunset",
-      title: "Gün Batımı",
-      scheme: "dark",
-      status: "recommended",
     },
     dracula: {
       id: "dracula",
