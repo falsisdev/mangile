@@ -1,14 +1,7 @@
 import { createCanvas, loadImage } from "canvas";
 import { send } from "h3";
 
-function wrapText(
-  ctx: any,
-  text: any,
-  x: any,
-  y: any,
-  maxWidth: any,
-  lineHeight: any
-) {
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
   const words = text.split(" ");
   let line = "";
   let lineY = y;
@@ -51,54 +44,47 @@ export default defineEventHandler(async (event) => {
   const targetWidth = 1200;
   const targetHeight = 630;
 
-  // Oranı koruyarak kırpma alanını hesaplama
   const scale = Math.max(targetWidth / imgWidth, targetHeight / imgHeight);
   const newWidth = imgWidth * scale;
   const newHeight = imgHeight * scale;
   const offsetX = (newWidth - targetWidth) / 2;
   const offsetY = (newHeight - targetHeight) / 2;
 
-  // Opaklık ayarın
   ctx.globalAlpha = 0.33;
-
-  // Arka planın üzerine arkaplan resmi ekleme (orta hizalanmış)
   ctx.drawImage(image, -offsetX, -offsetY, newWidth, newHeight);
 
-  // Kapak resmi ayarları
-  ctx.globalAlpha = 1; // Opaklığı geri döndür
-  const coverWidth = 421; // Kapak genişliği
-  const coverHeight = 600; // Kapak yüksekliği
-  const coverX = canvas.width - coverWidth - 20; // Kapak sağda, 20px boşluk
-  const coverY = canvas.height - coverHeight - 20; // Kapak altta, 20px boşluk
+  ctx.globalAlpha = 1;
+  const coverWidth = 421;
+  const coverHeight = 600;
+  const coverX = canvas.width - coverWidth - 20;
+  const coverY = canvas.height - coverHeight - 20;
 
-  // Kapak resmini çiz
   try {
     ctx.drawImage(image2, coverX, coverY, coverWidth, coverHeight);
   } catch (error) {
     console.error("Kapak resmi çizilirken bir hata oluştu:", error);
   }
 
-  ctx.font = "bold 64px Sans"; // Başlık font ve boyut ayarı
-  ctx.fillStyle = "white"; // Yazı rengi
-  ctx.textAlign = "left"; // Metni sola hizala
-  ctx.textBaseline = "top"; // Metni üstten hizala
+  ctx.font = "bold 64px Arial";
+  ctx.fillStyle = "white";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
 
-  // Başlığı yaz
   const title = mangaData.data.title;
   ctx.fillText(
     title.length >= 16 ? title.substring(0, 16) + "..." : title,
     75,
     75
-  ); // Başlığı sol üst köşeye (x=75, y=75) yaz
+  );
 
-  ctx.font = "italic 32px Sans"; // Yazar adı font ve boyut ayarı
-  const author = mangaData.data.authors[0]?.name || "Bilinmiyor"; // Yazar adı manga verisinden al
-  ctx.fillText(author, 75, 135); // Yazar adını başlığın altına (x=75, y=135) yaz
+  ctx.font = "italic 32px Arial";
+  const author = mangaData.data.authors[0]?.name || "Bilinmiyor";
+  ctx.fillText(author, 75, 135);
 
-  ctx.font = "16px Sans";
+  ctx.font = "16px Arial";
   const synopsis = mangaData.data.synopsis || "Mangaya Mangile'da göz at!";
-  const maxWidth = 600; // Yazının maksimum genişliği
-  const lineHeight = 24; // Satır yüksekliği
+  const maxWidth = 600;
+  const lineHeight = 24;
 
   wrapText(
     ctx,
@@ -109,7 +95,7 @@ export default defineEventHandler(async (event) => {
     lineHeight
   );
 
-  ctx.font = "bold 16px Sans";
+  ctx.font = "bold 16px Arial";
   ctx.fillText("MANGILE by falsisdev", 75, 600);
 
   const imageData = canvas.toBuffer("image/png");
