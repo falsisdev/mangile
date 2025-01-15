@@ -1,7 +1,6 @@
 <script setup>
 import { data } from "@/assets/data.ts";
 import imageUrlBuilder from "@sanity/image-url";
-import Flipbook from "flipbook-vue";
 
 const route = useRoute();
 const { isMobileOrTablet } = useDevice();
@@ -149,25 +148,24 @@ watchEffect(() => {
           />
           <span
             >Bilgi: Mangalar Türkçe kitapların aksine soldan sağa değil sağdan
-            sola okunur. Yakınlaştırmak için üzerine tıklamanız
-            yeterlidir.</span
+            sola okunur. Yakınlaştırmak için çift tıklamanız yeterlidir.</span
           >
         </div>
-        <Flipbook
-          v-if="!isMobileOrTablet"
-          class="flipbook mt-2"
-          :pages="[...new Set(images)]"
-          :flipDuration="500"
-          forwardDirection="left"
-          :singlePage="true"
-        />
-        <Flipbook
-          v-else
-          class="flipbook-mobile mt-2"
-          :pages="[...new Set(images)]"
-          :singlePage="true"
-          forwardDirection="left"
-        />
+        <swiper
+          class="mt-5"
+          dir="rtl"
+          :autoHeight="true"
+          :pagination="{
+            clickable: true,
+            type: 'progressbar',
+          }"
+          :zoom="true"
+          :modules="[SwiperPagination, SwiperZoom]"
+        >
+          <swiper-slide v-for="item of [...new Set(images)]" v-bind:key="item">
+            <img :src="item" class="w-full h-full" />
+          </swiper-slide>
+        </swiper>
       </div>
       <div class="divider" />
       <article class="prose max-w-none mb-5">
@@ -207,15 +205,7 @@ watchEffect(() => {
     <br v-if="isMobileOrTablet" />
     <br v-if="isMobileOrTablet" />
   </main>
-  <main v-else>Yükleniyor...</main>
+  <main v-else>
+    <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />
+  </main>
 </template>
-<style scoped>
-.flipbook {
-  width: 67vw;
-  height: 60vw;
-}
-.flipbook-mobile {
-  width: 80vw;
-  height: 120vw;
-}
-</style>
