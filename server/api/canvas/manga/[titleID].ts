@@ -1,16 +1,19 @@
 import { createCanvas, loadImage, registerFont } from "canvas";
 import { send } from "h3";
-import path from "path";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
 
-registerFont(path.resolve("assets/fonts/Roboto-Regular.ttf"), {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+registerFont(resolve(__dirname, "assets/fonts/Roboto-Regular.ttf"), {
   family: "Roboto",
   weight: "normal",
 });
-registerFont(path.resolve("assets/fonts/Roboto-Bold.ttf"), {
+registerFont(resolve(__dirname, "assets/fonts/Roboto-Bold.ttf"), {
   family: "Roboto",
   weight: "bold",
 });
-registerFont(path.resolve("assets/fonts/Roboto-Italic.ttf"), {
+registerFont(resolve(__dirname, "assets/fonts/Roboto-Italic.ttf"), {
   family: "Roboto",
   style: "italic",
 });
