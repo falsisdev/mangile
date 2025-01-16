@@ -13,6 +13,21 @@ const sanityData = ref([]);
 const chapter = ref(null);
 const images = ref([]);
 
+const mangaID = ref(route.params.titleID);
+const manga = ref([]);
+
+async function fetchManga() {
+  try {
+    const mangaData = await Promise.resolve(
+      $fetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/full`)
+    );
+
+    manga.value = mangaData.data;
+  } catch (error) {
+    console.error("Veri çekme hatası:", error);
+  }
+}
+
 watchEffect(() => {
   if (preSanityData.value) {
     const fetchedData = toRaw(preSanityData.value);
@@ -74,9 +89,16 @@ watchEffect(() => {
     });
   }
 });
+
+watch([mangaID], async (newID, oldID) => {
+  if (newID !== oldID) {
+    await fetchManga();
+  }
+});
+onMounted(fetchManga);
 </script>
 <template>
-  <main v-if="chapter" class="lg:m-0 mx-5">
+  <main v-if="chapter && manga" class="lg:m-0 mx-5">
     <div class="lg:pt-0 pt-5">
       <article class="prose max-w-none flex flex-col">
         <h1 class="flex flex-col">
@@ -136,7 +158,7 @@ watchEffect(() => {
       >
         <SanityContent :blocks="chapter.content"></SanityContent>
       </article>
-      <div v-else-if="sanityData[0]._type == 'manga'">
+      <div v-else-if="sanityData[0]._type == 'manga' && manga.type != 'Manhwa'">
         <div
           role="alert"
           class="alert alert-info lg:text-md text-sm lg:mt-2 px-5 text-start flex"
@@ -166,6 +188,29 @@ watchEffect(() => {
             <img :src="item" class="w-full h-full" />
           </swiper-slide>
         </swiper>
+      </div>
+      <div v-else-if="manga.type == 'Manhwa'">
+        <div
+          role="alert"
+          class="alert alert-info lg:text-md text-sm lg:mt-2 px-5 text-start flex mb-2"
+        >
+          <Icon
+            v-if="!isMobileOrTablet"
+            name="material-symbols:info"
+            class="w-5 h-5 lg:-mr-2"
+          />
+          <span
+            >Bilgi: Bu seri bir Manhwa olduğundan Webtoon tipi okunuşa sahiptir.
+            Tüm sayfayı yukarıdan aşağıya doğru kaydırarak okuyunuz.</span
+          >
+        </div>
+        <div
+          v-for="item of [...new Set(images)]"
+          :key="item"
+          class="flex justify-center"
+        >
+          <img :src="item" />
+        </div>
       </div>
       <div class="divider" />
       <article class="prose max-w-none mb-5">
