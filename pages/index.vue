@@ -220,7 +220,7 @@ useHead({
     <LastsSwiper :itemData="updatedSeries" />
     <div class="divider" />
     <article class="prose max-w-none px-5 flex flex-row -mb-7">
-      <h1 v-if="!isMobileOrTablet">En Yüksek Puanlı Mangalar</h1>
+      <h1 v-if="!isMobileOrTablet">En Yüksek Puanlı Seriler</h1>
       <h1 v-if="isMobileOrTablet">En Yüksek Puan</h1>
       <span class="grow" />
       <h1>
@@ -251,7 +251,7 @@ useHead({
     <LastsSwiper :itemData="createdSeries" />
     <div class="divider" />
     <article class="prose max-w-none px-5">
-      <h1 class="flex flex-row">Rastgele Manga</h1>
+      <h1 class="flex flex-row">Rastgele Seri</h1>
     </article>
     <br />
     <HeroCard :itemData="randomManga" />
