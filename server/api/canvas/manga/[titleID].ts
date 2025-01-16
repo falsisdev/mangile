@@ -1,19 +1,6 @@
 import { createCanvas, loadImage, registerFont } from "canvas";
 import { send } from "h3";
 
-registerFont("./public/fonts/Roboto-Regular.ttf", {
-  family: "Roboto",
-  weight: "normal",
-});
-registerFont("./public/fonts/Roboto-Bold.ttf", {
-  family: "Roboto",
-  weight: "bold",
-});
-registerFont("./public/fonts/Roboto-Italic.ttf", {
-  family: "Roboto",
-  style: "italic",
-});
-
 function wrapText(
   ctx: any,
   text: string,
