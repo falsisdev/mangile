@@ -1,26 +1,48 @@
-import { createCanvas, loadImage } from "canvas";
+import { createCanvas, loadImage, registerFont } from "canvas";
 import { send } from "h3";
+import path from "path";
 
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+registerFont(path.resolve("assets/fonts/Roboto-Regular.ttf"), {
+  family: "Roboto",
+  weight: "normal",
+});
+registerFont(path.resolve("assets/fonts/Roboto-Bold.ttf"), {
+  family: "Roboto",
+  weight: "bold",
+});
+registerFont(path.resolve("assets/fonts/Roboto-Italic.ttf"), {
+  family: "Roboto",
+  style: "italic",
+});
+
+function wrapText(
+  ctx: any,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number
+) {
   const words = text.split(" ");
   let line = "";
   let lineY = y;
 
-  for (const word of words) {
-    const testLine = line + word + " ";
-    const metrics = ctx.measureText(testLine);
-    const testWidth = metrics.width;
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line + words[i] + " ";
+    const testWidth = ctx.measureText(testLine).width;
 
-    if (testWidth > maxWidth) {
-      ctx.fillText(line, x, lineY);
-      line = word + " ";
+    if (testWidth > maxWidth && line !== "") {
+      ctx.fillText(line.trim(), x, lineY);
+      line = words[i] + " ";
       lineY += lineHeight;
     } else {
       line = testLine;
     }
   }
 
-  ctx.fillText(line, x, lineY);
+  if (line) {
+    ctx.fillText(line.trim(), x, lineY);
+  }
 }
 
 export default defineEventHandler(async (event) => {
@@ -65,7 +87,7 @@ export default defineEventHandler(async (event) => {
     console.error("Kapak resmi çizilirken bir hata oluştu:", error);
   }
 
-  ctx.font = "bold 64px Arial";
+  ctx.font = "bold 64px Roboto";
   ctx.fillStyle = "white";
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
@@ -77,26 +99,26 @@ export default defineEventHandler(async (event) => {
     75
   );
 
-  ctx.font = "italic 32px Arial";
+  ctx.font = "italic 32px Roboto";
   const author = mangaData.data.authors[0]?.name || "Bilinmiyor";
   ctx.fillText(author, 75, 135);
 
-  ctx.font = "16px Arial";
+  ctx.font = "16px Roboto";
   const synopsis = mangaData.data.synopsis || "Mangaya Mangile'da göz at!";
   const maxWidth = 600;
   const lineHeight = 24;
 
   wrapText(
     ctx,
-    synopsis.length >= 750 ? synopsis.substring(0, 750) + "..." : synopsis,
+    synopsis.length >= 500 ? synopsis.substring(0, 500) + "..." : synopsis,
     75,
     250,
     maxWidth,
     lineHeight
   );
 
-  ctx.font = "bold 16px Arial";
-  ctx.fillText("MANGILE by falsisdev", 75, 600);
+  ctx.font = "bold 16px Roboto";
+  ctx.fillText("mangile.vercel.app | created by falsisdev", 75, 600);
 
   const imageData = canvas.toBuffer("image/png");
 
