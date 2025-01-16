@@ -2,15 +2,18 @@ import { createCanvas, loadImage, registerFont } from "canvas";
 import { send } from "h3";
 import path from "path";
 
-registerFont(path.resolve("assets/fonts/Roboto-Regular.ttf"), {
-  family: "Roboto",
-  weight: "normal",
-});
-registerFont(path.resolve("assets/fonts/Roboto-Bold.ttf"), {
+registerFont(
+  path.join(process.cwd(), "public", "fonts", "Roboto-Regular.ttf"),
+  {
+    family: "Roboto",
+    weight: "normal",
+  }
+);
+registerFont(path.join(process.cwd(), "public", "fonts", "Roboto-Bold.ttf"), {
   family: "Roboto",
   weight: "bold",
 });
-registerFont(path.resolve("assets/fonts/Roboto-Italic.ttf"), {
+registerFont(path.join(process.cwd(), "public", "fonts", "Roboto-Italic.ttf"), {
   family: "Roboto",
   style: "italic",
 });

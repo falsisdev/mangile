@@ -4,11 +4,5 @@
       "src": "api/**/*.ts",
       "use": "@vercel/node"
     }
-  ],
-  "assets": [
-    {
-      "src": "assets/fonts/**/*",
-      "dest": "assets/fonts/"
-    }
   ]
 }
