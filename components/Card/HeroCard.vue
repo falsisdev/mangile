@@ -21,7 +21,9 @@ const props = defineProps({
         class="hero bg-base-200 lg:h-auto h-[30rem]"
         :style="`background-image: url(${item.image});`"
       >
-        <div class="hero-overlay bg-opacity-90 bg-base-200"></div>
+        <div
+          class="hero-overlay bg-opacity-80 bg-base-200 backdrop-blur-sm"
+        ></div>
         <div class="hero-content flex flex-row-reverse lg:mx-10">
           <img
             v-if="!isMobileOrTablet"

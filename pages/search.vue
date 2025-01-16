@@ -268,7 +268,7 @@ onMounted(() => {
           <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
         </NuxtLink>
       </div>
-      <div class="flex flex-row flex-wrap justify-center">
+      <div class="flex lg:flex-row flex-col lg:flex-wrap justify-center">
         <SearchCard
           v-for="manga in searchData"
           :key="manga.mal_id"
