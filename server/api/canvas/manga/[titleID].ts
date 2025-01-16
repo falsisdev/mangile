@@ -1,27 +1,19 @@
 import { createCanvas, loadImage, registerFont } from "canvas";
 import { send } from "h3";
+import path from "path";
 
-registerFont(
-  "https://fonts.gstatic.com/s/roboto/v29/KFOmCnqEu92Fr1Mu4mxP.ttf",
-  {
-    family: "Roboto",
-    weight: "normal",
-  }
-);
-registerFont(
-  "https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmWUlfBBc4.woff2",
-  {
-    family: "Roboto",
-    weight: "bold",
-  }
-);
-registerFont(
-  "https://fonts.gstatic.com/s/roboto/v29/KFOkCnqEu92Fr1Mu51xIIzc.ttf",
-  {
-    family: "Roboto",
-    style: "italic",
-  }
-);
+registerFont(path.resolve("public/fonts/Roboto-Regular.ttf"), {
+  family: "Roboto",
+  weight: "normal",
+});
+registerFont(path.resolve("public/fonts/Roboto-Bold.ttf"), {
+  family: "Roboto",
+  weight: "bold",
+});
+registerFont(path.resolve("public/fonts/Roboto-Italic.ttf"), {
+  family: "Roboto",
+  style: "italic",
+});
 
 function wrapText(
   ctx: any,
