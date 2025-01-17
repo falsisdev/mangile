@@ -76,37 +76,24 @@ watchEffect(() => {
 });
 watch([page, q], fetchData, { immediate: true });
 onMounted(() => {
-  const seoMeta = [
-    {
-      property: "title",
-      content: "Keşfet | Mangile",
-    },
-    {
-      property: "og:title",
-      content: "Keşfet",
-    },
-    {
-      property: "description",
-      content: `Mangaları Keşfet!`,
-    },
-    {
-      property: "og:description",
-      content: `Mangile'ın engin veri tabanında mangaları keşfet!`,
-    },
-    {
-      property: "og:image",
-      url: "https://raw.githubusercontent.com/falsisdev/mangile/beta/src/assets/mangile_sun.svg",
-    },
-    {
-      property: "twitterCard",
-      url: "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
-    },
-  ];
   fetchData();
-  useHead({
-    title: "Keşfet",
-    meta: seoMeta,
-  });
+});
+
+useSeoMeta({
+  author: "Falsis",
+  twitterData1: "Falsis",
+  twitterLabel1: "created by",
+  twitterTitle: "Mangile Serilerini Keşfet",
+  title: "Keşfet",
+  ogTitle: "%s",
+  description: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
+  ogDescription:
+    "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi.",
+  ogImage:
+    "https://2.downloader.disk.yandex.com.tr/preview/de2d22f53d1f4649d1550c198d795dca865ceb788718bdb5d00bf0ee31592ef2/inf/DLYjw7ue4Lojy7Rl0AIfRUaPfR63jeRVbjV_fJ-qINCikiXkQw7HK4SsxTfc9mEcDvxeBjpGXWLh1Um9cXii7Q%3D%3D?uid=1129069430&filename=search.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=1129069430&tknv=v2&size=1708x793",
+  twitterCard: "summary_large_image",
+  twitterImage:
+    "https://2.downloader.disk.yandex.com.tr/preview/de2d22f53d1f4649d1550c198d795dca865ceb788718bdb5d00bf0ee31592ef2/inf/DLYjw7ue4Lojy7Rl0AIfRUaPfR63jeRVbjV_fJ-qINCikiXkQw7HK4SsxTfc9mEcDvxeBjpGXWLh1Um9cXii7Q%3D%3D?uid=1129069430&filename=search.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=1129069430&tknv=v2&size=1708x793",
 });
 </script>
 

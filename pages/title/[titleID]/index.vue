@@ -148,31 +148,20 @@ async function setFavorite() {
 }
 watchEffect(() => {
   if (manga.value?.title) {
-    const seoMeta = [
-      {
-        property: "og:title",
-        content: manga.value.title + " | Mangile",
-      },
-      {
-        property: "og:description",
-        content: `${manga.value.title} adlı mangaya ait bilgilere, bölümlere ve benzeri bir çok veriye ulaş ve manganın Türkçe bölümlerine Mangile'da eriş!`,
-      },
-      {
-        property: "og:image",
-        content: `https://mangile.vercel.app/api/canvas/manga/${mangaID.value}`,
-      },
-      {
-        name: "twitter:card",
-        content: `https://mangile.vercel.app/api/canvas/manga/${mangaID.value}`,
-      },
-      {
-        name: "theme-color",
-        content: "#0a0a0a",
-      },
-    ];
-    useHead({
+    useSeoMeta({
+      author: "Falsis",
+      twitterData1: "Falsis",
+      twitterLabel1: "created by",
+      twitterTitle: manga.value.title,
       title: manga.value.title,
-      meta: seoMeta,
+      ogTitle: "%s",
+      description: manga.value.title,
+      ogDescription: `${manga.value.title} adlı mangaya ait bilgilere, bölümlere ve benzeri bir çok veriye ulaş ve manganın Türkçe bölümlerine Mangile'da eriş!`,
+      ogImage: manga.value.images.jpg.large_image_url,
+      twitterCard: "summary_large_image",
+      twitterImage: manga.value.images.jpg.large_image_url,
+      ogImageHeight: 200,
+      ogImageWidth: 400,
     });
   }
 });

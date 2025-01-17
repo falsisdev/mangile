@@ -49,43 +49,31 @@ watchEffect(() => {
 });
 
 watchEffect(() => {
-  if (chapter.value) {
-    const seoMeta = [
-      {
-        property: "og:title",
-        content:
-          chapter.value.chapterNumber +
-          "-" +
-          chapter.value.title +
-          "--" +
-          sanityData.value[0].title +
-          " | Mangile",
-      },
-      {
-        property: "og:description",
-        content: sanityData.value[0].title + chapter.value.title + " Oku",
-      },
-      {
-        property: "og:image",
-        content: `https://mangile.vercel.app/api/canvas/manga/${route.params.titleID}`,
-      },
-      {
-        name: "twitter:card",
-        content: `https://mangile.vercel.app/api/canvas/manga/${route.params.titleID}`,
-      },
-      {
-        name: "theme-color",
-        content: "#0a0a0a",
-      },
-    ];
-    useHead({
+  if (manga.value?.title && chapter.value) {
+    useSeoMeta({
+      author: "Falsis",
+      twitterData1: "Falsis",
+      twitterLabel1: "created by",
+      twitterTitle:
+        chapter.value.chapterNumber +
+        " | " +
+        chapter.value.title +
+        " -- " +
+        sanityData.value[0].title,
       title:
         chapter.value.chapterNumber +
-        "-" +
+        " | " +
         chapter.value.title +
-        "--" +
+        " -- " +
         sanityData.value[0].title,
-      meta: seoMeta,
+      ogTitle: "%s",
+      description:
+        sanityData.value[0].title + " " + chapter.value.title + " Oku",
+      ogDescription:
+        sanityData.value[0].title + " " + chapter.value.title + " Oku",
+      ogImage: manga.value.images.jpg.large_image_url,
+      twitterCard: "summary_large_image",
+      twitterImage: manga.value.images.jpg.large_image_url,
     });
   }
 });

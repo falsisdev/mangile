@@ -172,36 +172,21 @@ randomManga.value.push({
   id: randomMangaData.value.data.mal_id,
 });
 
-const seoMeta = [
-  {
-    property: "title",
-    content: "Ana Sayfa | Mangile",
-  },
-  {
-    property: "og:title",
-    content: "Mangile",
-  },
-  {
-    property: "description",
-    content:
-      "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi. ",
-  },
-  {
-    property: "og:description",
-    content: `Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi. `,
-  },
-  {
-    property: "og:image",
-    url: "https://raw.githubusercontent.com/falsisdev/mangile/beta/src/assets/mangile_sun.svg",
-  },
-  {
-    property: "twitterCard",
-    url: "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
-  },
-];
-useHead({
+useSeoMeta({
+  author: "Falsis",
+  twitterData1: "Falsis",
+  twitterLabel1: "created by",
+  twitterTitle: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
   title: "Ana Sayfa",
-  meta: seoMeta,
+  ogTitle: "%s",
+  description: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
+  ogDescription:
+    "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi.",
+  ogImage:
+    "https://2.downloader.disk.yandex.com.tr/preview/0f1ef17285f339df943684df9c4d4ad05a38c4f3facc53358bf66ada522403ee/inf/IIJ8_jhgrQhL6ACvSnfgiOiXORdnagm76z0t9-a4H17KliZNiukr1RWLA8C4nHLIyGt2yQZ-hwk647z50nvkVA%3D%3D?uid=1129069430&filename=homepage.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=1129069430&tknv=v2&size=1708x793",
+  twitterCard: "summary_large_image",
+  twitterImage:
+    "https://2.downloader.disk.yandex.com.tr/preview/0f1ef17285f339df943684df9c4d4ad05a38c4f3facc53358bf66ada522403ee/inf/IIJ8_jhgrQhL6ACvSnfgiOiXORdnagm76z0t9-a4H17KliZNiukr1RWLA8C4nHLIyGt2yQZ-hwk647z50nvkVA%3D%3D?uid=1129069430&filename=homepage.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=1129069430&tknv=v2&size=1708x793",
 });
 </script>
 <template>
