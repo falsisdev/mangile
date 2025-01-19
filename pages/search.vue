@@ -263,6 +263,27 @@ useSeoMeta({
           :index="searchData.indexOf(manga)"
         />
       </div>
+      <div v-if="pagination" class="flex flex-row my-2">
+        <NuxtLink
+          class="btn btn-ghost"
+          @click.prevent="page == 1 ? null : (page -= 1)"
+        >
+          <Icon name="material-symbols:arrow-back" class="h-5 w-5" />
+        </NuxtLink>
+        <span class="grow" />
+        <span class="label">
+          <span class="label-text">Sayfa {{ page }}</span>
+        </span>
+        <span class="grow" />
+        <NuxtLink
+          class="btn btn-ghost"
+          @click.prevent="
+            page == pagination.last_visible_page ? null : (page += 1)
+          "
+        >
+          <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
+        </NuxtLink>
+      </div>
     </div>
   </main>
 </template>

@@ -21,21 +21,19 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div
-    class="card lg:w-[275px] w-full bg-base-100 rounded-lg mx-2 mb-2 shadow-lg shadow-base-300"
-  >
+  <div class="card lg:w-[275px] w-full bg-base-100 rounded-lg mx-2 mb-2">
     <figure class="lg:w-full h-56">
       <img
         class="lg:w-full rounded shadow-md"
         :src="itemData.images.jpg.large_image_url"
       />
     </figure>
-    <div class="card-body h-72">
+    <div class="card-body h-72 shadow-xl">
       <span class="flex flex-col overflow-hidden relative">
         <h2 class="card-title whitespace-nowrap overflow-hidden">
-          <span id="marquee-text" class="inline-block">
+          <b id="marquee-text" class="inline-block">
             {{ itemData.title }}
-          </span>
+          </b>
         </h2>
         <span class="text-xs -mt-1">{{ itemData.type }}</span>
       </span>
@@ -52,7 +50,7 @@ onMounted(() => {
       </p>
       <div class="flex justify-end">
         <div
-          :class="`lg:dropdown lg:dropdown-hover lg:dropdown-top lg:${
+          :class="`lg:dropdown dropdown-hover lg:dropdown-top lg:${
             index % 4 > 1 ? 'dropdown-end' : 'dropdown-start'
           }`"
         >

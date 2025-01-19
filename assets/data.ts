@@ -7,6 +7,8 @@ export const data = {
     novelaozora: "Novel Aozora",
     serinovel: "Seri Novel",
     lngatari: "LNGatari",
+    "unity-fansub": "Unity Fansub",
+    mangadenizi: "Manga Denizi",
   },
   status: [
     "Okunuyor",

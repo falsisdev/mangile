@@ -25,7 +25,7 @@ const props = defineProps({
         </figure>
         <div class="card-body">
           <span class="flex flex-col">
-            <h2 class="card-title">{{ item.name }}</h2>
+            <h2 class="card-title font-bold">{{ item.name }}</h2>
             <span class="text-xs -mt-1">{{ item.type }}</span>
           </span>
           <p class="max-h-32 overflow-auto my-2 text-sm lg:text-md">

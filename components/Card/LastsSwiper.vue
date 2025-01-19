@@ -30,9 +30,9 @@ onMounted(() => {
         <div class="card-body h-72 w-64 shadow-xl">
           <span class="flex flex-col w-full overflow-hidden relative">
             <h2 class="card-title whitespace-nowrap overflow-hidden">
-              <span id="marquee-text" class="inline-block">
+              <b id="marquee-text" class="inline-block">
                 {{ item.name }}
-              </span>
+              </b>
             </h2>
             <span class="text-xs -mt-1">{{
               item["type"]
