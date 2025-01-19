@@ -23,13 +23,11 @@ onMounted(() => {
     :slidesPerView="isMobileOrTablet ? 1 : 3"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
-      ><div
-        class="card card-side w-96 lg:m-0 m-5 bg-base-100 shadow-lg rounded-lg shadow-base-300"
-      >
+      ><div class="card card-side w-96 lg:m-0 m-5 bg-base-100 rounded-lg">
         <figure class="h-72 w-56">
-          <img class="w-full h-full rounded shadow-md" :src="item.image" />
+          <img class="w-full h-full rounded" :src="item.image" />
         </figure>
-        <div class="card-body h-72 w-64">
+        <div class="card-body h-72 w-64 shadow-xl">
           <span class="flex flex-col w-full overflow-hidden relative">
             <h2 class="card-title whitespace-nowrap overflow-hidden">
               <span id="marquee-text" class="inline-block">
