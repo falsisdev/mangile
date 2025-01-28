@@ -9,6 +9,8 @@ export const data = {
     lngatari: "LNGatari",
     "unity-fansub": "Unity Fansub",
     mangadenizi: "Manga Denizi",
+    mangaframe: "MangaFrame",
+    "garcia-fansub": "Garcia Fansub",
   },
   status: [
     "Okunuyor",
