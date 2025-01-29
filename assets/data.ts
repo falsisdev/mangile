@@ -11,6 +11,11 @@ export const data = {
     mangadenizi: "Manga Denizi",
     mangaframe: "MangaFrame",
     "garcia-fansub": "Garcia Fansub",
+    "manga-gecesi": "Manga Gecesi",
+    hayalistic: "Hayalistic",
+    mangadex: "MangaDex",
+    "manga-sehri": "Manga Şehri",
+    mangile: "Mangile",
   },
   status: [
     "Okunuyor",

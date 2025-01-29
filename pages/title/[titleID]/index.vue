@@ -12,6 +12,7 @@ const groupedChapters = ref([]);
 const unGroupedChapters = ref([]);
 const scans = ref([]);
 const userData = ref(null);
+const dbStyle = ref(1); //1 düzenli liste görünümü, 0 düzensiz liste görünümü
 
 const config = useRuntimeConfig();
 const user = useLogtoUser();
@@ -66,6 +67,10 @@ function moveElementToIndex(arr, value, targetIndex) {
 }
 
 //fonksiyon içinde çünkü watcher ile izlenmesi gerekiyor
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function fetchManga() {
   try {
     const [mangaData, imagesData] = await Promise.all([
@@ -97,6 +102,7 @@ async function fetchManga() {
             entry.type === "manga" &&
             !tempRelations.some((e) => e.entry.mal_id === entry.mal_id)
           ) {
+            await sleep(1000);
             const entryData = await $fetch(
               `https://api.jikan.moe/v4/manga/${entry.mal_id}/full`
             );
@@ -112,6 +118,7 @@ async function fetchManga() {
     }
 
     if (Boolean(user)) {
+      await sleep(1000);
       const { data: response } = await useFetch(
         `/api/users/${user.sub}?appSecret=${toRaw(config.public).m2mAppSecret}`
       );
@@ -170,6 +177,24 @@ watch([mangaID, userData], async (newID, oldID) => {
   if (newID !== oldID) {
     await fetchManga();
   }
+});
+
+watch(dbStyle, (newStyle, oldStyle) => {
+  if (newStyle !== oldStyle) {
+    const dbStyleCookie = useCookie("dbStyle", {
+      sameSite: "None",
+      secure: true,
+    });
+    dbStyleCookie.value = newStyle;
+  }
+});
+onMounted(() => {
+  const dbStyleCookie = useCookie("dbStyle", {
+    sameSite: "None",
+    secure: true,
+  });
+
+  if (dbStyleCookie.value == 0) dbStyle.value = 0;
 });
 onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 </script>
@@ -385,9 +410,32 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               </span>
             </div>
             <span class="divider py-3" />
-            <article class="prose">
-              <h1>Veri Tabanı</h1>
-            </article>
+            <div class="flex flex-row">
+              <article class="prose">
+                <h1>Veri Tabanı</h1>
+              </article>
+              <span class="grow" />
+              <button
+                @click.prevent="dbStyle = 1"
+                :class="`btn btn-ghost btn-sm mt-2 tooltip ${dbStyle ? 'btn-active' : ''}`"
+                data-tip="Düzenli görünüm"
+              >
+                <Icon
+                  name="material-symbols:format-list-numbered"
+                  class="h-4 w-4"
+                />
+              </button>
+              <button
+                @click.prevent="dbStyle = 0"
+                :class="`btn btn-ghost btn-sm mt-2 tooltip ${dbStyle ? '' : 'btn-active'}`"
+                data-tip="Dağınık görünüm"
+              >
+                <Icon
+                  name="material-symbols:format-list-bulleted"
+                  class="h-4 w-4"
+                />
+              </button>
+            </div>
             <ul class="menu menu-sm rounded-lg lg:w-full">
               <li>
                 <details>
@@ -397,7 +445,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   </summary>
                   <ul v-if="sanityData != String([])">
                     <li v-for="chapter of groupedChapters" :key="chapter">
-                      <details>
+                      <details v-if="dbStyle">
                         <summary>
                           <Icon name="mdi:file-document" class="h-5 w-5" />
                           Bölüm
@@ -448,6 +496,21 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                           </li>
                         </ul>
                       </details>
+                      <span v-else>
+                        <span v-for="ch of chapter" :key="ch">
+                          <NuxtLink
+                            :to="`/title/${route.params.titleID}/read/${ch._key}`"
+                            class="no-underline flex flex-row"
+                          >
+                            <Icon
+                              name="mdi:file-document-arrow-right"
+                              class="h-5 w-5 mr-1"
+                            />
+                            {{ ch.title }}
+                            <b class="ml-1">({{ data.scans[ch.source] }})</b>
+                          </NuxtLink>
+                        </span>
+                      </span>
                     </li>
                   </ul>
                   <span v-else class="mx-3 prose">
@@ -482,30 +545,13 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                             )"
                             :key="chapter"
                           >
-                            <details>
-                              <summary>
-                                <Icon
-                                  name="mdi:file-document"
-                                  class="h-5 w-5"
-                                />
-                                Bölüm
-                                {{ chapter.chapterNumber }}
-                              </summary>
-                              <ul>
-                                <li>
-                                  <NuxtLink
-                                    :to="`/title/${route.params.titleID}/read/${chapter._key}`"
-                                    class="no-underline flex flex-row"
-                                  >
-                                    <Icon
-                                      name="mdi:file-document"
-                                      class="h-5 w-5"
-                                    />
-                                    {{ chapter.title }}
-                                  </NuxtLink>
-                                </li>
-                              </ul>
-                            </details>
+                            <NuxtLink
+                              :to="`/title/${route.params.titleID}/read/${chapter._key}`"
+                              class="no-underline flex flex-row"
+                            >
+                              <Icon name="mdi:file-document" class="h-5 w-5" />
+                              {{ chapter.title }}
+                            </NuxtLink>
                           </li>
                         </ul>
                       </details>
