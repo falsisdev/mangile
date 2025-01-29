@@ -169,11 +169,13 @@ onMounted(fetchManga);
             clickable: true,
             type: 'progressbar',
           }"
-          :zoom="true"
+          :zoom="{ maxRatio: 3 }"
           :modules="[SwiperPagination, SwiperZoom]"
         >
           <swiper-slide v-for="item of [...new Set(images)]" v-bind:key="item">
-            <img :src="item" class="w-full h-full" />
+            <div class="swiper-zoom-container">
+              <img :src="item" class="w-full h-full" />
+            </div>
           </swiper-slide>
         </swiper>
       </div>
