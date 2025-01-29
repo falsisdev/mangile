@@ -1,9 +1,24 @@
-# Mangile RC Sürümü Erken Geliştirme Aşaması
+# Mangile RC
 
-Geliştirilen son sürüm olacak. Bundan sonra yeni bir branch oluşturulmayacak ve bu bittiğinde yayınlanacak. Ancak henüz daha çok erken.
+It will be the last version before stable one,
 
-`errorx.vue` normalde `error.vue` olmasına karşın geliştirme sürecinde hata ayıklama kolaylığı sebebiyle bir süre kullanım dışıdır.
+Although the `errorx.vue` is actually `error.vue`, it is not used during rc for debugging.
 
-Sıradaki geliştirme işlemleri için projects sayfasına bakabilirsiniz.
+The Website URL: [mangile.vercel.app](https://mangile.vercel.app) (There are various known problems in the mobile view)
 
-Önizleme Bağlantısı: [mangile.vercel.app](https://mangile.vercel.app) (Mobil sürümünde bilinen çeşitli hatalar mevcut)
+| Development Stage | Manhwa Reader | Novel Reader | Manga Reader | Profile Actions | Bookcase Actions | List Actions | Comments | Notifications | Advanced SEO & Meta |
+| ----------------- | ------------- | ------------ | ------------ | --------------- | ---------------- | ------------ | -------- | ------------- | ------------------- |
+| Stage 1 [...]     | ✓             | ✓            | ✓            |                 |                  |              |          |               |                     |
+| Stage 2           | ✓             | ✓            | ✓            |                 |                  | ✓            | ✓        |               |                     |
+| Stage 3           | ✓             | ✓            | ✓            | ✓               | ✓                | ✓            | ✓        |               |                     |
+| Stage 4           | ✓             | ✓            | ✓            | ✓               | ✓                | ✓            | ✓        | ✓             | ✓                   |
+
+Profile Actions: Edit Profile, Delete Profile, Reading History
+Bookcase Actions: Add, Edit, Remove
+List Actions: Create, Add, Edit, Remove, Delete
+Comments: Disqus
+Notifications: Advanced websocket notification system
+
+The 1st Stage is almost complete except for minor changes. This means that you can read the content you want without any difficulty. But user actions are still in early access.
+
+Follow releases and projects sections for new updates. If you encounter some problems, you can create an issue or a pull request.
