@@ -16,6 +16,7 @@ export const data = {
     mangadex: "MangaDex",
     "manga-sehri": "Manga Şehri",
     mangile: "Mangile",
+    serimanga: "Seri Manga"
   },
   status: [
     "Okunuyor",
