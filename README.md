@@ -14,10 +14,15 @@ The Website URL: [mangile.vercel.app](https://mangile.vercel.app) (There are var
 | Stage 4           | ✓             | ✓            | ✓            | ✓               | ✓                | ✓            | ✓        | ✓             | ✓                   |
 
 Profile Actions: Edit Profile, Delete Profile, Reading History
+
 Bookcase Actions: Add, Edit, Remove
+
 List Actions: Create, Add, Edit, Remove, Delete
+
 Comments: Disqus
+
 Notifications: Advanced websocket notification system
+
 
 The 1st Stage is almost complete except for minor changes. This means that you can read the content you want without any difficulty. But user actions are still in early access.
 
