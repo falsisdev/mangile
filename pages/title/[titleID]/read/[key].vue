@@ -237,6 +237,7 @@ onMounted(fetchManga);
         /></NuxtLink>
       </span>
     </div>
+    <DisqusComments :identifier="route.fullPath" />
     <br v-if="isMobileOrTablet" />
     <br v-if="isMobileOrTablet" />
   </main>

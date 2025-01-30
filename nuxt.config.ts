@@ -11,9 +11,13 @@ export default defineNuxtConfig({
     "@logto/nuxt",
     "@nuxtjs/sanity",
     "@nuxt/content",
+    "nuxt-disqus",
   ],
   sanity: {
     projectId: process.env.NUXT_SANITY_PROJECT_ID,
+  },
+  disqus: {
+    shortname: "mangile",
   },
   runtimeConfig: {
     logto: {
