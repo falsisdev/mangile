@@ -298,7 +298,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           </div>
         </span>
       </article>
-      <div class="card-body lg:col-start-5 lg:col-end-12 lg:-mx-0 -mx-4">
+      <div class="card-body lg:col-start-5 lg:col-end-12">
         <article class="prose">
           <span v-if="manga.authors" class="card-title lg:-my-7 -mt-12 -my-10">
             <h1 class="flex flex-col">
@@ -498,17 +498,32 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                       </details>
                       <span v-else>
                         <span v-for="ch of chapter" :key="ch">
-                          <NuxtLink
-                            :to="`/title/${route.params.titleID}/read/${ch._key}`"
-                            class="no-underline flex flex-row"
-                          >
-                            <Icon
-                              name="mdi:file-document-arrow-right"
-                              class="h-5 w-5 mr-1"
-                            />
-                            {{ ch.title }}
+                          <span v-if="!isMobileOrTablet">
+                            <NuxtLink
+                              :to="`/title/${route.params.titleID}/read/${ch._key}`"
+                              class="no-underline flex flex-row"
+                            >
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              {{ ch.title }}
+                              <b class="ml-1">({{ data.scans[ch.source] }})</b>
+                            </NuxtLink>
+                          </span>
+                          <span v-else>
+                            <NuxtLink
+                              :to="`/title/${route.params.titleID}/read/${ch._key}`"
+                              class="no-underline flex flex-row"
+                            >
+                              <Icon
+                                name="mdi:file-document-arrow-right"
+                                class="h-5 w-5 mr-1"
+                              />
+                              {{ ch.title }}
+                            </NuxtLink>
                             <b class="ml-1">({{ data.scans[ch.source] }})</b>
-                          </NuxtLink>
+                          </span>
                         </span>
                       </span>
                     </li>

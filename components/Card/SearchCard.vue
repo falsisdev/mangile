@@ -21,10 +21,10 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="card lg:w-[275px] w-full bg-base-100 rounded-lg mx-2 mb-2">
-    <figure class="lg:w-full h-56">
+  <div class="card lg:w-[275px] bg-base-100 rounded-lg mx-2 mb-2">
+    <figure class="w-full h-56">
       <img
-        class="lg:w-full rounded shadow-md"
+        class="w-full rounded shadow-md"
         :src="itemData.images.jpg.large_image_url"
       />
     </figure>
