@@ -260,7 +260,6 @@ useSeoMeta({
           v-for="manga in searchData"
           :key="manga.mal_id"
           :itemData="manga"
-          :index="searchData.indexOf(manga)"
         />
       </div>
       <div v-if="pagination" class="flex flex-row my-2">
