@@ -29,13 +29,29 @@ const groupChaptersByNumber = (chapters) => {
   return Object.values(groupedChapters);
 };
 
+const groupChaptersByNumberAndSource = (chapters) => {
+  const groupedChapters = {};
+  chapters.forEach((chapter) => {
+    const key = `${chapter.chapterNumber}-${chapter.source}`;
+    if (!groupedChapters[key]) {
+      groupedChapters[key] = [];
+    }
+    groupedChapters[key].push(chapter);
+  });
+  return Object.values(groupedChapters);
+};
+
 watchEffect(() => {
   if (preSanityData.value) {
     const fetchedData = toRaw(preSanityData.value);
     sanityData.value = fetchedData;
 
     if (fetchedData.length > 0) {
-      groupedChapters.value = groupChaptersByNumber(fetchedData[0].chapters);
+      if (dbStyle.value === 1) {
+        groupedChapters.value = groupChaptersByNumber(fetchedData[0].chapters);
+      } else {
+        groupedChapters.value = groupChaptersByNumberAndSource(fetchedData[0].chapters);
+      }
       unGroupedChapters.value = fetchedData[0].chapters;
       fetchedData[0]["chapters"].forEach((x) => scans.value.push(x.source));
     }
