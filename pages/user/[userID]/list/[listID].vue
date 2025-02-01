@@ -1,4 +1,6 @@
 <script setup>
+const { isMobileOrTablet } = useDevice();
+
 const route = useRoute();
 const config = useRuntimeConfig();
 const userData = ref(null);
@@ -87,14 +89,14 @@ onMounted(fetchData);
       </article>
     </div>
     <div v-else>
-      <article class="prose max-w-none flex flex-row">
+      <article class="prose max-w-none lg:flex lg:flex-row lg:mx-0 mx-2">
         <span>
           <h1 class="-mb-1">{{ list.title }}</h1>
-          <span class="flex flex-row mb-6 mt-2">
+          <span class="lg:flex lg:flex-row lg:mb-6 mt-2">
             <span> {{ list.createdAt }} tarihinde </span>
             <NuxtLink
               :to="`/user/${route.params.userID}`"
-              class="badge badge-neutral badge-lg mt-1 mx-1 no-underline"
+              class="lg:badge lg:badge-neutral lg:badge-lg lg:mt-1 mt-2 mx-1 no-underline"
             >
               <img
                 :src="userData.avatar"
@@ -104,12 +106,12 @@ onMounted(fetchData);
             <span> tarafından oluşturuldu. </span>
           </span>
         </span>
-        <span class="grow" />
+        <span v-if="!isMobileOrTablet" class="grow" />
         <span>
           <button
             v-if="Boolean(user) && user.sub == route.params.userID"
             onclick="likesModal.showModal()"
-            class="btn btn-ghost mt-5"
+            class="btn btn-ghost lg:mt-5"
           >
             <Icon
               :name="
@@ -122,7 +124,7 @@ onMounted(fetchData);
           <button
             @click="favList()"
             v-else-if="Boolean(user) && user.sub != route.params.userID"
-            class="btn btn-ghost mt-5"
+            class="btn btn-ghost lg:mt-5"
           >
             <Icon
               :name="
@@ -135,7 +137,7 @@ onMounted(fetchData);
           <button
             v-else
             onclick="likesModal.showModal()"
-            class="btn btn-ghost mt-5"
+            class="btn btn-ghost lg:mt-5"
           >
             <Icon name="material-symbols:favorite" />{{ list.favs.length }}
           </button>
@@ -173,8 +175,11 @@ onMounted(fetchData);
           </div>
         </div>
       </dialog>
-      <div class="divider -mt-6" />
-      <div v-if="itemsData.length" class="flex flex-row flex-wrap">
+      <div class="divider lg:-mt-6" />
+      <div
+        v-if="itemsData.length"
+        class="flex lg:flex-row lg:flex-wrap flex-col"
+      >
         <SearchCard v-for="title of itemsData" :key="title" :itemData="title" />
       </div>
       <div v-else>

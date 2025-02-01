@@ -197,7 +197,7 @@ const save = () => {
           </button>
           <button>
             <a onclick="settings.showModal()"
-              ><Icon name="material-symbols:settings" />
+              ><Icon name="material-symbols:settings" class="h-5 w-5" />
             </a>
           </button>
           <button
@@ -208,7 +208,7 @@ const save = () => {
               tabindex="0"
               class="btn btn-ghost btn-circle avatar btn-md mx-2"
             >
-              <div class="w-10 rounded-full">
+              <div class="w-7 rounded-full">
                 <img
                   :src="
                     user.picture ||
@@ -265,7 +265,7 @@ const save = () => {
               <Icon name="material-symbols:login" class="w-5 h-5" />
             </a>
           </button>
-          <dialog id="settings" class="modal">
+          <dialog id="settings" class="modal modal-bottom sm:modal-middle">
             <div class="modal-box">
               <form method="dialog">
                 <button
