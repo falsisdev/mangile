@@ -813,7 +813,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
     <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5">
       <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />
     </div>
-    <DisqusComments :identifier="route.fullPath" />
+    <DisqusComments :identifier="route.fullPath" :shortname="$config.public.disqusShortname" />
     <div
       v-if="recommendations[0]"
       class="lg:col-start-1 lg:col-end-12 lg:mt-0 mt-2"

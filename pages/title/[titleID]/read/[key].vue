@@ -286,7 +286,7 @@ const getPreviousChapterKey = () => {
         /></NuxtLink>
       </span>
     </div>
-    <DisqusComments :identifier="route.fullPath" />
+    <DisqusComments :identifier="route.fullPath" :shortname="$config.public.disqusShortname" />
     <br v-if="isMobileOrTablet" />
     <br v-if="isMobileOrTablet" />
   </main>

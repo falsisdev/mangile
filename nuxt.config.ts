@@ -33,6 +33,7 @@ export default defineNuxtConfig({
       subjectToken: process.env.NUXT_SUBJECT_TOKEN,
       m2mAppID: process.env.NUXT_M2M_APP_ID,
       m2mAppSecret: process.env.NUXT_M2M_APP_SECRET,
+      disqusShortname: "mangile",
     },
   },
   compatibilityDate: "2024-04-03",
