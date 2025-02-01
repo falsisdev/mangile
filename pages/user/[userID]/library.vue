@@ -5,6 +5,7 @@ import { data } from "@/assets/data.ts";
 const route = useRoute();
 const config = useRuntimeConfig();
 const user = useLogtoUser();
+const { isMobileOrTablet } = useDevice();
 
 const userData = ref(null);
 const bookcaseData = ref([]);
@@ -136,10 +137,10 @@ watch([userData], fetchData, { immediate: true });
         <article v-else class="prose max-w-none px-5">
           Kullanıcı henüz listeler özelliğini kullanmaya başlamamış.
         </article>
-        <article class="prose max-w-none px-5 flex flex-row -mb-7">
+        <article class="prose max-w-none px-5 flex lg:flex-row flex-col -mb-7">
           <h1>Kitaplık</h1>
-          <span class="grow" />
-          <ul class="menu menu-xs menu-horizontal rounded-box -mt-2">
+          <span v-if="!isMobileOrTablet" class="grow" />
+          <ul class="menu menu-xs menu-horizontal rounded-box lg:-mt-2 -mt-10">
             <li>
               <NuxtLink
                 :class="`tooltip flex place-items-center btn btn-sm ${tab == 0 ? 'btn-secondary' : 'btn-ghost'}`"

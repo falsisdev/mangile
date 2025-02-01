@@ -5,6 +5,7 @@ import { data } from "@/assets/data.ts";
 const route = useRoute();
 const config = useRuntimeConfig();
 const user = useLogtoUser();
+const { isMobileOrTablet } = useDevice();
 
 const userData = ref(null);
 const favManga = ref(null);
@@ -137,7 +138,7 @@ watch([userData, favManga], fetchData, { immediate: true });
               class="btn btn-ghost"
             >
               <Icon name="mdi:library" class="w-5 h-5" />
-              Kütüphane
+              <span v-if="!isMobileOrTablet">Kütüphane</span>
             </NuxtLink>
           </span>
           <span
@@ -157,7 +158,7 @@ watch([userData, favManga], fetchData, { immediate: true });
         </p>
       </div>
       <div v-if="favManga">
-        <article class="prose my-5">
+        <article class="prose my-5 lg:mx-0 mx-2">
           <h1>
             {{ userData.name ? userData.name : userData.username }}'in Favori
             Serisi
