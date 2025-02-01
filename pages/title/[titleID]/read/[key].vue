@@ -16,6 +16,19 @@ const images = ref([]);
 const mangaID = ref(route.params.titleID);
 const manga = ref([]);
 
+const selectedChapterKey = ref(route.params.key);
+
+const handleChapterChange = (event) => {
+  const selectedKey = event.target.value;
+  if (selectedKey) {
+    navigateTo(`/title/${route.params.titleID}/read/${selectedKey}`);
+  }
+};
+
+const getCurrentScanChapters = () => {
+  return sanityData.value[0]['chapters'].filter(chap => chap.source === chapter.value.source);
+};
+
 async function fetchManga() {
   try {
     const mangaData = await Promise.resolve(
@@ -84,6 +97,54 @@ watch([mangaID], async (newID, oldID) => {
   }
 });
 onMounted(fetchManga);
+
+const getNextChapterKey = () => {
+  const currentIndex = sanityData.value[0]['chapters'].indexOf(chapter.value);
+  const currentScan = chapter.value.source;
+  let nextChapter = null;
+
+  // Önce aynı scan'e sahip sonraki bölümü bul
+  for (let i = currentIndex + 1; i < sanityData.value[0]['chapters'].length; i++) {
+    if (sanityData.value[0]['chapters'][i].source === currentScan) {
+      nextChapter = sanityData.value[0]['chapters'][i];
+      break;
+    }
+  }
+
+  // Eğer aynı scan'e sahip bölüm yoksa sıradaki bölümü al
+  if (!nextChapter && currentIndex + 1 < sanityData.value[0]['chapters'].length) {
+    const nextChapterCandidate = sanityData.value[0]['chapters'][currentIndex + 1];
+    if (nextChapterCandidate.chapterNumber === chapter.value.chapterNumber + 1) {
+      nextChapter = nextChapterCandidate;
+    }
+  }
+
+  return nextChapter ? nextChapter._key : '';
+};
+
+const getPreviousChapterKey = () => {
+  const currentIndex = sanityData.value[0]['chapters'].indexOf(chapter.value);
+  const currentScan = chapter.value.source;
+  let previousChapter = null;
+
+  // Önce aynı scan'e sahip önceki bölümü bul
+  for (let i = currentIndex - 1; i >= 0; i--) {
+    if (sanityData.value[0]['chapters'][i].source === currentScan) {
+      previousChapter = sanityData.value[0]['chapters'][i];
+      break;
+    }
+  }
+
+  // Eğer aynı scan'e sahip bölüm yoksa önceki sıradaki bölümü al
+  if (!previousChapter && currentIndex - 1 >= 0) {
+    const previousChapterCandidate = sanityData.value[0]['chapters'][currentIndex - 1];
+    if (previousChapterCandidate.chapterNumber === chapter.value.chapterNumber - 1) {
+      previousChapter = previousChapterCandidate;
+    }
+  }
+
+  return previousChapter ? previousChapter._key : '';
+};
 </script>
 <template>
   <main v-if="chapter && manga" class="lg:m-0 mx-5">
@@ -113,31 +174,28 @@ onMounted(fetchManga);
             <Icon name="material-symbols:book-rounded" />
           </NuxtLink>
           <NuxtLink
-            :to="
-              sanityData[0]['chapters'].indexOf(chapter) == 0
-                ? ''
-                : `/title/${route.params.titleID}/read/${sanityData[0]['chapters'][parseInt(sanityData[0]['chapters'].indexOf(chapter)) - 1]._key}`
-            "
-            :class="`btn btn-ghost ${sanityData[0]['chapters'].indexOf(chapter) == 0 ? 'btn-disabled' : ''}`"
+            :to="getPreviousChapterKey() ? `/title/${route.params.titleID}/read/${getPreviousChapterKey()}` : ''"
+            :class="`btn btn-ghost ${!getPreviousChapterKey() ? 'btn-disabled' : ''}`"
             ><Icon name="material-symbols:arrow-back" /> Önceki Bölüm</NuxtLink
           >
           <span class="grow" />
           <NuxtLink
-            :to="
-              parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1 ==
-              sanityData[0]['chapters'].length
-                ? ''
-                : `/title/${route.params.titleID}/read/${sanityData[0]['chapters'][parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1]._key}`
-            "
-            :class="`btn btn-ghost ${parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1 == sanityData[0]['chapters'].length ? 'btn-disabled' : ''}`"
+            :to="getNextChapterKey() ? `/title/${route.params.titleID}/read/${getNextChapterKey()}` : ''"
+            :class="`btn btn-ghost ${!getNextChapterKey() ? 'btn-disabled' : ''}`"
             >Sonraki Bölüm <Icon name="material-symbols:arrow-forward"
           /></NuxtLink>
         </span>
       </article>
-      <article class="prose max-w-none mt-5">
-        <h3 class="text-lg">
+      <article class="prose max-w-none mt-5 flex flex-row">
+        <h3 class="text-lg mt-3">
           Bu bölüm {{ data.scans[chapter.source] }} tarafından çevrilmiştir
         </h3>
+        <span class="grow" />
+        <select v-model="selectedChapterKey" @change="handleChapterChange" class="select select-bordered">
+          <option v-for="chap in getCurrentScanChapters()" :key="chap._key" :value="chap._key">
+            {{ chap.chapterNumber }} - {{ chap.title }}
+          </option>
+        </select>
       </article>
       <div class="divider" />
       <article
@@ -216,23 +274,14 @@ onMounted(fetchManga);
           <Icon name="material-symbols:book-rounded" />
         </NuxtLink>
         <NuxtLink
-          :to="
-            sanityData[0]['chapters'].indexOf(chapter) == 0
-              ? ''
-              : `/title/${route.params.titleID}/read/${sanityData[0]['chapters'][parseInt(sanityData[0]['chapters'].indexOf(chapter)) - 1]._key}`
-          "
-          :class="`btn btn-ghost ${sanityData[0]['chapters'].indexOf(chapter) == 0 ? 'btn-disabled' : ''}`"
+          :to="getPreviousChapterKey() ? `/title/${route.params.titleID}/read/${getPreviousChapterKey()}` : ''"
+          :class="`btn btn-ghost ${!getPreviousChapterKey() ? 'btn-disabled' : ''}`"
           ><Icon name="material-symbols:arrow-back" /> Önceki Bölüm</NuxtLink
         >
         <span class="grow" />
         <NuxtLink
-          :to="
-            parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1 ==
-            sanityData[0]['chapters'].length
-              ? ''
-              : `/title/${route.params.titleID}/read/${sanityData[0]['chapters'][parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1]._key}`
-          "
-          :class="`btn btn-ghost ${parseInt(sanityData[0]['chapters'].indexOf(chapter)) + 1 == sanityData[0]['chapters'].length ? 'btn-disabled' : ''}`"
+          :to="getNextChapterKey() ? `/title/${route.params.titleID}/read/${getNextChapterKey()}` : ''"
+          :class="`btn btn-ghost ${!getNextChapterKey() ? 'btn-disabled' : ''}`"
           >Sonraki Bölüm <Icon name="material-symbols:arrow-forward"
         /></NuxtLink>
       </span>
