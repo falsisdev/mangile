@@ -33,7 +33,6 @@ export default defineNuxtConfig({
       subjectToken: process.env.NUXT_SUBJECT_TOKEN,
       m2mAppID: process.env.NUXT_M2M_APP_ID,
       m2mAppSecret: process.env.NUXT_M2M_APP_SECRET,
-      manilaContent: process.env.NUXT_SANITY_DISCORD_WEBHOOK,
     },
   },
   compatibilityDate: "2024-04-03",
