@@ -1,10 +1,21 @@
 <script setup>
-import { data } from "@/assets/data.ts";
+import { data } from "@/assets/data.ts"
 
 const route = useRoute();
 const { isMobileOrTablet } = useDevice();
 
-const query = groq`*[myAnimeListId == ${route.params.titleID}]`;
+const query = groq`*[myAnimeListId == ${route.params.titleID}] {
+  ...,
+  chapters[] {
+    ...,
+    source-> {
+      _id,
+      name,
+      url,
+      description
+    }
+  }
+}`;
 const { data: preSanityData } = useSanityQuery(query);
 
 const sanityData = ref([]);
@@ -32,7 +43,7 @@ const groupChaptersByNumber = (chapters) => {
 const groupChaptersByNumberAndSource = (chapters) => {
   const groupedChapters = {};
   chapters.forEach((chapter) => {
-    const key = `${chapter.chapterNumber}-${chapter.source}`;
+    const key = `${chapter.chapterNumber}-${chapter.source._id}`;
     if (!groupedChapters[key]) {
       groupedChapters[key] = [];
     }
@@ -53,7 +64,9 @@ watchEffect(() => {
         groupedChapters.value = groupChaptersByNumberAndSource(fetchedData[0].chapters);
       }
       unGroupedChapters.value = fetchedData[0].chapters;
-      fetchedData[0]["chapters"].forEach((x) => scans.value.push(x.source));
+      fetchedData[0]["chapters"].forEach((x) => fetchedData[0].chapters.forEach((x) => {
+        if(x.source) scans.value.push(x.source.name)
+      }));
     }
   }
 });
@@ -82,11 +95,12 @@ function moveElementToIndex(arr, value, targetIndex) {
   return arr;
 }
 
-//fonksiyon içinde çünkü watcher ile izlenmesi gerekiyor
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+
+//fonksiyon içinde çünkü watcher ile izlenmesi gerekiyor
 async function fetchManga() {
   try {
     const [mangaData, imagesData] = await Promise.all([
@@ -479,7 +493,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                                     name="mdi:file-document-arrow-right"
                                     class="h-5 w-5 mr-1"
                                   />
-                                  {{ data.scans[ch.source] }}
+                                 <b class="ml-1">{{ ch.source.name }}</b>
                                 </NuxtLink>
                               </summary>
                               <ul>
@@ -523,7 +537,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                                 class="h-5 w-5 mr-1"
                               />
                               {{ ch.title }}
-                              <b class="ml-1">({{ data.scans[ch.source] }})</b>
+                              <NuxtLink :to="`/scan/${ch.source._id}`"><b class="ml-1">({{ ch.source.name }})</b> </NuxtLink>
                             </NuxtLink>
                           </span>
                           <span v-else>
@@ -537,7 +551,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                               />
                               {{ ch.title }}
                             </NuxtLink>
-                            <b class="ml-1">({{ data.scans[ch.source] }})</b>
+                            <b class="ml-1">({{ ch.source }})</b>
                           </span>
                         </span>
                       </span>
@@ -557,7 +571,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                     Çeviri Ekipleri
                   </summary>
                   <ul>
-                    <li v-for="scan of new Set(scans)" :key="scan">
+                    <li v-for="scan in new Set(scans)" :key="scan">
                       <details>
                         <summary>
                           <NuxtLink class="no-underline flex flex-row">
@@ -565,13 +579,13 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                               name="mdi:file-document-arrow-right"
                               class="h-5 w-5 mr-1"
                             />
-                            {{ data.scans[scan] }}
+                            {{ scan }}
                           </NuxtLink>
                         </summary>
                         <ul>
                           <li
                             v-for="chapter of unGroupedChapters.filter(
-                              (x) => x.source == scan
+                              (x) => x.source.name == scan
                             )"
                             :key="chapter"
                           >
