@@ -9,6 +9,7 @@ const { isMobileOrTablet } = useDevice();
 
 const userData = ref(null);
 const favManga = ref(null);
+const loading = ref(true);
 
 async function fetchData() {
   try {
@@ -31,6 +32,8 @@ async function fetchData() {
     }
   } catch (err) {
     console.error("Fetch Hatası:", err);
+  } finally {
+    loading.value = false;
   }
 }
 
@@ -41,7 +44,10 @@ onMounted(async () => {
 watch([userData, favManga], fetchData, { immediate: true });
 </script>
 <template>
-  <main v-if="userData">
+  <div v-if="loading" class="flex items-center justify-center min-h-screen">
+    <Icon name="mingcute:loading-line" class="animate-spin w-32 h-32" />
+  </div>
+  <main v-else-if="userData">
     <div
       class="card card-compact bg-base-100 w-full lg:rounded-2xl rounded-none"
     >

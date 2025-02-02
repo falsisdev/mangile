@@ -81,7 +81,10 @@ onMounted(fetchData);
 </script>
 
 <template>
-  <main v-if="!loading && list !== null">
+  <div v-if="loading" class="flex items-center justify-center min-h-screen">
+    <Icon name="mingcute:loading-line" class="animate-spin w-32 h-32" />
+  </div>
+  <main v-else-if="!loading && list !== null">
     <div v-if="list === 'nil'">
       <article class="prose max-w-none">
         <h1>Üzgünüz</h1>

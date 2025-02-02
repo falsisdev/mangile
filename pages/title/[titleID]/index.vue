@@ -214,7 +214,6 @@ onMounted(() => {
 });
 onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 </script>
-
 <template>
   <main class="lg:grid lg:grid-cols-11">
     <div class="lg:mx-0 mx-5 lg:col-start-1 lg:col-end-12">
@@ -810,7 +809,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </span>
       </span>
     </div>
-    <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5">
+    <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
       <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />
     </div>
     <DisqusComments :identifier="route.fullPath" :shortname="$config.public.disqusShortname" />
