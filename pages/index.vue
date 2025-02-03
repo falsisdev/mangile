@@ -24,34 +24,38 @@ watchEffect(() => {
 });
 
 //Son Eklenen Seriler
-let createdSeries = ref([]);
-
-for (let item of createdSanityData.value) {
-  createdSeries.value.push({
-    name: item.title,
-    description: item.description,
-    type: item._type,
-    image: builder.image(item.coverImage.asset._ref).auto("format").url(),
-    date: item._createdAt,
-    genres: item.tags,
-    id: item.myAnimeListId,
-  });
-}
+const createdSeries = ref([]);
 
 //Son Güncellenen Seriler
-let updatedSeries = ref([]);
+const updatedSeries = ref([]);
 
-for (let item of updatedSanityData.value) {
-  updatedSeries.value.push({
-    name: item.title,
-    description: item.description,
-    type: item._type,
-    image: builder.image(item.coverImage.asset._ref).auto("format").url(),
-    date: item._updatedAt,
-    genres: item.tags,
-    id: item.myAnimeListId,
-  });
-}
+onMounted(async () => {
+  await nextTick();
+
+  for (let item of createdSanityData.value) {
+    createdSeries.value.push({
+      name: item.title,
+      description: item.description,
+      type: item._type,
+      image: builder.image(item.coverImage.asset._ref).auto("format").url(),
+      date: item._createdAt,
+      genres: item.tags,
+      id: item.myAnimeListId,
+    });
+  }
+
+  for (let item of updatedSanityData.value) {
+    updatedSeries.value.push({
+      name: item.title,
+      description: item.description,
+      type: item._type,
+      image: builder.image(item.coverImage.asset._ref).auto("format").url(),
+      date: item._updatedAt,
+      genres: item.tags,
+      id: item.myAnimeListId,
+    });
+  }
+});
 
 // Öne çıkan mangalar
 let highlights = ref([]);
@@ -190,7 +194,7 @@ useSeoMeta({
 });
 </script>
 <template>
-  <main>
+  <main v-if="createdSeries.length && updatedSeries.length">
     <br v-if="!isMobileOrTablet" />
     <HeroCard :itemData="highlights" />
     <div class="divider" />
@@ -241,6 +245,9 @@ useSeoMeta({
     <br />
     <HeroCard :itemData="randomManga" />
   </main>
+  <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
+      <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />
+    </div>
 </template>
 
 <style scoped>
