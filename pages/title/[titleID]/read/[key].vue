@@ -6,7 +6,18 @@ const route = useRoute();
 const { isMobileOrTablet } = useDevice();
 const builder = imageUrlBuilder(useSanity().config);
 
-const query = groq`*[myAnimeListId == ${route.params.titleID}]`;
+const query = groq`*[myAnimeListId == ${route.params.titleID}] {
+  ...,
+  chapters[] {
+    ...,
+    source-> {
+      _id,
+      name,
+      url,
+      description
+    }
+  }
+}`;
 const { data: preSanityData } = useSanityQuery(query);
 
 const sanityData = ref([]);
@@ -26,7 +37,7 @@ const handleChapterChange = (event) => {
 };
 
 const getCurrentScanChapters = () => {
-  return sanityData.value[0]['chapters'].filter(chap => chap.source === chapter.value.source);
+  return sanityData.value[0]['chapters'].filter(chap => chap.source._id === chapter.value.source._id);
 };
 
 async function fetchManga() {
@@ -100,12 +111,12 @@ onMounted(fetchManga);
 
 const getNextChapterKey = () => {
   const currentIndex = sanityData.value[0]['chapters'].indexOf(chapter.value);
-  const currentScan = chapter.value.source;
+  const currentScan = chapter.value.source._id;
   let nextChapter = null;
 
   // Önce aynı scan'e sahip sonraki bölümü bul
   for (let i = currentIndex + 1; i < sanityData.value[0]['chapters'].length; i++) {
-    if (sanityData.value[0]['chapters'][i].source === currentScan) {
+    if (sanityData.value[0]['chapters'][i].source._id === currentScan) {
       nextChapter = sanityData.value[0]['chapters'][i];
       break;
     }
@@ -124,12 +135,12 @@ const getNextChapterKey = () => {
 
 const getPreviousChapterKey = () => {
   const currentIndex = sanityData.value[0]['chapters'].indexOf(chapter.value);
-  const currentScan = chapter.value.source;
+  const currentScan = chapter.value.source._id;
   let previousChapter = null;
 
   // Önce aynı scan'e sahip önceki bölümü bul
   for (let i = currentIndex - 1; i >= 0; i--) {
-    if (sanityData.value[0]['chapters'][i].source === currentScan) {
+    if (sanityData.value[0]['chapters'][i].source._id === currentScan) {
       previousChapter = sanityData.value[0]['chapters'][i];
       break;
     }
@@ -188,7 +199,7 @@ const getPreviousChapterKey = () => {
       </article>
       <article class="prose max-w-none mt-5 flex flex-row">
         <h3 class="text-lg mt-3">
-          Bu bölüm {{ data.scans[chapter.source] }} tarafından çevrilmiştir
+          Bu bölüm <NuxtLink :to="`/scan/${chapter.source._id}`">{{ chapter.source.name }}</NuxtLink> tarafından çevrilmiştir
         </h3>
         <span class="grow" />
         <select v-model="selectedChapterKey" @change="handleChapterChange" class="select select-bordered">
@@ -263,7 +274,7 @@ const getPreviousChapterKey = () => {
       <div class="divider" />
       <article class="prose max-w-none mb-5">
         <h3 class="text-lg">
-          Bu bölüm {{ data.scans[chapter.source] }} tarafından çevrilmiştir
+          Bu bölüm <NuxtLink :to="`/scan/${chapter.source._id}`">{{ chapter.source.name }}</NuxtLink> tarafından çevrilmiştir
         </h3>
       </article>
       <span class="flex flex-row">
