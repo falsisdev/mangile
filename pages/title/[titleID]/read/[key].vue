@@ -186,22 +186,22 @@ const getPreviousChapterKey = () => {
           </NuxtLink>
           <NuxtLink
             :to="getPreviousChapterKey() ? `/title/${route.params.titleID}/read/${getPreviousChapterKey()}` : ''"
-            :class="`btn btn-ghost ${!getPreviousChapterKey() ? 'btn-disabled' : ''}`"
-            ><Icon name="material-symbols:arrow-back" /> Önceki Bölüm</NuxtLink
+            :class="`btn ${!isMobileOrTablet ? 'btn-ghost' : 'btn-neutral'} mx-1 ${!getPreviousChapterKey() ? 'btn-disabled' : ''}`"
+            ><Icon name="material-symbols:arrow-back" /> {{ !isMobileOrTablet ? 'Önceki Bölüm' : '' }}</NuxtLink
           >
           <span class="grow" />
           <NuxtLink
             :to="getNextChapterKey() ? `/title/${route.params.titleID}/read/${getNextChapterKey()}` : ''"
-            :class="`btn btn-ghost ${!getNextChapterKey() ? 'btn-disabled' : ''}`"
-            >Sonraki Bölüm <Icon name="material-symbols:arrow-forward"
+            :class="`btn ${!isMobileOrTablet ? 'btn-ghost' : 'btn-neutral'} mx-1 ${!getNextChapterKey() ? 'btn-disabled' : ''}`"
+            >{{ !isMobileOrTablet ? 'Sonraki Bölüm' : '' }} <Icon name="material-symbols:arrow-forward"
           /></NuxtLink>
         </span>
       </article>
-      <article class="prose max-w-none mt-5 flex flex-row">
+      <article class="prose max-w-none mt-5 lg:flex lg:flex-row">
         <h3 class="text-lg mt-3">
           Bu bölüm <NuxtLink :to="`/scan/${chapter.source._id}`">{{ chapter.source.name }}</NuxtLink> tarafından çevrilmiştir
         </h3>
-        <span class="grow" />
+        <span v-if="!isMobileOrTablet" class="grow" />
         <select v-model="selectedChapterKey" @change="handleChapterChange" class="select select-bordered">
           <option v-for="chap in getCurrentScanChapters()" :key="chap._key" :value="chap._key">
             {{ chap.chapterNumber }} - {{ chap.title }}
@@ -286,14 +286,14 @@ const getPreviousChapterKey = () => {
         </NuxtLink>
         <NuxtLink
           :to="getPreviousChapterKey() ? `/title/${route.params.titleID}/read/${getPreviousChapterKey()}` : ''"
-          :class="`btn btn-ghost ${!getPreviousChapterKey() ? 'btn-disabled' : ''}`"
-          ><Icon name="material-symbols:arrow-back" /> Önceki Bölüm</NuxtLink
+          :class="`btn ${!isMobileOrTablet ? 'btn-ghost' : 'btn-neutral'} mx-1 ${!getPreviousChapterKey() ? 'btn-disabled' : ''}`"
+          ><Icon name="material-symbols:arrow-back" /> {{ !isMobileOrTablet ? 'Önceki Bölüm' : '' }}</NuxtLink
         >
         <span class="grow" />
         <NuxtLink
           :to="getNextChapterKey() ? `/title/${route.params.titleID}/read/${getNextChapterKey()}` : ''"
-          :class="`btn btn-ghost ${!getNextChapterKey() ? 'btn-disabled' : ''}`"
-          >Sonraki Bölüm <Icon name="material-symbols:arrow-forward"
+          :class="`btn ${!isMobileOrTablet ? 'btn-ghost' : 'btn-neutral'} mx-1 ${!getNextChapterKey() ? 'btn-disabled' : ''}`"
+          >{{ !isMobileOrTablet ? 'Sonraki Bölüm' : '' }} <Icon name="material-symbols:arrow-forward"
         /></NuxtLink>
       </span>
     </div>
