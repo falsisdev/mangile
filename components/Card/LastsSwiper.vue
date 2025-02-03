@@ -20,14 +20,14 @@ onMounted(() => {
 <template>
   <swiper
     :spaceBetween="isMobileOrTablet ? 0 : 20"
-    :slidesPerView="isMobileOrTablet ? 1 : 3"
+    :slidesPerView="isMobileOrTablet ? 1 : 4"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
-      ><div class="card card-side w-96 lg:m-0 m-5 bg-base-100 rounded-lg">
-        <figure class="h-72 w-56">
-          <img class="w-full h-full rounded" :src="item.image" />
+      ><div class="card w-96 lg:m-0 m-5 bg-base-100 rounded-lg">
+        <figure class="h-56 w-72">
+          <img class="w-full rounded" :src="item.image" />
         </figure>
-        <div class="card-body h-72 w-64 shadow-xl">
+        <div class="card-body h-72 w-72 shadow-xl">
           <span class="flex flex-col w-full overflow-hidden relative">
             <h2 class="card-title whitespace-nowrap overflow-hidden">
               <b id="marquee-text" class="inline-block">
