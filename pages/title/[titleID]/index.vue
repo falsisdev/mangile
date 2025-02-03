@@ -411,8 +411,34 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                 }`
               }}
             </span>
-            <br />
-            <span class="divider py-3" />
+            <br class="lg:mb-0 mb-2" />
+            <span v-if="isMobileOrTablet" class="flex justify-center">
+              <span v-if="Boolean(user)">
+                <button @click="setFavorite()" class="btn btn-sm btn-primary">
+                  <Icon
+                    name="material-symbols:award-star"
+                    class="w-5 h-5 -mr-1"
+                  />
+                  <span
+                    v-if="
+                      userData.customData.userFavoriteTitle !==
+                      route.params.titleID
+                    "
+                    class="mb-[0.5px]"
+                    >Favorin Olarak Seç</span
+                  >
+                  <span
+                    v-if="
+                      userData.customData.userFavoriteTitle ==
+                      route.params.titleID
+                    "
+                    class="mb-[0.5px]"
+                    >Favori Seçimini Kaldır</span
+                  >
+                </button>
+              </span>
+            </span>
+            <span class="divider py-3 -mt-0" />
             <span v-if="sanityData != String([])" class="text-sm lg:text-md">{{
               sanityData[0].description
             }}</span>
@@ -664,7 +690,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       >
         <div class="stats">
           <span class="flex flex-col">
-            <span class="ml-1">
+            <span v-if="!isMobileOrTablet" class="ml-1">
               <span v-if="Boolean(user)">
                 <button @click="setFavorite()" class="btn btn-sm btn-ghost">
                   <Icon
