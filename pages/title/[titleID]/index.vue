@@ -576,8 +576,8 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                                 class="h-5 w-5 mr-1"
                               />
                               {{ ch.title }}
+                             <NuxtLink :to="`/scan/${ch.source._id}`"><b class="ml-1">({{ ch.source.name }})</b> </NuxtLink>
                             </NuxtLink>
-                            <b class="ml-1">({{ ch.source }})</b>
                           </span>
                         </span>
                       </span>
