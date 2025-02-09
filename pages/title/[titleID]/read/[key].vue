@@ -1,5 +1,4 @@
 <script setup>
-import { data } from "@/assets/data.ts";
 import imageUrlBuilder from "@sanity/image-url";
 
 const route = useRoute();
@@ -52,6 +51,27 @@ async function fetchManga() {
   }
 }
 
+const transformLinksToImages = (content) => {
+  return content.map(block => {
+    if (block._type === 'block' && block.children) {
+      block.children = block.children.map(child => {
+        if (child._type === 'span' && child.marks.length > 0) {
+          const linkMark = block.markDefs.find(mark => mark._key === child.marks[0]);
+          if (linkMark && linkMark._type === 'link') {
+            return {
+              _type: 'image',
+              src: linkMark.href,
+              alt: child.text
+            };
+          }
+        }
+        return child;
+      });
+    }
+    return block;
+  });
+};
+
 watchEffect(() => {
   if (preSanityData.value) {
     const fetchedData = toRaw(preSanityData.value);
@@ -67,6 +87,9 @@ watchEffect(() => {
             builder.image(image.asset._ref).auto("format").url()
           );
         }
+      }
+      if (sanityData.value[0]._type == "lightNovel") {
+        chapter.value.content = transformLinksToImages(chapter.value.content);
       }
     }
   }
@@ -213,7 +236,17 @@ const getPreviousChapterKey = () => {
         v-if="sanityData[0]._type == 'lightNovel'"
         class="prose max-w-none lg:mb-0 mb-20"
       >
-        <SanityContent :blocks="chapter.content"></SanityContent>
+        <SanityContent :blocks="chapter.content" v-slot="{ block }">
+          <template v-if="block._type === 'image'">
+            <NuxtImg :src="block.src" :alt="block.alt" class="w-full h-full" v-slot="{ src, isLoaded, imgAttrs }">
+              <img v-if="isLoaded" :src="src" v-bind="imgAttrs" />
+              <div v-else class="skeleton bg-gray-300 dark:bg-gray-700 w-full h-full"></div>
+            </NuxtImg>
+          </template>
+          <template v-else>
+            <component :is="block._type" v-bind="block" />
+          </template>
+        </SanityContent>
       </article>
       <div v-else-if="sanityData[0]._type == 'manga' && manga.type != 'Manhwa'">
         <div
@@ -243,7 +276,21 @@ const getPreviousChapterKey = () => {
         >
           <swiper-slide v-for="item of [...new Set(images)]" v-bind:key="item">
             <div class="swiper-zoom-container">
-              <img :src="item" class="w-full h-full" />
+              <NuxtImg
+                :src="item"
+                class="w-full h-full"
+                v-slot="{ src, isLoaded, imgAttrs}"
+              >
+                <img
+                v-if="isLoaded"
+                  :src="src"
+                  v-bind="imgAttrs"
+                />
+
+                <div
+                  v-else
+                  class="skeleton bg-gray-300 dark:bg-gray-700 w-full h-full"></div>
+              </NuxtImg>
             </div>
           </swiper-slide>
         </swiper>
@@ -268,7 +315,10 @@ const getPreviousChapterKey = () => {
           :key="item"
           class="flex justify-center"
         >
-          <img :src="item" />
+          <NuxtImg :src="item" class="w-full h-full" v-slot="{ src, isLoaded, imgAttrs }">
+            <img v-if="isLoaded" :src="src" v-bind="imgAttrs" />
+            <div v-else class="skeleton bg-gray-300 dark:bg-gray-700 w-full h-full"></div>
+          </NuxtImg>
         </div>
       </div>
       <div class="divider" />

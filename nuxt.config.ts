@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     "@logto/nuxt",
     "@nuxtjs/sanity",
     "@nuxt/content",
+    '@nuxt/image',
     "nuxt-disqus",
   ],
   sanity: {

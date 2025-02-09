@@ -261,7 +261,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                 class="indicator-item indicator-center indicator-bottom badge badge-base-100 mb-2 rounded-b-none"
                 >{{ manga.demographics[0].name }}</span
               >
-              <img
+              <NuxtImg
                 class="rounded shadow-md w-72 h-auto"
                 :src="image.jpg.large_image_url"
               />
