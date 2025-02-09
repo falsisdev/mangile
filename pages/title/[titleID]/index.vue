@@ -569,15 +569,17 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                           <span v-else>
                             <NuxtLink
                               :to="`/title/${route.params.titleID}/read/${ch._key}`"
-                              class="no-underline flex flex-row"
+                              class="no-underline flex flex-col"
                             >
+                            <span class="flex flex-row">
                               <Icon
                                 name="mdi:file-document-arrow-right"
                                 class="h-5 w-5 mr-1"
                               />
                               {{ ch.title }}
+                            </span>
+                             <NuxtLink :to="`/scan/${ch.source._id}`"><b class="ml-1">({{ ch.source.name }})</b> </NuxtLink>
                             </NuxtLink>
-                            <b class="ml-1">({{ ch.source }})</b>
                           </span>
                         </span>
                       </span>
