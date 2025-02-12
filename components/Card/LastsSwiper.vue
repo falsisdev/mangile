@@ -20,14 +20,15 @@ onMounted(() => {
 <template>
   <swiper
     :spaceBetween="isMobileOrTablet ? 0 : 20"
-    :slidesPerView="isMobileOrTablet ? 1 : 4"
+    :slidesPerView="isMobileOrTablet ? 2 : 4"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
-      ><div class="card lg:w-96 w-full lg:m-0 m-5 bg-base-100 rounded-lg">
-        <figure class="lg:h-56 lg:w-72 w-96 h-64">
+      >
+      <div v-if="!isMobileOrTablet" class="card w-96 bg-base-100 rounded-lg">
+        <figure class="h-56 w-72">
           <img class="w-full rounded" :src="item.image" />
         </figure>
-        <div class="card-body h-72 lg:w-72 w-96 shadow-xl">
+        <div class="card-body h-72 w-72 shadow-xl">
           <span class="flex flex-col w-full overflow-hidden relative">
             <h2 class="card-title whitespace-nowrap overflow-hidden">
               <b id="marquee-text" class="inline-block">
@@ -53,7 +54,7 @@ onMounted(() => {
           </p>
           <div class="flex justify-end">
             <NuxtLink
-              class="btn btn-primary lg:btn-md btn-sm flex flex-row"
+              class="btn btn-primary btn-md flex flex-row"
               :href="`/title/${item.id}`"
               ><Icon
                 name="material-symbols:visibility-rounded"
@@ -63,6 +64,35 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      <NuxtLink :to="`/title/${item.id}`" v-else class="card card-compact image-full w-48 h-72 m-5 bg-base-100">
+        <figure>
+          <img class="w-full" :src="item.image" />
+        </figure>
+        <div class="card-body h-72 w-48 place-self-end flex-col-reverse">
+          <span class="flex flex-col w-full overflow-hidden relative">
+            <h2 class="card-title whitespace-nowrap overflow-hidden text-lg font-extrabold">
+              <b id="marquee-text" class="inline-block">
+                {{ item.name }}
+              </b>
+            </h2>
+            <span class="text-xs -mt-2 opacity-75">{{
+              item["type"]
+                .replaceAll("manga", "Manga")
+                .replaceAll("lightNovel", "Hafif Roman")
+            }}</span>
+          </span>
+          <span class="overflow-auto -mt-1">
+            <span class="flex flex-row flex-wrap">
+              <span
+                class="badge badge-secondary badge-sm tooltip tooltip-accent"
+                >{{
+                  `${new Date(item.date).getDate()} ${new Date(item.date).toLocaleString("default", { month: "long" })} ${new Date(item.date).getFullYear()}, ${new Date(item.date).getHours().toString().padStart(2, "0")}.${new Date(item.date).getMinutes().toString().padStart(2, "0")}`
+                }}</span
+              >
+            </span>
+          </span>
+        </div>
+      </NuxtLink>
     </swiper-slide>
     <br />
   </swiper>

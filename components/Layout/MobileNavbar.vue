@@ -34,9 +34,9 @@ const save = () => {
   <main>
     <div class="btm-nav w-screen bg-base-100 z-50 drop-shadow-lg">
       <div>
-        <div class="mb-24 w-full z-40">
+        <div class="mb-20 w-full z-40">
           <span
-            class="w-full input input-sm rounded-none flex items-center !outline-none !border-0"
+            class="w-full input input-xs rounded-none flex items-center !outline-none !border-0"
           >
             <input
               id="searchbar"
@@ -51,32 +51,32 @@ const save = () => {
         <div class="btm-nav btm-nav-md rounded-none z-50">
           <button>
             <NuxtLink to="/" class="flex flex-col items-center">
-              <Icon name="material-symbols:home" class="h-5 w-5" />
+              <Icon name="material-symbols:home" class="h-4 w-4" />
             </NuxtLink>
           </button>
           <button>
             <NuxtLink to="/search" class="flex flex-col items-center">
-              <Icon name="material-symbols:explore" class="h-5 w-5" />
+              <Icon name="material-symbols:explore" class="h-4 w-4" />
             </NuxtLink>
           </button>
-          <button class="dropdown dropdown-hover dropdown-top dropdown-end">
+          <button class="dropdown dropdown-top dropdown-start">
             <NuxtLink class="flex flex-col items-center">
-              <Icon name="material-symbols:database" class="h-5 w-5" />
+              <Icon name="material-symbols:database" class="h-4 w-4" />
             </NuxtLink>
             <ul
-              class="dropdown-content z-50 menu xl:menu-horizontal lg:min-w-max bg-base-100 border border-base-200 rounded-box"
+              class="dropdown-content z-50 menu bg-base-100 border border-base-200 rounded-box w-56 mb-5"
             >
               <li>
-                <span class="hover:bg-base-100 text-sm/6"
-                  ><Icon name="material-symbols:update" class="w-5 h-5" />
+                <span class="hover:bg-base-100 text-xs"
+                  ><Icon name="material-symbols:update" class="w-4 h-4" />
                   Güncellemeler</span
                 >
                 <ul>
                   <li>
-                    <a class="text-sm/6"
+                    <a class="text-xs"
                       ><Icon
                         name="material-symbols:add-notes"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                       />Güncelleme Notları</a
                     >
                   </li>
@@ -84,40 +84,39 @@ const save = () => {
                     <a
                       href="https://github.com/falsisdev/mangile"
                       target="_blank"
-                      class="text-sm/6"
-                      ><Icon name="simple-icons:github" class="h-5 w-5" />GitHub
+                      class="text-xs"
+                      ><Icon name="simple-icons:github" class="h-4 w-4" />GitHub
                       Deposu</a
                     >
                   </li>
                 </ul>
               </li>
               <li>
-                <span class="hover:bg-base-100 text-sm/6">
+                <span class="hover:bg-base-100 text-xs">
                   <Icon
                     name="material-symbols:manage-accounts"
-                    class="h-5 w-5" /><span class="flex flex-row"
+                    class="h-4 w-4" /><span class="flex flex-row"
                     >Kullanıcı</span
                   ><span
-                    class="tooltip tooltip-secondary badge badge-secondary"
-                    data-tip="Kullanıcı girişi gerektiriyor!"
-                    ><Icon name="material-symbols:person-alert" /></span
+                    class="badge badge-warning badge-sm text-xs"
+                    ><Icon name="material-symbols:person-alert" class="w-3 h-3 mt-[2px] mr-1"/> Giriş gerekli</span
                 ></span>
                 <ul>
                   <li>
                     <NuxtLink
                       :to="Boolean(user) ? `/user/${user.sub}/library` : ''"
-                      class="text-sm/6"
+                      class="text-xs"
                       ><Icon
                         name="material-symbols:local-library"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                       />Kütüphane</NuxtLink
                     >
                   </li>
                   <li>
-                    <a class="text-sm/6"
+                    <a class="text-xs"
                       ><Icon
                         name="material-symbols:history"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                       />Okuma Geçmişi</a
                     >
                   </li>
@@ -129,65 +128,65 @@ const save = () => {
             <NuxtLink class="flex flex-col items-center">
               <Icon
                 name="material-symbols:supervised-user-circle"
-                class="h-5 w-5"
+                class="h-4 w-4"
               />
             </NuxtLink>
             <ul
-              class="dropdown-content z-50 menu xl:menu-horizontal lg:min-w-max bg-base-100 border border-base-200 rounded-box"
+              class="dropdown-content z-50 menu bg-base-100 border border-base-200 rounded-box w-56 mb-5"
             >
               <li>
-                <span class="hover:bg-base-100 text-sm/6"
+                <span class="hover:bg-base-100 text-xs"
                   ><Icon name="material-symbols:info" class="w-5 h-5" />
                   Bilgilendirme</span
                 >
                 <ul>
                   <li>
-                    <NuxtLink to="/articles/about" class="text-sm/6"
+                    <NuxtLink to="/articles/about" class="text-xs"
                       ><Icon
                         name="material-symbols:person-pin-rounded"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                       />Hakkımızda</NuxtLink
                     >
                   </li>
                   <li>
-                    <NuxtLink to="mailto: falsis@proton.me" class="text-sm/6"
+                    <NuxtLink to="mailto: falsis@proton.me" class="text-xs"
                       ><Icon
                         name="material-symbols:phone-enabled"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                       />İletişim</NuxtLink
                     >
                   </li>
                 </ul>
               </li>
               <li>
-                <span class="hover:bg-base-100 text-sm/6"
+                <span class="hover:bg-base-100 text-xs"
                   ><Icon
                     name="material-symbols:approval-delegation"
-                    class="h-5 w-5"
+                    class="h-4 w-4"
                   />Yasal</span
                 >
                 <ul>
                   <li>
-                    <NuxtLink to="" class="text-sm/6"
+                    <NuxtLink to="" class="text-xs"
                       ><Icon
                         name="material-symbols:privacy-tip"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                       />Gizlilik Prensipleri</NuxtLink
                     >
                   </li>
                   <li>
-                    <NuxtLink to="" class="text-sm/6"
+                    <NuxtLink to="" class="text-xs"
                       ><Icon
                         name="material-symbols:verified-user"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                       />Güvenlik İpuçları</NuxtLink
                     >
                   </li>
                   <li>
-                    <NuxtLink to="/articles/terms" class="text-sm/6"
+                    <NuxtLink to="/articles/terms" class="text-xs"
                       ><Icon
                         name="material-symbols:contract"
-                        class="h-5 w-5"
+                        class="h-4 w-4"
                       />Kullanıcı Sözleşmesi</NuxtLink
                     >
                   </li>
@@ -197,7 +196,7 @@ const save = () => {
           </button>
           <button>
             <a onclick="settings.showModal()"
-              ><Icon name="material-symbols:settings" class="h-5 w-5" />
+              ><Icon name="material-symbols:settings" class="h-4 w-4 mt-2" />
             </a>
           </button>
           <button
@@ -206,9 +205,9 @@ const save = () => {
           >
             <label
               tabindex="0"
-              class="btn btn-ghost btn-circle avatar btn-md mx-2"
+              class="btn btn-ghost btn-circle avatar btn-xs mt-[5px]"
             >
-              <div class="w-7 rounded-full">
+              <div class="w-5 h-5 rounded-full">
                 <img
                   :src="
                     user.picture ||
@@ -220,29 +219,29 @@ const save = () => {
             </label>
             <ul
               tabindex="0"
-              class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52 z-50"
+              class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-56 z-50 mb-5"
             >
               <li>
                 <b>{{ user.name ? user.name : user.username }}</b>
               </li>
               <li>
-                <NuxtLink :to="`/user/${user.sub}`">
+                <NuxtLink :to="`/user/${user.sub}`" class="text-xs">
                   <Icon name="material-symbols:person" /> Profil</NuxtLink
                 >
               </li>
               <li>
-                <NuxtLink :to="`/user/${user.sub}/library`">
+                <NuxtLink :to="`/user/${user.sub}/library`" class="text-xs">
                   <Icon name="material-symbols:library-books" />
                   Kütüphane</NuxtLink
                 >
               </li>
               <li>
-                <a onclick="listcreate.showModal()">
+                <a onclick="listcreate.showModal()" class="text-xs">
                   <Icon name="material-symbols:list-alt-add" /> Liste Oluştur
                 </a>
               </li>
               <li>
-                <a href="/sign-out">
+                <a href="/sign-out" class="text-xs">
                   <Icon name="material-symbols:logout" /> Çıkış Yap
                 </a>
               </li>
@@ -262,21 +261,21 @@ const save = () => {
           </button>
           <button v-else>
             <a class="flex flex-col items-center" href="/sign-in">
-              <Icon name="material-symbols:login" class="w-5 h-5" />
+              <Icon name="material-symbols:login" class="w-4 h-4" />
             </a>
           </button>
           <dialog id="settings" class="modal modal-bottom sm:modal-middle">
             <div class="modal-box">
               <form method="dialog">
                 <button
-                  class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                  class="btn btn-xs btn-circle btn-ghost absolute right-4 top-4"
                 >
                   ✕
                 </button>
               </form>
-              <div>
-                <article class="prose max-w-none mb-2">
-                  <h1 class="mb-2">Ayarlar</h1>
+              <div class="text-xs">
+                <article class="prose max-w-none mb-2 text-xs">
+                  <h2 class="mb-2">Ayarlar</h2>
                   Mangile ayarlarına hoşgeldiniz. Sistemle ilgili mevcut
                   özelleştirme ve ayarlar aşağıdadır.
                 </article>
@@ -284,7 +283,7 @@ const save = () => {
                 <br />
                 <select
                   id="themeSelector"
-                  class="select select-bordered select-sm w-full max-w-xs my-2"
+                  class="select select-bordered select-xs my-2 text-xs"
                 >
                   <option disabled selected>Tema Seçin</option>
                   <option
@@ -352,8 +351,8 @@ const save = () => {
                   </div>
                 </div>
                 <div class="modal-action m-2">
-                  <label for="settingsModal" class="btn" @click="save()"
-                    >Değişiklikleri Kaydet</label
+                  <label for="settingsModal" class="btn btn-primary btn-sm text-xs" @click="save()"
+                    >Kaydet</label
                   >
                 </div>
               </div>

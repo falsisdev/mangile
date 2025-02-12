@@ -22,10 +22,11 @@ onMounted(() => {
 <template>
   <swiper
     :spaceBetween="isMobileOrTablet ? 0 : 20"
-    :slidesPerView="isMobileOrTablet ? 1 : 4"
+    :slidesPerView="isMobileOrTablet ? 2 : 4"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
-      ><div class="card lg:w-72 lg:m-0 m-5 bg-base-100 rounded-lg">
+      >
+      <div v-if="!isMobileOrTablet" class="card w-72 bg-base-100 rounded-lg">
         <figure class="w-full h-56">
           <img class="w-full rounded shadow-md" :src="item.image" />
         </figure>
@@ -38,7 +39,7 @@ onMounted(() => {
             </h2>
             <span class="text-xs -mt-1">{{ item.type }}</span>
           </span>
-          <p class="text-sm lg:text-md">
+          <p class="text-sm">
             {{
               item.description ? item.description.substring(0, 75) + "..." : ""
             }}
@@ -50,7 +51,7 @@ onMounted(() => {
               }`"
             >
               <NuxtLink
-                class="btn btn-primary lg:btn-md btn-sm flex flex-row"
+                class="btn btn-primary btn-md flex flex-row"
                 :href="`/title/${item.id}`"
                 ><Icon
                   name="material-symbols:visibility-rounded"
@@ -59,7 +60,7 @@ onMounted(() => {
               >
               <div
                 tabindex="0"
-                class="dropdown-content card lg:card-side card-compact bg-base-200 lg:w-[700px] z-[1] shadow"
+                class="dropdown-content card card-side card-compact bg-base-200 w-[700px] z-[1] shadow"
               >
                 <figure class="w-full">
                   <img
@@ -125,6 +126,25 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      <NuxtLink :to="`/title/${item.id}`" v-else class="card card-compact image-full w-48 h-72 m-5 bg-base-100">
+        <figure>
+          <img class="w-full" :src="item.image" />
+        </figure>
+        <div class="card-body h-72 w-48 place-self-end flex-col-reverse">
+          <span class="flex flex-col w-full overflow-hidden relative">
+            <h2 class="card-title whitespace-nowrap overflow-hidden text-lg font-extrabold">
+              <b id="marquee-text" class="inline-block">
+                {{ item.name }}
+              </b>
+            </h2>
+            <span class="text-xs -mt-2 opacity-75">{{
+              item["type"]
+                .replaceAll("manga", "Manga")
+                .replaceAll("lightNovel", "Hafif Roman")
+            }}</span>
+          </span>
+        </div>
+      </NuxtLink>
     </swiper-slide>
     <br />
   </swiper>

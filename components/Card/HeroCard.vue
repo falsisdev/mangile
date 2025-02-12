@@ -17,8 +17,10 @@ const props = defineProps({
     :modules="[SwiperAutoplay]"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
-      ><div
-        class="hero bg-base-200 lg:h-auto h-[30rem]"
+      >
+      <NuxtLink :to="isMobileOrTablet ? `/title/${item.id}` : ''">
+      <div
+        class="hero bg-base-200 lg:h-auto h-[25rem]"
         :style="`background-image: url(${item.image});`"
       >
         <div
@@ -32,8 +34,8 @@ const props = defineProps({
           />
           <div>
             <span class="flex flex-col">
-              <h1 class="lg:text-5xl text-3xl font-bold">{{ item.name }}</h1>
-              <span class="text-xs -mt-1">{{ item.type }}</span>
+              <h1 class="lg:text-5xl text-xl font-extrabold">{{ item.name }}</h1>
+              <span class="text-xs -mt-1 opacity-75">{{ item.type }}</span>
             </span>
             <span class="flex flex-row flex-wrap mt-5">
               <span
@@ -49,10 +51,10 @@ const props = defineProps({
                 >{{ data.malgenres[String(genre.name)] }}</span
               >
             </span>
-            <p class="max-h-48 overflow-auto lg:my-2 my-3 text-sm lg:text-md">
+            <p class="lg:max-h-48 max-h-24 overflow-auto lg:my-2 my-3 text-xs lg:text-sm">
               {{ item.description }}
             </p>
-            <div class="dropdown dropdown-hover dropdown-top">
+            <div v-if="!isMobileOrTablet" class="dropdown dropdown-hover dropdown-top">
               <NuxtLink
                 class="btn btn-primary btn-sm lg:btn-md"
                 :href="`/title/${item.id}`"
@@ -127,6 +129,7 @@ const props = defineProps({
           </div>
         </div>
       </div>
+      </NuxtLink>
     </swiper-slide>
   </swiper>
 </template>

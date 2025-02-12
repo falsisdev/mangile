@@ -199,7 +199,8 @@ useSeoMeta({
     <HeroCard :itemData="highlights" />
     <div class="divider" />
     <article class="prose max-w-none px-5 flex flex-row -mb-7">
-      <h1>Son Güncellenen Seriler</h1>
+      <h1 v-if="!isMobileOrTablet">Son Güncellenen Seriler</h1>
+      <h2 v-else class="mt-2">Son Güncellenenler</h2>
       <span class="grow" />
       <h1>
         <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
@@ -210,7 +211,7 @@ useSeoMeta({
     <div class="divider" />
     <article class="prose max-w-none px-5 flex flex-row -mb-7">
       <h1 v-if="!isMobileOrTablet">En Yüksek Puanlı Seriler</h1>
-      <h1 v-if="isMobileOrTablet">En Yüksek Puan</h1>
+      <h2 v-else class="mt-2">En Yüksek Puan</h2>
       <span class="grow" />
       <h1>
         <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
@@ -220,7 +221,8 @@ useSeoMeta({
     <FreeSwiper :itemData="topMangas" />
     <div class="divider" />
     <article class="prose max-w-none px-5 pt-5 flex flex-row -mb-7">
-      <h1>Yayınlanıyor</h1>
+      <h1 v-if="!isMobileOrTablet">Yayınlanıyor</h1>
+      <h2 v-else class="mt-2">Yayınlanıyor</h2>
       <span class="grow" />
       <h1>
         <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
@@ -230,7 +232,8 @@ useSeoMeta({
     <AutoSwiper :itemData="pubs" />
     <div class="divider" />
     <article class="prose max-w-none px-5 flex flex-row -mb-7">
-      <h1>Son Eklenen Seriler</h1>
+      <h1 v-if="!isMobileOrTablet">Son Eklenen Seriler</h1>
+      <h2 v-else class="mt-2">Son Eklenenler</h2>
       <span class="grow" />
       <h1>
         <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
@@ -240,16 +243,16 @@ useSeoMeta({
     <LastsSwiper :itemData="createdSeries" />
     <div class="divider" />
     <article class="prose max-w-none px-5">
-      <h1 class="flex flex-row">Rastgele Seri</h1>
+      <h1 v-if="!isMobileOrTablet" class="flex flex-row">Rastgele Seri</h1>
+      <h2 v-else class="mt-2">Rastgele Seri</h2>
     </article>
     <br />
     <HeroCard :itemData="randomManga" />
   </main>
   <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
-      <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />
+      <Icon name="mingcute:loading-line" class="animate-spin w-full lg:h-32 h-16" />
     </div>
 </template>
-
 <style scoped>
 .swiper {
   width: 100%;
