@@ -1,6 +1,8 @@
 <script setup>
 import { data } from "@/assets/data.ts";
 
+const { isMobileOrTablet } = useDevice();
+
 const props = defineProps({
   itemData: Object,
 });
@@ -18,7 +20,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="card lg:w-[275px] bg-base-100 rounded-lg mx-2 mb-2">
+  <div v-if="!isMobileOrTablet" class="card lg:w-[275px] bg-base-100 rounded-lg mx-2 mb-2">
     <figure class="w-full h-56">
       <img
         class="w-full rounded shadow-md"
@@ -32,7 +34,9 @@ onMounted(() => {
             {{ itemData.title }}
           </b>
         </h2>
-        <span class="text-xs -mt-1">{{ itemData.type }}</span>
+        <span class="text-xs -mt-1">{{ itemData["type"]
+                .replaceAll("manga", "Manga")
+                .replaceAll("lightNovel", "Hafif Roman") }}</span>
       </span>
       <p>
         <span class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1">{{
@@ -57,6 +61,25 @@ onMounted(() => {
       </div>
     </div>
   </div>
+  <NuxtLink v-else :to="`/title/${itemData.mal_id}`" class="card card-compact image-full w-[170px] h-72 mx-2 my-1 bg-base-100">
+        <figure>
+          <img class="w-full" :src="itemData.images.jpg.large_image_url" />
+        </figure>
+        <div class="card-body h-72 w-[170px] place-self-end flex-col-reverse">
+          <span class="flex flex-col w-full overflow-hidden relative">
+            <h2 class="card-title whitespace-nowrap overflow-hidden text-lg font-extrabold">
+              <b id="marquee-text" class="inline-block">
+                {{ itemData.title }}
+              </b>
+            </h2>
+            <span class="text-xs -mt-2 opacity-75">{{
+              itemData["type"]
+                .replaceAll("manga", "Manga")
+                .replaceAll("lightNovel", "Hafif Roman")
+            }}</span>
+          </span>
+        </div>
+      </NuxtLink>
 </template>
 <style>
 @keyframes marquee {

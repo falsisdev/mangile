@@ -14,6 +14,8 @@ const page = ref(1);
 const searchData = ref(null);
 const pagination = ref(null);
 
+const { isMobileOrTablet } = useDevice()
+
 async function fetchData() {
   if (q.value) {
     try {
@@ -101,10 +103,10 @@ useSeoMeta({
   <main>
     <div class="flex justify-center">
       <article class="prose my-5">
-        <h1 class="text-5xl">Keşfet</h1>
+        <h1 class="lg:text-5xl text-2xl">Keşfet</h1>
       </article>
     </div>
-    <label class="input input-bordered flex items-center gap-2 mx-5">
+    <label class="input lg:input-md input-sm input-bordered flex items-center gap-2 mx-5">
       <input
         id="searchbar"
         v-model="q"
@@ -114,8 +116,8 @@ useSeoMeta({
       />
       <span class="flex">
         <span class="dropdown dropdown-end dropdown-bottom">
-          <button class="btn btn-ghost btn-xs">
-            <Icon name="material-symbols:filter-list" class="h-5 w-5" />
+          <button class="btn btn-ghost btn-sm">
+            <Icon name="material-symbols:filter-list" class="lg:h-5 lg:w-5 h-4 w-4" />
           </button>
           <ul
             tabindex="0"
@@ -191,12 +193,12 @@ useSeoMeta({
           </ul>
         </span>
         <div class="divider divider-horizontal -mx-1" />
-        <Icon name="material-symbols:search" class="h-5 w-5 ml-2 mt-1" />
+        <Icon name="material-symbols:search" class="lg:h-5 lg:w-5 h-4 w-4 ml-2 mt-2" />
       </span>
     </label>
     <div v-if="q">
       <article class="prose max-w-none p-5">
-        <h1>
+        <h1 v-if="!isMobileOrTablet">
           Arama Sonuçları
           <span class="flex flex-row text-sm font-normal mt-1">
             <span class="mt-[5px]">Arama Girdisi:</span>
@@ -207,6 +209,17 @@ useSeoMeta({
             </span>
           </span>
         </h1>
+        <h2 v-else>
+          Arama Sonuçları
+          <span class="flex flex-row text-xs">
+            <span>Arama Girdisi:</span>
+            <span class="badge badge-neutral badge-sm ml-1">{{ q }}</span>
+            <span class="grow" />
+            <span v-if="pagination">
+              Sayfa: {{ page }}, Öge: {{ pagination.items.count }}
+            </span>
+          </span>
+        </h2>
       </article>
       <br />
       <div class="flex flex-row flex-wrap justify-center">
@@ -226,7 +239,7 @@ useSeoMeta({
       <div
         v-if="pagination"
         role="tablist"
-        class="tabs tabs-boxed justify-center bg-transparent lg:mb-0 mb-20 flex flex-row flex-wrap"
+        class="tabs tabs-boxed lg:tab-md tabs-sm justify-center bg-transparent lg:mb-0 mb-20 flex flex-row flex-wrap"
       >
         <NuxtLink
           v-for="tab in pagination.last_visible_page"
@@ -261,18 +274,12 @@ useSeoMeta({
           <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
         </NuxtLink>
       </div>
-      <div class="flex lg:flex-row flex-col lg:flex-wrap justify-center">
+      <div class="flex flex-row flex-wrap justify-center">
         <SearchCard
           v-for="manga in searchData"
           :key="manga.mal_id"
           :itemData="manga"
-          v-slot="{ itemData }"
-        >
-          <NuxtImg :src="itemData.image_url" class="w-full h-full" v-slot="{ src, isLoaded, imgAttrs }">
-            <img v-if="isLoaded" :src="src" v-bind="imgAttrs" />
-            <div v-else class="skeleton bg-gray-300 dark:bg-gray-700 w-full h-full"></div>
-          </NuxtImg>
-        </SearchCard>
+        />
       </div>
       <div v-if="pagination" class="flex flex-row my-2">
         <NuxtLink
