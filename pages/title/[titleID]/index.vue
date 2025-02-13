@@ -230,9 +230,9 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 </script>
 <template>
   <main class="lg:grid lg:grid-cols-11">
-    <div class="lg:mx-0 mx-5 lg:col-start-1 lg:col-end-12">
+    <div v-if="!isMobileOrTablet" class="col-start-1 col-end-12">
       <div
-        v-if="warning.length > 0"
+      v-if="warning.length > 0"
         role="alert"
         class="alert alert-warning lg:text-md text-sm lg:mx-5 lg:mt-2 px-5 text-start flex"
       >
@@ -243,9 +243,24 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         >
       </div>
     </div>
+    <div v-else class="pt-2">
+    <div class="mx-4 mt-2">
+        <div
+        v-if="warning.length > 0"
+          role="alert"
+          class="alert alert-warning text-xs px-5 text-start flex"
+        >
+          <Icon name="material-symbols:warning" class="w-5 h-5 lg:-mr-2" />
+          <span
+            >UYARI: Bu seri
+            {{ [...new Set(warning)].join(", ") }} içermektedir.</span
+          >
+        </div>
+      </div>
+    </div>
     <div
       v-if="manga && manga.images && manga.images.jpg"
-      class="card lg:card-side bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12"
+      class="card lg:card-side lg:card-normal card-compact bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12"
     >
       <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5">
         <swiper
@@ -329,9 +344,9 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       </article>
       <div class="card-body lg:col-start-5 lg:col-end-12">
         <article class="prose">
-          <span v-if="manga.authors" class="card-title lg:-my-7 -mt-12 -my-10">
-            <h1 class="flex flex-col">
-              <span class="text-sm text-gray-400 flex flex-row lg:mx-1 -mb-2">
+          <span v-if="manga.authors" class="card-title lg:-my-7 -mt-10 -mb-10">
+            <h1 class="flex flex-col lg:-mb-0 -mb-1">
+              <span class="lg:text-sm mx-1 text-xs lg:opacity-100 opacity-75 text-gray-400 flex flex-row lg:mx-1 -mb-2">
                 <span
                   v-for="author of manga.authors"
                   :key="author"
@@ -353,7 +368,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               </span>
               <span class="flex flex-col relative">
                 <span
-                  class="lg:text-3xl text-xl mx-1 whitespace-nowrap overflow-hidden"
+                  class="lg:text-3xl text-2xl mx-1 whitespace-nowrap overflow-hidden"
                 >
                   <span
                     :class="`inline-block ${manga['title'].length >= 32 ? 'animate-marquee' : ''} lg:w-[35rem] w-80`"
@@ -367,7 +382,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   manga['title'].toLowerCase() !=
                   manga['title_japanese'].toLowerCase()
                 "
-                class="text-gray-400 lg:text-xl text-lg mx-1"
+                class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1"
               >
                 {{ manga.title_japanese }}
               </span>
@@ -376,7 +391,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           <span>
             <span
               v-if="manga.status"
-              class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1"
+              class="badge badge-accent badge-sm lg:badge-md mr-1"
               >{{ data["malstatus"][String(manga.status)] }}</span
             >
             <span
@@ -412,7 +427,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               }}
             </span>
             <br class="lg:mb-0 mb-2" />
-            <span v-if="isMobileOrTablet" class="flex justify-center">
+            <span v-if="isMobileOrTablet" class="flex">
               <span v-if="Boolean(user)">
                 <button @click="setFavorite()" class="btn btn-sm btn-primary">
                   <Icon
@@ -438,7 +453,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                 </button>
               </span>
             </span>
-            <span class="divider py-3 -mt-0" />
+            <span class="divider py-3 -mt-0 lg:-mb-0 -mb-1" />
             <span v-if="sanityData != String([])" class="text-sm lg:text-md">{{
               sanityData[0].description
             }}</span>
@@ -464,7 +479,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                 </div>
               </span>
             </div>
-            <span class="divider py-3" />
+            <span class="divider py-3 lg:-mt-0 -mt-4" />
             <div class="flex flex-row">
               <article class="prose">
                 <h1>Veri Tabanı</h1>
@@ -680,7 +695,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </article>
       </div>
       <div
-        v-if="
+        v-if="!isMobileOrTablet &&
           manga.score &&
           manga.scored_by &&
           manga.rank &&
@@ -781,6 +796,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </div>
       </div>
     </div>
+    <span v-if="isMobileOrTablet" class="divider -mt-1"/>
     <div
       v-if="relations[0] && manga && manga.images && manga.images.jpg"
       class="lg:col-start-1 lg:col-end-11 px-5"
@@ -839,7 +855,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           v-if="!isMobileOrTablet"
           class="divider divider-horizontal lg:ml-2"
         />
-        <span class="flex lg:flex-row flex-col flex-wrap">
+        <span class="flex flex-row flex-wrap">
           <RelationCard
             v-for="entry of relations.filter(
               (x) => x.relation == relation.relation
@@ -852,7 +868,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       </span>
     </div>
     <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
-      <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />
+      <Icon name="mingcute:loading-line" class="animate-spin w-full lg:h-32 h-16" />
     </div>
     <DisqusComments :identifier="route.fullPath" :shortname="$config.public.disqusShortname" />
     <div
@@ -862,7 +878,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       <article class="prose max-w-none px-5">
         <h1 class="flex flex-row">İlginizi çekebilir</h1>
       </article>
-      <RecommendationCard class="mt-5" :itemData="recommendations" />
+      <RecommendationCard class="my-5" :itemData="recommendations" />
     </div>
   </main>
 </template>

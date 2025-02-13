@@ -1,4 +1,6 @@
 <script setup>
+import { data } from "@/assets/data.ts";
+
 const { isMobileOrTablet } = useDevice();
 
 const props = defineProps({
@@ -19,8 +21,7 @@ onMounted(() => {
 </script>
 <template>
   <swiper
-    :spaceBetween="0"
-    :slidesPerView="isMobileOrTablet ? 1 : 4"
+    :slidesPerView="isMobileOrTablet ? 2 : 4"
     :autoplay="{
       delay: 5000,
       disableOnInteraction: false,
@@ -29,47 +30,52 @@ onMounted(() => {
     :modules="[SwiperAutoplay]"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
-      ><div
-        class="card lg:w-72 lg:m-0 mx-5 bg-base-100 rounded-lg shadow-base-300"
-      >
+      ><div v-if="!isMobileOrTablet" class="card w-72 bg-base-100 rounded-lg">
         <figure class="w-full h-56">
-          <img
-            lass="w-full rounded shadow-md"
-            :src="item.entry.images.jpg.large_image_url"
-          />
+          <img class="w-full rounded shadow-md" :src="item.entry.images.jpg.large_image_url" />
         </figure>
-        <div class="card-body h-72">
+        <div class="card-body h-72 shadow-xl">
           <span class="flex flex-col w-full overflow-hidden relative">
             <h2 class="card-title whitespace-nowrap overflow-hidden">
-              <span id="marquee-text" class="inline-block">
+              <b id="marquee-text" class="inline-block">
                 {{ item.entry.title }}
-              </span>
+              </b>
             </h2>
             <span class="text-xs -mt-1">{{ item.entry.type }}</span>
           </span>
-          <p class="max-h-32 overflow-auto my-2 text-sm lg:text-md">
-            Serinin ayrıntılarını görmek için seriyi görüntülemeniz
-            gerekmektedir.
-          </p>
-          <div class="flex justify-end">
-            <NuxtLink
-              class="btn btn-ghost lg:btn-md btn-sm flex flex-row mx-1 tooltip"
-              data-tip="MyAnimeList sayfasını görüntüle"
-              :href="item.entry.url"
-              ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
-            /></NuxtLink>
-            <NuxtLink
-              class="btn btn-primary lg:btn-md btn-sm flex flex-row tooltip"
-              data-tip="Mangile sayfasını Görüntüle"
-              :href="`/title/${item.entry.mal_id}`"
-              ><Icon
-                name="material-symbols:visibility-rounded"
-                class="h-4 w-4"
-              />Görüntüle</NuxtLink
-            >
-          </div>
-        </div>
+      <p>
+        Serinin ayrıntılarını görmek için seriyi görüntülemeniz
+        gerekmektedir.
+      </p>
+      <div class="flex justify-end">
+        <NuxtLink
+          class="btn btn-primary lg:btn-md btn-sm flex flex-row"
+          :href="`/title/${item.entry.mal_id}`"
+          ><Icon
+            name="material-symbols:visibility-rounded"
+            class="h-4 w-4"
+          />Görüntüle</NuxtLink
+        >
       </div>
+    </div>
+  </div>
+  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-compact image-full w-[200px] h-72 mx-2 my-1 bg-base-100">
+        <figure>
+          <img class="w-full" :src="item.entry.images.jpg.large_image_url" />
+        </figure>
+        <div class="card-body h-72 w-[170px] place-self-end flex-col-reverse">
+          <span class="flex flex-col w-full overflow-hidden relative">
+            <h2 class="card-title whitespace-nowrap overflow-hidden text-lg font-extrabold">
+              <b id="marquee-text" class="inline-block">
+                {{ item.entry.title }}
+              </b>
+            </h2>
+            <span class="text-xs -mt-2 opacity-75">{{
+              item.entry["type"]
+            }}</span>
+          </span>
+        </div>
+      </NuxtLink>
     </swiper-slide>
   </swiper>
 </template>

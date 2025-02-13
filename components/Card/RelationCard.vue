@@ -1,10 +1,10 @@
 <script setup>
 import { data } from "@/assets/data.ts";
+
 const { isMobileOrTablet } = useDevice();
 
 const props = defineProps({
   itemData: Object,
-  index: Number,
 });
 
 onMounted(() => {
@@ -20,127 +20,66 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div
-    :class="`card lg:card-side lg:w-lg bg-base-100 lg:rounded-lg lg:mx-2 mb-2 shadow-lg shadow-base-300 ${
-      isMobileOrTablet ? 'image-full' : ''
-    }`"
-  >
-    <figure class="lg:w-48 w-full h-64">
+  <div v-if="!isMobileOrTablet" class="card card-side w-lg bg-base-100 rounded-lg mx-2 mb-2">
+    <figure class="w-48 h-64">
       <img
-        class="lg:h-full lg:w-48 w-full rounded shadow-md"
+        class="w-48 h-full rounded shadow-md"
         :src="itemData.images.jpg.large_image_url"
       />
     </figure>
-    <div class="card-body h-64 lg:w-96 w-80">
+    <div class="card-body h-64 w-96 shadow-xl">
       <span class="flex flex-col overflow-hidden relative">
         <h2 class="card-title whitespace-nowrap overflow-hidden">
-          <span id="marquee-text" class="inline-block">
+          <b id="marquee-text" class="inline-block">
             {{ itemData.title }}
-          </span>
+          </b>
         </h2>
-        <span class="text-xs -mt-1">{{ itemData.type }}</span>
+        <span class="text-xs -mt-1">{{ itemData["type"]
+                .replaceAll("manga", "Manga")
+                .replaceAll("lightNovel", "Hafif Roman") }}</span>
       </span>
       <p>
-        <span class="badge badge-accent gap-2 mr-1">{{
+        <span class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1">{{
           data["malstatus"][String(itemData.status)]
         }}</span>
         <span
           v-for="genre of itemData.genres"
           :key="genre"
-          class="badge badge-neutral gap-2 my-1 mr-1"
+          class="badge badge-neutral badge-sm lg:badge-md gap-2 my-1 mr-1"
           >{{ data.malgenres[String(genre.name)] }}</span
         >
       </p>
       <div class="flex justify-end">
-        <div
-          :class="`dropdown dropdown-hover dropdown-top ${
-            index % 4 > 1 ? 'dropdown-end' : 'dropdown-start'
-          }`"
+        <NuxtLink
+          class="btn btn-primary lg:btn-md btn-sm flex flex-row"
+          :href="`/title/${itemData.mal_id}`"
+          ><Icon
+            name="material-symbols:visibility-rounded"
+            class="h-4 w-4"
+          />Görüntüle</NuxtLink
         >
-          <NuxtLink
-            class="btn btn-primary flex flex-row"
-            :to="`/title/${itemData.mal_id}`"
-            ><Icon
-              name="material-symbols:visibility-rounded"
-              class="h-4 w-4"
-            />Görüntüle</NuxtLink
-          >
-          <div
-            tabindex="0"
-            class="dropdown-content card lg:card-side image-full card-compact bg-base-200 lg:w-[700px] z-[1] shadow"
-          >
-            <figure class="h-96">
-              <img
-                class="rounded shadow-md"
-                :src="itemData.images.jpg.large_image_url"
-              />
-            </figure>
-            <div class="card-body">
-              <h3 class="card-title text-white">
-                {{ itemData["title"] }}
-              </h3>
-              <p class="text-white">
-                <span class="badge badge-accent gap-2 mr-1">{{
-                  data["malstatus"][String(itemData.status)]
-                }}</span>
-                <span
-                  v-for="genre of itemData.genres"
-                  :key="genre"
-                  class="badge badge-neutral gap-2 my-1 mr-1"
-                  >{{ data.malgenres[String(genre.name)] }}</span
-                >
-                <br /><br />
-                {{
-                  `${itemData["published"].prop.from.day} ${
-                    data.months[
-                      parseInt(itemData["published"].prop.from.month) - 1
-                    ]
-                  } ${itemData["published"].prop.from.year}'den ${
-                    itemData["published"].prop.to.day
-                      ? itemData["published"].prop.to.day
-                      : ""
-                  } ${
-                    itemData["published"].prop.to.month
-                      ? data.months[
-                          parseInt(itemData["published"].prop.to.month) - 1
-                        ]
-                      : ""
-                  } ${
-                    itemData["published"].prop.to.year
-                      ? itemData["published"].prop.to.year
-                      : ""
-                  }${
-                    itemData.published.prop.year
-                      ? "'e kadar yayınlandı"
-                      : " günümüze kadar yayınını sürdürüyor"
-                  }`
-                }}
-                <br />
-                {{ itemData["synopsis"] }}
-              </p>
-              <div class="flex justify-end">
-                <NuxtLink
-                  class="btn btn-ghost flex flex-row mx-1"
-                  :href="itemData.url"
-                  ><Icon
-                    name="simple-icons:myanimelist"
-                    class="h-6 w-6 text-white"
-                /></NuxtLink>
-                <NuxtLink
-                  class="btn btn-primary flex flex-row"
-                  :to="`/title/${itemData.mal_id}`"
-                  ><Icon
-                    name="material-symbols:visibility-rounded"
-                    class="h-4 w-4"
-                  />Görüntüle</NuxtLink
-                >
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
+  <NuxtLink v-else :to="`/title/${itemData.mal_id}`" class="card card-compact image-full w-[170px] h-72 mx-2 my-1 bg-base-100">
+        <figure>
+          <img class="w-full" :src="itemData.images.jpg.large_image_url" />
+        </figure>
+        <div class="card-body h-72 w-[170px] place-self-end flex-col-reverse">
+          <span class="flex flex-col w-full overflow-hidden relative">
+            <h2 class="card-title whitespace-nowrap overflow-hidden text-lg font-extrabold">
+              <b id="marquee-text" class="inline-block">
+                {{ itemData.title }}
+              </b>
+            </h2>
+            <span class="text-xs -mt-2 opacity-75">{{
+              itemData["type"]
+                .replaceAll("manga", "Manga")
+                .replaceAll("lightNovel", "Hafif Roman")
+            }}</span>
+          </span>
+        </div>
+      </NuxtLink>
 </template>
 <style>
 @keyframes marquee {
