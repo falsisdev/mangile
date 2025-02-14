@@ -1,7 +1,7 @@
 <script setup>
 import { data } from "@/assets/data.ts";
 
-const { isMobileOrTablet } = useDevice();
+const { isMobileOrTablet, isTablet, isMobile } = useDevice();
 
 const props = defineProps({
   itemData: Object,
@@ -21,7 +21,7 @@ onMounted(() => {
 </script>
 <template>
   <swiper
-    :slidesPerView="isMobileOrTablet ? 2 : 4"
+    :slidesPerView="isMobile ? 2 : isTablet ? 5 : 4"
     :autoplay="{
       delay: 5000,
       disableOnInteraction: false,
@@ -59,11 +59,11 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-compact image-full w-[200px] h-72 mx-2 my-1 bg-base-100">
+  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-compact image-full md:w-[25%] w-[45%] h-72 mx-2 my-1 bg-base-100">
         <figure>
           <img class="w-full" :src="item.entry.images.jpg.large_image_url" />
         </figure>
-        <div class="card-body h-72 w-[170px] place-self-end flex-col-reverse">
+        <div class="card-body h-72 w-[155px] place-self-end flex-col-reverse">
           <span class="flex flex-col w-full overflow-hidden relative">
             <h2 class="card-title whitespace-nowrap overflow-hidden text-lg font-extrabold">
               <b id="marquee-text" class="inline-block">

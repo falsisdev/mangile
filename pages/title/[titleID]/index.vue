@@ -2,7 +2,7 @@
 import { data } from "@/assets/data.ts"
 
 const route = useRoute();
-const { isMobileOrTablet } = useDevice();
+const { isMobileOrTablet, isMobile } = useDevice();
 
 const query = groq`*[myAnimeListId == ${route.params.titleID}] {
   ...,
@@ -796,7 +796,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </div>
       </div>
     </div>
-    <span v-if="isMobileOrTablet" class="divider -mt-1"/>
+    <span v-if="isMobile" class="divider -mt-1"/>
     <div
       v-if="relations[0] && manga && manga.images && manga.images.jpg"
       class="lg:col-start-1 lg:col-end-11 px-5"
@@ -816,7 +816,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           class="lg:mr-5 lg:flex lg:items-center"
         >
           <article
-            v-if="!isMobileOrTablet"
+            v-if="!isMobile"
             class="prose rotate-180"
             style="text-orientation: sideways; writing-mode: vertical-lr"
           >
@@ -852,7 +852,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         </span>
         <br v-if="isMobileOrTablet" />
         <span
-          v-if="!isMobileOrTablet"
+          v-if="!isMobile"
           class="divider divider-horizontal lg:ml-2"
         />
         <span class="flex flex-row flex-wrap">
