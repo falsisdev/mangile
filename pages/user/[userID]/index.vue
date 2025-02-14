@@ -44,15 +44,15 @@ onMounted(async () => {
 watch([userData, favManga], fetchData, { immediate: true });
 </script>
 <template>
-  <div v-if="loading" class="flex items-center justify-center min-h-screen">
-    <Icon name="mingcute:loading-line" class="animate-spin w-32 h-32" />
-  </div>
+    <div v-if="loading" class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
+      <Icon name="mingcute:loading-line" class="animate-spin w-full lg:h-32 h-16" />
+    </div>
   <main v-else-if="userData">
     <div
       class="card card-compact bg-base-100 w-full lg:rounded-2xl rounded-none"
     >
       <figure
-        class="h-72 shadow-inner lg:border-2 lg:border-neutral-content lg:border-opacity-50"
+        class="lg:h-72 h-48 shadow-inner lg:border-2 lg:border-neutral-content lg:border-opacity-50"
       >
         <img
           class="w-full lg:h-auto h-full opacity-75 object-cover object-center shadow-inner"
@@ -63,7 +63,7 @@ watch([userData, favManga], fetchData, { immediate: true });
         />
         <span
           v-if="userData.profile['gender']"
-          class="absolute top-0 start-0 bg-base-100 rounded-br-lg p-1 tooltip tooltip-bottom lg:border-2 lg:border-l-0 lg:border-t-0 lg:border-neutral-content lg:border-opacity-75"
+          class="absolute top-0 start-0 bg-base-100 rounded-br-lg p-1 lg:tooltip tooltip-bottom lg:border-2 lg:border-l-0 lg:border-t-0 lg:border-neutral-content lg:border-opacity-75"
           :data-tip="`Kullanıcı Cinsiyetini '${userData.profile['gender']
             .replaceAll('male', 'Eril')
             .replaceAll('female', 'Dişil')}' olarak belirtmiş`"
@@ -77,7 +77,7 @@ watch([userData, favManga], fetchData, { immediate: true });
           class="btn lg:btn-md btn-sm bg-base-100 hover:bg-base-100 border-2 border-t-0 border-r-0 border-neutral-content border-opacity-50 hover:border-neutral-content hover:border-opacity-50 shadow-none absolute top-0 rounded-bl-2xl rounded-r-none rounded-t-none no-animation end-0 lg:text-md text-xs"
         >
           <span
-            class="flex tooltip tooltip-bottom"
+            class="flex lg:tooltip tooltip-bottom"
             :data-tip="`Kullanıcı ${userData.customData['userFollows'] ? userData.customData['userFollows'].length : 0} Kişiyi Takip Ediyor`"
           >
             <Icon name="material-symbols:person-add" class="w-5 h-5 mr-1" />
@@ -91,7 +91,7 @@ watch([userData, favManga], fetchData, { immediate: true });
             </span>
           </span>
           <span
-            class="flex mx-2 tooltip tooltip-bottom"
+            class="flex mx-2 lg:tooltip tooltip-bottom"
             :data-tip="`Kullanıcının ${userData.customData['userFollowers'] ? userData.customData['userFollowers'].length : 0} Takipçisi Var`"
           >
             <Icon
@@ -171,18 +171,19 @@ watch([userData, favManga], fetchData, { immediate: true });
           </h1>
         </article>
         <div
-          class="card lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg p-3 rounded-lg shadow-base-300 mt-5"
+          :class="`card lg:card-normal card-compact lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg lg:p-3 lg:rounded-lg shadow-base-300 mt-5 ${isMobileOrTablet ? 'image-full' : ''}`"
         >
-          <figure class="w-full lg:h-auto h-72">
+          <figure class="w-full lg:h-auto h-96">
             <img
-              class="w-full lg:h-full rounded shadow-md"
+              class="w-full h-full rounded shadow-md"
               :src="favManga.data.images.jpg.large_image_url"
             />
           </figure>
-          <div class="card-body">
+          <div class="card-body lg:h-auto h-96">
             <span class="flex flex-col">
-              <h2 class="card-title">{{ favManga.data.title }}</h2>
-              <span class="text-md text-neutral-content">{{
+              <h2 v-if="!isMobileOrTablet" class="card-title">{{ favManga.data.title }}</h2>
+              <h3 v-else class="card-title text-lg font-extrabold">{{ favManga.data.title }}</h3>
+              <span class="lg:text-md text-xs text-neutral-content">{{
                 favManga.data["type"]
                   .replaceAll("Light Novel", "Hafif Roman")
                   .replaceAll("Novel", "Roman")
@@ -190,20 +191,20 @@ watch([userData, favManga], fetchData, { immediate: true });
             </span>
             <span class="flex flex-row flex-wrap">
               <span
-                class="badge badge-accent gap-2 mr-1 mt-1 tooltip tooltip-accent"
+                class="badge badge-accent lg:badge-md badge-sm gap-2 mr-1 mt-1 tooltip tooltip-accent"
                 :data-tip="data['malstatus'][String(favManga.data.status)]"
                 >{{ data["malstatus"][String(favManga.data.status)] }}</span
               >
               <span
                 v-for="genre of favManga.data.genres"
                 :key="genre"
-                class="badge badge-neutral gap-2 my-1 mr-1 tooltip"
+                class="badge badge-neutral lg:badge-md badge-sm gap-2 my-1 mr-1 tooltip"
                 :data-tip="data.malgenres[String(genre.name)]"
                 >{{ data.malgenres[String(genre.name)] }}</span
               >
-              <br /><br />
+              <br /><br v-if="!isMobileOrTablet" />
             </span>
-            <p class="max-h-64 overflow-auto text-sm lg:text-md">
+            <p class="max-h-64 overflow-auto lg:text-md text-xs">
               {{ favManga.data.synopsis }}
             </p>
             <div class="flex justify-end">
