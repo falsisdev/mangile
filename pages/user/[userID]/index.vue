@@ -63,7 +63,7 @@ watch([userData, favManga], fetchData, { immediate: true });
         />
         <span
           v-if="userData.profile['gender']"
-          class="absolute top-0 start-0 bg-base-100 rounded-br-lg p-1 lg:tooltip tooltip-bottom lg:border-2 lg:border-l-0 lg:border-t-0 lg:border-neutral-content lg:border-opacity-75"
+          class="absolute top-0 start-0 bg-base-100 rounded-br-lg p-1 tooltip tooltip-bottom lg:border-2 lg:border-l-0 lg:border-t-0 lg:border-neutral-content lg:border-opacity-75"
           :data-tip="`Kullanıcı Cinsiyetini '${userData.profile['gender']
             .replaceAll('male', 'Eril')
             .replaceAll('female', 'Dişil')}' olarak belirtmiş`"
