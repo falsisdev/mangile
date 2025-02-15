@@ -179,7 +179,7 @@ watch([userData, favManga], fetchData, { immediate: true });
               :src="favManga.data.images.jpg.large_image_url"
             />
           </figure>
-          <div class="card-body lg:h-auto h-96">
+          <div class="card-body lg:h-72 h-96">
             <span class="flex flex-col">
               <h2 v-if="!isMobileOrTablet" class="card-title">{{ favManga.data.title }}</h2>
               <h3 v-else class="card-title text-lg font-extrabold">{{ favManga.data.title }}</h3>
@@ -204,18 +204,18 @@ watch([userData, favManga], fetchData, { immediate: true });
               >
               <br /><br v-if="!isMobileOrTablet" />
             </span>
-            <p class="max-h-64 overflow-auto lg:text-md text-xs">
+            <p class="lg:max-h-96 max-h-64 overflow-auto lg:text-md text-xs">
               {{ favManga.data.synopsis }}
             </p>
             <div class="flex justify-end">
               <NuxtLink
-                class="btn btn-ghost flex flex-row mx-1 tooltip"
+                class="btn btn-ghost lg:btn-md btn-sm flex flex-row mx-1 tooltip"
                 data-tip="MyAnimeList sayfasını görüntüle"
                 :href="favManga.data.url"
                 ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
               /></NuxtLink>
               <NuxtLink
-                class="btn btn-primary flex flex-row tooltip"
+                class="btn btn-primary lg:btn-md btn-sm flex flex-row tooltip"
                 data-tip="Mangile sayfasını görüntüle"
                 :href="`/title/${favManga.data.mal_id}`"
                 ><Icon
