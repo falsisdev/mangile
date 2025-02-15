@@ -196,7 +196,7 @@ useSeoMeta({
 <template>
   <main v-if="createdSeries.length && updatedSeries.length">
     <br v-if="!isMobileOrTablet" />
-    <HeroCard :itemData="highlights" />
+    <HeroSlide :itemData="highlights" />
     <div class="divider" />
     <article class="prose max-w-none px-5 flex flex-row -mb-7">
       <h1 v-if="!isMobileOrTablet">Son Güncellenen Seriler</h1>
@@ -247,7 +247,7 @@ useSeoMeta({
       <h2 v-else class="mt-2">Rastgele Seri</h2>
     </article>
     <br />
-    <HeroCard :itemData="randomManga" />
+    <HeroSlide :itemData="randomManga" />
   </main>
   <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
       <Icon name="mingcute:loading-line" class="animate-spin w-full lg:h-32 h-16" />

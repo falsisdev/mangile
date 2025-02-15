@@ -878,7 +878,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       <article class="prose max-w-none px-5">
         <h1 class="flex flex-row">İlginizi çekebilir</h1>
       </article>
-      <RecommendationCard class="my-5" :itemData="recommendations" />
+      <Recommendations class="my-5" :itemData="recommendations" />
     </div>
   </main>
 </template>

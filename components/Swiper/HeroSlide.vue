@@ -39,15 +39,26 @@ const props = defineProps({
             </span>
             <span class="flex flex-row flex-wrap mt-5">
               <span
-                class="badge badge-accent badge-sm lg:badge-md tooltip tooltip-accent mb-1"
-                :data-tip="data['malstatus'][String(item.status)]"
-                >{{ data["malstatus"][String(item.status)] }}</span
-              >
+                      class="badge badge-accent gap-2 tooltip tooltip-right mr-1 z-[1]"
+                      :data-tip="`${item['date'].from.day} ${
+                        data.months[parseInt(item['date'].from.month) - 1]
+                      } ${item['date'].from.year}'den ${
+                        item['date'].to.day ? item['date'].to.day : ''
+                      } ${
+                        item['date'].to.month
+                          ? data.months[parseInt(item['date'].to.month) - 1]
+                          : ''
+                      } ${item['date'].to.year ? item['date'].to.year : ''}${
+                        item.date.to.year
+                          ? '\'e kadar yayınlandı'
+                          : ' günümüze kadar yayınını sürdürüyor'
+                      }`"
+                      >{{ data["malstatus"][String(item.status)] }}</span
+                    >
               <span
                 v-for="genre of item.genres"
                 :key="genre"
                 class="badge badge-neutral badge-sm lg:badge-md mx-1 tooltip"
-                :data-tip="data.malgenres[String(genre.name)]"
                 >{{ data.malgenres[String(genre.name)] }}</span
               >
             </span>
@@ -65,7 +76,7 @@ const props = defineProps({
               >
               <div
                 tabindex="0"
-                class="dropdown-content card lg:card-side card-compact bg-base-200 lg:w-[700px] z-[1] shadow"
+                class="dropdown-content card card-side card-compact bg-base-200 h-88 w-[675px] z-[1] shadow"
               >
                 <figure>
                   <img class="h-full rounded shadow-md" :src="item.image" />
@@ -74,34 +85,28 @@ const props = defineProps({
                   <h3 class="card-title">{{ item.name }}</h3>
                   <span class="flex flex-row flex-wrap">
                     <span
-                      class="badge badge-accent gap-2 tooltip tooltip-accent mr-1"
-                      :data-tip="data['malstatus'][String(item.status)]"
+                      class="badge badge-accent gap-2 tooltip mr-1"
+                      :data-tip="`${item['date'].from.day} ${
+                        data.months[parseInt(item['date'].from.month) - 1]
+                      } ${item['date'].from.year}'den ${
+                        item['date'].to.day ? item['date'].to.day : ''
+                      } ${
+                        item['date'].to.month
+                          ? data.months[parseInt(item['date'].to.month) - 1]
+                          : ''
+                      } ${item['date'].to.year ? item['date'].to.year : ''}${
+                        item.date.to.year
+                          ? '\'e kadar yayınlandı'
+                          : ' günümüze kadar yayınını sürdürüyor'
+                      }`"
                       >{{ data["malstatus"][String(item.status)] }}</span
                     >
                     <span
                       v-for="genre of item.genres"
                       :key="genre"
                       class="badge badge-neutral gap-2 mr-1 mb-1 tooltip"
-                      :data-tip="data.malgenres[String(genre.name)]"
                       >{{ data.malgenres[String(genre.name)] }}</span
                     >
-                  </span>
-                  <span class="-mt-1">
-                    {{
-                      `${item["date"].from.day} ${
-                        data.months[parseInt(item["date"].from.month) - 1]
-                      } ${item["date"].from.year}'den ${
-                        item["date"].to.day ? item["date"].to.day : ""
-                      } ${
-                        item["date"].to.month
-                          ? data.months[parseInt(item["date"].to.month) - 1]
-                          : ""
-                      } ${item["date"].to.year ? item["date"].to.year : ""}${
-                        item.date.to.year
-                          ? "'e kadar yayınlandı"
-                          : " günümüze kadar yayınını sürdürüyor"
-                      }`
-                    }}
                   </span>
                   <p class="max-h-32 overflow-auto">
                     {{ item.description }}

@@ -183,7 +183,7 @@ onMounted(fetchData);
         v-if="itemsData.length"
         class="flex lg:flex-row lg:flex-wrap flex-col"
       >
-        <SearchCard v-for="title of itemsData" :key="title" :itemData="title" />
+        <DefaultCard v-for="title of itemsData" :key="title" :itemData="title" type="search" />
       </div>
       <div v-else>
         <Icon name="mingcute:loading-line" class="animate-spin w-full h-32" />

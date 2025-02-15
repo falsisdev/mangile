@@ -223,18 +223,12 @@ useSeoMeta({
       </article>
       <br />
       <div class="flex flex-row flex-wrap justify-center">
-        <SearchCard
+        <DefaultCard type="search"
           v-for="manga in searchData"
-          :key="manga.mal_id"
+          :key="manga"
           :itemData="manga"
           :index="searchData.indexOf(manga)"
-          v-slot="{ itemData }"
-        >
-          <NuxtImg :src="itemData.image_url" class="w-full h-full" v-slot="{ src, isLoaded, imgAttrs }">
-            <img v-if="isLoaded" :src="src" v-bind="imgAttrs" />
-            <div v-else class="skeleton bg-gray-300 dark:bg-gray-700 w-full h-full"></div>
-          </NuxtImg>
-        </SearchCard>
+        />
       </div>
       <div
         v-if="pagination"
@@ -275,9 +269,9 @@ useSeoMeta({
         </NuxtLink>
       </div>
       <div class="flex flex-row flex-wrap justify-center">
-        <SearchCard
+        <DefaultCard type="search"
           v-for="manga in searchData"
-          :key="manga.mal_id"
+          :key="manga"
           :itemData="manga"
         />
       </div>
