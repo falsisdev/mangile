@@ -2,10 +2,7 @@
 import { data } from "@/assets/data.ts";
 
 const { isMobileOrTablet } = useDevice();
-const cookies = {
-  theme: useCookie("theme").value,
-};
-const theme = cookies["theme"] == null ? "sunset" : cookies["theme"];
+const theme = useCookie("theme").value == null ? "sunset" : useCookie("theme")
 
 let layout = ref("default");
 if (isMobileOrTablet) {

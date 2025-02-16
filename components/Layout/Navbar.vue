@@ -27,7 +27,6 @@ const themeSelect = () => {
 
 const save = () => {
   themeSelect();
-  reloadNuxtApp();
 };
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
@@ -316,6 +315,7 @@ const save = () => {
               <select
                 id="themeSelector"
                 class="select select-bordered select-sm w-full max-w-xs my-2"
+                @change="save()"
               >
                 <option disabled selected>Tema Seçin</option>
                 <option
@@ -379,11 +379,6 @@ const save = () => {
                   </div>
                   <div></div>
                 </div>
-              </div>
-              <div class="modal-action m-2">
-                <label for="settingsModal" class="btn" @click="save()"
-                  >Değişiklikleri Kaydet</label
-                >
               </div>
             </div>
           </div>

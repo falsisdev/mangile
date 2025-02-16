@@ -27,7 +27,6 @@ const themeSelect = () => {
 
 const save = () => {
   themeSelect();
-  reloadNuxtApp();
 };
 </script>
 <template>
@@ -284,6 +283,7 @@ const save = () => {
                 <select
                   id="themeSelector"
                   class="select select-bordered select-xs my-2 text-xs"
+                  @change="save()"
                 >
                   <option disabled selected>Tema Seçin</option>
                   <option
@@ -349,11 +349,6 @@ const save = () => {
                     </div>
                     <div></div>
                   </div>
-                </div>
-                <div class="modal-action m-2">
-                  <label for="settingsModal" class="btn btn-primary btn-sm text-xs" @click="save()"
-                    >Kaydet</label
-                  >
                 </div>
               </div>
             </div>
