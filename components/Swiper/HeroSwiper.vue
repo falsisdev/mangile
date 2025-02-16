@@ -24,7 +24,7 @@ const props = defineProps({
         :style="`background-image: url(${item.image});`"
       >
         <div
-          class="hero-overlay bg-opacity-80 bg-base-200 backdrop-blur-sm"
+          class="hero-overlay bg-opacity-60 bg-base-100 backdrop-blur-sm"
         ></div>
         <div class="hero-content flex flex-row-reverse lg:mx-10">
           <img

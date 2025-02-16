@@ -61,46 +61,38 @@ onMounted(() => {
               >
               <div
                 tabindex="0"
-                class="dropdown-content card card-side card-compact bg-base-200 w-[700px] z-[1] shadow"
+                class="dropdown-content card card-side card-compact bg-base-200 h-88 w-[675px] z-[1] shadow"
               >
-                <figure class="w-full">
-                  <img
-                    class="w-full h-full rounded shadow-md"
-                    :src="itemData.image"
-                  />
+                <figure>
+                  <img class="h-full rounded shadow-md" :src="itemData.image" />
                 </figure>
                 <div class="card-body max-w-lg">
                   <h3 class="card-title">{{ itemData.name }}</h3>
                   <span class="flex flex-row flex-wrap">
                     <span
-                      class="badge badge-accent gap-2 mr-1 mt-1 tooltip tooltip-accent"
-                      :data-tip="data['malstatus'][String(itemData.status)]"
+                      class="badge badge-accent gap-2 tooltip mr-1"
+                      :data-tip="`${itemData['date'].from.day} ${
+                        data.months[parseInt(itemData['date'].from.month) - 1]
+                      } ${itemData['date'].from.year}'den ${
+                        itemData['date'].to.day ? itemData['date'].to.day : ''
+                      } ${
+                        itemData['date'].to.month
+                          ? data.months[parseInt(itemData['date'].to.month) - 1]
+                          : ''
+                      } ${itemData['date'].to.year ? itemData['date'].to.year : ''}${
+                        itemData.date.to.year
+                          ? '\'e kadar yayınlandı'
+                          : ' günümüze kadar yayınını sürdürüyor'
+                      }`"
                       >{{ data["malstatus"][String(itemData.status)] }}</span
                     >
                     <span
                       v-for="genre of itemData.genres"
                       :key="genre"
-                      class="badge badge-neutral gap-2 my-1 mr-1 tooltip"
-                      :data-tip="data.malgenres[String(genre.name)]"
+                      class="badge badge-neutral gap-2 mr-1 mb-1 tooltip"
                       >{{ data.malgenres[String(genre.name)] }}</span
                     >
-                    <br /><br />
                   </span>
-                  {{
-                    `${itemData["date"].from.day} ${
-                      data.months[parseInt(itemData["date"].from.month) - 1]
-                    } ${itemData["date"].from.year}'den ${
-                        itemData["date"].to.day ? itemData["date"].to.day : ""
-                    } ${
-                        itemData["date"].to.month
-                        ? data.months[parseInt(itemData["date"].to.month) - 1]
-                        : ""
-                    } ${itemData["date"].to.year ? itemData["date"].to.year : ""}${
-                        itemData.date.to.year
-                        ? "'e kadar yayınlandı"
-                        : " günümüze kadar yayınını sürdürüyor"
-                    }`
-                  }}
                   <p class="max-h-32 overflow-auto">
                     {{ itemData.description }}
                   </p>

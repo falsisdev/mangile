@@ -20,7 +20,14 @@ export const daisyui = {
     "synthwave",
     "retro",
     "cyberpunk",
-    "valentine",
+    {
+      valentine: {
+        ...require("daisyui/src/theming/themes")["valentine"],
+        "--rounded-box": "1em",
+        "--rounded-btn": "0.5rem",
+        "--rounded-badge": "0.5rem",
+      }
+    },
     "halloween",
     {
       forest: {
@@ -40,7 +47,14 @@ export const daisyui = {
         "--rounded-badge": "0.5rem",
       },
     },
-    "pastel",
+    {
+      pastel: {
+        ...require("daisyui/src/theming/themes")["pastel"],
+        "--rounded-box": "1em",
+        "--rounded-btn": "0.5rem",
+        "--rounded-badge": "0.5rem",
+      }
+    },
     "wireframe",
     {
       black: {
@@ -65,7 +79,13 @@ export const daisyui = {
         "--rounded-badge": "0.5rem",
       },
     },
-    "dracula",
+    {
+      dracula: {
+        ...require("daisyui/src/theming/themes")["dracula"],
+        "base-content": "#c8cbd0",
+        "--rounded-badge": "0.5rem",
+      }
+    },
     {
       autumn: {
         ...require("daisyui/src/theming/themes")["autumn"],
@@ -83,7 +103,12 @@ export const daisyui = {
         "--rounded-badge": "0.5rem",
       },
     },
-    "night",
+    {
+      night: {
+        ...require("daisyui/src/theming/themes")["night"],
+        "--rounded-badge": "0.5rem",
+      }
+    },
     {
       coffee: {
         ...require("daisyui/src/theming/themes")["coffee"],
