@@ -24,7 +24,7 @@ onMounted(() => {
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
       >
-      <DefaultCard :itemData="item" type="sanityDefault" />
+      <DefaultCard :itemData="item" type="sanityDefault" :index="itemData.indexOf(item)" class="z-[1]" />
     </swiper-slide>
     <br />
   </swiper>

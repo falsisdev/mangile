@@ -171,6 +171,11 @@ onMounted(() => {
             {{ itemData.description }}
           </p>
           <div class="flex justify-end">
+            <div
+              :class="`lg:dropdown dropdown-hover dropdown-top ${
+                index > 1 ? 'dropdown-end' : 'dropdown-start'
+              }`"
+            >
             <NuxtLink
               class="btn btn-primary btn-md flex flex-row"
               :href="`/title/${itemData.id}`"
@@ -179,6 +184,56 @@ onMounted(() => {
                 class="h-4 w-4"
               />Görüntüle</NuxtLink
             >
+            <div
+                tabindex="0"
+                class="dropdown-content card card-side card-compact bg-base-200 h-88 w-[675px] z-[1] shadow"
+              >
+                <figure>
+                  <img class="h-full rounded shadow-md" :src="itemData.image" />
+                </figure>
+                <div class="card-body max-w-lg">
+                  <h3 class="card-title">{{ itemData.name }}</h3>
+                  <span class="flex flex-row flex-wrap">
+                    <span
+                      class="badge badge-accent gap-2 mr-1"
+                      >{{ `${new Date(itemData.date).getDate()} ${new Date(itemData.date).toLocaleString("default", { month: "long" })} ${new Date(itemData.date).getFullYear()}, ${new Date(itemData.date).getHours().toString().padStart(2, "0")}.${new Date(itemData.date).getMinutes().toString().padStart(2, "0")}` }}</span
+                    >
+                    <span
+                      v-for="genre of itemData.genres"
+                      :key="genre"
+                      class="badge badge-neutral gap-2 mr-1 mb-1 tooltip"
+                      >{{ genre }}</span
+                    >
+                  </span>
+                  <p class="max-h-32 overflow-auto">
+                    {{ itemData.description }}
+                  </p>
+                  <div class="flex justify-end">
+                    <span class="btn btn-ghost no-animation">
+                      <span class="tooltip" data-tip="Veri Tabanı Girdisi">
+                      <Icon name="simple-icons:sanity" class="mt-[2px]"/>
+                      </span>
+                    </span>
+                    <span class="grow"/>
+                    <NuxtLink
+                      class="btn btn-ghost flex flex-row mx-1 tooltip"
+                      data-tip="MyAnimeList sayfasını görüntüle"
+                      :href="`https://myanimelist.net/${itemData.id}`"
+                      ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
+                    /></NuxtLink>
+                    <NuxtLink
+                      class="btn btn-primary flex flex-row tooltip"
+                      data-tip="Mangile sayfasını görüntüle"
+                      :href="`/title/${itemData.id}`"
+                      ><Icon
+                        name="material-symbols:visibility-rounded"
+                        class="h-4 w-4"
+                      />Görüntüle</NuxtLink
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

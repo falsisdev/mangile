@@ -1,5 +1,6 @@
 <script setup>
 import imageUrlBuilder from "@sanity/image-url";
+import { toRaw } from 'vue'
 
 const { isMobileOrTablet } = useDevice();
 const builder = imageUrlBuilder(useSanity().config);
@@ -41,6 +42,8 @@ onMounted(async () => {
       date: item._createdAt,
       genres: item.tags,
       id: item.myAnimeListId,
+      chapterCount: item.chapters.length,
+      genres: item.tags
     });
   }
 
@@ -53,6 +56,8 @@ onMounted(async () => {
       date: item._updatedAt,
       genres: item.tags,
       id: item.myAnimeListId,
+      chapterCount: item.chapters.length,
+      genres: item.tags
     });
   }
 });
