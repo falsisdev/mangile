@@ -39,7 +39,7 @@ const props = defineProps({
             </span>
             <span class="flex flex-row flex-wrap mt-5">
               <span
-                      class="badge badge-accent gap-2 tooltip tooltip-right mr-1 z-[1]"
+                      class="badge badge-accent lg:badge-md badge-sm gap-2 tooltip tooltip-right mr-1 z-[1]"
                       :data-tip="`${item['date'].from.day} ${
                         data.months[parseInt(item['date'].from.month) - 1]
                       } ${item['date'].from.year}'den ${
