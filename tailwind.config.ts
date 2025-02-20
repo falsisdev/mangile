@@ -33,6 +33,10 @@ export const daisyui = {
       forest: {
         ...require("daisyui/src/theming/themes")["forest"],
         primary: "#addfad",
+        secondary: "#e779c1",
+        accent: "#818cf8",
+        neutral: "#23282e",
+        "base-100": "#1c1917",
         warning: "#ff865b",
         info: "#89e0eb",
         "--rounded-btn": "0.5rem",
