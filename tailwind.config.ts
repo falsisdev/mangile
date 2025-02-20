@@ -47,8 +47,6 @@ export const daisyui = {
         "base-100": "#1c1917",
         warning: "#ff865b",
         info: "#89e0eb",
-        neutral: "#252a2e",
-        "--rounded-box": "1em",
         "--rounded-btn": "0.5rem",
         "--rounded-badge": "0.5rem",
       },
@@ -91,20 +89,6 @@ export const daisyui = {
         primary: "#dca54c",
         "base-content": "#9fb9d0",
         "neutral": "#252a2e",
-        "--rounded-badge": "0.5rem",
-      },
-    },
-    {
-      dracula: {
-        ...require("daisyui/src/theming/themes")["dracula"],
-        "base-content": "#c8cbd0",
-        "--rounded-badge": "0.5rem",
-      }
-    },
-    {
-      autumn: {
-        ...require("daisyui/src/theming/themes")["autumn"],
-        primary: "#ac3e31",
         warning: "#f1c891",
         "--rounded-badge": "0.5rem",
       },
