@@ -28,7 +28,15 @@ export const daisyui = {
         "--rounded-badge": "0.5rem",
       }
     },
-    "halloween",
+    {
+      halloween: {
+        ...require("daisyui/src/theming/themes")["halloween"],
+        neutral: "#252a2e",
+        "--rounded-box": "1em",
+        "--rounded-btn": "0.5rem",
+        "--rounded-badge": "0.5rem",
+      },
+    },
     {
       forest: {
         ...require("daisyui/src/theming/themes")["forest"],
@@ -39,6 +47,8 @@ export const daisyui = {
         "base-100": "#1c1917",
         warning: "#ff865b",
         info: "#89e0eb",
+        neutral: "#252a2e",
+        "--rounded-box": "1em",
         "--rounded-btn": "0.5rem",
         "--rounded-badge": "0.5rem",
       },
@@ -80,6 +90,7 @@ export const daisyui = {
         ...require("daisyui/src/theming/themes")["luxury"],
         primary: "#dca54c",
         "base-content": "#9fb9d0",
+        "neutral": "#252a2e",
         "--rounded-badge": "0.5rem",
       },
     },
