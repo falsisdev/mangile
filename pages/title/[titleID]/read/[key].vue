@@ -179,6 +179,8 @@ const getPreviousChapterKey = () => {
 
   return previousChapter ? previousChapter._key : '';
 };
+
+const currentPage = ref(1);
 </script>
 <template>
   <main v-if="chapter && manga" class="lg:m-0 mx-5">
@@ -263,6 +265,9 @@ const getPreviousChapterKey = () => {
             sola okunur. Yakınlaştırmak için çift tıklamanız yeterlidir.</span
           >
         </div>
+        <div class="text-center -mb-2 mt-2">
+          Sayfa: {{ currentPage }} / {{ [...new Set(images)].length }}
+        </div>
         <swiper
           class="mt-5"
           dir="rtl"
@@ -273,6 +278,7 @@ const getPreviousChapterKey = () => {
           }"
           :zoom="{ maxRatio: 3 }"
           :modules="[SwiperPagination, SwiperZoom]"
+          @slideChange="(swiper) => { currentPage = swiper.activeIndex + 1; }"
         >
           <swiper-slide v-for="item of [...new Set(images)]" v-bind:key="item">
             <div class="swiper-zoom-container">
