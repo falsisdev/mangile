@@ -39,7 +39,7 @@ const props = defineProps({
             </span>
             <span class="flex flex-row flex-wrap mt-5">
               <span
-                      class="badge badge-accent lg:badge-md badge-sm gap-2 tooltip tooltip-right mr-1 z-[1]"
+                      class="badge badge-accent badge-soft lg:badge-sm badge-xs gap-2 tooltip tooltip-right mr-1 z-[1]"
                       :data-tip="`${item['date'].from.day} ${
                         data.months[parseInt(item['date'].from.month) - 1]
                       } ${item['date'].from.year}'den ${
@@ -58,7 +58,7 @@ const props = defineProps({
               <span
                 v-for="genre of item.genres"
                 :key="genre"
-                class="badge badge-neutral badge-sm lg:badge-md mx-1 tooltip"
+                class="badge badge-neutral lg:badge-sm badge-xs mx-1 tooltip"
                 >{{ data.malgenres[String(genre.name)] }}</span
               >
             </span>
@@ -67,7 +67,7 @@ const props = defineProps({
             </p>
             <div v-if="!isMobileOrTablet" class="dropdown dropdown-hover dropdown-top">
               <NuxtLink
-                class="btn btn-primary btn-sm lg:btn-md"
+                class="btn btn-primary btn-soft btn-sm lg:btn-md"
                 :href="`/title/${item.id}`"
                 ><Icon
                   name="material-symbols:visibility-rounded"
@@ -76,7 +76,7 @@ const props = defineProps({
               >
               <div
                 tabindex="0"
-                class="dropdown-content card card-side card-compact bg-base-200 h-88 w-[675px] z-[1] shadow"
+                class="dropdown-content card card-side card-sm bg-base-200 w-[675px] z-[1] shadow"
               >
                 <figure>
                   <img class="h-full rounded shadow-md" :src="item.image" />
@@ -85,7 +85,7 @@ const props = defineProps({
                   <h3 class="card-title">{{ item.name }}</h3>
                   <span class="flex flex-row flex-wrap">
                     <span
-                      class="badge badge-accent gap-2 tooltip mr-1"
+                      class="badge badge-accent badge-soft badge-sm gap-2 tooltip mr-1"
                       :data-tip="`${item['date'].from.day} ${
                         data.months[parseInt(item['date'].from.month) - 1]
                       } ${item['date'].from.year}'den ${
@@ -104,7 +104,7 @@ const props = defineProps({
                     <span
                       v-for="genre of item.genres"
                       :key="genre"
-                      class="badge badge-neutral gap-2 mr-1 mb-1 tooltip"
+                      class="badge badge-neutral badge-sm gap-2 mr-1 mb-1 tooltip"
                       >{{ data.malgenres[String(genre.name)] }}</span
                     >
                   </span>
@@ -113,13 +113,13 @@ const props = defineProps({
                   </p>
                   <div class="flex justify-end">
                     <NuxtLink
-                      class="btn btn-ghost flex flex-row mx-1 tooltip"
+                      class="btn btn-soft btn-info flex flex-row mx-1 tooltip"
                       data-tip="MyAnimeList sayfasını görüntüle"
                       :href="item.url"
-                      ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
+                      ><Icon name="simple-icons:myanimelist" class="h-5 w-5"
                     /></NuxtLink>
                     <NuxtLink
-                      class="btn btn-primary flex flex-row tooltip"
+                      class="btn btn-primary btn-soft flex flex-row tooltip"
                       data-tip="Mangile sayfasını görüntüle"
                       :href="`/title/${item.id}`"
                       ><Icon

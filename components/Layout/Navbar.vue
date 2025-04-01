@@ -36,7 +36,7 @@ const save = () => {
     <div class="flex-1">
       <NuxtLink
         :to="'/'"
-        class="btn btn-ghost no-animation hover:bg-[transparent] bg-base-100 normal-case font-bold text-[20px]"
+        class="btn btn-soft bg-transparent hover:bg-transparent border-0 hover:shadow-none"
         ><img src="/assets/images/logo_latin.png" class="w-12" />
       </NuxtLink>
     </div>
@@ -63,7 +63,7 @@ const save = () => {
               </a>
             </li>
             <ul
-              class="dropdown-content z-50 menu xl:menu-horizontal lg:min-w-max bg-base-100 border border-base-200 rounded-box"
+              class="dropdown-content z-50 -mt-2 menu xl:menu-horizontal lg:min-w-max bg-base-100 border border-base-200 rounded-box"
             >
               <li>
                 <span class="hover:bg-base-100 text-sm/6"
@@ -126,7 +126,7 @@ const save = () => {
           </div>
           <div class="dropdown dropdown-hover dropdown-end dropdown-bottom">
             <li
-              class="tab-index-0 tooltip mt-[2px] -mx-1"
+              class="tab-index-0 tooltip mt-[6px] -mx-1"
               data-tip="Sistem Hakkında"
             >
               <a>
@@ -201,15 +201,16 @@ const save = () => {
           </div>
         </ul>
         <label
-          class="input input-bordered input-sm rounded-full flex items-center mt-3"
+          class="input input-ghost input-xs w-48 rounded-full flex items-center mt-4"
         >
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
           <input
             id="searchbar"
-            type="text"
+            type="search"
+            class="grow"
             placeholder="Ara..."
             @keyup="search()"
           />
-          <Icon name="material-symbols:search" class="h-4 w-4" />
         </label>
         <div class="dropdown dropdown-end" v-if="Boolean(user)">
           <label

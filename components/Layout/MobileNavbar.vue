@@ -31,7 +31,7 @@ const save = () => {
 </script>
 <template>
   <main>
-    <div class="btm-nav w-screen bg-base-100 z-50 drop-shadow-lg">
+    <div class="dock-nav w-screen bg-base-100 z-50 drop-shadow-lg">
       <div>
         <div class="mb-20 w-full z-40">
           <span
@@ -47,7 +47,7 @@ const save = () => {
             <Icon name="material-symbols:search" class="h-4 w-4" />
           </span>
         </div>
-        <div class="btm-nav btm-nav-md rounded-none z-50">
+        <div class="dock-nav dock-nav-md rounded-none z-50">
           <button>
             <NuxtLink to="/" class="flex flex-col items-center">
               <Icon name="material-symbols:home" class="h-4 w-4" />

@@ -37,13 +37,13 @@ const props = defineProps({
           </p>
           <div class="flex justify-end">
             <NuxtLink
-              class="btn btn-ghost lg:btn-md btn-sm flex flex-row mx-1 tooltip"
+              class="btn btn-soft btn-info lg:btn-md btn-sm flex flex-row mx-1 tooltip"
               data-tip="MyAnimeList sayfasını görüntüle"
               :href="item.url"
               ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
             /></NuxtLink>
             <NuxtLink
-              class="btn btn-primary lg:btn-md btn-sm flex flex-row tooltip"
+              class="btn btn-primary btn-soft lg:btn-md btn-sm flex flex-row tooltip"
               data-tip="Mangile sayfasını Görüntüle"
               :href="`/title/${item.id}`"
               ><Icon
@@ -54,7 +54,7 @@ const props = defineProps({
           </div>
         </div>
       </div>
-      <NuxtLink :to="`/title/${item.id}`" v-else class="card card-compact image-full w-48 h-72 m-5 bg-base-100">
+      <NuxtLink :to="`/title/${item.id}`" v-else class="card card-sm image-full w-48 h-72 m-5 bg-base-100">
         <figure>
           <img class="w-full" :src="item.image" />
         </figure>

@@ -52,7 +52,7 @@ onMounted(() => {
               }`"
             >
               <NuxtLink
-                class="btn btn-primary btn-md flex flex-row"
+                class="btn btn-primary btn-soft btn-md flex flex-row"
                 :href="`/title/${itemData.id}`"
                 ><Icon
                   name="material-symbols:visibility-rounded"
@@ -61,7 +61,7 @@ onMounted(() => {
               >
               <div
                 tabindex="0"
-                class="dropdown-content card card-side card-compact bg-base-200 h-88 w-[675px] z-[1] shadow"
+                class="dropdown-content card card-side card-sm bg-base-200  w-[675px] z-[1] shadow"
               >
                 <figure>
                   <img class="h-full rounded shadow-md" :src="itemData.image" />
@@ -70,7 +70,7 @@ onMounted(() => {
                   <h3 class="card-title">{{ itemData.name }}</h3>
                   <span class="flex flex-row flex-wrap">
                     <span
-                      class="badge badge-accent gap-2 tooltip mr-1"
+                      class="badge badge-soft badge-accent badge-sm gap-2 tooltip mr-1"
                       :data-tip="`${itemData['date'].from.day} ${
                         data.months[parseInt(itemData['date'].from.month) - 1]
                       } ${itemData['date'].from.year}'den ${
@@ -89,7 +89,7 @@ onMounted(() => {
                     <span
                       v-for="genre of itemData.genres"
                       :key="genre"
-                      class="badge badge-neutral gap-2 mr-1 mb-1 tooltip"
+                      class="badge badge-neutral badge-sm gap-2 mr-1 mb-1 tooltip"
                       >{{ data.malgenres[String(genre.name)] }}</span
                     >
                   </span>
@@ -98,13 +98,13 @@ onMounted(() => {
                   </p>
                   <div class="flex justify-end">
                     <NuxtLink
-                      class="btn btn-ghost flex flex-row mx-1 tooltip"
+                      class="btn btn-soft btn-info flex flex-row mx-1 tooltip"
                       data-tip="MyAnimeList sayfasını görüntüle"
                       :href="itemData.url"
-                      ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
+                      ><Icon name="simple-icons:myanimelist" class="h-10 w-10"
                     /></NuxtLink>
                     <NuxtLink
-                      class="btn btn-primary flex flex-row tooltip"
+                      class="btn btn-primary btn-soft flex flex-row tooltip"
                       data-tip="Mangile sayfasını görüntüle"
                       :href="`/title/${itemData.id}`"
                       ><Icon
@@ -119,7 +119,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <NuxtLink :to="`/title/${itemData.id}`" v-else class="card card-compact image-full w-48 h-72 m-5 bg-base-100">
+      <NuxtLink :to="`/title/${itemData.id}`" v-else class="card card-sm image-full w-48 h-72 m-5 bg-base-100">
         <figure>
           <img class="w-full" :src="itemData.image" />
         </figure>
@@ -162,7 +162,7 @@ onMounted(() => {
           <p class="text-sm max-h-32 overflow-auto">
             <span class="flex flex-row flex-wrap">
               <span
-                class="badge badge-secondary badge-sm mb-1 tooltip"
+                class="badge badge-soft badge-secondary badge-sm mb-1 tooltip"
                 >{{
                   `${new Date(itemData.date).getDate()} ${new Date(itemData.date).toLocaleString("default", { month: "long" })} ${new Date(itemData.date).getFullYear()}, ${new Date(itemData.date).getHours().toString().padStart(2, "0")}.${new Date(itemData.date).getMinutes().toString().padStart(2, "0")}`
                 }}</span
@@ -177,7 +177,7 @@ onMounted(() => {
               }`"
             >
             <NuxtLink
-              class="btn btn-primary btn-md flex flex-row"
+              class="btn btn-primary btn-soft btn-md flex flex-row"
               :href="`/title/${itemData.id}`"
               ><Icon
                 name="material-symbols:visibility-rounded"
@@ -186,7 +186,7 @@ onMounted(() => {
             >
             <div
                 tabindex="0"
-                class="dropdown-content card card-side card-compact bg-base-200 h-88 w-[675px] z-[1] shadow"
+                class="dropdown-content card card-side card-sm bg-base-200 w-[675px] z-[1] shadow"
               >
                 <figure>
                   <img class="h-full rounded shadow-md" :src="itemData.image" />
@@ -195,13 +195,13 @@ onMounted(() => {
                   <h3 class="card-title">{{ itemData.name }}</h3>
                   <span class="flex flex-row flex-wrap">
                     <span
-                      class="badge badge-accent gap-2 mr-1"
+                      class="badge badge-soft badge-accent badge-sm gap-2 mr-1"
                       >{{ `${new Date(itemData.date).getDate()} ${new Date(itemData.date).toLocaleString("default", { month: "long" })} ${new Date(itemData.date).getFullYear()}, ${new Date(itemData.date).getHours().toString().padStart(2, "0")}.${new Date(itemData.date).getMinutes().toString().padStart(2, "0")}` }}</span
                     >
                     <span
                       v-for="genre of itemData.genres"
                       :key="genre"
-                      class="badge badge-neutral gap-2 mr-1 mb-1 tooltip"
+                      class="badge badge-neutral badge-sm gap-2 mr-1 mb-1 tooltip"
                       >{{ genre }}</span
                     >
                   </span>
@@ -209,20 +209,20 @@ onMounted(() => {
                     {{ itemData.description }}
                   </p>
                   <div class="flex justify-end">
-                    <span class="btn btn-ghost no-animation">
+                    <span class="btn btn-soft btn-error no-animation">
                       <span class="tooltip" data-tip="Veri Tabanı Girdisi">
                       <Icon name="simple-icons:sanity" class="mt-[2px]"/>
                       </span>
                     </span>
                     <span class="grow"/>
                     <NuxtLink
-                      class="btn btn-ghost flex flex-row mx-1 tooltip"
+                      class="btn btn-soft btn-info flex flex-row mx-1 tooltip"
                       data-tip="MyAnimeList sayfasını görüntüle"
                       :href="`https://myanimelist.net/${itemData.id}`"
                       ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
                     /></NuxtLink>
                     <NuxtLink
-                      class="btn btn-primary flex flex-row tooltip"
+                      class="btn btn-primary btn-soft flex flex-row tooltip"
                       data-tip="Mangile sayfasını görüntüle"
                       :href="`/title/${itemData.id}`"
                       ><Icon
@@ -237,7 +237,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <NuxtLink :to="`/title/${itemData.id}`" v-else class="card card-compact image-full w-48 h-72 m-5 bg-base-100">
+      <NuxtLink :to="`/title/${itemData.id}`" v-else class="card card-sm image-full w-48 h-72 m-5 bg-base-100">
         <figure>
           <img class="w-full" :src="itemData.image" />
         </figure>
@@ -257,7 +257,7 @@ onMounted(() => {
           <span class="overflow-auto -mt-1">
             <span class="flex flex-row flex-wrap">
               <span
-                class="badge badge-secondary badge-sm tooltip tooltip-accent"
+                class="badge badge-soft badge-secondary badge-sm tooltip tooltip-accent"
                 >{{
                   `${new Date(itemData.date).getDate()} ${new Date(itemData.date).toLocaleString("default", { month: "long" })} ${new Date(itemData.date).getFullYear()}, ${new Date(itemData.date).getHours().toString().padStart(2, "0")}.${new Date(itemData.date).getMinutes().toString().padStart(2, "0")}`
                 }}</span
@@ -286,13 +286,13 @@ onMounted(() => {
                 .replaceAll("lightNovel", "Hafif Roman") }}</span>
           </span>
           <p class="text-sm">
-            <span class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1">{{
+            <span class="badge badge-soft badge-accent lg:badge-sm badge-xs gap-2 mr-1">{{
           data["malstatus"][String(itemData.status)]
         }}</span>
         <span
           v-for="genre of itemData.genres"
           :key="genre"
-          class="badge badge-neutral badge-sm lg:badge-md gap-2 my-1 mr-1"
+          class="badge badge-neutral lg:badge-sm badge-xs gap-2 my-1 mr-1"
           >{{ data.malgenres[String(genre.name)] }}</span
         >
           </p>
@@ -300,7 +300,7 @@ onMounted(() => {
             <div
             >
               <NuxtLink
-                class="btn btn-primary btn-md flex flex-row"
+                class="btn btn-primary btn-soft btn-md flex flex-row"
                 :href="`/title/${itemData.mal_id}`"
                 ><Icon
                   name="material-symbols:visibility-rounded"
@@ -311,7 +311,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <NuxtLink :to="`/title/${itemData.mal_id}`" v-else class="card card-compact image-full w-[170px] h-72 mx-2 my-1 bg-base-100">
+      <NuxtLink :to="`/title/${itemData.mal_id}`" v-else class="card card-sm image-full w-[170px] h-72 mx-2 my-1 bg-base-100">
         <figure>
           <img class="w-full" :src="itemData.images.jpg.large_image_url" />
         </figure>

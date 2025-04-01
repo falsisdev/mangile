@@ -39,13 +39,13 @@ onMounted(() => {
                 .replaceAll("lightNovel", "Hafif Roman") }}</span>
       </span>
       <p>
-        <span class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1">{{
+        <span class="badge badge-accent badge-soft badge-soft lg:badge-sm badge-xs gap-2 mr-1">{{
           data["malstatus"][String(itemData.status)]
         }}</span>
         <span
           v-for="genre of itemData.genres"
           :key="genre"
-          class="badge badge-neutral badge-sm lg:badge-md gap-2 my-1 mr-1"
+          class="badge badge-neutral lg:badge-sm badge-xs gap-2 my-1 mr-1"
           >{{ data.malgenres[String(genre.name)] }}</span
         >
       </p>
@@ -61,7 +61,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <NuxtLink v-else :to="`/title/${itemData.mal_id}`" class="card card-compact image-full md:w-[25%] w-[45%] h-72 mx-2 my-1 bg-base-100">
+  <NuxtLink v-else :to="`/title/${itemData.mal_id}`" class="card card-sm image-full md:w-[25%] w-[45%] h-72 mx-2 my-1 bg-base-100">
         <figure>
           <img class="w-full" :src="itemData.images.jpg.large_image_url" />
         </figure>

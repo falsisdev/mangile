@@ -49,7 +49,7 @@ onMounted(() => {
       </p>
       <div class="flex justify-end">
         <NuxtLink
-          class="btn btn-primary lg:btn-md btn-sm flex flex-row"
+          class="btn btn-primary btn-soft lg:btn-md btn-sm flex flex-row"
           :href="`/title/${item.entry.mal_id}`"
           ><Icon
             name="material-symbols:visibility-rounded"
@@ -59,7 +59,7 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-compact image-full md:w-[25%] w-[45%] h-72 mx-2 my-1 bg-base-100">
+  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-sm image-full md:w-[25%] w-[45%] h-72 mx-2 my-1 bg-base-100">
         <figure>
           <img class="w-full" :src="item.entry.images.jpg.large_image_url" />
         </figure>

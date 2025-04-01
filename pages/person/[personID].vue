@@ -54,7 +54,7 @@ const person = personData.value.data;
             </h1>
           </span>
           <span>
-            <span class="badge badge-accent badge-sm lg:badge-md gap-2 mr-1"
+            <span class="badge badge-accent lg:badge-sm badge-xs gap-2 mr-1"
               >{{ person.favorites }} takipçi</span
             >
             <br /><br />

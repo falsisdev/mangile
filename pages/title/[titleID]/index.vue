@@ -260,24 +260,23 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
     </div>
     <div
       v-if="manga && manga.images && manga.images.jpg"
-      class="card lg:card-side lg:card-normal card-compact bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12"
+      class="card lg:card-side lg:card-normal card-sm bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12"
     >
       <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5">
         <swiper
           :spaceBetween="0"
           :centeredSlides="true"
           :loop="true"
-          class="lg:w-[287px] w-72"
+          class="lg:w-[287px] w-72 max-w-full lg:max-h-[600px] lg:-mt-5 lg:mb-5"
         >
-          <swiper-slide v-for="image of images" :key="image">
-            <figure class="indicator">
-              <span
-                v-if="manga.demographics && manga.demographics[0]"
-                class="indicator-item indicator-center indicator-bottom badge badge-base-100 mb-2 rounded-b-none"
-                >{{ manga.demographics[0].name }}</span
-              >
+          <swiper-slide
+            v-for="image of images"
+            :key="image"
+            class="flex justify-center items-center max-w-full max-h-[600px]"
+          >
+            <figure>
               <NuxtImg
-                class="rounded shadow-md w-72 h-auto"
+                class="rounded shadow-md w-auto h-auto max-w-full max-h-[400px] object-contain"
                 :src="image.jpg.large_image_url"
               />
             </figure>
@@ -382,7 +381,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   manga['title'].toLowerCase() !=
                   manga['title_japanese'].toLowerCase()
                 "
-                class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1"
+                class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1 mb-7"
               >
                 {{ manga.title_japanese }}
               </span>
@@ -391,13 +390,13 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           <span>
             <span
               v-if="manga.status"
-              class="badge badge-accent badge-sm lg:badge-md mr-1"
+              class="badge badge-accent badge-soft lg:badge-sm badge-xs mr-1"
               >{{ data["malstatus"][String(manga.status)] }}</span
             >
             <span
               v-for="genre of manga.genres"
               :key="genre"
-              class="badge badge-neutral badge-sm lg:badge-md gap-2 my-1 mr-1"
+              class="badge badge-neutral lg:badge-sm badge-xs gap-2 my-1 mr-1"
               >{{ data.malgenres[String(genre.name)] }}</span
             >
             <br />
@@ -487,26 +486,26 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               <span class="grow" />
               <button
                 @click.prevent="dbStyle = 1"
-                :class="`btn btn-ghost btn-sm mt-2 tooltip ${dbStyle ? 'btn-active' : ''}`"
+                :class="`btn btn-ghost btn-sm mt-2 tooltip ${dbStyle ? 'btn-primary btn-active' : ''}`"
                 data-tip="Düzenli görünüm"
               >
                 <Icon
                   name="material-symbols:format-list-numbered"
-                  class="h-4 w-4"
+                  class="h-5 w-5"
                 />
               </button>
               <button
                 @click.prevent="dbStyle = 0"
-                :class="`btn btn-ghost btn-sm mt-2 tooltip ${dbStyle ? '' : 'btn-active'}`"
+                :class="`btn btn-ghost btn-sm mt-2 tooltip ${dbStyle ? '' : 'btn-primary btn-active'}`"
                 data-tip="Dağınık görünüm"
               >
                 <Icon
                   name="material-symbols:format-list-bulleted"
-                  class="h-4 w-4"
+                  class="h-5 w-5"
                 />
               </button>
             </div>
-            <ul class="menu menu-sm rounded-lg lg:w-full">
+            <ul class="menu lg:menu-md menu-sm rounded-lg lg:w-full">
               <li>
                 <details>
                   <summary>
@@ -514,7 +513,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                     Bölümler
                   </summary>
                   <ul v-if="sanityData != String([])">
-                    <li v-for="chapter of groupedChapters" :key="chapter">
+                    <li v-for="chapter of groupedChapters" :key="chapter"> 
                       <details v-if="dbStyle">
                         <summary>
                           <Icon name="mdi:file-document" class="h-5 w-5" />

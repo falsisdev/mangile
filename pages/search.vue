@@ -106,14 +106,17 @@ useSeoMeta({
         <h1 class="lg:text-5xl text-2xl">Keşfet</h1>
       </article>
     </div>
-    <label class="input lg:input-md input-sm input-bordered flex items-center gap-2 mx-5">
-      <input
-        id="searchbar"
-        v-model="q"
-        type="text"
-        class="grow"
-        placeholder="Ara..."
-      />
+        <label
+          class="input lg:input-md input-sm w-full rounded-full flex items-center"
+        >
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
+          <input
+            id="searchbar"
+            type="search"
+            class="grow"
+            placeholder="Ara..."
+            v-model="q"
+          />
       <span class="flex">
         <span class="dropdown dropdown-end dropdown-bottom">
           <button class="btn btn-ghost btn-sm">

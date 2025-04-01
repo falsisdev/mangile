@@ -49,7 +49,7 @@ watch([userData, favManga], fetchData, { immediate: true });
     </div>
   <main v-else-if="userData">
     <div
-      class="card card-compact bg-base-100 w-full lg:rounded-2xl rounded-none"
+      class="card card-sm bg-base-100 w-full lg:rounded-2xl rounded-none"
     >
       <figure
         class="lg:h-72 h-48 shadow-inner lg:border-2 lg:border-neutral-content lg:border-opacity-50"
@@ -171,7 +171,7 @@ watch([userData, favManga], fetchData, { immediate: true });
           </h1>
         </article>
         <div
-          :class="`card lg:card-normal card-compact lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg lg:p-3 lg:rounded-lg shadow-base-300 mt-5 ${isMobileOrTablet ? 'image-full' : ''}`"
+          :class="`card lg:card-normal card-sm lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg lg:p-3 lg:rounded-lg shadow-base-300 mt-5 ${isMobileOrTablet ? 'image-full' : ''}`"
         >
           <figure class="w-full lg:h-auto h-96">
             <img
@@ -191,14 +191,14 @@ watch([userData, favManga], fetchData, { immediate: true });
             </span>
             <span class="flex flex-row flex-wrap">
               <span
-                class="badge badge-accent lg:badge-md badge-sm gap-2 mr-1 mt-1 tooltip tooltip-accent"
+                class="badge badge-accent lg:badge-sm badge-xs gap-2 mr-1 mt-1 tooltip tooltip-accent"
                 :data-tip="data['malstatus'][String(favManga.data.status)]"
                 >{{ data["malstatus"][String(favManga.data.status)] }}</span
               >
               <span
                 v-for="genre of favManga.data.genres"
                 :key="genre"
-                class="badge badge-neutral lg:badge-md badge-sm gap-2 my-1 mr-1 tooltip"
+                class="badge badge-neutral lg:badge-sm badge-xs gap-2 my-1 mr-1 tooltip"
                 :data-tip="data.malgenres[String(genre.name)]"
                 >{{ data.malgenres[String(genre.name)] }}</span
               >

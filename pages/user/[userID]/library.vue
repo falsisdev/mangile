@@ -71,7 +71,7 @@ watch([userData], fetchData, { immediate: true });
   </div>
   <main v-else-if="userData">
     <div
-      class="card card-compact bg-base-100 w-full lg:rounded-2xl rounded-none"
+      class="card card-sm bg-base-100 w-full lg:rounded-2xl rounded-none"
     >
       <figure
         class="h-56 shadow-inner lg:border-2 lg:border-neutral-content lg:border-opacity-50"
