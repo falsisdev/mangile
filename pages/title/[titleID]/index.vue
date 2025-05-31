@@ -516,7 +516,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                     <li v-for="chapter of groupedChapters" :key="chapter"> 
                       <details v-if="dbStyle">
                         <summary>
-                          <Icon name="mdi:file-document" class="h-5 w-5" />
+                          <Icon name="mdi:file-document" class="h-6 w-6 mt-[0.7]" />
                           Bölüm
                           {{
                             chapter[0]
@@ -531,9 +531,9 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                                 <NuxtLink class="no-underline flex flex-row">
                                   <Icon
                                     name="mdi:file-document-arrow-right"
-                                    class="h-5 w-5 mr-1"
+                                    class="h-6 w-6"
                                   />
-                                 <b class="ml-1">{{ ch.source.name }}</b>
+                                 <b>{{ ch.source.name }}</b>
                                 </NuxtLink>
                               </summary>
                               <ul>
@@ -574,7 +574,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                             >
                               <Icon
                                 name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
+                                class="h-7 w-7 mr-1 mt-1"
                               />
                               {{ ch.title }}
                               <NuxtLink :to="`/scan/${ch.source._id}`"><b class="ml-1">({{ ch.source.name }})</b> </NuxtLink>
@@ -588,7 +588,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                             <span class="flex flex-row">
                               <Icon
                                 name="mdi:file-document-arrow-right"
-                                class="h-5 w-5 mr-1"
+                                class="h-7 w-7 mr-1"
                               />
                               {{ ch.title }}
                             </span>
@@ -600,7 +600,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                     </li>
                   </ul>
                   <span v-else class="mx-3 prose">
-                    <span class="mt-1">
+                    <span class="mt-2">
                       Üzgünüz. Görünüşe göre bu seride hiç bölüm yüklenmemiş.
                     </span>
                   </span>
@@ -619,7 +619,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                           <NuxtLink class="no-underline flex flex-row">
                             <Icon
                               name="mdi:file-document-arrow-right"
-                              class="h-5 w-5 mr-1"
+                              class="h-7 w-7 mr-1 mt-1"
                             />
                             {{ scan }}
                           </NuxtLink>
@@ -812,11 +812,11 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           v-if="
             relations.filter((x) => x.relation == relation.relation).length != 0
           "
-          class="lg:mr-5 lg:flex lg:items-center"
+          class="lg:flex lg:items-center"
         >
           <article
             v-if="!isMobile"
-            class="prose rotate-180"
+            class="prose rotate-180 lg:-mr-5"
             style="text-orientation: sideways; writing-mode: vertical-lr"
           >
             <h1>

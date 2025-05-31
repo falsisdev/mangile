@@ -157,7 +157,7 @@ watch([userData, favManga], fetchData, { immediate: true });
             </NuxtLink>
           </span>
         </h2>
-        <p class="lg:ml-40 -mt-3">
+        <p class="lg:ml-40">
           {{
             userData.customData.userAbout ? userData.customData.userAbout : ""
           }}
@@ -171,7 +171,7 @@ watch([userData, favManga], fetchData, { immediate: true });
           </h1>
         </article>
         <div
-          :class="`card lg:card-normal card-sm lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg lg:p-3 lg:rounded-lg shadow-base-300 mt-5 ${isMobileOrTablet ? 'image-full' : ''}`"
+          :class="`card card-dash card-sm lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg lg:p-3 lg:rounded-lg shado  w-base-300 mt-5 ${isMobileOrTablet ? 'image-full' : ''}`"
         >
           <figure class="w-full lg:h-auto h-96">
             <img
@@ -179,7 +179,7 @@ watch([userData, favManga], fetchData, { immediate: true });
               :src="favManga.data.images.jpg.large_image_url"
             />
           </figure>
-          <div class="card-body lg:h-72 h-96">
+          <div class="card-body lg:h-64 h-96">
             <span class="flex flex-col">
               <h2 v-if="!isMobileOrTablet" class="card-title">{{ favManga.data.title }}</h2>
               <h3 v-else class="card-title text-lg font-extrabold">{{ favManga.data.title }}</h3>
@@ -191,15 +191,13 @@ watch([userData, favManga], fetchData, { immediate: true });
             </span>
             <span class="flex flex-row flex-wrap">
               <span
-                class="badge badge-accent lg:badge-sm badge-xs gap-2 mr-1 mt-1 tooltip tooltip-accent"
-                :data-tip="data['malstatus'][String(favManga.data.status)]"
+                class="badge badge-accent lg:badge-sm badge-xs gap-2 mr-1 mt-1"
                 >{{ data["malstatus"][String(favManga.data.status)] }}</span
               >
               <span
                 v-for="genre of favManga.data.genres"
                 :key="genre"
-                class="badge badge-neutral lg:badge-sm badge-xs gap-2 my-1 mr-1 tooltip"
-                :data-tip="data.malgenres[String(genre.name)]"
+                class="badge badge-neutral lg:badge-sm badge-xs gap-2 my-1 mr-1"
                 >{{ data.malgenres[String(genre.name)] }}</span
               >
               <br /><br v-if="!isMobileOrTablet" />
