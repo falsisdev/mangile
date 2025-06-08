@@ -27,6 +27,7 @@ onMounted(() => {
       disableOnInteraction: false,
     }"
     :loop="true"
+    :centeredSlides="true"
     :modules="[SwiperAutoplay]"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
@@ -59,18 +60,18 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-sm image-full md:w-[25%] w-[45%] h-72 mx-2 my-1 bg-base-100">
+  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-sm image-full w-[85%] h-72 mx-2 my-1 bg-base-100">
         <figure>
           <img class="w-full" :src="item.entry.images.jpg.large_image_url" />
         </figure>
-        <div class="card-body h-72 w-[155px] place-self-end flex-col-reverse">
-          <span class="flex flex-col w-full overflow-hidden relative">
-            <h2 class="card-title whitespace-nowrap overflow-hidden text-lg font-extrabold">
+        <div class="card-body flex-col-reverse">
+          <span class="flex flex-col-reverse w-full h-full overflow-hidden">
+            <h2 class="card-title whitespace-nowrap text-lg font-extrabold">
               <b id="marquee-text" class="inline-block">
                 {{ item.entry.title }}
               </b>
             </h2>
-            <span class="text-xs -mt-2 opacity-75">{{
+            <span class="text-xs -mt-2">{{
               item.entry["type"]
             }}</span>
           </span>

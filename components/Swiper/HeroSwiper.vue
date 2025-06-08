@@ -24,7 +24,7 @@ const props = defineProps({
         :style="`background-image: url(${item.image});`"
       >
         <div
-          class="hero-overlay bg-opacity-60 bg-base-100 backdrop-blur-sm"
+          class="hero-overlay opacity-90 bg-base-100 backdrop-blur-md"
         ></div>
         <div class="hero-content flex flex-row-reverse lg:mx-10">
           <img
@@ -39,7 +39,7 @@ const props = defineProps({
             </span>
             <span class="flex flex-row flex-wrap mt-5">
               <span
-                      class="badge badge-accent badge-soft lg:badge-sm badge-xs gap-2 tooltip tooltip-right mr-1 z-[1]"
+                      class="badge badge-info badge-soft lg:badge-sm badge-xs gap-2 tooltip tooltip-right mr-1 z-[1]"
                       :data-tip="`${item['date'].from.day} ${
                         data.months[parseInt(item['date'].from.month) - 1]
                       } ${item['date'].from.year}'den ${
@@ -85,7 +85,7 @@ const props = defineProps({
                   <h3 class="card-title">{{ item.name }}</h3>
                   <span class="flex flex-row flex-wrap">
                     <span
-                      class="badge badge-accent badge-soft badge-sm gap-2 tooltip mr-1"
+                      class="badge badge-info badge-soft badge-sm gap-2 tooltip mr-1"
                       :data-tip="`${item['date'].from.day} ${
                         data.months[parseInt(item['date'].from.month) - 1]
                       } ${item['date'].from.year}'den ${

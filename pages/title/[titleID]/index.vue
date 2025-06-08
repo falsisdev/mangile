@@ -230,6 +230,43 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 </script>
 <template>
   <main class="lg:grid lg:grid-cols-11">
+    <!-- Mobil Banner Başlangıcı -->
+    <div v-if="isMobile" class="relative w-full h-56 mb-24">
+      <div
+        class="absolute top-0 left-0 w-full h-84 z-0"
+        :style="manga && manga.images && manga.images.jpg ? `background-image: url('${manga.images.jpg.large_image_url}'); background-size: cover; background-position: center; opacity: 0.25; filter: blur(8px);` : ''"
+      ></div>
+      <div class="absolute left-1/2 -translate-x-1/2 -bottom-48 z-10 flex flex-col items-center w-full">
+        <div class="shadow-xl rounded-xl overflow-hidden mb-2">
+          <NuxtImg
+            v-if="manga && manga.images && manga.images.jpg"
+            :src="manga.images.jpg.large_image_url"
+            class="object-cover w-48 h-full"
+            alt="Manga Cover"
+          />
+        </div>
+        <!-- Favori Butonu Mobilde Cover Altında -->
+        <div v-if="Boolean(user)" class="flex flex-col items-center w-full">
+          <button
+            @click="setFavorite()"
+            class="btn btn-sm w-48 btn-primary flex items-center gap-2 px-4 py-2"
+          >
+            <Icon
+              name="material-symbols:award-star"
+              class="w-6 h-6"
+            />
+            <span class="font-semibold">
+              {{
+                userData?.customData?.userFavoriteTitle == route.params.titleID
+                  ? 'Favori Seçimini Kaldır'
+                  : 'Favorin Olarak Seç'
+              }}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobil Banner Sonu -->
     <div v-if="!isMobileOrTablet" class="col-start-1 col-end-12">
       <div
       v-if="warning.length > 0"
@@ -243,27 +280,16 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
         >
       </div>
     </div>
-    <div v-else class="pt-2">
-    <div class="mx-4 mt-2">
-        <div
-        v-if="warning.length > 0"
-          role="alert"
-          class="alert alert-warning text-xs px-5 text-start flex"
-        >
-          <Icon name="material-symbols:warning" class="w-5 h-5 lg:-mr-2" />
-          <span
-            >UYARI: Bu seri
-            {{ [...new Set(warning)].join(", ") }} içermektedir.</span
-          >
-        </div>
-      </div>
-    </div>
     <div
       v-if="manga && manga.images && manga.images.jpg"
-      class="card lg:card-side lg:card-normal card-sm bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12"
+      class="card lg:card-side lg:card-normal card-sm bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12 text-xs"
+      :class="isMobileOrTablet ? 'mt-57' : ''"
     >
       <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5">
+        <!-- Mobilde swiper yukarı taşındı, desktop'ta eski yerinde -->
+        <div v-if="isMobileOrTablet" class="hidden"></div>
         <swiper
+          v-if="!isMobileOrTablet"
           :spaceBetween="0"
           :centeredSlides="true"
           :loop="true"
@@ -381,7 +407,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   manga['title'].toLowerCase() !=
                   manga['title_japanese'].toLowerCase()
                 "
-                class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1 mb-7"
+                class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1 mb-11 lg:mb-7"
               >
                 {{ manga.title_japanese }}
               </span>
@@ -426,32 +452,6 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               }}
             </span>
             <br class="lg:mb-0 mb-2" />
-            <span v-if="isMobileOrTablet" class="flex">
-              <span v-if="Boolean(user)">
-                <button @click="setFavorite()" class="btn btn-sm btn-primary">
-                  <Icon
-                    name="material-symbols:award-star"
-                    class="w-5 h-5 -mr-1"
-                  />
-                  <span
-                    v-if="
-                      userData.customData.userFavoriteTitle !==
-                      route.params.titleID
-                    "
-                    class="mb-[0.5px]"
-                    >Favorin Olarak Seç</span
-                  >
-                  <span
-                    v-if="
-                      userData.customData.userFavoriteTitle ==
-                      route.params.titleID
-                    "
-                    class="mb-[0.5px]"
-                    >Favori Seçimini Kaldır</span
-                  >
-                </button>
-              </span>
-            </span>
             <span class="divider py-3 -mt-0 lg:-mb-0 -mb-1" />
             <span v-if="sanityData != String([])" class="text-sm lg:text-md">{{
               sanityData[0].description
@@ -505,7 +505,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                 />
               </button>
             </div>
-            <ul class="menu lg:menu-md menu-sm rounded-lg lg:w-full">
+            <ul class="menu lg:menu-md menu-sm rounded-lg w-full lg:mx-0 -mx-2">
               <li>
                 <details>
                   <summary>
