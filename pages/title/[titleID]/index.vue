@@ -292,19 +292,17 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   </span>
                 </span>
               </span>
-              <span class="text-xs mx-1 opacity-75 text-gray-400 flex flex-row">
+              <span class="text-xs mx-1 opacity-75 text-gray-400">
                 <span
                   v-for="author of manga.authors"
                   :key="author"
                   class="mr-1"
                 >
-                  {{ author["name"].split(", ").sort().join(" ")
+                  {{ author["name"].split(", ").sort().join(", ") 
                   }}{{
                     manga["authors"].length >= 2 &&
-                    manga["authors"].length - 1 !=
-                      manga["authors"].indexOf(author)
-                      ? manga["authors"].length - 2 ==
-                        manga["authors"].indexOf(author)
+                    manga["authors"].length - 1 != manga["authors"].indexOf(author)
+                      ? manga["authors"].length - 2 == manga["authors"].indexOf(author)
                         ? " ve "
                         : ", "
                       : ""

@@ -205,7 +205,7 @@ onMounted(() => {
                       >{{ genre }}</span
                     >
                   </span>
-                  <p class="max-h-32 overflow-auto">
+                  <p class="max-h-48 overflow-auto">
                     {{ itemData.description }}
                   </p>
                   <div class="flex justify-end">
