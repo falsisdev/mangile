@@ -231,38 +231,116 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 <template>
   <main class="lg:grid lg:grid-cols-11">
     <!-- Mobil Banner Başlangıcı -->
-    <div v-if="isMobile" class="relative w-full h-56 mb-24">
+    <div v-if="isMobileOrTablet" class="relative max-w-screen h-96">
       <div
-        class="absolute top-0 left-0 w-full h-84 z-0"
+        class="absolute top-0 left-0 w-full h-full z-0"
         :style="manga && manga.images && manga.images.jpg ? `background-image: url('${manga.images.jpg.large_image_url}'); background-size: cover; background-position: center; opacity: 0.25; filter: blur(8px);` : ''"
       ></div>
-      <div class="absolute left-1/2 -translate-x-1/2 -bottom-48 z-10 flex flex-col items-center w-full">
-        <div class="shadow-xl rounded-xl overflow-hidden mb-2">
-          <NuxtImg
-            v-if="manga && manga.images && manga.images.jpg"
-            :src="manga.images.jpg.large_image_url"
-            class="object-cover w-48 h-full"
-            alt="Manga Cover"
-          />
-        </div>
-        <!-- Favori Butonu Mobilde Cover Altında -->
-        <div v-if="Boolean(user)" class="flex flex-col items-center w-full">
-          <button
-            @click="setFavorite()"
-            class="btn btn-sm w-48 btn-primary flex items-center gap-2 px-4 py-2"
-          >
-            <Icon
-              name="material-symbols:award-star"
-              class="w-6 h-6"
+      <div class="relative flex flex-row items-end justify-center gap-x-4 w-full h-full z-10" style="height: 22rem;">
+        <!-- Cover -->
+        <div class="flex flex-col items-center ml-2">
+          <div class="shadow-xl rounded-xl overflow-hidden mb-2 flex-shrink-0 w-48 h-72">
+            <NuxtImg
+              v-if="manga && manga.images && manga.images.jpg"
+              :src="manga.images.jpg.large_image_url"
+              class="object-cover w-full h-full"
+              alt="Manga Cover"
             />
-            <span class="font-semibold">
+          </div>
+          <div v-if="Boolean(user)" class="w-48">
+            <button
+              @click="setFavorite()"
+              class="btn btn-sm w-full btn-primary flex items-center gap-2 px-4 py-2"
+            >
+              <Icon
+                name="material-symbols:award-star"
+                class="w-6 h-6"
+              />
+              <span class="font-semibold">
+                {{
+                  userData?.customData?.userFavoriteTitle == route.params.titleID
+                    ? 'Favori Seçimini Kaldır'
+                    : 'Favorin Olarak Seç'
+                }}
+              </span>
+            </button>
+          </div>
+        </div>
+        <!-- Başlık/Yazar/Badge/Tarih -->
+        <div class="flex flex-col items-start justify-center place-self-start max-w-[60vw] min-w-0 mt-10">
+          <span v-if="manga.authors" class="card-title">
+            <h1 class="flex flex-col">
+              <span class="flex flex-col relative">
+                <span
+                  class="text-2xl font-extrabold mx-1 whitespace-nowrap overflow-hidden"
+                >
+                  <span
+                    :class="`inline-block ${manga['title'] && manga['title'].length >= 32 ? 'animate-marquee' : ''} w-[40vw]`"
+                    style="max-width: 40vw;"
+                  >
+                    {{ manga.title }}
+                  </span>
+                </span>
+              </span>
+              <span class="text-xs mx-1 opacity-75 text-gray-400 flex flex-row">
+                <span
+                  v-for="author of manga.authors"
+                  :key="author"
+                  class="mr-1"
+                >
+                  {{ author["name"].split(", ").sort().join(" ")
+                  }}{{
+                    manga["authors"].length >= 2 &&
+                    manga["authors"].length - 1 !=
+                      manga["authors"].indexOf(author)
+                      ? manga["authors"].length - 2 ==
+                        manga["authors"].indexOf(author)
+                        ? " ve "
+                        : ", "
+                      : ""
+                  }}
+                </span>
+              </span>
+            </h1>
+          </span>
+          <!-- Mobil/tablet için badge ve yayınlanma tarihi -->
+          <span v-if="isMobileOrTablet" class="mt-2 text-[0.80rem]">
+            <span
+              v-if="manga.status"
+              class="badge badge-accent badge-soft lg:badge-sm badge-xs mr-1"
+              >{{ data["malstatus"][String(manga.status)] }}</span
+            >
+            <span
+              v-for="genre of manga.genres"
+              :key="genre"
+              class="badge badge-neutral lg:badge-sm badge-xs gap-2 my-1 mr-1"
+              >{{ data.malgenres[String(genre.name)] }}</span
+            >
+            <br />
+            <span v-if="manga.published" class="text-xs">
               {{
-                userData?.customData?.userFavoriteTitle == route.params.titleID
-                  ? 'Favori Seçimini Kaldır'
-                  : 'Favorin Olarak Seç'
+                `${manga["published"].prop.from.day} ${
+                  data.months[parseInt(manga["published"].prop.from.month) - 1]
+                } ${manga["published"].prop.from.year}'den ${
+                  manga["published"].prop.to.day
+                    ? manga["published"].prop.to.day
+                    : ""
+                } ${
+                  manga["published"].prop.to.month
+                    ? data.months[parseInt(manga["published"].prop.to.month) - 1]
+                    : ""
+                } ${
+                  manga["published"].prop.to.year
+                    ? manga["published"].prop.to.year
+                    : ""
+                }${
+                  manga.published.prop.to.year
+                    ? "'e kadar yayınlandı"
+                    : " günümüze kadar yayınını sürdürüyor"
+                }`
               }}
             </span>
-          </button>
+          </span>
         </div>
       </div>
     </div>
@@ -283,7 +361,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
     <div
       v-if="manga && manga.images && manga.images.jpg"
       class="card lg:card-side lg:card-normal card-sm bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12 text-xs"
-      :class="isMobileOrTablet ? 'mt-57' : ''"
+      :class="isMobileOrTablet ? '-mt-5' : ''"
     >
       <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5">
         <!-- Mobilde swiper yukarı taşındı, desktop'ta eski yerinde -->
@@ -369,51 +447,54 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       </article>
       <div class="card-body lg:col-start-5 lg:col-end-12">
         <article class="prose">
-          <span v-if="manga.authors" class="card-title lg:-my-7 -mt-10 -mb-10">
-            <h1 class="flex flex-col lg:-mb-0 -mb-1">
-              <span class="lg:text-sm mx-1 text-xs lg:opacity-100 opacity-75 text-gray-400 flex flex-row lg:mx-1 -mb-2">
-                <span
-                  v-for="author of manga.authors"
-                  :key="author"
-                  class="mr-1"
-                >
-                  {{ author["name"].split(", ").sort().join(" ")
-                  }}{{
-                    manga["authors"].length >= 2 &&
-                    manga["authors"].length - 1 !=
-                      manga["authors"].indexOf(author)
-                      ? manga["authors"].length - 2 ==
-                        manga["authors"].indexOf(author)
-                        ? " ve "
-                        : ", "
-                      : ""
-                  }}
-                </span>
-                <span class="-ml-1">'dan</span>
-              </span>
-              <span class="flex flex-col relative">
-                <span
-                  class="lg:text-3xl text-2xl mx-1 whitespace-nowrap overflow-hidden"
-                >
+          <span v-if="!isMobileOrTablet">
+            <span v-if="manga.authors" class="card-title lg:-my-7 -mt-10 -mb-10">
+              <h1 class="flex flex-col lg:-mb-0 -mb-1">
+                <span class="lg:text-sm mx-1 text-xs lg:opacity-100 opacity-75 text-gray-400 flex flex-row lg:mx-1 -mb-2">
                   <span
-                    :class="`inline-block ${manga['title'].length >= 32 ? 'animate-marquee' : ''} lg:w-[35rem] w-80`"
+                    v-for="author of manga.authors"
+                    :key="author"
+                    class="mr-1"
                   >
-                    {{ manga.title }}
+                    {{ author["name"].split(", ").sort().join(" ")
+                    }}{{
+                      manga["authors"].length >= 2 &&
+                      manga["authors"].length - 1 !=
+                        manga["authors"].indexOf(author)
+                        ? manga["authors"].length - 2 == 
+                          manga["authors"].indexOf(author)
+                          ? " ve "
+                          : ", "
+                        : ""
+                    }}
+                  </span>
+                  <span class="-ml-1">'dan</span>
+                </span>
+                <span class="flex flex-col relative">
+                  <span
+                    class="lg:text-3xl text-2xl mx-1 whitespace-nowrap overflow-hidden"
+                  >
+                    <span
+                      :class="`inline-block ${manga['title'].length >= 32 ? 'animate-marquee' : ''} lg:w-[35rem] w-80`"
+                    >
+                      {{ manga.title }}
+                    </span>
                   </span>
                 </span>
-              </span>
-              <span
-                v-if="
-                  manga['title'].toLowerCase() !=
-                  manga['title_japanese'].toLowerCase()
-                "
-                class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1 mb-11 lg:mb-7"
-              >
-                {{ manga.title_japanese }}
-              </span>
-            </h1>
+                <span
+                  v-if="
+                    manga['title'].toLowerCase() !=
+                    manga['title_japanese'].toLowerCase()
+                  "
+                  class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1 mb-11 lg:mb-7"
+                >
+                  {{ manga.title_japanese }}
+                </span>
+              </h1>
+            </span>
           </span>
           <span>
+            <span v-if="!isMobileOrTablet">
             <span
               v-if="manga.status"
               class="badge badge-accent badge-soft lg:badge-sm badge-xs mr-1"
@@ -453,6 +534,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             </span>
             <br class="lg:mb-0 mb-2" />
             <span class="divider py-3 -mt-0 lg:-mb-0 -mb-1" />
+            </span>
             <span v-if="sanityData != String([])" class="text-sm lg:text-md">{{
               sanityData[0].description
             }}</span>
@@ -473,7 +555,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                   />
                   Notlar
                 </div>
-                <div class="collapse-content text-sm lg:text-md">
+                <div class="collapse-content text-sm lg:text-md -mt-10">
                   <SanityContent :blocks="sanityData[0].notes" />
                 </div>
               </span>
@@ -512,7 +594,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                     <Icon name="mdi:book-open-blank-variant" class="h-5 w-5" />
                     Bölümler
                   </summary>
-                  <ul v-if="sanityData != String([])">
+                  <ul v-if="sanityData != String([])" class="-ml-1 -my-2">
                     <li v-for="chapter of groupedChapters" :key="chapter"> 
                       <details v-if="dbStyle">
                         <summary>
@@ -524,7 +606,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                               : chapter.chapterNumber
                           }}
                         </summary>
-                        <ul>
+                        <ul class="-ml-2 -my-2">
                           <li v-for="ch of chapter" :key="ch">
                             <details v-if="[...new Set(scans)].length != 1">
                               <summary>
@@ -588,7 +670,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                             <span class="flex flex-row">
                               <Icon
                                 name="mdi:file-document-arrow-right"
-                                class="h-7 w-7 mr-1"
+                                class="mt-[5px] mr-1"
                               />
                               {{ ch.title }}
                             </span>
@@ -612,7 +694,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                     <Icon name="mdi:file-document-edit" class="h-5 w-5" />
                     Çeviri Ekipleri
                   </summary>
-                  <ul>
+                  <ul class="-ml-1">
                     <li v-for="scan in new Set(scans)" :key="scan">
                       <details>
                         <summary>
@@ -624,7 +706,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
                             {{ scan }}
                           </NuxtLink>
                         </summary>
-                        <ul>
+                        <ul class="-ml-2">
                           <li
                             v-for="chapter of unGroupedChapters.filter(
                               (x) => x.source.name == scan
