@@ -231,12 +231,16 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 <template>
   <main class="lg:grid lg:grid-cols-11">
     <!-- Mobil Banner Başlangıcı -->
-    <div v-if="isMobileOrTablet" class="relative max-w-screen h-96">
+    <div v-if="isMobileOrTablet" class="relative max-w-screen h-96 overflow-x-hidden">
       <div
         class="absolute top-0 left-0 w-full h-full z-0"
-        :style="manga && manga.images && manga.images.jpg ? `background-image: url('${manga.images.jpg.large_image_url}'); background-size: cover; background-position: center; opacity: 0.25; filter: blur(8px);` : ''"
+        :style="images && images[1] && images[1].jpg ? 
+          `background-image: url('${images[1].jpg.large_image_url}'); background-size: cover; background-position: center; opacity: 0.33; filter: blur(5px);`
+          : (manga && manga.images && manga.images.jpg ? 
+            `background-image: url('${manga.images.jpg.large_image_url}'); background-size: cover; background-position: center; opacity: 0.33; filter: blur(5px);`
+            : '')"
       ></div>
-      <div class="relative flex flex-row items-end justify-center gap-x-4 w-full h-full z-10" style="height: 22rem;">
+      <div class="relative flex flex-row items-end justify-center gap-x-4 w-full h-full z-10" style="height: 22rem; overflow-x:hidden;">
         <!-- Cover -->
         <div class="flex flex-col items-center ml-2">
           <div class="shadow-xl rounded-xl overflow-hidden mb-2 flex-shrink-0 w-48 h-72">
@@ -267,18 +271,24 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           </div>
         </div>
         <!-- Başlık/Yazar/Badge/Tarih -->
-        <div class="flex flex-col items-start justify-center place-self-start max-w-[60vw] min-w-0 mt-10">
+        <div class="flex flex-col items-start justify-center place-self-start max-w-[60vw] min-w-0 mt-10 overflow-x-hidden">
           <span v-if="manga.authors" class="card-title">
             <h1 class="flex flex-col">
               <span class="flex flex-col relative">
                 <span
                   class="text-2xl font-extrabold mx-1 whitespace-nowrap overflow-hidden"
+                  style="max-width:100vw;overflow-x:hidden;"
                 >
                   <span
-                    :class="`inline-block ${manga['title'] && manga['title'].length >= 32 ? 'animate-marquee' : ''} w-[40vw]`"
-                    style="max-width: 40vw;"
+                    class="marquee-container"
+                    style="max-width: 40vw; overflow-x:hidden;"
                   >
-                    {{ manga.title }}
+                    <span
+                      :class="`inline-block ${manga['title'] && manga['title'].length >= 32 ? 'animate-marquee' : ''}`"
+                      style="min-width: 100%;"
+                    >
+                      {{ manga.title }}
+                    </span>
                   </span>
                 </span>
               </span>
@@ -345,25 +355,13 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
       </div>
     </div>
     <!-- Mobil Banner Sonu -->
-    <div v-if="!isMobileOrTablet" class="col-start-1 col-end-12">
-      <div
-      v-if="warning.length > 0"
-        role="alert"
-        class="alert alert-warning lg:text-md text-sm lg:mx-5 lg:mt-2 px-5 text-start flex"
-      >
-        <Icon name="material-symbols:warning" class="w-5 h-5 lg:-mr-2" />
-        <span
-          >UYARI: Bu seri
-          {{ [...new Set(warning)].join(", ") }} içermektedir.</span
-        >
-      </div>
-    </div>
     <div
       v-if="manga && manga.images && manga.images.jpg"
       class="card lg:card-side lg:card-normal card-sm bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12 text-xs"
       :class="isMobileOrTablet ? '-mt-5' : ''"
+      :style="isMobileOrTablet ? 'overflow-x:auto;max-width:100vw;' : ''"
     >
-      <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5">
+      <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5" :style="isMobileOrTablet ? 'overflow-x:auto;max-width:100vw;' : ''">
         <!-- Mobilde swiper yukarı taşındı, desktop'ta eski yerinde -->
         <div v-if="isMobileOrTablet" class="hidden"></div>
         <swiper
@@ -372,6 +370,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           :centeredSlides="true"
           :loop="true"
           class="lg:w-[287px] w-72 max-w-full lg:max-h-[600px] lg:-mt-5 lg:mb-5"
+          :style="isMobileOrTablet ? 'overflow-x:auto;max-width:100vw;' : ''"
         >
           <swiper-slide
             v-for="image of images"
@@ -445,8 +444,8 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           </div>
         </span>
       </article>
-      <div class="card-body lg:col-start-5 lg:col-end-12">
-        <article class="prose">
+      <div class="card-body lg:col-start-5 lg:col-end-12" :style="isMobileOrTablet ? 'overflow-x:hidden;max-width:100vw;' : ''">
+        <article class="prose" :style="isMobileOrTablet ? 'overflow-x:hidden;max-width:100vw;' : ''">
           <span v-if="!isMobileOrTablet">
             <span v-if="manga.authors" class="card-title lg:-my-7 -mt-10 -mb-10">
               <h1 class="flex flex-col lg:-mb-0 -mb-1">
@@ -966,7 +965,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 <style>
 @keyframes marquee {
   0% {
-    transform: translateX(50%);
+    transform: translateX(100%);
   }
   100% {
     transform: translateX(-100%);
@@ -974,7 +973,28 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
 }
 
 .animate-marquee {
+  display: inline-block;
+  white-space: nowrap;
   animation: marquee 10s linear infinite;
   animation-delay: 0.5s;
+}
+
+.marquee-container {
+  overflow-x: hidden;
+  width: 100%;
+  display: block;
+  max-width: 100vw;
+}
+
+/* Sadece mobilde overflow-x gizle, masaüstünde kaldır */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+@media (min-width: 1024px) {
+  html, body {
+    overflow-x: unset !important;
+    max-width: unset !important;
+  }
 }
 </style>

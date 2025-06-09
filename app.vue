@@ -18,7 +18,7 @@ useHead({
 });
 </script>
 <template>
-  <main :data-theme="theme">
+  <main :data-theme="theme" style="overflow-y: auto">
     <NuxtLoadingIndicator
       :color="data['themes'][theme].primary"
       :errorcolor="data['themes'][theme].error"
