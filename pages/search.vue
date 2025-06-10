@@ -1,86 +1,141 @@
 <script setup>
-/*
- * Query Parametreleri
- * q: arama ifadesi
- * page: sayfa numarası
- * type: manga
- * sfw: yetişkin içeriği engelleyici
- * order_by: sıralama tipi
- * sort: sıralama yönü
- */
 const route = useRoute();
 const q = ref(route.query.q);
 const page = ref(1);
 const searchData = ref(null);
 const pagination = ref(null);
+const type = ref(route.query.type || "manga");
+const orderBy = ref(route.query.order_by || "score");
+const sort = ref(route.query.sort || "desc");
+const sfw = ref(route.query.sfw !== undefined ? route.query.sfw === "true" : true);
 
-const { isMobileOrTablet } = useDevice()
+// Türler için filtre (çoklu seçim)
+const genres = ref([]);
 
+// Jikan v4 genre id ve isimleri (string)
+const genreOptions = [
+  { id: "1", name: "Aksiyon" },
+  { id: "2", name: "Macera" },
+  { id: "3", name: "Arabalar" },
+  { id: "4", name: "Komedi" },
+  { id: "6", name: "Şeytan" },
+  { id: "7", name: "Gizem" },
+  { id: "8", name: "Drama" },
+  { id: "9", name: "Ecchi" },
+  { id: "10", name: "Fantastik" },
+  { id: "11", name: "Oyun" },
+  { id: "12", name: "Tarihi" },
+  { id: "13", name: "Korku" },
+  { id: "15", name: "Çocuk" },
+  { id: "16", name: "Büyü" },
+  { id: "17", name: "Dövüş Sanatları" },
+  { id: "18", name: "Mecha" },
+  { id: "19", name: "Müzik" },
+  { id: "20", name: "Parodi" },
+  { id: "21", name: "Samuray" },
+  { id: "22", name: "Romantizm" },
+  { id: "23", name: "Okul" },
+  { id: "24", name: "Bilim Kurgu" },
+  { id: "25", name: "Shoujo" },
+  { id: "27", name: "Shounen" },
+  { id: "29", name: "Uzay" },
+  { id: "30", name: "Doğaüstü" },
+  { id: "31", name: "Süper Güçler" },
+  { id: "32", name: "Vampir" },
+  { id: "33", name: "Yaoi" },
+  { id: "34", name: "Yuri" },
+  { id: "35", name: "Harem" },
+  { id: "36", name: "Yaşamdan Kesitler" },
+  { id: "37", name: "Spor" },
+  { id: "38", name: "Seinen" },
+  { id: "39", name: "Josei" },
+  { id: "42", name: "Polisiye" },
+  { id: "43", name: "Psikolojik" },
+  { id: "44", name: "Seinen" },
+  { id: "45", name: "Askeri" },
+  { id: "46", name: "Gerilim" },
+];
+
+
+// Sıralama seçenekleri (endpoint'e göre dinamik)
+const orderByOptions = [
+  { value: "score", label: "Puan" },
+  { value: "popularity", label: "Popülerlik" },
+  { value: "members", label: "Üye" },
+  { value: "favorites", label: "Favori" },
+  { value: "rank", label: "Sıra" },
+  { value: "title", label: "Başlık" },
+  { value: "chapters", label: "Bölüm" },
+  { value: "volumes", label: "Cilt" },
+  { value: "start_date", label: "Başlangıç" },
+  { value: "end_date", label: "Bitiş" },
+  { value: "type", label: "Tür" },
+  { value: "updated_at", label: "Güncelleme" },
+];
+
+const topOrderByOptions = [
+  { value: "score", label: "Puan" },
+  { value: "popularity", label: "Popülerlik" },
+  { value: "members", label: "Üye" },
+  { value: "favorites", label: "Favori" },
+  { value: "rank", label: "Sıra" },
+];
+
+// Sıralama seçeneklerini endpoint'e göre ayarla
+const currentOrderByOptions = computed(() =>
+  q.value ? orderByOptions : topOrderByOptions
+);
+
+// orderBy değeri endpoint'e uygun değilse düzelt
+watch([q, orderBy], () => {
+  const validOptions = currentOrderByOptions.value.map(opt => opt.value);
+  if (!validOptions.includes(orderBy.value)) {
+    orderBy.value = validOptions[0];
+  }
+});
+
+// Filtre değişince sayfa 1'e çek
+watch([type, orderBy, sort, sfw, q, genres], () => {
+  page.value = 1;
+});
+
+// Jikan API'ya uygun filtreleme
 async function fetchData() {
-  if (q.value) {
-    try {
-      const response = await $fetch(`https://api.jikan.moe/v4/manga`, {
-        params: {
-          q: q.value,
-          page: page.value,
-          sfw: true,
-          order_by: "score",
-          sort: "desc",
-        },
-      });
-      searchData.value = response.data;
-      pagination.value = response.pagination;
-    } catch (error) {
-      console.error("API çağrısı sırasında bir hata oluştu:", error);
-    }
-  } else {
-    try {
-      const response = await $fetch(`https://api.jikan.moe/v4/top/manga`, {
-        params: {
-          page: page.value,
-          sfw: true,
-        },
-      });
-      searchData.value = response.data;
-      pagination.value = response.pagination;
-    } catch (error) {
-      console.error("API çağrısı sırasında bir hata oluştu:", error);
-    }
+  let params = {
+    page: page.value,
+    sfw: sfw.value,
+    order_by: orderBy.value,
+    sort: sort.value,
+  };
+
+  // Type
+  if (type.value && type.value !== "all") params.type = type.value;
+
+  // Türler (genres) -- Jikan API'da sadece /manga endpointinde çalışır!
+  if (genres.value.length > 0) params.genres = genres.value.join(",");
+
+  // Arama
+  if (q.value) params.q = q.value;
+
+  try {
+    let url = q.value || genres.value.length > 0
+      ? "https://api.jikan.moe/v4/manga"
+      : "https://api.jikan.moe/v4/top/manga";
+    if (!q.value && url.includes("/top/")) delete params.q;
+    // /top/manga endpointinde genres parametresi yok, sadece /manga'da var
+    if (url.includes("/top/")) delete params.genres;
+    const response = await $fetch(url, { params });
+    searchData.value = response.data;
+    pagination.value = response.pagination;
+  } catch (error) {
+    console.error("API çağrısı sırasında bir hata oluştu:", error);
   }
 }
 
-watchEffect(() => {
-  if (q.value) {
-    const seoMeta = [
-      {
-        property: "title",
-        content: "Ara: " + q.value + " | Mangile",
-      },
-      {
-        property: "og:title",
-        content: "Mangile'da Ara",
-      },
-      {
-        property: "description",
-        content:
-          "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi. ",
-      },
-      {
-        property: "og:description",
-        content: `Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi. `,
-      },
-    ];
-    useHead({
-      title: `Arama Sorgusu: ${q.value}`,
-      meta: seoMeta,
-    });
-  }
-});
-watch([page, q], fetchData, { immediate: true });
+watch([page, q, type, orderBy, sort, sfw, genres], fetchData, { immediate: true });
 onMounted(() => {
   fetchData();
 });
-
 useSeoMeta({
   author: "Falsis",
   twitterData1: "Falsis",
@@ -106,100 +161,99 @@ useSeoMeta({
         <h1 class="lg:text-5xl text-2xl">Keşfet</h1>
       </article>
     </div>
-        <label
-          class="input lg:input-md input-sm w-full rounded-full flex items-center"
-        >
+    <div class="flex justify-center w-full mx-auto mb-2">
+      <label
+        class="input lg:input-md input-sm w-full rounded-lg flex items-center bg-base-100 shadow"
+      >
         <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
-          <input
-            id="searchbar"
-            type="search"
-            class="grow"
-            placeholder="Ara..."
-            v-model="q"
-          />
-      <span class="flex">
-        <span class="dropdown dropdown-end dropdown-bottom">
-          <button class="btn btn-ghost btn-sm">
-            <Icon name="material-symbols:filter-list" class="lg:h-5 lg:w-5 h-4 w-4" />
-          </button>
-          <ul
-            tabindex="0"
-            class="dropdown-content menu bg-base-100 border border-base-200 rounded-box z-[1] w-72 shadow"
-          >
-            <span>
-              MAL Skoru:
-              <input
-                type="range"
-                min="0"
-                max="10"
-                value="0"
-                class="range range-xs mt-1"
-                step="1"
-              />
-              <div class="flex w-full justify-between px-2 text-xs">
-                <span>1</span>
-                <span>2</span>
-                <span>3</span>
-                <span>4</span>
-                <span>5</span>
-                <span>6</span>
-                <span>7</span>
-                <span>8</span>
-                <span>9</span>
-                <span>10</span>
+        <input
+          id="searchbar"
+          type="search"
+          class="grow bg-transparent focus:outline-none"
+          placeholder="Ara..."
+          v-model="q"
+        />
+      </label>
+      <!-- Filtre butonu arama barının sağına bitişik -->
+      <div class="ml-2 flex items-center">
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost hover:bg-neutral border-0 focus:bg-neutral">
+            <Icon name="material-symbols:tune" />
+          </label>
+          <div tabindex="0" class="dropdown-content z-[1] card card-compact bg-base-100 shadow-lg w-80 mt-2 p-4">
+            <div class="grid grid-cols-1 gap-3">
+              <div class="form-control flex flex-row items-center gap-2">
+                <span class="label-text font-semibold">SFW</span>
+                <input type="checkbox" class="toggle toggle-primary" v-model="sfw" />
               </div>
-            </span>
-            <span class="mt-2">
-              Durum:
-              <select class="select select-bordered w-full max-w-xs mt-1">
-                <option disabled selected>Durum Seçin</option>
-                <option>Yayınlanıyor</option>
-                <option>Tamamlandı</option>
-                <option>Beklemede</option>
-                <option>Durduruldu</option>
-                <option>Gelecek</option>
-              </select>
-            </span>
-            <span class="form-control mt-2">
-              <label class="label cursor-pointer">
-                <span class="label-text">Güvenli İçerik</span>
-                <input type="checkbox" class="toggle" checked />
-              </label>
-            </span>
-            <span class="mt-2">
-              Türler:
-              <span class="mt-1 flex flex-row">
-                <span class="form-control">
-                  <label class="label cursor-pointer">
-                    <span class="label-text mr-2">Aksiyon</span>
+              <div class="form-control">
+                <label class="input-group input-group-sm">
+                  <span>Tür</span>
+                  <select class="select select-bordered select-sm" v-model="type">
+                    <option value="all">Tümü</option>
+                    <option value="manga">Manga</option>
+                    <option value="novel">Novel</option>
+                    <option value="manhwa">Manhwa</option>
+                    <option value="manhua">Manhua</option>
+                  </select>
+                </label>
+              </div>
+              <!-- Türler (çoklu seçim) -->
+              <div class="form-control">
+                <span class="label-text font-semibold mb-1">Türler</span>
+                <div class="flex flex-wrap gap-1 mb-2">
+                  <span
+                    v-for="gid in genres"
+                    :key="gid"
+                    class="badge badge-primary badge-sm"
+                  >
+                    {{ genreOptions.find(g => g.id === gid)?.name || gid }}
+                  </span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-1 max-h-32 overflow-y-auto rounded p-2">
+                  <label
+                    v-for="genre in genreOptions"
+                    :key="genre.id"
+                    class="cursor-pointer flex items-center gap-2 px-2 py-1 rounded hover:bg-base-300 transition"
+                  >
                     <input
                       type="checkbox"
-                      checked
-                      class="checkbox checkbox-xs mr-2"
+                      class="checkbox checkbox-xs"
+                      :value="genre.id"
+                      v-model="genres"
                     />
-                    <span class="label-text mr-2">Macera</span>
-                    <input
-                      type="checkbox"
-                      checked
-                      class="checkbox checkbox-xs mr-2"
-                    />
-                    <span class="label-text mr-2">Bilim Kurgu</span>
-                    <input
-                      type="checkbox"
-                      checked
-                      class="checkbox checkbox-xs mr-2"
-                    />
+                    <span class="text-xs">{{ genre.name }}</span>
                   </label>
-                </span>
-              </span>
-            </span>
-          </ul>
-        </span>
-        <div class="divider divider-horizontal -mx-1" />
-        <Icon name="material-symbols:search" class="lg:h-5 lg:w-5 h-4 w-4 ml-2 mt-2" />
-      </span>
-    </label>
-    <div v-if="q">
+                </div>
+              </div>
+              <div class="form-control">
+                <label class="input-group input-group-sm">
+                  <span>Sırala</span>
+                  <select class="select select-bordered select-sm" v-model="orderBy">
+                    <option
+                      v-for="opt in currentOrderByOptions"
+                      :key="opt.value"
+                      :value="opt.value"
+                    >
+                      {{ opt.label }}
+                    </option>
+                  </select>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="input-group input-group-sm">
+                  <span>Yön</span>
+                  <select class="select select-bordered select-sm" v-model="sort">
+                    <option value="desc">Azalan</option>
+                    <option value="asc">Artan</option>
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>    <div v-if="q">
       <article class="prose max-w-none p-5">
         <h1 v-if="!isMobileOrTablet">
           Arama Sonuçları
