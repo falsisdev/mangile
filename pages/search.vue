@@ -161,7 +161,7 @@ useSeoMeta({
         <h1 class="lg:text-5xl text-2xl">Keşfet</h1>
       </article>
     </div>
-    <div class="flex justify-center w-full mx-auto mb-2">
+    <div class="flex justify-center lg:w-full max-w-screen lg:mx-auto mx-3 mb-2">
       <label
         class="input lg:input-md input-sm w-full rounded-lg flex items-center bg-base-100 shadow"
       >
@@ -177,7 +177,7 @@ useSeoMeta({
       <!-- Filtre butonu arama barının sağına bitişik -->
       <div class="ml-2 flex items-center">
         <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-ghost hover:bg-neutral border-0 focus:bg-neutral">
+          <label tabindex="0" class="btn btn-ghost lg:btn-md btn-sm hover:bg-neutral border-0 focus:bg-neutral">
             <Icon name="material-symbols:tune" />
           </label>
           <div tabindex="0" class="dropdown-content z-[1] card card-compact bg-base-100 shadow-lg w-80 mt-2 p-4">
@@ -192,6 +192,7 @@ useSeoMeta({
                   <select class="select select-bordered select-sm" v-model="type">
                     <option value="all">Tümü</option>
                     <option value="manga">Manga</option>
+                    <option value="lightnovel">Light Novel</option>
                     <option value="novel">Novel</option>
                     <option value="manhwa">Manhwa</option>
                     <option value="manhua">Manhua</option>

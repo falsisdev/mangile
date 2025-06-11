@@ -4,6 +4,8 @@ import { data } from "@/assets/data.ts"
 const route = useRoute();
 const { isMobileOrTablet, isMobile } = useDevice();
 
+const theme = useCookie("theme").value == null ? "sunset" : useCookie("theme")
+
 const query = groq`*[myAnimeListId == ${route.params.titleID}] {
   ...,
   chapters[] {
@@ -227,51 +229,109 @@ onMounted(() => {
   if (dbStyleCookie.value == 0) dbStyle.value = 0;
 });
 onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
+
+// Yeni: scroll ile banner opacity kontrolü için
+const bannerOpacity = ref(1);
+
+function handleScroll() {
+  if (!isMobileOrTablet) return;
+  const bannerHeight = 384; // h-96 = 384px
+  const scrollY = window.scrollY;
+  // 0-75px arası yumuşak geçiş, daha fazlasında tamamen kaybolsun
+  bannerOpacity.value = Math.max(0, 1 - scrollY / 75);
+}
+
+onMounted(() => {
+  if (isMobileOrTablet) {
+    window.addEventListener('scroll', handleScroll, { passive: true });
+  }
+});
+onUnmounted(() => {
+  if (isMobileOrTablet) {
+    window.removeEventListener('scroll', handleScroll);
+  }
+});
+
+// Geri tuşu fonksiyonu
+function goBack() {
+  window.history.length > 1 ? window.history.back() : navigateTo('/');
+}
 </script>
 <template>
   <main class="lg:grid lg:grid-cols-11">
     <!-- Mobil Banner Başlangıcı -->
-    <div v-if="isMobileOrTablet" class="relative max-w-screen h-96 overflow-x-hidden">
+    <div
+      v-if="isMobileOrTablet"
+      class="relative max-w-screen h-36 overflow-x-hidden select-none"
+      style="position: sticky; top: 0; z-index: 30;"
+    >
+      <!-- Banner arkaplanı -->
       <div
-        class="absolute top-0 left-0 w-full h-full z-0"
-        :style="images && images[1] && images[1].jpg ? 
-          `background-image: url('${images[1].jpg.large_image_url}'); background-size: cover; background-position: center; opacity: 0.33; filter: blur(5px);`
-          : (manga && manga.images && manga.images.jpg ? 
-            `background-image: url('${manga.images.jpg.large_image_url}'); background-size: cover; background-position: center; opacity: 0.33; filter: blur(5px);`
-            : '')"
+        class="absolute top-0 left-0 w-full h-full z-0 transition-all duration-300"
+        :style="[
+          images && images[1] && images[1].jpg
+            ? `background-image: url('${images[1].jpg.large_image_url}');`
+            : (manga && manga.images && manga.images.jpg
+                ? `background-image: url('${manga.images.jpg.large_image_url}');`
+                : ''),
+          'background-size: cover; background-position: center;',
+          'opacity: 0.7;',
+          `filter: brightness(0.5);`,
+          `opacity: ${bannerOpacity}`,
+        ]"
       ></div>
-      <div class="relative flex flex-row items-end justify-center gap-x-4 w-full h-full z-10" style="height: 22rem; overflow-x:hidden;">
-        <!-- Cover -->
-        <div class="flex flex-col items-center ml-2">
-          <div class="shadow-xl rounded-xl overflow-hidden mb-2 flex-shrink-0 w-48 h-72">
+      <!-- Banner alt fade -->
+      <div
+        class="absolute bottom-0 left-0 w-full h-24 z-10 pointer-events-none"
+        :style="`background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, ${data['themes'][theme]['base-100']} 100%); opacity: ${bannerOpacity};`"
+      ></div>
+      <!-- Üst bar: geri ve favori -->
+      <div
+        class="absolute top-0 left-0 w-full flex flex-row justify-between items-center px-3 pt-3 z-20"
+        :style="`opacity: ${bannerOpacity}; transition: opacity 0.2s;`"
+      >
+        <button
+          @click="goBack"
+          class="btn btn-ghost bg-black/40 hover:bg-black/60 text-white"
+          aria-label="Geri"
+        >
+          <Icon name="material-symbols:arrow-back-ios-new-rounded" class="w-7 h-7" />
+        </button>
+        <button
+          v-if="Boolean(user)"
+          @click="setFavorite()"
+          class="btn btn-ghost bg-black/40 hover:bg-black/60 text-white"
+          aria-label="Favori"
+        >
+          <Icon
+            name="material-symbols:award-star"
+            class="w-7 h-7"
+            :class="{
+              'text-gray-400 animate-pulse': !userData || !userData.customData,
+              'text-yellow-400': userData && userData.customData && userData.customData.userFavoriteTitle == route.params.titleID,
+              'text-white': userData && userData.customData && userData.customData.userFavoriteTitle != route.params.titleID
+            }"
+          />
+        </button>
+      </div>
+    </div>
+    <!-- Mobil Banner Sonu -->
+    <div v-if="isMobileOrTablet"
+        class="relative flex flex-row items-end justify-center gap-x-4 w-full h-full z-10"
+        style="height: 22rem; overflow-x:hidden; align-items: flex-start;"
+      >
+        <div class="flex flex-col items-center ml-2 mt-4">
+          <div class="shadow-xl rounded-xl overflow-hidden mb-2 flex-shrink-0 w-36 h-56">
             <NuxtImg
               v-if="manga && manga.images && manga.images.jpg"
               :src="manga.images.jpg.large_image_url"
-              class="object-cover w-full h-full"
+              class="object-cover w-36 h-56"
               alt="Manga Cover"
             />
           </div>
-          <div v-if="Boolean(user)" class="w-48">
-            <button
-              @click="setFavorite()"
-              class="btn btn-sm w-full btn-primary flex items-center gap-2 px-4 py-2"
-            >
-              <Icon
-                name="material-symbols:award-star"
-                class="w-6 h-6"
-              />
-              <span class="font-semibold">
-                {{
-                  userData?.customData?.userFavoriteTitle == route.params.titleID
-                    ? 'Favori Seçimini Kaldır'
-                    : 'Favorin Olarak Seç'
-                }}
-              </span>
-            </button>
-          </div>
         </div>
         <!-- Başlık/Yazar/Badge/Tarih -->
-        <div class="flex flex-col items-start justify-center place-self-start max-w-[60vw] min-w-0 mt-10 overflow-x-hidden">
+        <div class="flex flex-col items-start justify-center place-self-start max-w-[60vw] min-w-0 mt-4 overflow-x-hidden">
           <span v-if="manga.authors" class="card-title">
             <h1 class="flex flex-col">
               <span class="flex flex-col relative">
@@ -318,6 +378,7 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
               class="badge badge-accent badge-soft lg:badge-sm badge-xs mr-1"
               >{{ data["malstatus"][String(manga.status)] }}</span
             >
+            <br/>
             <span
               v-for="genre of manga.genres"
               :key="genre"
@@ -351,17 +412,36 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
           </span>
         </div>
       </div>
-    </div>
-    <!-- Mobil Banner Sonu -->
     <div
       v-if="manga && manga.images && manga.images.jpg"
       class="card lg:card-side lg:card-normal card-sm bg-base-100 lg:col-start-1 lg:col-end-11 lg:m-5 lg:grid lg:grid-cols-12 text-xs"
-      :class="isMobileOrTablet ? '-mt-5' : ''"
+      :class="isMobileOrTablet ? '-mt-24' : ''"
       :style="isMobileOrTablet ? 'overflow-x:auto;max-width:100vw;' : ''"
     >
       <article class="prose lg:flex lg:flex-col lg:col-start-1 lg:col-end-5" :style="isMobileOrTablet ? 'overflow-x:auto;max-width:100vw;' : ''">
         <!-- Mobilde swiper yukarı taşındı, desktop'ta eski yerinde -->
         <div v-if="isMobileOrTablet" class="hidden"></div>
+          <div
+            v-if="isMobileOrTablet && manga.score && manga.rank && manga.popularity && manga.favorites"
+            class="flex flex-row w-full justify-between gap-2 px-1"
+          >
+            <div class="flex flex-col items-center justify-center rounded-lg px-1 py-1 min-w-0 flex-1">
+              <span class="text-xs font-bold">{{ manga.score }}</span>
+              <span class="text-[0.65rem] text-gray-400">Ortalama Puan</span>
+            </div>
+            <div class="flex flex-col items-center justify-centerrounded-lg px-1 py-1 min-w-0 flex-1">
+              <span class="text-xs font-bold">#{{ manga.rank }}</span>
+              <span class="text-[0.65rem] text-gray-400">Genel Sıralama </span>
+            </div>
+            <div class="flex flex-col items-center justify-center rounded-lg px-1 py-1 min-w-0 flex-1">
+              <span class="text-xs font-bold">#{{ manga.popularity }}</span>
+              <span class="text-[0.65rem] text-gray-400">Popülerite Sırası</span>
+            </div>
+            <div class="flex flex-col items-center justify-center rounded-lg px-1 py-1 min-w-0 flex-1">
+              <span class="text-xs font-bold">{{ manga.favorites }}</span>
+              <span class="text-[0.65rem] text-gray-400">Favorileme</span>
+            </div>
+          </div>
         <swiper
           v-if="!isMobileOrTablet"
           :spaceBetween="0"
@@ -535,6 +615,66 @@ onMounted(fetchManga); //sayfa ilk yüklendiğinde fetch'le
             <span v-if="sanityData != String([])" class="text-sm lg:text-md">{{
               sanityData[0].description
             }}</span>
+            <!-- Mobilde sanity description için "devamını göster/daralt" -->
+            <span
+              v-else-if="sanityData != String([]) && isMobileOrTablet && sanityData[0]?.description"
+              class="text-sm lg:text-md"
+            >
+              <span v-if="!showFullSanityDesc">
+                {{
+                  sanityData[0].description.length > 80
+                    ? sanityData[0].description.slice(0, 80) + "..."
+                    : sanityData[0].description
+                }}
+                <button
+                  v-if="sanityData[0].description.length > 80"
+                  class="ml-1"
+                  @click="showFullSanityDesc = true"
+                  style="font-size:0.95em"
+                >
+                  Devamını Göster
+                </button>
+              </span>
+              <span v-else>
+                {{ sanityData[0].description }}
+                <button
+                  class="ml-1"
+                  @click="showFullSanityDesc = false"
+                  style="font-size:0.95em"
+                >
+                  Daralt
+                </button>
+              </span>
+            </span>
+            <!-- Mobilde synopsis için "devamını göster/daralt" -->
+            <span
+              v-else-if="manga.synopsis && isMobileOrTablet"
+              class="text-sm lg:text-md"
+            >
+              <span v-if="!showFullSynopsis">
+                {{ manga.synopsis.length > 80
+                    ? manga.synopsis.slice(0, 80) + "..."
+                    : manga.synopsis }}
+                <button
+                  v-if="manga.synopsis.length > 80"
+                  class="ml-1"
+                  @click="showFullSynopsis = true"
+                  style="font-size:0.95em"
+                >
+                  Devamını Göster
+                </button>
+              </span>
+              <span v-else>
+                {{ manga.synopsis }}
+                <button
+                  class="ml-1"
+                  @click="showFullSynopsis = false"
+                  style="font-size:0.95em"
+                >
+                  Daralt
+                </button>
+              </span>
+            </span>
             <span v-else-if="manga.synopsis" class="text-sm lg:text-md">{{
               manga.synopsis
             }}</span>
@@ -993,6 +1133,20 @@ html, body {
   html, body {
     overflow-x: unset !important;
     max-width: unset !important;
+  }
+}
+
+/* Banner fade için ekstra stil */
+@media (max-width: 1023px) {
+  .mobile-banner-fade {
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #18181b 100%);
+    height: 6rem;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    pointer-events: none;
   }
 }
 </style>
