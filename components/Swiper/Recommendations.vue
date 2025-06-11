@@ -60,13 +60,13 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-sm image-full w-[85%] h-72 mx-2 my-1 bg-base-100">
-        <figure>
-          <img class="w-full" :src="item.entry.images.jpg.large_image_url" />
+  <NuxtLink v-else :to="`/title/${item.entry.mal_id}`" class="card card-xs image-full w-36 h-56 mx-2 my-1 bg-base-100">
+        <figure class="w-36 h-56">
+          <img class="w-36 h-56" :src="item.entry.images.jpg.large_image_url" />
         </figure>
-        <div class="card-body flex-col-reverse">
+        <div class="card-body w-36 h-56 flex-col-reverse">
           <span class="flex flex-col-reverse w-full h-full overflow-hidden">
-            <h2 class="card-title whitespace-nowrap text-lg font-extrabold">
+            <h2 class="card-title whitespace-nowrap text-sm font-extrabold">
               <b id="marquee-text" class="inline-block">
                 {{ item.entry.title }}
               </b>

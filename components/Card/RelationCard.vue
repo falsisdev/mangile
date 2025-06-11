@@ -5,6 +5,10 @@ const { isMobileOrTablet } = useDevice();
 
 const props = defineProps({
   itemData: Object,
+  relationName: {
+    type: String,
+    default: ""
+  }
 });
 
 onMounted(() => {
@@ -61,25 +65,33 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <NuxtLink v-else :to="`/title/${itemData.mal_id}`" class="card card-sm image-full md:w-[25%] w-[45%] h-72 mx-2 my-1 bg-base-100">
-        <figure>
-          <img class="w-full" :src="itemData.images.jpg.large_image_url" />
-        </figure>
-        <div class="card-body h-72 w-[155px] place-self-end flex-col-reverse">
-          <span class="flex flex-col w-full overflow-hidden relative">
-            <h2 class="card-title whitespace-nowrap overflow-hidden text-lg font-extrabold">
-              <b id="marquee-text" class="inline-block">
-                {{ itemData.title }}
-              </b>
-            </h2>
-            <span class="text-xs -mt-2 opacity-75">{{
-              itemData["type"]
-                .replaceAll("manga", "Manga")
-                .replaceAll("lightNovel", "Hafif Roman")
-            }}</span>
-          </span>
-        </div>
-      </NuxtLink>
+  <NuxtLink v-else :to="`/title/${itemData.mal_id}`" class="card card-sm image-full w-36 h-56 mx-2 my-1 bg-base-100">
+    <figure class="w-36 h-56">
+      <img class="w-36 h-56" :src="itemData.images.jpg.large_image_url" />
+    </figure>
+    <div class="card-body h-56 w-36 place-self-end flex-col-reverse">
+      <span class="flex flex-col w-full overflow-hidden relative">
+        <h2 class="card-title whitespace-nowrap overflow-hidden text-sm font-extrabold">
+          <b id="marquee-text" class="inline-block">
+            {{ itemData.title }}
+          </b>
+        </h2>
+        <span v-if="relationName" class="text-xs -mt-2 opacity-75">
+            {{
+              relationName
+                .replaceAll("Other", "Diğer")
+                .replaceAll("Adaptation", "Adaptasyon")
+                .replaceAll("Sequel", "Devam Serisi")
+                .replaceAll("Prequel", "Önceki Seri")
+                .replaceAll("Side Story", "Yan Öykü")
+                .replaceAll("Alternative Version", "Alternatif Yorum")
+                .replaceAll("Parent Story", "Ana Öykü")
+                .replaceAll("Character", "Karakter")
+            }}
+        </span>
+      </span>
+    </div>
+  </NuxtLink>
 </template>
 <style>
 @keyframes marquee {

@@ -256,6 +256,10 @@ onUnmounted(() => {
 function goBack() {
   window.history.length > 1 ? window.history.back() : navigateTo('/');
 }
+
+// "Devamını Göster/Daralt" için reaktif değişkenler
+const showFullSanityDesc = ref(false)
+const showFullSynopsis = ref(false)
 </script>
 <template>
   <main class="lg:grid lg:grid-cols-11">
@@ -563,10 +567,11 @@ function goBack() {
                     manga['title'].toLowerCase() !=
                     manga['title_japanese'].toLowerCase()
                   "
-                  class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1 mb-11 lg:mb-7"
+                  class="text-gray-400 lg:text-xl text-sm mx-1 lg:opacity-100 opacity-75 lg:-mt-0 -mt-1 lg:mb-0 mb-11"
                 >
                   {{ manga.title_japanese }}
                 </span>
+                <span class="lg:mb-7"/>
               </h1>
             </span>
           </span>
@@ -610,24 +615,34 @@ function goBack() {
               }}
             </span>
             <br class="lg:mb-0 mb-2" />
+           <button
+          v-if="Boolean(user)"
+          @click="setFavorite()"
+          class="btn btn-ghost text-white tooltip tooltip-right"
+          data-tip="Favoriye Ekle/Kaldır"
+          aria-label="Favori"
+        >
+          <Icon
+            name="material-symbols:award-star"
+            class="w-12 h-12"
+            :class="{
+              'text-gray-400 animate-pulse': !userData || !userData.customData,
+              'text-yellow-200': userData && userData.customData && userData.customData.userFavoriteTitle == route.params.titleID,
+              'text-white': userData && userData.customData && userData.customData.userFavoriteTitle != route.params.titleID
+            }"
+          />
+        </button>
             <span class="divider py-3 -mt-0 lg:-mb-0 -mb-1" />
             </span>
-            <span v-if="sanityData != String([])" class="text-sm lg:text-md">{{
-              sanityData[0].description
-            }}</span>
-            <!-- Mobilde sanity description için "devamını göster/daralt" -->
-            <span
-              v-else-if="sanityData != String([]) && isMobileOrTablet && sanityData[0]?.description"
-              class="text-sm lg:text-md"
-            >
+            <span v-if="sanityData != String([])" class="text-sm lg:text-md">
               <span v-if="!showFullSanityDesc">
                 {{
-                  sanityData[0].description.length > 80
-                    ? sanityData[0].description.slice(0, 80) + "..."
+                  sanityData[0].description.length > 1000
+                    ? sanityData[0].description.slice(0, 1000) + "..."
                     : sanityData[0].description
                 }}
                 <button
-                  v-if="sanityData[0].description.length > 80"
+                  v-if="sanityData[0].description.length > 1000"
                   class="ml-1"
                   @click="showFullSanityDesc = true"
                   style="font-size:0.95em"
@@ -646,17 +661,46 @@ function goBack() {
                 </button>
               </span>
             </span>
+            <!-- Sanity description yoksa, synopsis için göster/daralt -->
+            <span
+              v-else-if="manga.synopsis"
+              class="text-sm lg:text-md"
+            >
+              <span v-if="!showFullSynopsis">
+                {{ manga.synopsis.length > 1000
+                    ? manga.synopsis.slice(0, 1000) + "..."
+                    : manga.synopsis }}
+                <button
+                  v-if="manga.synopsis.length > 1000"
+                  class="ml-1"
+                  @click="showFullSynopsis = true"
+                  style="font-size:0.95em"
+                >
+                  Devamını Göster
+                </button>
+              </span>
+              <span v-else>
+                {{ manga.synopsis }}
+                <button
+                  class="ml-1"
+                  @click="showFullSynopsis = false"
+                  style="font-size:0.95em"
+                >
+                  Daralt
+                </button>
+              </span>
+            </span>
             <!-- Mobilde synopsis için "devamını göster/daralt" -->
             <span
               v-else-if="manga.synopsis && isMobileOrTablet"
               class="text-sm lg:text-md"
             >
               <span v-if="!showFullSynopsis">
-                {{ manga.synopsis.length > 80
-                    ? manga.synopsis.slice(0, 80) + "..."
+                {{ manga.synopsis.length > 300
+                    ? manga.synopsis.slice(0, 300) + "..."
                     : manga.synopsis }}
                 <button
-                  v-if="manga.synopsis.length > 80"
+                  v-if="manga.synopsis.length > 300"
                   class="ml-1"
                   @click="showFullSynopsis = true"
                   style="font-size:0.95em"
@@ -682,7 +726,7 @@ function goBack() {
             <div v-if="sanityData != String([])">
               <span
                 v-if="sanityData[0].notes"
-                class="collapse collapse-arrow -mx-2 -mt-5"
+                class="collapse collapse-arrow -mx-2 -mt-5 lg:border lg:border-base-200 lg:mb-5 mb-3"
               >
                 <input type="checkbox" class="lg:text-xl text-lg peer" />
                 <div class="collapse-title lg:text-xl text-lg">
@@ -697,15 +741,14 @@ function goBack() {
                 </div>
               </span>
             </div>
-            <span class="divider py-3 lg:-mt-0 -mt-4" />
             <div class="flex flex-row">
               <article class="prose">
-                <h1>Veri Tabanı</h1>
+                <h1 class="lg:text-3xl text-2xl">Veri Tabanı</h1>
               </article>
               <span class="grow" />
               <button
                 @click.prevent="dbStyle = 1"
-                :class="`btn btn-ghost btn-sm mt-2 tooltip ${dbStyle ? 'btn-primary btn-active' : ''}`"
+                :class="`btn btn-ghost lg:btn-sm btn-xs mt-2 lg:tooltip ${dbStyle ? 'btn-primary btn-active' : ''}`"
                 data-tip="Düzenli görünüm"
               >
                 <Icon
@@ -715,7 +758,7 @@ function goBack() {
               </button>
               <button
                 @click.prevent="dbStyle = 0"
-                :class="`btn btn-ghost btn-sm mt-2 tooltip ${dbStyle ? '' : 'btn-primary btn-active'}`"
+                :class="`btn btn-ghost lg:btn-sm btn-xs mt-2 lg:tooltip ${dbStyle ? '' : 'btn-primary btn-active'}`"
                 data-tip="Dağınık görünüm"
               >
                 <Icon
@@ -724,7 +767,8 @@ function goBack() {
                 />
               </button>
             </div>
-            <ul class="menu lg:menu-md menu-sm rounded-lg w-full lg:mx-0 -mx-2">
+            <span class="divider" />
+            <ul class="menu lg:menu-md menu-xs rounded-lg w-full lg:w-full border border-base-200">
               <li>
                 <details>
                   <summary>
@@ -750,7 +794,7 @@ function goBack() {
                                 <NuxtLink class="no-underline flex flex-row">
                                   <Icon
                                     name="mdi:file-document-arrow-right"
-                                    class="h-6 w-6"
+                                    class="h-5 w-5 mr-1 mt-1"
                                   />
                                  <b>{{ ch.source.name }}</b>
                                 </NuxtLink>
@@ -763,7 +807,7 @@ function goBack() {
                                   >
                                     <Icon
                                       name="mdi:file-document-arrow-right"
-                                      class="h-5 w-5 mr-1"
+                                      class="h-5 w-5"
                                     />
                                     {{ ch.title }}
                                   </NuxtLink>
@@ -819,7 +863,7 @@ function goBack() {
                     </li>
                   </ul>
                   <span v-else class="mx-3 prose">
-                    <span class="mt-2">
+                    <span class="mt-2 text-sm">
                       Üzgünüz. Görünüşe göre bu seride hiç bölüm yüklenmemiş.
                     </span>
                   </span>
@@ -926,33 +970,8 @@ function goBack() {
         <div class="stats">
           <span class="flex flex-col">
             <span v-if="!isMobileOrTablet" class="ml-1">
-              <span v-if="Boolean(user)">
-                <button @click="setFavorite()" class="btn btn-sm btn-ghost">
-                  <Icon
-                    name="material-symbols:award-star"
-                    class="w-5 h-5 -mr-1"
-                  />
-                  <span
-                    v-if="
-                      userData.customData.userFavoriteTitle !==
-                      route.params.titleID
-                    "
-                    class="mb-[0.5px]"
-                    >Favorin Olarak Seç</span
-                  >
-                  <span
-                    v-if="
-                      userData.customData.userFavoriteTitle ==
-                      route.params.titleID
-                    "
-                    class="mb-[0.5px]"
-                    >Favori Seçimini Kaldır</span
-                  >
-                </button>
-              </span>
             </span>
-            <div class="divider" />
-            <span class="flex lg:flex-col flex-row flex-wrap">
+            <span class="flex lg:flex-col flex-row flex-wrap -mt-2">
               <article class="prose text-center">
                 <h2 class="lg:m-0 mx-5">MAL İstatistikleri</h2>
               </article>
@@ -1014,13 +1033,13 @@ function goBack() {
         </div>
       </div>
     </div>
-    <span v-if="isMobile" class="divider -mt-1"/>
     <div
       v-if="relations[0] && manga && manga.images && manga.images.jpg"
       class="lg:col-start-1 lg:col-end-11 px-5"
     >
-      <article class="prose max-w-none lg:px-5">
-        <h1 class="lg:flex lg:flex-row">Bağlantılı Seriler</h1>
+      <article class="prose max-w-none lg:px-5 lg:-mb-0 -mb-5">
+        <h1 class="lg:text-3xl text-2xl lg:flex lg:flex-row">Bağlantılı Seriler</h1>
+        <span v-if="isMobile" class="divider -my-2"/>
       </article>
       <span
         v-for="relation of manga.relations"
@@ -1034,7 +1053,7 @@ function goBack() {
           class="lg:flex lg:items-center"
         >
           <article
-            v-if="!isMobile"
+            v-if="!isMobileOrTablet"
             class="prose rotate-180 lg:-mr-5"
             style="text-orientation: sideways; writing-mode: vertical-lr"
           >
@@ -1052,21 +1071,6 @@ function goBack() {
               }}
             </h1>
           </article>
-          <article v-else class="prose mt-5">
-            <h1>
-              {{
-                relation["relation"]
-                  .replaceAll("Other", "Diğer")
-                  .replaceAll("Adaptation", "Adaptasyon")
-                  .replaceAll("Sequel", "Devam Serisi")
-                  .replaceAll("Prequel", "Önceki Seri")
-                  .replaceAll("Side Story", "Yan Öykü")
-                  .replaceAll("Alternative Version", "Alternatif Yorum")
-                  .replaceAll("Parent Story", "Ana Öykü")
-              }}
-            </h1>
-            <span class="divider -my-5" />
-          </article>
         </span>
         <br v-if="isMobileOrTablet" />
         <span
@@ -1080,6 +1084,7 @@ function goBack() {
             )"
             :key="entry.entry.mal_id"
             :itemData="entry.entry"
+            :relationName="isMobileOrTablet ? relation.relation : ''"
             :index="relations.indexOf(entry)"
           />
         </span>
@@ -1088,7 +1093,7 @@ function goBack() {
     <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
       <Icon name="mingcute:loading-line" class="animate-spin w-full lg:h-32 h-16" />
     </div>
-    <DisqusComments :identifier="route.fullPath" :shortname="$config.public.disqusShortname" />
+    <span class="divider" />
     <div
       v-if="recommendations[0]"
       class="lg:col-start-1 lg:col-end-12 lg:mt-0 mt-2"
