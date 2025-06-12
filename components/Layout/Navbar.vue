@@ -215,7 +215,7 @@ const save = () => {
         <div class="dropdown dropdown-end" v-if="Boolean(user)">
           <label
             tabindex="0"
-            class="w-10 btn btn-circle btn-ghost hover:bg-transparent hover:-rotate-6 duration-500 avatar mx-2 mt-1"
+            class="size-[2rem] btn btn-circle btn-ghost hover:bg-transparent hover:-rotate-6 duration-500 avatar mx-3 mt-3"
           >
             <div class="rounded-full">
               <img
