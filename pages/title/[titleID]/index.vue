@@ -39,7 +39,10 @@ const groupChaptersByNumber = (chapters) => {
     }
     groupedChapters[chapterNumber].push(chapter);
   });
-  return Object.values(groupedChapters);
+  return Object.keys(groupedChapters)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map(key => groupedChapters[key]);
 };
 
 const groupChaptersByNumberAndSource = (chapters) => {
