@@ -51,9 +51,10 @@ async function fetchManga() {
   }
 }
 
+import { toRaw } from 'vue';
+
 const transformLinksToImages = (content) => {
   return content.map(block => {
-    // Eğer doğrudan image bloğu ise, src ve alt'ı ayarla ve döndür
     if (block._type === 'image' && block.asset) {
       return {
         _type: 'image',
@@ -61,7 +62,6 @@ const transformLinksToImages = (content) => {
         alt: block.alt || '',
       };
     }
-    // Block tipi ve children'ı varsa, linkleri image'a dönüştür
     if (block._type === 'block' && block.children) {
       block.children = block.children.map(child => {
         if (child._type === 'span' && child.marks.length > 0) {

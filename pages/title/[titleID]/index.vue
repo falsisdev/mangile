@@ -739,7 +739,7 @@ const showFullSynopsis = ref(false)
                   />
                   Notlar
                 </div>
-                <div class="collapse-content text-sm lg:text-md -mt-10">
+                <div class="collapse-content text-sm lg:text-md -mt-4">
                   <SanityContent :blocks="sanityData[0].notes" />
                 </div>
               </span>
