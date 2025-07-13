@@ -25,6 +25,32 @@ onMounted(() => {
 });
 
 watch([props.itemData], coverGet, { immediate: true });
+
+// Tür isimlerini Türkçeye çeviren fonksiyon
+function turkceType(type) {
+  if (!type) return "";
+  switch (type.toLowerCase()) {
+    case "manga":
+      return "Manga";
+    case "lightnovel":
+    case "light_novel":
+    case "light novel":
+      return "Hafif Roman";
+    case "manhwa":
+      return "Manhwa";
+    case "manhua":
+      return "Manhua";
+    case "novel":
+      return "Roman";
+    case "one-shot":
+    case "oneshot":
+      return "Tek Atış";
+    case "doujinshi":
+      return "Doujinshi";
+    default:
+      return type;
+  }
+}
 </script>
 <template>
   <div
@@ -40,6 +66,8 @@ watch([props.itemData], coverGet, { immediate: true });
             {{ itemData.title }}
           </span>
         </h2>
+        <!-- Liste türü badge'i -->
+        <span v-if="itemData.type" class="text-xs -mt-3">{{ turkceType(itemData.type) }}</span>
       </span>
       <p class="-mt-2 flex flex-col">
         <span class="flex flex-row">
@@ -65,17 +93,25 @@ watch([props.itemData], coverGet, { immediate: true });
             {{ itemData.favs.length }}
           </span>
         </span>
+        <!-- Ekstra badge örnekleri (varsa) -->
+        <span class="flex flex-row flex-wrap gap-1 mt-2">
+          <span
+            v-for="genre in itemData.genres"
+            :key="genre"
+            class="badge badge-neutral badge-xs gap-1"
+          >{{ turkceType(genre) }}</span>
+        </span>
       </p>
       <div class="flex justify-end">
         <NuxtLink
           class="btn btn-primary flex flex-row mx-1"
           :to="`list/${itemData.key}`"
           ><Icon name="material-symbols:visibility-rounded" class="h-4 w-4"
-        /></NuxtLink>
-        <NuxtLink class="btn btn-warning flex flex-row"
+        />Görüntüle</NuxtLink>
+        <NuxtLink class="btn btn-soft btn-warning flex flex-row mx-1"
           ><Icon name="material-symbols:edit" class="h-4 w-4"
         /></NuxtLink>
-        <NuxtLink class="btn btn-error flex flex-row mx-1"
+        <NuxtLink class="btn btn-soft btn-error flex flex-row"
           ><Icon name="material-symbols:delete" class="h-4 w-4"
         /></NuxtLink>
       </div>

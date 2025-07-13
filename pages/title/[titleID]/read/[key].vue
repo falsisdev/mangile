@@ -53,6 +53,15 @@ async function fetchManga() {
 
 const transformLinksToImages = (content) => {
   return content.map(block => {
+    // Eğer doğrudan image bloğu ise, src ve alt'ı ayarla ve döndür
+    if (block._type === 'image' && block.asset) {
+      return {
+        _type: 'image',
+        src: builder.image(block.asset._ref).auto('format').url(),
+        alt: block.alt || '',
+      };
+    }
+    // Block tipi ve children'ı varsa, linkleri image'a dönüştür
     if (block._type === 'block' && block.children) {
       block.children = block.children.map(child => {
         if (child._type === 'span' && child.marks.length > 0) {
@@ -183,7 +192,7 @@ const getPreviousChapterKey = () => {
 const currentPage = ref(1);
 </script>
 <template>
-  <main v-if="chapter && manga" class="lg:m-0 mx-5">
+  <main v-if="chapter && manga" class="lg:m-0 mx-10">
     <div class="lg:pt-0 pt-5">
       <article class="prose max-w-none flex flex-col">
         <h1 class="flex flex-col">

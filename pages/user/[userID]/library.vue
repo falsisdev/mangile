@@ -34,20 +34,37 @@ async function fetchData() {
       }`
     );
 
+    // Hata kontrolü eklendi
+    if (!response.value || !response.value.customData) {
+      userData.value = null;
+      bookcaseData.value = [];
+      loading.value = false;
+      return;
+    }
+
     userData.value = toRaw(response.value);
 
     if (
       toRaw(response.value).customData.userBookcase != [] &&
       Boolean(toRaw(response.value).customData.userBookcase)
     ) {
-      for (let serie of toRaw(response.value).customData.userBookcase) {
-        setTimeout(async () => {
-          const { data: bookCase } = await useFetch(
-            `https://api.jikan.moe/v4/manga/${serie.id}`
-          );
-
-          bookcaseData.value.push(toRaw(bookCase.value).data);
-        }, 750);
+      const bookcaseList = toRaw(response.value).customData.userBookcase;
+      if (bookcaseList.length > 0) {
+        // Tüm fetch işlemlerini Promise.all ile topluca yap
+        const results = await Promise.all(
+          bookcaseList.map(async (serie) => {
+            const { data: bookCase } = await useFetch(
+              `https://api.jikan.moe/v4/manga/${serie.id}`
+            );
+            return toRaw(bookCase.value).data;
+          })
+        );
+        // Sadece veri değiştiyse atama yap
+        if (JSON.stringify(bookcaseData.value) !== JSON.stringify(results)) {
+          bookcaseData.value = results;
+        }
+      } else {
+        bookcaseData.value = [];
       }
     } else {
       bookcaseData.value = null;
@@ -60,10 +77,8 @@ async function fetchData() {
 }
 
 onMounted(async () => {
-  fetchData();
+  await fetchData();
 });
-
-watch([userData], fetchData, { immediate: true });
 </script>
 <template>
   <div v-if="loading" class="flex items-center justify-center min-h-screen">
@@ -149,7 +164,7 @@ watch([userData], fetchData, { immediate: true });
           <ul class="menu menu-xs menu-horizontal rounded-box lg:-mt-2 -mt-10">
             <li>
               <NuxtLink
-                :class="`tooltip flex place-items-center btn btn-sm ${tab == 0 ? 'btn-secondary' : 'btn-ghost'}`"
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 0 ? 'btn-soft btn-accent' : 'btn-ghost'}`"
                 @click="tab = 0"
                 data-tip="Okunuyor"
               >
@@ -158,7 +173,7 @@ watch([userData], fetchData, { immediate: true });
             </li>
             <li>
               <NuxtLink
-                :class="`tooltip flex place-items-center btn btn-sm ${tab == 1 ? 'btn-secondary' : 'btn-ghost'}`"
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 1 ? 'btn-soft btn-accent' : 'btn-ghost'}`"
                 @click="tab = 1"
                 data-tip="Tamamlandı"
               >
@@ -167,7 +182,7 @@ watch([userData], fetchData, { immediate: true });
             </li>
             <li>
               <NuxtLink
-                :class="`tooltip flex place-items-center btn btn-sm ${tab == 2 ? 'btn-secondary' : 'btn-ghost'}`"
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 2 ? 'btn-soft btn-accent' : 'btn-ghost'}`"
                 @click="tab = 2"
                 data-tip="Beklemede"
               >
@@ -176,7 +191,7 @@ watch([userData], fetchData, { immediate: true });
             </li>
             <li>
               <NuxtLink
-                :class="`tooltip flex place-items-center btn btn-sm ${tab == 3 ? 'btn-secondary' : 'btn-ghost'}`"
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 3 ? 'btn-soft btn-accent' : 'btn-ghost'}`"
                 @click="tab = 3"
                 data-tip="Bırakıldı"
               >
@@ -185,7 +200,7 @@ watch([userData], fetchData, { immediate: true });
             </li>
             <li>
               <NuxtLink
-                :class="`tooltip flex place-items-center btn btn-sm ${tab == 4 ? 'btn-secondary' : 'btn-ghost'}`"
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 4 ? 'btn-soft btn-accent' : 'btn-ghost'}`"
                 @click="tab = 4"
                 data-tip="Planlandı"
               >
@@ -194,7 +209,7 @@ watch([userData], fetchData, { immediate: true });
             </li>
             <li>
               <NuxtLink
-                :class="`tooltip flex place-items-center btn btn-sm ${tab == 5 ? 'btn-secondary' : 'btn-ghost'}`"
+                :class="`tooltip flex place-items-center btn btn-sm ${tab == 5 ? 'btn-soft btn-accent' : 'btn-ghost'}`"
                 @click="tab = 5"
                 data-tip="Yeniden Okunuyor"
               >
@@ -208,7 +223,7 @@ watch([userData], fetchData, { immediate: true });
           class="prose max-w-none px-5"
         >
           <div class="lg:col-start-1 lg:col-end-11">
-            <article class="prose mt-5">
+            <article class="prose mt-5 -mb-5">
               <h1>
                 {{ data.status[tab] }}
               </h1>
@@ -221,6 +236,7 @@ watch([userData], fetchData, { immediate: true });
                   (x) => x.status == tab
                 )"
                 :key="serie"
+                class="w-full sm:w-1/2 lg:w-1/4 flex"
               >
                 <BookcaseCard
                   v-if="
