@@ -32,7 +32,7 @@ const save = () => {
 //////////////////////////////////////////////////////////
 </script>
 <template>
-  <div class="navbar bg-base-100">
+  <div class="navbar">
     <div class="flex-1">
       <NuxtLink
         :to="'/'"
@@ -305,9 +305,9 @@ const save = () => {
                 ✕
               </button>
             </form>
-            <div>
-              <article class="prose max-w-none mb-2">
-                <h1 class="mb-2">Ayarlar</h1>
+            <div class="text-xs">
+              <article class="prose max-w-none mb-2 text-sm">
+                <h1 class="mb-5">Ayarlar</h1>
                 Mangile ayarlarına hoşgeldiniz. Sistemle ilgili mevcut
                 özelleştirme ve ayarlar aşağıdadır.
               </article>

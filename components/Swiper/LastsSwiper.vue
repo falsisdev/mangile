@@ -20,7 +20,7 @@ onMounted(() => {
 <template>
   <swiper
     :spaceBetween="isMobileOrTablet ? 0 : 20"
-    :slidesPerView="isMobileOrTablet ? 2 : 4"
+    :slidesPerView="isMobileOrTablet ? 2 : 5"
   >
     <swiper-slide v-for="item of itemData" v-bind:key="item"
       >
