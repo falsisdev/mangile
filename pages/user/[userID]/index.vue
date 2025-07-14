@@ -141,7 +141,7 @@ watch([userData, favManga], fetchData, { immediate: true });
           >
             <NuxtLink
               :to="`/user/${route.params.userID}/library`"
-              class="btn btn-ghost"
+              class="btn btn-soft btn-secondary"
             >
               <Icon name="mdi:library" class="w-5 h-5" />
               <span v-if="!isMobileOrTablet">Kütüphane</span>
@@ -152,7 +152,7 @@ watch([userData, favManga], fetchData, { immediate: true });
             class="tooltip lg:-mt-0 -mt-2"
             data-tip="Profili Düzenle"
           >
-            <NuxtLink class="btn btn-primary">
+            <NuxtLink class="btn btn-soft">
               <Icon name="material-symbols:person-edit" class="w-5 h-5" />
             </NuxtLink>
           </span>
@@ -163,27 +163,27 @@ watch([userData, favManga], fetchData, { immediate: true });
           }}
         </p>
       </div>
+      <div class="divider"/>
       <div v-if="favManga">
-        <article class="prose my-5 lg:mx-0 mx-2">
-          <h1>
-            {{ userData.name ? userData.name : userData.username }}'in Favori
-            Serisi
+        <article class="prose my-5 mx-2">
+          <h1 class="text-3xl">
+            En Sevdiği Seri
           </h1>
         </article>
         <div
-          :class="`card card-dash card-sm lg:card-side lg:h-72 lg:m-0 m-5 bg-base-100 shadow-lg lg:p-3 lg:rounded-lg shado  w-base-300 mt-5 ${isMobileOrTablet ? 'image-full' : ''}`"
+          :class="`card card-xs lg:card-side lg:h-64 lg:m-0 m-5 bg-base-100 lg:p-3 lg:rounded-lg mt-5 ${isMobileOrTablet ? 'image-full' : ''}`"
         >
-          <figure class="w-full lg:h-auto h-96">
+          <figure class="h-56 w-36">
             <img
-              class="w-full h-full rounded shadow-md"
+              class="w-48 h-56 rounded shadow-md"
               :src="favManga.data.images.jpg.large_image_url"
             />
           </figure>
-          <div class="card-body lg:h-64 h-96">
+          <div class="card-body w-84 h-56 ml-2">
             <span class="flex flex-col">
               <h2 v-if="!isMobileOrTablet" class="card-title">{{ favManga.data.title }}</h2>
               <h3 v-else class="card-title text-lg font-extrabold">{{ favManga.data.title }}</h3>
-              <span class="lg:text-md text-xs text-neutral-content">{{
+              <span class="text-xs text-neutral-content">{{
                 favManga.data["type"]
                   .replaceAll("Light Novel", "Hafif Roman")
                   .replaceAll("Novel", "Roman")
@@ -191,18 +191,18 @@ watch([userData, favManga], fetchData, { immediate: true });
             </span>
             <span class="flex flex-row flex-wrap">
               <span
-                class="badge badge-accent lg:badge-sm badge-xs gap-2 mr-1 mt-1"
+                class="badge badge-accent badge-soft badge-xs gap-2 mr-1 mt-1"
                 >{{ data["malstatus"][String(favManga.data.status)] }}</span
               >
               <span
                 v-for="genre of favManga.data.genres"
                 :key="genre"
-                class="badge badge-neutral lg:badge-sm badge-xs gap-2 my-1 mr-1"
+                class="badge badge-soft badge-xs gap-2 my-1 mr-1"
                 >{{ data.malgenres[String(genre.name)] }}</span
               >
               <br /><br v-if="!isMobileOrTablet" />
             </span>
-            <p class="lg:max-h-96 max-h-64 overflow-auto lg:text-md text-xs">
+            <p class="max-h-64 overflow-auto text-xs">
               {{ favManga.data.synopsis }}
             </p>
             <div class="flex justify-end">
@@ -213,7 +213,7 @@ watch([userData, favManga], fetchData, { immediate: true });
                 ><Icon name="simple-icons:myanimelist" class="h-6 w-6"
               /></NuxtLink>
               <NuxtLink
-                class="btn btn-primary lg:btn-md btn-sm flex flex-row tooltip"
+                class="btn btn-primary btn-soft lg:btn-md btn-sm flex flex-row tooltip"
                 data-tip="Mangile sayfasını görüntüle"
                 :href="`/title/${favManga.data.mal_id}`"
                 ><Icon
@@ -221,6 +221,27 @@ watch([userData, favManga], fetchData, { immediate: true });
                   class="h-4 w-4"
                 />Görüntüle</NuxtLink
               >
+            </div>
+          </div>
+        </div>
+        <div
+          class="hero w-full h-[320px]"
+          style="background-image: url('https://cdn.sanity.io/images/1yge7tlr/production/71efea64a9adc5415bdbb834cb959b0e66890688-480x270.gif');"
+        >
+          <div class="hero-overlay w-full h-[320px] bg-base-300 opacity-85"></div>
+          <div class="hero-content text-neutral-content text-center">
+            <div>
+              <h1 class="mb-5 text-6xl font-bold">Kütüphane</h1>
+              <p class="mb-5 max-w-2xl">
+                Mangile kullanıcılarına sunulmuş derin bir kütüphane! Favori serilerini listelere ayır, okuduklarını takip et, binlerce manga arasından kendi kitaplığını oluştur. Aradığın her şey tek bir yerde, üstelik kullanıcı dostu ve tamamen ücretsiz! Şimdi keşfet, kendi manga evrenini kur!
+              </p>
+              <NuxtLink
+              :to="`/user/${route.params.userID}/library`"
+              class="btn btn-soft btn-secondary"
+            >
+              <Icon name="mdi:library" class="w-5 h-5" />
+              <span v-if="!isMobileOrTablet">Kütüphane</span>
+            </NuxtLink>
             </div>
           </div>
         </div>
