@@ -4,8 +4,11 @@ import { data } from "@/assets/data.ts";
 const user = useLogtoUser();
 const sanity = useSanity()
 
-const query = groq`*[_type == "auth" && logtoId == $logtoId][0]`
-const sanityUser = await sanity.fetch(query, { logtoId: user.sub })
+let sanityUser = ref({})
+if(Boolean(user)) {
+  const query = groq`*[_type == "auth" && logtoId == $logtoId][0]`
+  sanityUser = await sanity.fetch(query, { logtoId: user.sub })
+}
 
 const search = () => {
   var input = document.getElementById("searchbar");
@@ -32,6 +35,8 @@ const themeSelect = () => {
 const save = () => {
   themeSelect();
 };
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 </script>
 <template>
   <main>
