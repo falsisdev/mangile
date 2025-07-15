@@ -29,6 +29,15 @@ const dbStyle = ref(1); //1 düzenli liste görünümü, 0 düzensiz liste gör�
 
 const config = useRuntimeConfig();
 const user = useLogtoUser();
+const sanity = useSanity()
+const sanityClient = getSanityClient()
+
+const sanityUser = ref({}) // ref olarak tanımla
+if (Boolean(user)) {
+  const query = groq`*[_type == "auth" && logtoId == $logtoId][0]`
+  sanityUser.value = await sanity.fetch(query, { logtoId: user.sub }) // sadece .value güncelle
+}
+
 
 const groupChaptersByNumber = (chapters) => {
   const groupedChapters = {};
@@ -150,16 +159,7 @@ async function fetchManga() {
       }
 
       relations.value = tempRelations;
-    }
-
-    if (Boolean(user)) {
-      await sleep(1000);
-      const { data: response } = await useFetch(
-        `/api/users/${user.sub}?appSecret=${toRaw(config.public).m2mAppSecret}`
-      );
-
-      userData.value = toRaw(response.value);
-    }
+    } 
   } catch (error) {
     console.error("Veri çekme hatası:", error);
   }
@@ -167,27 +167,26 @@ async function fetchManga() {
 
 async function setFavorite() {
   try {
-    let customData = userData.value.customData;
+    const isUnsetting = sanityUser.value.favoriteTitle === route.params.titleID
 
-    if (toRaw(customData).userFavoriteTitle !== route.params.titleID) {
-      toRaw(customData).userFavoriteTitle = null;
-      toRaw(customData).userFavoriteTitle = route.params.titleID;
-    } else {
-      toRaw(customData).userFavoriteTitle = null;
-    }
-    const { data: resp } = await useFetch(
-      `/api/users/${user.sub}?appSecret=${toRaw(config.public).m2mAppSecret}`,
-      {
-        method: "PATCH",
-        body: {
-          customData,
-        },
+    await $fetch('/api/user/favorite', {
+      method: 'POST',
+      body: {
+        id: sanityUser.value._id,
+        favoriteTitle: isUnsetting ? null : route.params.titleID
       }
-    );
+    })
+    
+    if (isUnsetting) {
+      sanityUser.value.favoriteTitle = null
+    } else {
+      sanityUser.value.favoriteTitle = route.params.titleID
+    }
   } catch (err) {
-    console.error("Patch Hatası:", err);
+    console.error("Favorite güncelleme hatası:", err)
   }
 }
+
 watchEffect(() => {
   if (manga.value?.title) {
     useSeoMeta({
@@ -304,22 +303,24 @@ const showFullSynopsis = ref(false)
         >
           <Icon name="material-symbols:arrow-back-ios-new-rounded" class="w-7 h-7" />
         </button>
-        <button
-          v-if="Boolean(user)"
-          @click="setFavorite()"
-          class="btn btn-ghost bg-black/40 hover:bg-black/60 text-white"
-          aria-label="Favori"
-        >
-          <Icon
-            name="material-symbols:award-star"
-            class="w-7 h-7"
+          <button
+            v-if="Boolean(user)"
+            @click="setFavorite()"
             :class="{
-              'text-gray-400 animate-pulse': !userData || !userData.customData,
-              'text-yellow-400': userData && userData.customData && userData.customData.userFavoriteTitle == route.params.titleID,
-              'text-white': userData && userData.customData && userData.customData.userFavoriteTitle != route.params.titleID
-            }"
-          />
-        </button>
+                'btn btn-disabled': !sanityUser,
+                'btn btn-warning btn-soft': Boolean(user) && sanityUser.favoriteTitle == route.params.titleID,
+                'btn btn-ghost': sanityUser.favoriteTitle != route.params.titleID
+              }"
+            aria-label="Favori"
+          >
+            <Icon
+              name="material-symbols:award-star"
+              class="w-7 h-7"
+              :class="{
+                'animate-pulse': !sanityUser,
+              }"
+            />
+          </button>
       </div>
     </div>
     <!-- Mobil Banner Sonu -->
@@ -618,23 +619,24 @@ const showFullSynopsis = ref(false)
               }}
             </span>
             <br class="lg:mb-0 mb-2" />
-           <button
-          v-if="Boolean(user)"
-          @click="setFavorite()"
-          class="btn btn-ghost text-white tooltip tooltip-right"
-          data-tip="Favoriye Ekle/Kaldır"
-          aria-label="Favori"
-        >
-          <Icon
-            name="material-symbols:award-star"
-            class="w-12 h-12"
+          <button
+            v-if="Boolean(user)"
+            @click="setFavorite()"
             :class="{
-              'text-gray-400 animate-pulse': !userData || !userData.customData,
-              'text-yellow-200': userData && userData.customData && userData.customData.userFavoriteTitle == route.params.titleID,
-              'text-white': userData && userData.customData && userData.customData.userFavoriteTitle != route.params.titleID
-            }"
-          />
-        </button>
+                'btn btn-disabled': !sanityUser,
+                'btn btn-warning btn-soft': Boolean(user) && sanityUser.favoriteTitle == route.params.titleID,
+                'btn btn-ghost': sanityUser.favoriteTitle != route.params.titleID
+              }"
+            aria-label="Favori"
+          >
+            <Icon
+              name="material-symbols:award-star"
+              class="w-7 h-7"
+              :class="{
+                'animate-pulse': !sanityUser,
+              }"
+            />
+          </button>
             <span class="divider py-3 -mt-0 lg:-mb-0 -mb-1" />
             </span>
             <span v-if="sanityData != String([])" class="text-sm lg:text-md">
