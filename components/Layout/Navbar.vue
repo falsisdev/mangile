@@ -2,6 +2,13 @@
 import { data } from "@/assets/data.ts";
 
 const user = useLogtoUser();
+const sanity = useSanity()
+
+let sanityUser = ref({})
+if(Boolean(user)) {
+  const query = groq`*[_type == "auth" && logtoId == $logtoId][0]`
+  sanityUser = await sanity.fetch(query, { logtoId: user.sub })
+}
 
 const search = () => {
   var input = document.getElementById("searchbar");
@@ -220,7 +227,7 @@ const save = () => {
             <div class="rounded-full">
               <img
                 :src="
-                  user.picture ||
+                  sanityUser.avatar ||
                   'https://static.vecteezy.com/system/resources/previews/020/765/399/original/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'
                 "
                 title="Profil Fotoğrafı"
@@ -238,13 +245,13 @@ const save = () => {
                     <div class="rounded-full">
                       <img
                         :src="
-                          user.picture ||
+                          sanityUser.avatar ||
                           'https://static.vecteezy.com/system/resources/previews/020/765/399/original/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'
                         "
                       />
                     </div>
                   </span>
-                  {{ user.name || user.username }}</b
+                  {{ sanityUser.name || sanityUser.username }}</b
                 >
               </li>
               <li>

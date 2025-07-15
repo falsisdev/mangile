@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     "nuxt-disqus",
   ],
   sanity: {
-    projectId: process.env.NUXT_SANITY_PROJECT_ID,
+    projectId: '1yge7tlr',
   },
   disqus: {
     shortname: "mangile",
@@ -35,7 +35,9 @@ export default defineNuxtConfig({
       subjectToken: process.env.NUXT_SUBJECT_TOKEN,
       m2mAppID: process.env.NUXT_M2M_APP_ID,
       m2mAppSecret: process.env.NUXT_M2M_APP_SECRET,
+      projectId: "1yge7tlr",
       disqusShortname: "mangile",
+      sanityToken: process.env.NUXT_SANITY_TOKEN || "",
     },
   },
   compatibilityDate: "2024-04-03",

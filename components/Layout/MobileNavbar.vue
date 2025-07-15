@@ -2,6 +2,10 @@
 import { data } from "@/assets/data.ts";
 
 const user = useLogtoUser();
+const sanity = useSanity()
+
+const query = groq`*[_type == "auth" && logtoId == $logtoId][0]`
+const sanityUser = await sanity.fetch(query, { logtoId: user.sub })
 
 const search = () => {
   var input = document.getElementById("searchbar");
@@ -209,7 +213,7 @@ const save = () => {
         <div class="w-5 h-5 rounded-full">
           <img
             :src="
-              user.picture ||
+              sanityUser.avatar ||
               'https://media.discordapp.net/attachments/775822548519616562/1274408624768417915/mangile_6FCE43F.png?ex=66d73d05&is=66d5eb85&hm=b0e1936e88485a4f1643a152edb224d695dc9e8cc4a129e26deafedf8a8a5d7e&'
             "
             title="Profil Fotoğrafı"
@@ -222,7 +226,7 @@ const save = () => {
         class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-56 z-50 mb-8 border border-base-200"
       >
         <li>
-          <b>{{ user.name ? user.name : user.username }}</b>
+          <b>{{ sanityUser.name || sanityUser.username }}</b>
         </li>
         <li>
           <NuxtLink :to="`/user/${user.sub}`" class="text-xs">

@@ -7,6 +7,14 @@ export const data = {
     "Planlandı",
     "Yeniden Okunuyor",
   ],
+  statusSanity: [
+    "reading",
+    "completed",
+    "onHold",
+    "dropped",
+    "planned",
+    "rereading"
+  ],
   themeselect: {
     sunset: {
       id: "sunset",

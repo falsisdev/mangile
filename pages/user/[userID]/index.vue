@@ -1,29 +1,44 @@
 <script setup>
 import { data } from "@/assets/data.ts";
+import imageUrlBuilder from '@sanity/image-url'
 
-//0 = Normal kullanıcı, >= 1 Bölüm Yönetim İzni, >= 2 Kişi Yönetim İzni, >= 3 Üst Düzey Yönetici
+const builder = imageUrlBuilder(useSanity().config);
+
+const urlFor = (source) => {
+  return builder.image(source).url();
+};
+
 const route = useRoute();
 const config = useRuntimeConfig();
 const user = useLogtoUser();
 const { isMobileOrTablet } = useDevice();
+const sanity = useSanity()
 
-const userData = ref(null);
+const query = groq`*[_type == "auth" && logtoId == $logtoId][0] {
+  ...,
+  userFollows[]-> {
+    logtoId,
+    name,
+    username,
+    avatar,
+  },
+  userFollowers[]-> {
+    logtoId,
+    name,
+    username,
+    avatar,
+  }
+}`
+const sanityUser = await sanity.fetch(query, { logtoId: route.params.userID })
+
 const favManga = ref(null);
 const loading = ref(true);
 
 async function fetchData() {
   try {
-    const { data: response } = await useFetch(
-      `/api/users/${route.params.userID}?appSecret=${
-        toRaw(config.public).m2mAppSecret
-      }`
-    );
-
-    userData.value = toRaw(response.value);
-
-    if (Boolean(toRaw(response.value).customData.userFavoriteTitle)) {
+    if (Boolean(sanityUser.favoriteTitle)) {
       const { data: favMangaData } = await useFetch(
-        `https://api.jikan.moe/v4/manga/${userData.value.customData.userFavoriteTitle}`
+        `https://api.jikan.moe/v4/manga/${sanityUser.favoriteTitle}`
       );
 
       favManga.value = toRaw(favMangaData.value);
@@ -41,13 +56,13 @@ onMounted(async () => {
   fetchData();
 });
 
-watch([userData, favManga], fetchData, { immediate: true });
+watch([favManga], fetchData, { immediate: true });
 </script>
 <template>
     <div v-if="loading" class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
       <Icon name="mingcute:loading-line" class="animate-spin w-full lg:h-32 h-16" />
     </div>
-  <main v-else-if="userData">
+  <main v-else-if="sanityUser">
     <div
       class="card card-sm bg-base-100 w-full lg:rounded-2xl rounded-none"
     >
@@ -57,19 +72,18 @@ watch([userData, favManga], fetchData, { immediate: true });
         <img
           class="w-full lg:h-auto h-full opacity-75 object-cover object-center shadow-inner"
           :src="
-            userData.customData.userBanner ||
-            'https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed'
+            sanityUser.banner ? urlFor(sanityUser.banner) : 'https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed'
           "
         />
         <span
-          v-if="userData.profile['gender']"
+          v-if="sanityUser['gender']"
           class="absolute top-0 start-0 bg-base-100 rounded-br-lg p-1 tooltip tooltip-bottom lg:border-2 lg:border-l-0 lg:border-t-0 lg:border-neutral-content lg:border-opacity-75"
-          :data-tip="`Kullanıcı Cinsiyetini '${userData.profile['gender']
+          :data-tip="`Kullanıcı Cinsiyetini '${sanityUser['gender']
             .replaceAll('male', 'Eril')
             .replaceAll('female', 'Dişil')}' olarak belirtmiş`"
         >
           <Icon
-            :name="`material-symbols:${userData.profile['gender']}`"
+            :name="`material-symbols:${sanityUser['gender']}`"
             class="h-5 w-5 -my-1 mx-1"
           />
         </span>
@@ -78,13 +92,13 @@ watch([userData, favManga], fetchData, { immediate: true });
         >
           <span
             class="flex lg:tooltip tooltip-bottom"
-            :data-tip="`Kullanıcı ${userData.customData['userFollows'] ? userData.customData['userFollows'].length : 0} Kişiyi Takip Ediyor`"
+            :data-tip="`Kullanıcı ${sanityUser['userFollows'] ? sanityUser['userFollows'].length : 0} Kişiyi Takip Ediyor`"
           >
             <Icon name="material-symbols:person-add" class="w-5 h-5 mr-1" />
             <span class="mt-[3px]">
               {{
-                userData.customData["userFollows"]
-                  ? userData.customData["userFollows"].length
+                sanityUser["userFollows"]
+                  ? sanityUser["userFollows"].length
                   : 0
               }}
               Takip
@@ -92,7 +106,7 @@ watch([userData, favManga], fetchData, { immediate: true });
           </span>
           <span
             class="flex mx-2 lg:tooltip tooltip-bottom"
-            :data-tip="`Kullanıcının ${userData.customData['userFollowers'] ? userData.customData['userFollowers'].length : 0} Takipçisi Var`"
+            :data-tip="`Kullanıcının ${sanityUser['userFollowers'] ? sanityUser['userFollowers'].length : 0} Takipçisi Var`"
           >
             <Icon
               name="material-symbols:supervisor-account"
@@ -100,8 +114,8 @@ watch([userData, favManga], fetchData, { immediate: true });
             />
             <span class="mt-[3px]">
               {{
-                userData.customData["userFollowers"]
-                  ? userData.customData["userFollowers"].length
+                sanityUser["userFollowers"]
+                  ? sanityUser["userFollowers"].length
                   : 0
               }}
               Takipçi
@@ -122,7 +136,7 @@ watch([userData, favManga], fetchData, { immediate: true });
               <img
                 class="hover:-rotate-6 duration-500"
                 :src="
-                  userData.avatar ||
+                  sanityUser.avatar ||
                   'https://static.vecteezy.com/system/resources/previews/020/765/399/original/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'
                 "
               />
@@ -131,8 +145,8 @@ watch([userData, favManga], fetchData, { immediate: true });
           <div
             class="lg:ml-40 ml-24 -mt-4 lg:-mt-0 lg:-my-2 prose flex flex-col"
           >
-            <span class="text-xs -mb-2">@{{ userData.username }}</span>
-            <h1>{{ userData.name ? userData.name : userData.username }}</h1>
+            <span class="text-xs -mb-2">@{{ sanityUser.username }}</span>
+            <h1>{{ sanityUser.name ? sanityUser.name : sanityUser.username }}</h1>
           </div>
           <span class="grow" />
           <span
@@ -159,7 +173,7 @@ watch([userData, favManga], fetchData, { immediate: true });
         </h2>
         <p class="lg:ml-40">
           {{
-            userData.customData.userAbout ? userData.customData.userAbout : ""
+            sanityUser.bio || ""
           }}
         </p>
       </div>
@@ -225,7 +239,7 @@ watch([userData, favManga], fetchData, { immediate: true });
           </div>
         </div>
         <div
-          class="hero w-full h-[320px]"
+          class="hero w-full h-[320px] rounded-lg"
           style="background-image: url('https://cdn.sanity.io/images/1yge7tlr/production/71efea64a9adc5415bdbb834cb959b0e66890688-480x270.gif');"
         >
           <div class="hero-overlay w-full h-[320px] bg-base-300 opacity-85"></div>

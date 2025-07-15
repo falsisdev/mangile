@@ -1,13 +1,33 @@
 <script setup>
 import { data } from "@/assets/data.ts";
+import imageUrlBuilder from '@sanity/image-url'
 
-//0 = Okunuyor, 1 = Tamamlandı, 2 = Bekletiliyor, 3 = Bırakıldı, 4 = Planlandı, 5 = Yeniden Okunuyor
+const builder = imageUrlBuilder(useSanity().config);
+
+const urlFor = (source) => {
+  return builder.image(source).url();
+};
+
 const route = useRoute();
 const config = useRuntimeConfig();
 const user = useLogtoUser();
 const { isMobileOrTablet } = useDevice();
 
-const userData = ref(null);
+const sanity = useSanity()
+
+const query = groq`*[_type == "auth" && logtoId == $logtoId][0] {
+  ...,
+    "lists": lists->{
+      _id,
+      createdAt,
+      items,
+      title,
+      likes
+    }
+}`
+
+const sanityUser = await sanity.fetch(query, { logtoId: route.params.userID })
+
 const bookcaseData = ref([]);
 const tab = ref(0);
 const loading = ref(true);
@@ -24,50 +44,25 @@ const randChar = (length = 24) => {
   return randchars.join("");
 };
 
-console.log(randChar());
-
 async function fetchData() {
   try {
-    const { data: response } = await useFetch(
-      `/api/users/${route.params.userID}?appSecret=${
-        toRaw(config.public).m2mAppSecret
-      }`
-    );
+    const bookcaseSections = Object.values(sanityUser.bookcase).flat(); // completed, reading, vs.
 
-    // Hata kontrolü eklendi
-    if (!response.value || !response.value.customData) {
-      userData.value = null;
-      bookcaseData.value = [];
-      loading.value = false;
-      return;
-    }
+    if (bookcaseSections.length > 0) {
+      const results = await Promise.all(
+        bookcaseSections.map(async (serie) => {
+          if (!serie?.id) return null;
 
-    userData.value = toRaw(response.value);
-
-    if (
-      toRaw(response.value).customData.userBookcase != [] &&
-      Boolean(toRaw(response.value).customData.userBookcase)
-    ) {
-      const bookcaseList = toRaw(response.value).customData.userBookcase;
-      if (bookcaseList.length > 0) {
-        // Tüm fetch işlemlerini Promise.all ile topluca yap
-        const results = await Promise.all(
-          bookcaseList.map(async (serie) => {
-            const { data: bookCase } = await useFetch(
-              `https://api.jikan.moe/v4/manga/${serie.id}`
-            );
-            return toRaw(bookCase.value).data;
-          })
-        );
-        // Sadece veri değiştiyse atama yap
-        if (JSON.stringify(bookcaseData.value) !== JSON.stringify(results)) {
-          bookcaseData.value = results;
-        }
-      } else {
-        bookcaseData.value = [];
-      }
-    } else {
-      bookcaseData.value = null;
+          try {
+            const { data: res } = await useFetch(`https://api.jikan.moe/v4/manga/${serie.id}`);
+            return res.value?.data || null;
+          } catch (err) {
+            console.error("Manga fetch hatası:", serie.id, err);
+            return null;
+          }
+        })
+      );
+      bookcaseData.value = results.filter(Boolean);
     }
   } catch (err) {
     console.error("Fetch Hatası:", err);
@@ -75,6 +70,7 @@ async function fetchData() {
     loading.value = false;
   }
 }
+
 
 onMounted(async () => {
   await fetchData();
@@ -84,7 +80,7 @@ onMounted(async () => {
   <div v-if="loading" class="flex items-center justify-center min-h-screen">
     <Icon name="mingcute:loading-line" class="animate-spin w-32 h-32" />
   </div>
-  <main v-else-if="userData">
+  <main v-else-if="sanityUser">
     <div
       class="card card-sm bg-base-100 w-full lg:rounded-2xl rounded-none"
     >
@@ -94,7 +90,7 @@ onMounted(async () => {
         <img
           class="w-full lg:h-auto h-full opacity-75 object-cover object-center shadow-inner"
           :src="
-            userData.customData.userBanner ||
+            sanityUser.banner ? urlFor(sanityUser.banner) :
             'https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed'
           "
         />
@@ -112,7 +108,7 @@ onMounted(async () => {
               <img
                 class="hover:-rotate-6 duration-500"
                 :src="
-                  userData.avatar ||
+                  sanityUser.avatar ||
                   'https://static.vecteezy.com/system/resources/previews/020/765/399/original/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'
                 "
               />
@@ -134,7 +130,7 @@ onMounted(async () => {
         </h2>
         <div class="flex justify-center">
           <article class="flex flex-col prose">
-            <span class="text-sm opacity-75">@{{ userData.username }}</span>
+            <span class="text-sm opacity-75">@{{ sanityUser.username }}</span>
             <h1 class="-mt-2">Kütüphane</h1>
           </article>
         </div>
@@ -145,14 +141,14 @@ onMounted(async () => {
             <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
           </h1>
         </article>
-        <div v-if="userData.customData.userLists">
+        <div v-if="sanityUser.lists">
           <swiper :slidesPerView="isMobileOrTablet ? 1 : 4">
             <swiper-slide
-              v-for="list of userData.customData.userLists"
-              :key="list"
+              v-for="item in sanityUser['lists'].isArray ? sanityUser['lists'] : [sanityUser['lists']]"
+              :key="item._key"
             >
-              <ListsCard :itemData="list"
-            /></swiper-slide>
+              <ListsCard :itemData="item" />
+            </swiper-slide>
           </swiper>
         </div>
         <article v-else class="prose max-w-none px-5">
@@ -219,7 +215,7 @@ onMounted(async () => {
           </ul>
         </article>
         <article
-          v-if="userData.customData.userBookcase"
+          v-if="sanityUser.bookcase"
           class="prose max-w-none px-5"
         >
           <div class="lg:col-start-1 lg:col-end-11">
@@ -232,35 +228,29 @@ onMounted(async () => {
             <br />
             <span class="flex flex-wrap flex-row -mx-5">
               <span
-                v-for="serie of userData.customData.userBookcase.filter(
-                  (x) => x.status == tab
-                )"
+                v-for="serie of sanityUser.bookcase[data.statusSanity[tab]]"
                 :key="serie"
                 class="w-full sm:w-1/2 lg:w-1/4 flex"
               >
                 <BookcaseCard
                   v-if="
                     [...new Set(bookcaseData)].findIndex(
-                      (x) => x.mal_id == serie.id
+                      (x) => x.id == serie.id
                     ) > -1
                   "
                   :itemData="
-                    [...new Set(bookcaseData)].find((x) => x.mal_id == serie.id)
+                    [...new Set(bookcaseData)].find((x) => x.id == serie.id)
                   "
                   :entryData="serie"
                   :index="
                     [...new Set(bookcaseData)].findIndex(
-                      (x) => x.mal_id == serie.id
+                      (x) => x.id == serie.id
                     )
                   "
                 />
               </span>
               <span
-                v-if="
-                  userData.customData.userBookcase.findIndex(
-                    (x) => x.status == tab
-                  ) == -1
-                "
+                v-if="!sanityUser.bookcase[data.statusSanity[tab]]"
                 class="prose max-w-none px-5"
               >
                 {{ data.status[tab] }} durumunda hiç seri yok.
