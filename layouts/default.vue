@@ -1,11 +1,14 @@
 <template>
-  <div class="grid grid-cols-10 min-h-screen">
-    <div class="mx-20 my-5 col-span-8 col-start-2 col-end-10 flex-grow">
-      <Navbar />
-      <slot class="flex-grow" />
-      <div class="flex grow"/>
-      <div class="divider"/>
-      <Footer />
-    </div>
-  </div>
+  <SidebarProvider>
+    <AppSidebar />
+    <main class="grid grid-cols-13">
+      <div class="col-start-1 col-end-14">
+        <!--<SidebarTrigger class="absolute z-20 bg-sidebar -ml-1 rounded-none rounded-br-lg cursor-pointer" />-->
+        <div class="flex flex-row justify-center">
+          <AppNavbar />
+        </div>
+        <slot />
+      </div>
+    </main>
+  </SidebarProvider>
 </template>

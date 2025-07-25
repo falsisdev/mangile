@@ -1,12 +1,12 @@
 <script setup>
-import { data } from "@/assets/data.ts";
-
-const { isMobileOrTablet } = useDevice();
-const theme = useCookie("theme").value == null ? "sunset" : useCookie("theme")
-
+const { isMobile, isTablet } = useDevice();
 let layout = ref("default");
-if (isMobileOrTablet) {
+if (isMobile) {
   layout.value = "mobile";
+} else if (isTablet) {
+  layout.value = "tablet";
+} else {
+  layout.value = "default";
 }
 
 useHead({
@@ -18,12 +18,8 @@ useHead({
 });
 </script>
 <template>
-  <main :data-theme="theme" style="overflow-y: auto">
-    <NuxtLoadingIndicator
-      :color="data['themes'][theme].primary"
-      :errorcolor="data['themes'][theme].error"
-      :duration="5000"
-    />
+  <main style="overflow-y: auto">
+    <NuxtLoadingIndicator color="#1e293b" errorcolor="#7f1d1d" :duration="5000" />
     <NuxtLayout :name="layout">
       <NuxtPage />
     </NuxtLayout>
@@ -32,19 +28,11 @@ useHead({
 <style>
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.6s cubic-bezier(0.25, 0.8, 0.5, 1);
-  pointer-events: none;
+  transition: all 0.4s;
 }
 
 .page-enter-from,
 .page-leave-to {
   opacity: 0;
-  transform: scale(0.95) translateY(20px);
-}
-
-.page-enter-to,
-.page-leave-from {
-  opacity: 1;
-  transform: scale(1) translateY(0);
 }
 </style>

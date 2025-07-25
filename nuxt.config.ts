@@ -1,32 +1,30 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
-  future: {
-    compatibilityVersion: 4,
-  },
   modules: [
     "@vueuse/nuxt",
-    "nuxt-swiper",
     "@nuxt/icon",
     "@nuxtjs/device",
     "@logto/nuxt",
     "@nuxtjs/sanity",
     "@nuxt/content",
     '@nuxt/image',
-    "nuxt-disqus",
+    "shadcn-nuxt",
+    '@nuxtjs/color-mode',
+    "nuxt-swiper"
   ],
+  colorMode: {
+    classSuffix: ''
+  },
   sanity: {
     projectId: '1yge7tlr',
   },
-  disqus: {
-    shortname: "mangile",
-  },
   runtimeConfig: {
     logto: {
-      endpoint: "",
-      appId: "",
-      appSecret: "",
-      cookieEncryptionKey: "",
+      endpoint: process.env.NUXT_LOGTO_ENDPOINT,
+      appId: process.env.NUXT_LOGTO_APP_ID,
+      appSecret: process.env.NUXT_LOGTO_APP_SECRET,
+      cookieEncryptionKey: process.env.NUXT_LOGTO_COOKIE_ENCRYPTION_KEY,
     },
     sanity: {
       token: process.env.NUXT_SANITY_TOKEN,
@@ -42,7 +40,7 @@ export default defineNuxtConfig({
   },
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
-  css: ["~/assets/css/main.css"],
+  css: ["~/assets/css/tailwind.css"],
   app: {
     pageTransition: { name: "page", mode: "out-in" },
   },
@@ -57,4 +55,15 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
+  shadcn: {
+    /**
+     * Prefix for all the imported component
+     */
+    prefix: '',
+    /**
+     * Directory that the component lives in.
+     * @default "./components/ui"
+     */
+    componentDir: './components/ui'
+  }
 });

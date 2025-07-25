@@ -1,275 +1,315 @@
 <script setup>
 import imageUrlBuilder from "@sanity/image-url";
-import { toRaw } from 'vue'
 
-const { isMobileOrTablet } = useDevice();
-const builder = imageUrlBuilder(useSanity().config);
+const sanityConfig = useSanity().config;
+const builder = imageUrlBuilder(sanityConfig); //Referans olarak dönen görsellerin url'lerini çekmeye yarar
 
-const queryCreated = groq`*[_type == 'manga' || _type == 'lightNovel'] | order(_createdAt desc)`;
-const queryUpdated = groq`*[_type == 'manga' || _type == 'lightNovel'] | order(_updatedAt desc)`;
-const { data: preCreatedData } = useSanityQuery(queryCreated);
-const { data: preUpdatedData } = useSanityQuery(queryUpdated);
-
-const createdSanityData = ref([]);
-const updatedSanityData = ref([]);
-
-watchEffect(() => {
-  if (preCreatedData.value) {
-    const fetchedData = toRaw(preCreatedData.value);
-    createdSanityData.value = fetchedData;
-  }
-  if (preUpdatedData.value) {
-    const fetchedData = toRaw(preUpdatedData.value);
-    updatedSanityData.value = fetchedData;
-  }
-});
-
-//Son Eklenen Seriler
 const createdSeries = ref([]);
-
-//Son Güncellenen Seriler
 const updatedSeries = ref([]);
+const highlights = ref([]);
+const topMangas = ref([]);
+const pubs = ref([]);
 
-onMounted(async () => {
-  await nextTick();
+const queryCreated = groq`*[_type == 'manga' || _type == 'lightNovel'] | order(_createdAt desc)`; //Son Eklenenler
+const queryUpdated = groq`*[_type == 'manga' || _type == 'lightNovel'] | order(_updatedAt desc)`; //Son Güncellenenler
 
-  for (let item of createdSanityData.value) {
-    createdSeries.value.push({
-      name: item.title,
-      description: item.description,
-      type: item._type,
-      image: builder.image(item.coverImage.asset._ref).auto("format").url(),
-      date: item._createdAt,
-      genres: item.tags,
-      id: item.myAnimeListId,
-      chapterCount: item.chapters.length,
-      genres: item.tags
-    });
-  }
+const { data: preCreatedData } = useSanityQuery(queryCreated); //Son Eklenenler
+const { data: preUpdatedData } = useSanityQuery(queryUpdated); //Son Güncellenenler
 
-  for (let item of updatedSanityData.value) {
-    updatedSeries.value.push({
-      name: item.title,
-      description: item.description,
-      type: item._type,
-      image: builder.image(item.coverImage.asset._ref).auto("format").url(),
-      date: item._updatedAt,
-      genres: item.tags,
-      id: item.myAnimeListId,
-      chapterCount: item.chapters.length,
-      genres: item.tags
-    });
-  }
-});
-
-// Öne çıkan mangalar
-let highlights = ref([]);
-
-const { data: highlightsData } = await useFetch(
-  "https://api.jikan.moe/v4/manga",
-  {
+const { data: highlightsData } = await useFetch("https://api.jikan.moe/v4/manga", {
     params: {
-      limit: 20,
-      sfw: true,
-      genres_exclude: "28,26,9,49,12,53,44,35,65,74,15",
-      order_by: "popularity",
-      sort: "asc",
+        limit: 20,
+        sfw: true,
+        genres_exclude: "28,26,9,49,12,53,44,35,65,74,15",
+        order_by: "popularity",
+        sort: "asc",
     },
     key: "highlights",
-    staleTime: 1000 * 60 * 10, // 10 dakika taze kalacak
-    cacheTime: 1000 * 60 * 60 * 24, // 24 saat boyunca önbellekte kalacak
-  }
-);
+    staleTime: 1000 * 60 * 10, // 10 dakika
+    cacheTime: 1000 * 60 * 60 * 24, // 24 saat
+});
 
-for (let item of highlightsData.value.data) {
-  highlights.value.push({
-    name: item.title,
-    description: item.synopsis,
-    type: item["type"]
-      .replaceAll("Light Novel", "Hafif Roman")
-      .replaceAll("Novel", "Roman"),
-    image: item.images.jpg.large_image_url,
-    date: item.published.prop,
-    status: item.status,
-    genres: item.genres,
-    url: item.url,
-    id: item.mal_id,
-  });
-}
-
-// En yüksek puanlı mangalar
-let topMangas = ref([]);
-
-const { data: topMangasData } = await useFetch(
-  "https://api.jikan.moe/v4/top/manga",
-  {
+const { data: topMangasData } = await useFetch("https://api.jikan.moe/v4/top/manga", {
     key: "top-mangas",
-    staleTime: 1000 * 60 * 10, // 10 dakika taze kalacak
-    cacheTime: 1000 * 60 * 60 * 24, // 24 saat boyunca önbellekte kalacak
-  }
-);
+    staleTime: 1000 * 60 * 10, //10dk
+    cacheTime: 1000 * 60 * 60 * 24, //24 saat
+});
 
-for (let item of topMangasData.value.data) {
-  topMangas.value.push({
-    name: item.title,
-    description: item.synopsis,
-    type: item["type"]
-      .replaceAll("Light Novel", "Hafif Roman")
-      .replaceAll("Novel", "Roman"),
-    image: item.images.jpg.large_image_url,
-    date: item.published.prop,
-    status: item.status,
-    genres: item.genres,
-    url: item.url,
-    id: item.mal_id,
-  });
-}
-
-// Yayınlanıyor olan mangalar
-let pubs = ref([]);
-
-const { data: pubsData } = await useFetch(
-  "https://api.jikan.moe/v4/top/manga",
-  {
-    params: {
-      filter: "publishing",
-    },
+const { data: pubsData } = await useFetch("https://api.jikan.moe/v4/top/manga", {
+    params: { filter: "publishing" },
     key: "publishing-mangas",
-    staleTime: 1000 * 60 * 10,
-    cacheTime: 1000 * 60 * 60 * 24,
-  }
-);
+    staleTime: 1000 * 60 * 10, //10dk
+    cacheTime: 1000 * 60 * 60 * 24, //24 saat
+});
 
-for (let item of pubsData.value.data) {
-  pubs.value.push({
-    name: item.title,
-    description: item.synopsis,
-    type: item["type"]
-      .replaceAll("Light Novel", "Hafif Roman")
-      .replaceAll("Novel", "Roman"),
-    image: item.images.jpg.large_image_url,
-    date: item.published.prop,
-    status: item.status,
-    genres: item.genres,
-    url: item.url,
-    id: item.mal_id,
-  });
+// Veri işleme ve reaktif güncellemeler için watchEffect kullanımı
+watchEffect(() => {
+    if (preCreatedData.value) {
+        createdSeries.value = preCreatedData.value.map(item => ({
+            name: item.title,
+            description: item.description,
+            type: item._type,
+            image: builder.image(item.coverImage.asset._ref).auto("format").url(),
+            date: item._createdAt,
+            genres: item.tags,
+            id: item.myAnimeListId,
+            chapterCount: item.chapters?.length || 0,
+        }));
+    }
+
+    if (preUpdatedData.value) {
+        updatedSeries.value = preUpdatedData.value.map(item => ({
+            name: item.title,
+            description: item.description,
+            type: item._type,
+            image: builder.image(item.coverImage.asset._ref).auto("format").url(),
+            date: item._updatedAt,
+            genres: item.tags,
+            id: item.myAnimeListId,
+            chapterCount: item.chapters?.length || 0,
+        }));
+    }
+
+    if (highlightsData.value?.data) {
+        highlights.value = highlightsData.value.data.map(item => ({
+            name: item.title,
+            description: item.synopsis,
+            type: item.type?.replaceAll("Light Novel", "Hafif Roman").replaceAll("Novel", "Roman") || 'N/A',
+            image: item.images?.jpg?.large_image_url,
+            date: item.published?.prop,
+            status: item.status,
+            genres: item.genres,
+            url: item.url,
+            id: item.mal_id,
+        }));
+    }
+
+    if (topMangasData.value?.data) {
+        topMangas.value = topMangasData.value.data.map(item => ({
+            name: item.title,
+            description: item.synopsis,
+            type: item.type?.replaceAll("Light Novel", "Hafif Roman").replaceAll("Novel", "Roman") || 'N/A',
+            image: item.images?.jpg?.large_image_url,
+            date: item.published?.prop,
+            status: item.status,
+            genres: item.genres,
+            url: item.url,
+            id: item.mal_id,
+        }));
+    }
+
+    if (pubsData.value?.data) {
+        pubs.value = pubsData.value.data.map(item => ({
+            name: item.title,
+            description: item.synopsis,
+            type: item.type?.replaceAll("Light Novel", "Hafif Roman").replaceAll("Novel", "Roman") || 'N/A',
+            image: item.images?.jpg?.large_image_url,
+            date: item.published?.prop,
+            status: item.status,
+            genres: item.genres,
+            url: item.url,
+            id: item.mal_id,
+        }));
+    }
+});
+
+
+// SEO Meta Etiketleri
+useSeoMeta({
+    author: "Falsis",
+    twitterData1: "Falsis",
+    twitterLabel1: "created by",
+    twitterTitle: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
+    title: "Ana Sayfa",
+    ogTitle: "Ana Sayfa",
+    description: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
+    ogDescription: "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi.",
+    ogImage: "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
+    twitterCard: "summary_large_image",
+    twitterImage: "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
+});
+
+// Zamanı "time ago" formatında gösteren fonksiyon
+const timeAgo = (dateString) => {
+    if (!dateString) return "bilinmiyor";
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+
+    const intervals = {
+        yıl: 31536000,
+        ay: 2592000,
+        hafta: 604800,
+        gün: 86400,
+        saat: 3600,
+        dakika: 60,
+    };
+
+    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+        const interval = Math.floor(seconds / secondsInUnit);
+        if (interval >= 1) {
+            return `${interval} ${unit} önce`;
+        }
+    }
+    return "az önce";
 }
 
-// Rastgele manga
-let randomManga = ref([]);
-
-const { data: randomMangaData } = await useFetch(
-  "https://api.jikan.moe/v4/random/manga",
-  {
-    params: {
-      sfw: true,
-    },
-    key: "random-manga",
-  }
-);
-
-randomManga.value.push({
-  name: randomMangaData.value.data.title,
-  description: randomMangaData.value.data.synopsis,
-  type: randomMangaData.value.data.type,
-  image: randomMangaData.value.data.images.jpg.large_image_url,
-  date: randomMangaData.value.data.published.prop,
-  status: randomMangaData.value.data.status,
-  genres: randomMangaData.value.data.genres,
-  url: randomMangaData.value.data.url,
-  id: randomMangaData.value.data.mal_id,
-});
-
-useSeoMeta({
-  author: "Falsis",
-  twitterData1: "Falsis",
-  twitterLabel1: "created by",
-  twitterTitle: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
-  title: "Ana Sayfa",
-  ogTitle: "Ana Sayfa",
-  description: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
-  ogDescription:
-    "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi.",
-  ogImage:
-    "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
-  twitterCard: "summary_large_image",
-  twitterImage:
-    "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
-});
+// Tarih formatlama fonksiyonu
+const formatTooltipDate = (dateString) => {
+    if (!dateString) return "Tarih bilgisi yok";
+    const date = new Date(dateString);
+    return `${date.getDate()} ${date.toLocaleString('tr-TR', { month: 'long' })} ${date.getFullYear()}, ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
 </script>
 <template>
-  <main v-if="createdSeries.length && updatedSeries.length">
-    <br v-if="!isMobileOrTablet" />
-    <HeroSwiper :itemData="highlights" />
-    <div class="divider" />
-    <article class="prose max-w-none px-5 flex flex-row -mb-7">
-      <h1 v-if="!isMobileOrTablet">Son Güncellenen Seriler</h1>
-      <h2 v-else class="mt-2">Son Güncellenenler</h2>
-      <span class="grow" />
-      <h1>
-        <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
-      </h1>
-    </article>
-    <br />
-    <LastsSwiper :itemData="updatedSeries" />
-    <div class="divider" />
-    <article class="prose max-w-none px-5 flex flex-row -mb-7">
-      <h1 v-if="!isMobileOrTablet">En Yüksek Puanlı Seriler</h1>
-      <h2 v-else class="mt-2">En Yüksek Puan</h2>
-      <span class="grow" />
-      <h1>
-        <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
-      </h1>
-    </article>
-    <br />
-    <FreeSwiper :itemData="topMangas" />
-    <div class="divider" />
-    <article class="prose max-w-none px-5 pt-5 flex flex-row -mb-7">
-      <h1 v-if="!isMobileOrTablet">Yayınlanıyor</h1>
-      <h2 v-else class="mt-2">Yayınlanıyor</h2>
-      <span class="grow" />
-      <h1>
-        <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
-      </h1>
-    </article>
-    <br />
-    <AutoSwiper :itemData="pubs" />
-    <div class="divider" />
-    <article class="prose max-w-none px-5 flex flex-row -mb-7">
-      <h1 v-if="!isMobileOrTablet">Son Eklenen Seriler</h1>
-      <h2 v-else class="mt-2">Son Eklenenler</h2>
-      <span class="grow" />
-      <h1>
-        <Icon name="material-symbols:arrow-forward" class="h-5 w-5" />
-      </h1>
-    </article>
-    <br />
-    <LastsSwiper :itemData="createdSeries" />
-    <div class="divider" />
-    <article class="prose max-w-none px-5">
-      <h1 v-if="!isMobileOrTablet" class="flex flex-row">Rastgele Seri</h1>
-      <h2 v-else class="mt-2">Rastgele Seri</h2>
-    </article>
-    <br />
-    <HeroSwiper :itemData="randomManga" />
-  </main>
-  <div v-else class="lg:col-start-2 lg:col-end-11 lg:m-5 flex items-center justify-center min-h-screen">
-      <Icon name="mingcute:loading-line" class="animate-spin w-full lg:h-32 h-16" />
-    </div>
+    <HeroSection />
+    <main class="flex justify-center">
+        <div class="container px-7 py-8">
+            <section class="mb-12" v-if="updatedSeries.length > 0">
+                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                    Son Güncellenen İçerikler
+                </h2>
+                <Swiper :slides-per-view="1" :space-between="10" :loop="false" :breakpoints="{
+                    '640': {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    '768': {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                    '1024': {
+                        slidesPerView: 5,
+                        spaceBetween: 40,
+                    },
+                    '1280': {
+                        slidesPerView: 6,
+                    },
+                }">
+                    <SwiperSlide v-for="title in updatedSeries" :key="title.id">
+                        <DefaultCard :cover="title.image" :title="title.name"
+                            :type="title.type.replaceAll('manga', 'Manga').replaceAll('lightNovel', 'Hafif Roman')"
+                            :badgeContent="timeAgo(title.date)" :badgeTooltip="formatTooltipDate(title.date)"
+                            :id="title.id" />
+                    </SwiperSlide>
+                </Swiper>
+
+            </section>
+
+            <section class="mb-12" v-if="createdSeries.length > 0">
+                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                    Son Eklenen İçerikler
+                </h2>
+                <Swiper :loop="false" :breakpoints="{
+                    '640': {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    '768': {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                    '1024': {
+                        slidesPerView: 5,
+                        spaceBetween: 40,
+                    },
+                    '1280': {
+                        slidesPerView: 6,
+
+                    },
+                }">
+                    <SwiperSlide v-for="title in createdSeries" :key="title.id">
+                        <DefaultCard :cover="title.image" :title="title.name"
+                            :type="title.type.replaceAll('manga', 'Manga').replaceAll('lightNovel', 'Hafif Roman')"
+                            :badgeContent="timeAgo(title.date)" :badgeTooltip="formatTooltipDate(title.date)"
+                            :id="title.id" />
+                    </SwiperSlide>
+                </Swiper>
+
+            </section>
+
+            <section class="mb-12" v-if="highlights.length > 0">
+                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                    Öne Çıkan İçerikler
+                </h2>
+                <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                    '640': {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    '768': {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                    '1024': {
+                        slidesPerView: 5,
+                        spaceBetween: 40,
+                    },
+                    '1280': {
+                        slidesPerView: 6,
+                    },
+                }">
+                    <SwiperSlide v-for="manga in highlights" :key="manga.id">
+                        <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
+                    </SwiperSlide>
+                </Swiper>
+
+            </section>
+
+            <section class="mb-12" v-if="topMangas.length > 0">
+                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                    En Yüksek Puanlı İçerikler
+                </h2>
+                <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                    '640': {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    '768': {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                    '1024': {
+                        slidesPerView: 5,
+                        spaceBetween: 40,
+                    },
+                    '1280': {
+                        slidesPerView: 6,
+                    },
+                }">
+                    <SwiperSlide v-for="manga in topMangas" :key="manga.id">
+                        <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
+                    </SwiperSlide>
+                </Swiper>
+            </section>
+
+            <section class="mb-12" v-if="pubs.length > 0">
+                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                    Yayınlanıyor
+                </h2>
+                <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                    '640': {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    '768': {
+                        slidesPerView: 4,
+                        spaceBetween: 30,
+                    },
+                    '1024': {
+                        slidesPerView: 5,
+                        spaceBetween: 40,
+                    },
+                    '1280': {
+                        slidesPerView: 6,
+                    },
+                }">
+                    <SwiperSlide v-for="manga in pubs" :key="manga.id">
+                        <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
+                    </SwiperSlide>
+                </Swiper>
+
+            </section>
+        </div>
+    </main>
 </template>
-<style scoped>
-.swiper {
-  width: 100%;
-  height: 17%;
-}
-
-.swiper-slide {
-  background: transparent;
-}
-
-.swiper-slide img {
-  display: block;
-  object-fit: cover;
-}
-</style>

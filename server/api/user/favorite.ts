@@ -5,18 +5,31 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const { id, favoriteTitle } = body
 
+  if (!id || !favoriteTitle) {
+    throw new Error('Eksik parametre')
+  }
+
   const client = getSanityClient()
 
   try {
-    if (favoriteTitle) {
-      await client.patch(id).set({ favoriteTitle }).commit()
-    } else {
-      await client.patch(id).unset(['favoriteTitle']).commit()
+    const user = await client.getDocument(id)
+    const currentFavorites = user?.favoriteTitles || []
+    const updatedFavorites = currentFavorites.includes(favoriteTitle)
+      ? currentFavorites.filter((id: any) => id !== favoriteTitle) // Çıkar
+      : [...currentFavorites, favoriteTitle] // Ekle
+
+    await client.patch(id)
+      .set({ favoriteTitles: updatedFavorites })
+      .commit()
+
+    return {
+      success: true,
+      favorites: updatedFavorites,
+      action: currentFavorites.includes(favoriteTitle) ? 'removed' : 'added'
     }
 
-    return { success: true }
-  } catch (err: any) {
+  } catch (err) {
     console.error('[Sanity Favorite Error]', err)
-    return { success: false, error: err.message }
+    throw err
   }
 })
