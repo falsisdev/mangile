@@ -90,7 +90,8 @@ const groupChaptersByNumberAndSource = (chapters) => {
             groupedChapters[key] = [];
         }
         groupedChapters[key].push(chapter);
-    });
+    }
+    );
     return Object.values(groupedChapters).sort((a, b) =>
         sortOrder.value === 'asc'
             ? a[0].chapterNumber - b[0].chapterNumber
@@ -124,6 +125,7 @@ const recommendations = ref([]);
 const relations = ref([]);
 const warning = ref([]);
 
+// Jikan API'sinden önerileri çek
 const recommendationsData = await $fetch(
     `https://api.jikan.moe/v4/manga/${mangaID.value}/recommendations`
 );
@@ -145,6 +147,35 @@ function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Yeniden deneme mekanizmalı fetch fonksiyonu
+async function retryFetch(url, options = {}, retries = 3, delay = 2000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            if (response.status === 429) { // Too Many Requests
+                console.warn(`Jikan API'den 429 hatası alındı. ${delay / 1000} saniye bekleniyor...`);
+                await sleep(delay);
+                delay *= 2; // Gecikmeyi artır (üstel geri çekilme)
+                continue;
+            }
+            if (!response.ok) {
+                throw new Error(`HTTP hatası! Durum: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error(`Fetch hatası (Deneme ${i + 1}/${retries}):`, error);
+            if (i < retries - 1) {
+                console.log(`${delay / 1000} saniye bekleniyor...`);
+                await sleep(delay);
+                delay *= 2;
+            } else {
+                throw error; // Son denemeden sonra hala hata varsa fırlat
+            }
+        }
+    }
+}
+
+
 function formatDate(dateString) {
     if (!dateString) return 'Bilinmiyor';
     const date = new Date(dateString);
@@ -158,8 +189,8 @@ function formatDate(dateString) {
 async function fetchManga() {
     try {
         const [mangaData, imagesData] = await Promise.all([
-            $fetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/full`),
-            $fetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/pictures`),
+            retryFetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/full`),
+            retryFetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/pictures`),
         ]);
 
         manga.value = mangaData.data;
@@ -186,14 +217,20 @@ async function fetchManga() {
                         entry.type === "manga" &&
                         !tempRelations.some((e) => e.entry.mal_id === entry.mal_id)
                     ) {
-                        await sleep(1000);
-                        const entryData = await $fetch(
-                            `https://api.jikan.moe/v4/manga/${entry.mal_id}/full`
-                        );
-                        tempRelations.push({
-                            relation: relation.relation,
-                            entry: entryData.data,
-                        });
+                        // Her ilişkili manga isteği arasına gecikme koy
+                        await sleep(1000); // 1 saniye bekle
+                        try {
+                            const entryData = await retryFetch(
+                                `https://api.jikan.moe/v4/manga/${entry.mal_id}/full`
+                            );
+                            tempRelations.push({
+                                relation: relation.relation,
+                                entry: entryData.data,
+                            });
+                        } catch (relationError) {
+                            console.error(`İlişkili manga (${entry.mal_id}) çekme hatası:`, relationError);
+                            // Hata durumunda bile diğer ilişkilere devam et
+                        }
                     }
                 }
             }
@@ -201,7 +238,12 @@ async function fetchManga() {
             relations.value = tempRelations;
         }
     } catch (error) {
-        console.error("Veri çekme hatası:", error);
+        console.error("Ana veri çekme hatası:", error);
+        toast({
+            title: 'Hata',
+            description: 'Manga bilgileri yüklenirken bir sorun oluştu.',
+            variant: 'destructive'
+        })
     }
 }
 
@@ -274,11 +316,15 @@ watchEffect(() => {
     }
 });
 
-watch([mangaID, userData], async (newID, oldID) => {
-    if (newID !== oldID) {
+// mangaID değiştiğinde veya userData değiştiğinde fetchManga'yı tetikle
+watch([mangaID, userData], async ([newMangaID, newUserData], [oldMangaID, oldUserData]) => {
+    // Sadece mangaID veya userData gerçekten değiştiğinde fetchManga'yı çağır
+    // İlk yüklemede de çağrılması gerektiği için onMounted'a ekledik.
+    // Bu watch sadece değişikliklerde tetiklenmeli.
+    if (newMangaID !== oldMangaID || newUserData !== oldUserData) {
         await fetchManga();
     }
-});
+}, { immediate: true }); // Sayfa ilk yüklendiğinde de çalışması için immediate: true ekledik.
 
 watch([dbStyle, sortOrder], () => {
     if (preSanityData.value) {
@@ -301,7 +347,7 @@ onMounted(() => {
 
     if (dbStyleCookie.value == 0) dbStyle.value = 0;
 });
-onMounted(fetchManga);
+// onMounted(fetchManga); // Bu satırı yukarıdaki watch içine taşıdık ve immediate: true ekledik.
 
 const bannerOpacity = ref(1);
 
@@ -347,6 +393,7 @@ const isSingleChapter = computed(() => {
     return firstChapter.value && lastChapter.value && firstChapter.value._key === lastChapter.value._key;
 });
 </script>
+
 <template>
     <main>
         <div>

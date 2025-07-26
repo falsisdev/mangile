@@ -103,46 +103,47 @@ useSeoMeta({
 </script>
 
 <template>
-    <main class="container px-4 py-8 mt-20"">
-            <!-- Liste Başlık ve Bilgiler -->
-            <div v-if="list" class="mb-8">
-        <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
-            <div class="w-screen">
-                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors">
-                    {{ list.title || "Liste Başlığı" }}
-                </h2>
+    <main class="container px-4 py-8 mt-20">
+        <!-- Liste Başlık ve Bilgiler -->
+        <div v-if="list" class="mb-8">
+            <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                <div class="w-screen">
+                    <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors">
+                        {{ list.title || "Liste Başlığı" }}
+                    </h2>
 
-                <div class="mt-4 flex items-center gap-4">
-                    <NuxtLink :to="`/profil/${list.user.logtoId}`" class="flex items-center gap-2 hover:underline">
-                        <img :src="list.user?.avatar || '/default-avatar.jpg'" :alt="list.user?.name || 'Kullanıcı'"
-                            class="w-8 h-8 rounded-full object-cover">
-                        <span>{{ list.user?.name || "Kullanıcı" }}</span>
-                    </NuxtLink>
+                    <div class="mt-4 flex items-center gap-4">
+                        <NuxtLink :to="`${'' /*'/user/' + list.user.logtoId*/}`"
+                            class="flex items-center gap-2 hover:underline">
+                            <img :src="list.user?.avatar || '/default-avatar.jpg'" :alt="list.user?.name || 'Kullanıcı'"
+                                class="w-8 h-8 rounded-full object-cover">
+                            <span>{{ list.user?.name || "Kullanıcı" }}</span>
+                        </NuxtLink>
 
-                    <span class="text-muted-foreground text-sm">
-                        {{ new Date(list._createdAt).toLocaleDateString() }}
-                    </span>
+                        <span class="text-muted-foreground text-sm">
+                            {{ new Date(list._createdAt).toLocaleDateString() }}
+                        </span>
 
-                    <button @click="handleLikeClick" class="flex items-center gap-1 text-sm"
-                        :class="isFav ? 'text-red-500' : 'text-muted-foreground'">
-                        <Icon :icon="isFav ? 'mdi:heart' : 'mdi:heart-outline'" />
-                        <span>{{ list.likes?.length || 0 }}</span>
-                    </button>
+                        <button @click="handleLikeClick" class="flex items-center gap-1 text-sm"
+                            :class="isFav ? 'text-red-500' : 'text-muted-foreground'">
+                            <Icon :icon="isFav ? 'mdi:heart' : 'mdi:heart-outline'" />
+                            <span>{{ list.likes?.length || 0 }}</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div v-if="user?.sub === list.user?._id" class="flex gap-2">
+                    <Button variant="outline">
+                        <Icon icon="mdi:pencil" class="mr-2" />
+                        Düzenle
+                    </Button>
                 </div>
             </div>
 
-            <div v-if="user?.sub === list.user?._id" class="flex gap-2">
-                <Button variant="outline">
-                    <Icon icon="mdi:pencil" class="mr-2" />
-                    Düzenle
-                </Button>
-            </div>
-        </div>
-
-        <!-- Liste Açıklaması -->
-        <p v-if="list.description" class="mt-4 text-muted-foreground">
-            {{ list.description }}
-        </p>
+            <!-- Liste Açıklaması -->
+            <p v-if="list.description" class="mt-4 text-muted-foreground">
+                {{ list.description }}
+            </p>
         </div>
 
         <!-- Loading State -->
@@ -171,7 +172,8 @@ useSeoMeta({
                 <h3 class="font-bold text-lg">Bu listeyi beğenenler</h3>
 
                 <div v-if="list?.likes?.length" class="mt-4 space-y-3">
-                    <NuxtLink v-for="like in list.likes" :key="like._id" :to="`/profil/${like.username || like._id}`"
+                    <NuxtLink v-for="like in list.likes" :key="like._id"
+                        :to="`${''/*'/profil/' + like.username || like._id*/}`"
                         class="flex items-center gap-3 p-2 hover:bg-accent rounded-lg">
                         <img :src="like.avatar || '/default-avatar.jpg'" :alt="like.name"
                             class="w-10 h-10 rounded-full object-cover">
