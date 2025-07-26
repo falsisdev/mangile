@@ -163,7 +163,7 @@ const formatTooltipDate = (dateString) => {
 </script>
 <template>
     <HeroSection />
-    <main class="flex justify-center">
+    <main class="flex justify-center w-full">
         <div class="container px-7 py-8">
             <section class="mb-12" v-if="updatedSeries.length > 0">
                 <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
