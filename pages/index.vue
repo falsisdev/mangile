@@ -124,9 +124,9 @@ useSeoMeta({
     ogTitle: "Ana Sayfa",
     description: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
     ogDescription: "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi.",
-    ogImage: "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
+    ogImage: "https://cdn.sanity.io/images/1yge7tlr/production/5da7fab2f4103d1f13847fdfc879637b6e40d8a7-426x240.gif",
     twitterCard: "summary_large_image",
-    twitterImage: "https://repository-images.githubusercontent.com/594437407/d05e79b3-b261-4969-bfab-990bcb25d5ed",
+    twitterImage: "https://cdn.sanity.io/images/1yge7tlr/production/5da7fab2f4103d1f13847fdfc879637b6e40d8a7-426x240.gif",
 });
 
 // Zamanı "time ago" formatında gösteren fonksiyon
