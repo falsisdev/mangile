@@ -56,7 +56,7 @@ nuxtApp.hook('app:error', () => {
   <main style="overflow-y: auto">
     <NuxtLoadingIndicator color="#1d293d" errorcolor="#7f1d1d" :duration="5000" />
 
-    <div v-if="isLoading" class="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-[9999]">
+    <div v-if="isLoading" class="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
       <div class="flex flex-col items-center p-6">
         <Icon icon="mingcute:loading-line" class="animate-spin text-6xl text-primary" />
         <p class="mt-4 text-lg text-primary">Bunu Biliyor Muydunuz?</p>
