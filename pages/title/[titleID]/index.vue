@@ -30,13 +30,15 @@ const unGroupedChapters = ref([]);
 const scans = ref([]);
 const userData = ref(null);
 const dbStyle = ref(1); //1 düzenli liste görünümü, 0 düzensiz liste görünümü
-const sortOrder = ref('desc'); // Bölüm sıralama için
+const sortOrder = ref('asc'); // Bölüm sıralama için
 
 const user = useLogtoUser();
 const sanity = useSanity()
 const listMenuItem = ref({})
 
-const sanityUser = ref({}) // ref olarak tanımla
+const sanityUser = ref({})
+const isFavoriteLoading = ref(false)
+
 if (Boolean(user)) {
     const query = groq`*[_type == "auth" && logtoId == $logtoId][0]{
     ...,
@@ -45,7 +47,7 @@ if (Boolean(user)) {
       title
     },
 }`
-    sanityUser.value = await sanity.fetch(query, { logtoId: user.sub }) // sadece .value güncelle
+    sanityUser.value = await sanity.fetch(query, { logtoId: user.sub })
     const lists = sanityUser.value.lists;
     const listItems = Array.isArray(toRaw(lists))
         ? toRaw(lists)
@@ -204,6 +206,7 @@ async function fetchManga() {
 }
 
 async function setFavorite() {
+    isFavoriteLoading.value = true
     try {
         if (!sanityUser.value?._id) {
             toast({
@@ -228,7 +231,6 @@ async function setFavorite() {
         if (success) {
             sanityUser.value.favoriteTitles = favorites
 
-            // Başarılı toast bildirimi
             toast({
                 title: isFavorite ? 'Kaldırıldı' : 'Eklendi',
                 description: isFavorite
@@ -247,6 +249,8 @@ async function setFavorite() {
             description: 'En sevdiğin içeriklere eklenemedi',
             variant: 'destructive'
         })
+    } finally {
+        isFavoriteLoading.value = false
     }
 }
 
@@ -323,13 +327,29 @@ function goBack() {
     window.history.length > 1 ? window.history.back() : navigateTo('/');
 }
 
-const showFullSanityDesc = ref(false)
-const showFullSynopsis = ref(false)
+const firstChapter = computed(() => {
+    if (unGroupedChapters.value && unGroupedChapters.value.length > 0) {
+        const sorted = [...unGroupedChapters.value].sort((a, b) => a.chapterNumber - b.chapterNumber);
+        return sorted[0];
+    }
+    return null;
+});
+
+const lastChapter = computed(() => {
+    if (unGroupedChapters.value && unGroupedChapters.value.length > 0) {
+        const sorted = [...unGroupedChapters.value].sort((a, b) => b.chapterNumber - a.chapterNumber);
+        return sorted[0];
+    }
+    return null;
+});
+
+const isSingleChapter = computed(() => {
+    return firstChapter.value && lastChapter.value && firstChapter.value._key === lastChapter.value._key;
+});
 </script>
 <template>
     <main>
         <div>
-            <!-- Banner ve Cover -->
             <div class="relative h-96 w-full overflow-hidden" :style="{ opacity: bannerOpacity }">
                 <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-background to-transparent z-10"></div>
@@ -338,16 +358,13 @@ const showFullSynopsis = ref(false)
                     :src="sanityData[0]?.bannerImage ? builder.image(sanityData[0]?.bannerImage.asset._ref).auto('format').url() : manga?.images?.jpg?.large_image_url"
                     class="w-full h-full object-cover opacity-75" />
 
-                <!-- Geri butonu -->
                 <Button variant="secondary" class="absolute top-2 left-7 z-20 cursor-pointer" @click="goBack">
                     <Icon icon="material-symbols:arrow-back-ios-rounded" class="ml-2" />
                 </Button>
             </div>
 
-            <!-- Ana içerik -->
             <div class="container mx-auto px-4 -mt-40 relative z-20">
                 <div class="flex flex-col md:flex-row gap-6">
-                    <!-- Sol taraf - Kapak resmi ve temel bilgiler -->
                     <div class="w-72 mb-3">
                         <Card class="pt-0">
                             <CardHeader v-if="sanityData[0]?.coverImage || manga?.images?.jpg?.large_image_url"
@@ -361,8 +378,7 @@ const showFullSynopsis = ref(false)
                                         {{ manga?.type?.replaceAll('Light', "Hafif").replaceAll("Novel", "Roman") }}
                                     </Badge>
                                     <div class="flex items-center gap-1">
-                                        <Icon icon="material-symbols:star-outline-rounded"
-                                            :class="['h-5 w-5', sanityUser?.favoriteTitle === mangaID ? 'fill-red-500 text-red-500' : 'text-gray-400']" />
+                                        <Icon icon="material-symbols:star-outline-rounded" class="h-5 w-5" />
                                         <span class="text-sm font-medium">
                                             {{ manga?.score || 'N/A' }}
                                         </span>
@@ -394,11 +410,43 @@ const showFullSynopsis = ref(false)
                                 </div>
                             </CardContent>
                         </Card>
+                        <span class="flex flex-col mt-2 items-start">
+                            <Button variant="default" class="gap-2 cursor-pointer shadow-lg w-full justify-start"
+                                size="lg" v-if="firstChapter"
+                                @click="navigateTo(`/title/${route.params.titleID}/chapter/${firstChapter._key}`)">
+                                <Icon icon="material-symbols:lab-profile-outline-rounded" class="h-10 w-10" />
+                                <span class="flex flex-col text-left">
+                                    <span class="text-md font-semibold">
+                                        {{ isSingleChapter ? 'Tek Bölüm' : 'İlk Bölüm' }}
+                                    </span>
+                                    <span class="text-xs opacity-75 truncat">
+                                        {{ (firstChapter.title || `Bölüm ${firstChapter.chapterNumber}`).length >= 40 ?
+                                            (firstChapter.title || `Bölüm ${firstChapter.chapterNumber}`).slice(0, 40) +
+                                            '...' :
+                                            (firstChapter.title || `Bölüm ${firstChapter.chapterNumber}`) }}
+                                    </span>
+                                </span>
+                            </Button>
+                            <Button variant="secondary" class="gap-2 cursor-pointer shadow-lg w-full mt-2 justify-start"
+                                size="lg" v-if="!isSingleChapter && lastChapter"
+                                @click="navigateTo(`/title/${route.params.titleID}/chapter/${lastChapter._key}`)">
+                                <Icon icon="material-symbols:lab-profile-outline-rounded" class="h-10 w-10" />
+                                <span class="flex flex-col text-left">
+                                    <span class="text-md font-semibold">
+                                        Son Bölüm
+                                    </span>
+                                    <span class="text-xs opacity-75 truncate">
+                                        {{ (lastChapter.title || `Bölüm ${lastChapter.chapterNumber}`).length >= 40 ?
+                                            (lastChapter.title || `Bölüm ${lastChapter.chapterNumber}`).slice(0, 40) +
+                                            '...' :
+                                            (lastChapter.title || `Bölüm ${lastChapter.chapterNumber}`) }}
+                                    </span>
+                                </span>
+                            </Button>
+                        </span>
                     </div>
 
-                    <!-- Sağ taraf - Detaylı bilgiler -->
                     <div class="w-full md:w-3/4 space-y-6">
-                        <!-- Başlık ve aksiyon butonları -->
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div>
                                 <h1 class="text-3xl font-bold tracking-tight">{{ manga?.title }}</h1>
@@ -425,20 +473,18 @@ const showFullSynopsis = ref(false)
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
-                                <Button variant="ghost" @click="() => {
-                                    setFavorite();
-                                }" :disabled="isFavoriteLoading" :class="{
+                                <Button variant="ghost" @click="setFavorite()" :disabled="isFavoriteLoading" :class="{
+                                    'mr-3': true,
                                     'bg-yellow-400 text-black cursor-pointer': sanityUser?.favoriteTitles?.includes(mangaID),
                                     'cursor-pointer': !sanityUser?.favoriteTitles?.includes(mangaID)
                                 }" aria-label="Favori" size="icon">
-                                    <Icon v-if="!isFavoriteLoading" icon="material-symbols:heart-check-outline-rounded"
-                                        class="ml-6" />
-                                    <Icon name="svg-spinners:270-ring" class="text-primary" />
+                                    <Icon v-if="!isFavoriteLoading"
+                                        icon="material-symbols:heart-check-outline-rounded" />
+                                    <Icon v-else icon="svg-spinners:270-ring" class="text-primary" />
                                 </Button>
                             </div>
                         </div>
 
-                        <!-- Konu -->
                         <Card>
                             <CardHeader>
                                 <CardTitle>Konu</CardTitle>
@@ -452,7 +498,6 @@ const showFullSynopsis = ref(false)
                             </CardContent>
                         </Card>
 
-                        <!-- Notlar -->
                         <Card v-if="sanityData[0]?.notes">
                             <CardHeader>
                                 <CardTitle>Notlar</CardTitle>
@@ -464,7 +509,6 @@ const showFullSynopsis = ref(false)
                             </CardContent>
                         </Card>
 
-                        <!-- Bölümler -->
                         <Card v-if="groupedChapters.length > 0" class="mb-2">
                             <CardHeader>
                                 <div class="flex items-center justify-between">
@@ -501,7 +545,6 @@ const showFullSynopsis = ref(false)
                             </CardHeader>
                             <CardContent>
                                 <div class="space-y-3">
-                                    <!-- Gruplanmış görünüm -->
                                     <template v-if="dbStyle === 1">
                                         <div v-for="group in groupedChapters" :key="group.source?._id || 'unknown'"
                                             class="space-y-2">
@@ -529,7 +572,6 @@ const showFullSynopsis = ref(false)
                                         </div>
                                     </template>
 
-                                    <!-- Gruplanmamış görünüm -->
                                     <template v-else>
                                         <div>
                                             <div v-for="chapterGroup in groupedChapters" :key="chapterGroup[0]._id"
@@ -538,13 +580,13 @@ const showFullSynopsis = ref(false)
                                                     <Button variant="outline"
                                                         class="w-10 h-10 rounded-md flex items-center justify-center">
                                                         <span class="font-medium">{{ chapterGroup[0].chapterNumber
-                                                            }}</span>
+                                                        }}</span>
                                                     </Button>
                                                     <div>
                                                         <p>{{ chapterGroup[0].title || `Bölüm
                                                             ${chapterGroup[0].chapterNumber}` }}</p>
                                                         <p class="text-sm text-gray-500">{{ chapterGroup[0].source?.name
-                                                            }}</p>
+                                                        }}</p>
                                                     </div>
                                                 </div>
                                                 <NuxtLink

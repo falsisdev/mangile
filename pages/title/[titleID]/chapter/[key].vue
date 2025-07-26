@@ -348,6 +348,10 @@ onBeforeUnmount(() => {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
+                        <Button variant="secondary" class="cursor-pointer shadow-lg justify-start"
+                            @click="() => navigateTo(`/title/${route.params.titleID}`)">
+                            <Icon icon="mdi:book-arrow-right-outline" />
+                        </Button>
                     </div>
                 </div>
             </header>

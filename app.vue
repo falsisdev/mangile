@@ -19,7 +19,7 @@ useHead({
 </script>
 <template>
   <main style="overflow-y: auto">
-    <NuxtLoadingIndicator color="#1e293b" errorcolor="#7f1d1d" :duration="5000" />
+    <NuxtLoadingIndicator color="#1d293d" errorcolor="#7f1d1d" :duration="5000" />
     <NuxtLayout :name="layout">
       <NuxtPage />
     </NuxtLayout>
