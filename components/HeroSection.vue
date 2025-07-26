@@ -33,31 +33,25 @@ const fetchTopMangas = async () => {
     loading.value = true
     error.value = null
     try {
-        const { data: topMangaData } = await useFetch(
-            "https://api.jikan.moe/v4/top/manga",
-            {
-                params: {
-                    limit: 15, // Swiper için 15 tane çekelim
-                    sfw: true,
-                    filter: 'bypopularity',
-                    genres_exclude: "12,28,9,49,26,35,53,44,65,74"
-                },
-                key: "top-mangas-swiper",
-                // Önbellekleme ayarları aynı kalabilir
-                staleTime: 1000 * 60 * 60,
-                cacheTime: 1000 * 60 * 60 * 24,
-            }
-        )
+        // Use $fetch instead of useFetch for client-side data fetching
+        const topMangaData = await $fetch("https://api.jikan.moe/v4/top/manga", {
+            params: {
+                limit: 15,
+                sfw: true,
+                filter: 'bypopularity',
+                genres_exclude: "12,28,9,49,26,35,53,44,65,74"
+            },
+        });
 
-        if (topMangaData.value?.data) {
-            topMangas.value = topMangaData.value.data
+        if (topMangaData?.data) {
+            topMangas.value = topMangaData.data as Manga[]; // Type assertion for clarity
         } else {
-            throw new Error('Popüler mangalar bulunamadı')
+            throw new Error('Popüler mangalar bulunamadı');
         }
     } catch (err: any) {
-        error.value = err.message
+        error.value = err.message;
     } finally {
-        loading.value = false
+        loading.value = false;
     }
 }
 

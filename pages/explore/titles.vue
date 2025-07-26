@@ -3,6 +3,8 @@ import { data } from '~/assets/data';
 import { Icon } from '@iconify/vue';
 
 const route = useRoute();
+const router = useRouter();
+
 const page = ref(parseInt(route.query.page) || 1);
 const pagination = ref(null);
 const titleData = ref(null);
@@ -12,62 +14,73 @@ const sort = ref(route.query.sort || "desc");
 const sfw = ref(route.query.sfw !== undefined ? route.query.sfw === "true" : true);
 const isLoading = ref(true);
 
-// Türler için filtre
 const genres = ref([]);
 const genreOptions = data.genreIDs;
 const currentOrderByOptions = data.orderOptions;
 
-// Sayfa değişikliklerini izle
-watch(() => route.query.page, (newPage) => {
-    if (newPage && parseInt(newPage) !== page.value) {
-        page.value = parseInt(newPage);
-    }
-});
+const updateUrlAndFetch = async () => {
+    isLoading.value = true;
+    const query = {
+        page: page.value,
+        type: type.value === "all" ? undefined : type.value,
+        order_by: orderBy.value,
+        sort: sort.value,
+        sfw: sfw.value,
+        genres: genres.value.length > 0 ? genres.value.join(",") : undefined,
+    };
 
-// Diğer filtre değişiklikleri
-watch([type, orderBy, sort, sfw, genres], () => {
-    page.value = 1;
-});
+    Object.keys(query).forEach(key => query[key] === undefined && delete query[key]);
+
+    await router.replace({ query: query });
+
+    await fetchData();
+};
 
 async function fetchData() {
     try {
         isLoading.value = true;
         titleData.value = null;
 
+        const currentQueryParams = route.query;
+
         const params = {
-            page: page.value,
-            sfw: sfw.value,
-            order_by: orderBy.value,
-            sort: sort.value,
-            ...(type.value && type.value !== "all" && { type: type.value }),
-            ...(genres.value.length > 0 && { genres: genres.value.join(",") })
+            page: parseInt(currentQueryParams.page || '1'),
+            sfw: currentQueryParams.sfw !== undefined ? currentQueryParams.sfw === "true" : true,
+            order_by: currentQueryParams.order_by || "score",
+            sort: currentQueryParams.sort || "desc",
+            ...(currentQueryParams.type && currentQueryParams.type !== "all" && { type: currentQueryParams.type }),
+            ...(currentQueryParams.genres && { genres: currentQueryParams.genres })
         };
 
-        const { data: responseData, pagination: responsePagination } = await $fetch(
-            "https://api.jikan.moe/v4/top/manga",
-            { params }
-        );
+        const response = await $fetch("https://api.jikan.moe/v4/top/manga", { params });
 
-        titleData.value = responseData;
-        pagination.value = responsePagination;
-
-        // URL'i güncelle (yeniden yükleme yapmadan)
-        const query = { ...route.query, page: page.value };
-        await navigateTo({ query }, { replace: true, preventScrollReset: true });
+        titleData.value = response.data;
+        pagination.value = response.pagination;
 
     } catch (error) {
         console.error("API hatası:", error);
-        // Hata durumunda kullanıcıyı bilgilendir
     } finally {
         isLoading.value = false;
     }
 }
 
-// İlk yükleme ve değişiklikler için izleyici
-watch([page, type, orderBy, sort, sfw, genres], fetchData, { immediate: true });
+watch(
+    [page, type, orderBy, sort, sfw, genres],
+    async () => {
+        await updateUrlAndFetch();
+    },
+    { immediate: true, deep: true }
+);
+
+watch(() => route.query.page, (newPage) => {
+    const newPageNum = parseInt(newPage);
+    if (!isNaN(newPageNum) && newPageNum !== page.value) {
+        page.value = newPageNum;
+    }
+}, { immediate: true });
 
 useSeoMeta({
-    title: `Sayfa ${page.value} - Keşfet`,
+    title: computed(() => `Sayfa ${page.value} - Keşfet`),
     description: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
 });
 </script>
@@ -78,32 +91,27 @@ useSeoMeta({
             İçerikleri Keşfet
         </h2>
 
-        <!-- Yükleniyor durumu -->
         <div v-if="isLoading" class="flex justify-center items-center h-64">
             <Icon name="svg-spinners:270-ring" class="w-12 h-12 text-primary" />
         </div>
 
-        <!-- İçerik -->
         <div v-else-if="titleData?.length" class="flex flex-row flex-wrap gap-3">
-            <NuxtLink v-for="title in titleData" :key="title.mal_id" :to="`/manga/${title.mal_id}`">
+            <NuxtLink v-for="title in titleData" :key="title.mal_id" :to="`/title/${title.mal_id}`">
                 <DefaultCard :cover="title.images?.webp?.large_image_url" :title="title.title"
                     :type="title.type?.replace('Light Novel', 'Hafif Roman')" :id="title.mal_id" />
             </NuxtLink>
         </div>
 
-        <!-- Veri yoksa -->
         <div v-else-if="!isLoading" class="text-center py-10">
             <p>Gösterilecek içerik bulunamadı.</p>
         </div>
 
-        <!-- Sayfalama bilgisi -->
         <div v-if="pagination" class="text-center mt-3 text-sm text-gray-500">
             Sayfa {{ page }} / {{ pagination.last_visible_page }}
         </div>
 
-        <!-- Sayfalama kontrolleri -->
         <div v-if="pagination?.last_visible_page > 1" class="flex justify-center mb-10">
-            <Pagination>
+            <Pagination :itemsPerPage="25">
                 <PaginationContent>
                     <PaginationPrevious :disabled="page === 1" @click="page > 1 && (page = page - 1)"
                         class="cursor-pointer">
@@ -111,12 +119,13 @@ useSeoMeta({
                     </PaginationPrevious>
 
                     <template v-for="p in pagination.last_visible_page" :key="p">
-                        <PaginationItem v-if="Math.abs(p - page) <= 2 || p === 1 || p === pagination.last_visible_page">
+                        <PaginationItem v-if="Math.abs(p - page) <= 2 || p === 1 || p === pagination.last_visible_page"
+                            :value="p">
                             <PaginationButton :is-active="p === page" @click="page = p" class="cursor-pointer">
                                 {{ p }}
                             </PaginationButton>
                         </PaginationItem>
-                        <PaginationItem v-else-if="Math.abs(p - page) === 3">
+                        <PaginationItem v-else-if="Math.abs(p - page) === 3" :value="p">
                             <PaginationEllipsis />
                         </PaginationItem>
                     </template>

@@ -53,40 +53,40 @@ const menuItems = [
     title: "Keşfet",
     items: [
       { title: "İçerikleri Keşfet", url: "/explore/titles", icon: "material-symbols:database-search-outline-rounded" },
-      { title: "Listeleri Keşfet", url: "/explore/lists", icon: "mdi:text-box-search-outline" },
+      { title: "Listeleri Keşfet", url: /*"/explore/lists"*/ "", icon: "mdi:text-box-search-outline" },
     ]
   },
   {
     title: "Kullanıcı Bağlantıları",
     items: [
       { title: "Liste Oluştur", url: "/", icon: "material-symbols:list-alt-add-outline-rounded" },
-      { title: "Kütüphane", url: "/library", icon: "mdi:library-outline" },
-      { title: "Okuma Geçmişi", url: "/history", icon: "material-symbols:history" }
+      { title: "Kütüphane", url: "" /*"/library"*/, icon: "mdi:library-outline" },
+      { title: "Okuma Geçmişi", url: "" /*"/history"*/, icon: "material-symbols:history" }
     ]
   },
   toRaw(listsMenuItem.value),
   {
     title: "Güncellemeler",
     items: [
-      { title: "Güncelleme Notları", url: "/articles/release-notes", icon: "mdi:file-document-refresh-outline" },
+      { title: "Güncelleme Notları", url: "" /*"/articles/release-notes"*/, icon: "mdi:file-document-refresh-outline" },
       { title: "Github Deposu", url: "https://github.com/falsisdev/mangile", icon: "mdi:github" }
     ],
   },
   {
     title: "Sistem",
     items: [
-      { title: "Hakkımızda", url: "/articles/about", icon: "material-symbols:article-person-outline-sharp" },
+      { title: "Hakkımızda", url: "" /*"/articles/about"*/, icon: "material-symbols:article-person-outline-sharp" },
       { title: "İletişim", url: "mailto: falsis@proton.me", icon: "material-symbols:contact-support-outline-rounded" },
-      { title: "Gizlilik Prensipleri", url: "/articles/privacy-policy", icon: "material-symbols:privacy-tip-outline-rounded" },
-      { title: "Güvenlik İpuçları", url: "/articles/security-tips", icon: "material-symbols:lock-person-outline-sharp" },
-      { title: "Kullanıcı Sözleşmesi", url: "/articles/terms", icon: "material-symbols:inbox-text-person-sharp" },
+      { title: "Gizlilik Prensipleri", url: "" /*"/articles/privacy-policy"*/, icon: "material-symbols:privacy-tip-outline-rounded" },
+      { title: "Güvenlik İpuçları", url: "" /*"/articles/security-tips"*/, icon: "material-symbols:lock-person-outline-sharp" },
+      { title: "Kullanıcı Sözleşmesi", url: "" /*"/articles/terms"*/, icon: "material-symbols:inbox-text-person-sharp" },
     ]
   }
 ]
 
 const userItems = [
-  { title: "Profili Görüntüle", url: `/user/${user?.sub}`, icon: "material-symbols:person-outline" },
-  { title: "Ayarlar", url: "/settings", icon: "mdi:cog-outline" },
+  { title: "Profili Görüntüle", url: "" /*`/user/${user?.sub}`*/, icon: "material-symbols:person-outline" },
+  { title: "Ayarlar", url: "" /* "/settings" */, icon: "mdi:cog-outline" },
   { title: "Çıkış Yap", url: "/sign-out", icon: "mdi:logout-variant" }
 ]
 
@@ -99,7 +99,7 @@ const contextMenuItems = {
     },
     {
       title: "Düzenle",
-      url: "/list/$id/edit",
+      url: "" /*"/list/$id/edit"*/,
       icon: "material-symbols:edit-outline-rounded"
     }
   ],
@@ -186,7 +186,7 @@ function handleContextMenuClick(menuItem, baseUrl) {
                       <!-- Sağ taraf: sadece Listelerin grubunda görünür -->
                       <template v-if="group.title === 'Listelerin'">
                         <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity mr-2">
-                          <NuxtLink :to="`${item.url}/edit`"
+                          <NuxtLink :to="`${''/*item.url + '/edit'*/}`"
                             class="text-muted-foreground hover:text-primary duration-300" @click.stop>
                             <Icon icon="material-symbols:edit-outline-rounded" class="w-[1rem] h-[1rem]" />
                           </NuxtLink>
