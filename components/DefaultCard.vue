@@ -2,7 +2,7 @@
 const props = defineProps({
     cover: String,
     title: String,
-    id: String,
+    id: Number,
     type: String,
     badgeContent: String,
     badgeTooltip: String,

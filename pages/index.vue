@@ -162,154 +162,156 @@ const formatTooltipDate = (dateString) => {
 }
 </script>
 <template>
-    <HeroSection />
-    <main class="flex justify-center w-full">
-        <div class="container px-7 py-8">
-            <section class="mb-12" v-if="updatedSeries.length > 0">
-                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
-                    Son Güncellenen İçerikler
-                </h2>
-                <Swiper :slides-per-view="1" :space-between="10" :loop="false" :breakpoints="{
-                    '640': {
-                        slidesPerView: 2,
-                        spaceBetween: 20,
-                    },
-                    '768': {
-                        slidesPerView: 4,
-                        spaceBetween: 30,
-                    },
-                    '1024': {
-                        slidesPerView: 5,
-                        spaceBetween: 40,
-                    },
-                    '1280': {
-                        slidesPerView: 6,
-                    },
-                }">
-                    <SwiperSlide v-for="title in updatedSeries" :key="title.id">
-                        <DefaultCard :cover="title.image" :title="title.name"
-                            :type="title.type.replaceAll('manga', 'Manga').replaceAll('lightNovel', 'Hafif Roman')"
-                            :badgeContent="timeAgo(title.date)" :badgeTooltip="formatTooltipDate(title.date)"
-                            :id="title.id" />
-                    </SwiperSlide>
-                </Swiper>
+    <main>
+        <HeroSection />
+        <div class="flex justify-center w-full">
+            <div class="container px-7 py-8">
+                <section class="mb-12" v-if="updatedSeries.length > 0">
+                    <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                        Son Güncellenen İçerikler
+                    </h2>
+                    <Swiper :slides-per-view="1" :space-between="10" :loop="false" :breakpoints="{
+                        '640': {
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                        },
+                        '768': {
+                            slidesPerView: 4,
+                            spaceBetween: 30,
+                        },
+                        '1024': {
+                            slidesPerView: 5,
+                            spaceBetween: 40,
+                        },
+                        '1280': {
+                            slidesPerView: 6,
+                        },
+                    }">
+                        <SwiperSlide v-for="title in updatedSeries" :key="title.id">
+                            <DefaultCard :cover="title.image" :title="title.name"
+                                :type="title.type.replaceAll('manga', 'Manga').replaceAll('lightNovel', 'Hafif Roman')"
+                                :badgeContent="timeAgo(title.date)" :badgeTooltip="formatTooltipDate(title.date)"
+                                :id="title.id" />
+                        </SwiperSlide>
+                    </Swiper>
 
-            </section>
+                </section>
 
-            <section class="mb-12" v-if="createdSeries.length > 0">
-                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
-                    Son Eklenen İçerikler
-                </h2>
-                <Swiper :loop="false" :breakpoints="{
-                    '640': {
-                        slidesPerView: 2,
-                        spaceBetween: 20,
-                    },
-                    '768': {
-                        slidesPerView: 4,
-                        spaceBetween: 30,
-                    },
-                    '1024': {
-                        slidesPerView: 5,
-                        spaceBetween: 40,
-                    },
-                    '1280': {
-                        slidesPerView: 6,
+                <section class="mb-12" v-if="createdSeries.length > 0">
+                    <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                        Son Eklenen İçerikler
+                    </h2>
+                    <Swiper :loop="false" :breakpoints="{
+                        '640': {
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                        },
+                        '768': {
+                            slidesPerView: 4,
+                            spaceBetween: 30,
+                        },
+                        '1024': {
+                            slidesPerView: 5,
+                            spaceBetween: 40,
+                        },
+                        '1280': {
+                            slidesPerView: 6,
 
-                    },
-                }">
-                    <SwiperSlide v-for="title in createdSeries" :key="title.id">
-                        <DefaultCard :cover="title.image" :title="title.name"
-                            :type="title.type.replaceAll('manga', 'Manga').replaceAll('lightNovel', 'Hafif Roman')"
-                            :badgeContent="timeAgo(title.date)" :badgeTooltip="formatTooltipDate(title.date)"
-                            :id="title.id" />
-                    </SwiperSlide>
-                </Swiper>
+                        },
+                    }">
+                        <SwiperSlide v-for="title in createdSeries" :key="title.id">
+                            <DefaultCard :cover="title.image" :title="title.name"
+                                :type="title.type.replaceAll('manga', 'Manga').replaceAll('lightNovel', 'Hafif Roman')"
+                                :badgeContent="timeAgo(title.date)" :badgeTooltip="formatTooltipDate(title.date)"
+                                :id="title.id" />
+                        </SwiperSlide>
+                    </Swiper>
 
-            </section>
+                </section>
 
-            <section class="mb-12" v-if="highlights.length > 0">
-                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
-                    Öne Çıkan İçerikler
-                </h2>
-                <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
-                    '640': {
-                        slidesPerView: 2,
-                        spaceBetween: 20,
-                    },
-                    '768': {
-                        slidesPerView: 4,
-                        spaceBetween: 30,
-                    },
-                    '1024': {
-                        slidesPerView: 5,
-                        spaceBetween: 40,
-                    },
-                    '1280': {
-                        slidesPerView: 6,
-                    },
-                }">
-                    <SwiperSlide v-for="manga in highlights" :key="manga.id">
-                        <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
-                    </SwiperSlide>
-                </Swiper>
+                <section class="mb-12" v-if="highlights.length > 0">
+                    <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                        Öne Çıkan İçerikler
+                    </h2>
+                    <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                        '640': {
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                        },
+                        '768': {
+                            slidesPerView: 4,
+                            spaceBetween: 30,
+                        },
+                        '1024': {
+                            slidesPerView: 5,
+                            spaceBetween: 40,
+                        },
+                        '1280': {
+                            slidesPerView: 6,
+                        },
+                    }">
+                        <SwiperSlide v-for="manga in highlights" :key="manga.id">
+                            <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
+                        </SwiperSlide>
+                    </Swiper>
 
-            </section>
+                </section>
 
-            <section class="mb-12" v-if="topMangas.length > 0">
-                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
-                    En Yüksek Puanlı İçerikler
-                </h2>
-                <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
-                    '640': {
-                        slidesPerView: 2,
-                        spaceBetween: 20,
-                    },
-                    '768': {
-                        slidesPerView: 4,
-                        spaceBetween: 30,
-                    },
-                    '1024': {
-                        slidesPerView: 5,
-                        spaceBetween: 40,
-                    },
-                    '1280': {
-                        slidesPerView: 6,
-                    },
-                }">
-                    <SwiperSlide v-for="manga in topMangas" :key="manga.id">
-                        <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
-                    </SwiperSlide>
-                </Swiper>
-            </section>
+                <section class="mb-12" v-if="topMangas.length > 0">
+                    <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                        En Yüksek Puanlı İçerikler
+                    </h2>
+                    <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                        '640': {
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                        },
+                        '768': {
+                            slidesPerView: 4,
+                            spaceBetween: 30,
+                        },
+                        '1024': {
+                            slidesPerView: 5,
+                            spaceBetween: 40,
+                        },
+                        '1280': {
+                            slidesPerView: 6,
+                        },
+                    }">
+                        <SwiperSlide v-for="manga in topMangas" :key="manga.id">
+                            <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
+                        </SwiperSlide>
+                    </Swiper>
+                </section>
 
-            <section class="mb-12" v-if="pubs.length > 0">
-                <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
-                    Yayınlanıyor
-                </h2>
-                <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
-                    '640': {
-                        slidesPerView: 2,
-                        spaceBetween: 20,
-                    },
-                    '768': {
-                        slidesPerView: 4,
-                        spaceBetween: 30,
-                    },
-                    '1024': {
-                        slidesPerView: 5,
-                        spaceBetween: 40,
-                    },
-                    '1280': {
-                        slidesPerView: 6,
-                    },
-                }">
-                    <SwiperSlide v-for="manga in pubs" :key="manga.id">
-                        <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
-                    </SwiperSlide>
-                </Swiper>
+                <section class="mb-12" v-if="pubs.length > 0">
+                    <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
+                        Yayınlanıyor
+                    </h2>
+                    <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                        '640': {
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                        },
+                        '768': {
+                            slidesPerView: 4,
+                            spaceBetween: 30,
+                        },
+                        '1024': {
+                            slidesPerView: 5,
+                            spaceBetween: 40,
+                        },
+                        '1280': {
+                            slidesPerView: 6,
+                        },
+                    }">
+                        <SwiperSlide v-for="manga in pubs" :key="manga.id">
+                            <DefaultCard :cover="manga.image" :title="manga.name" :type="manga.type" :id="manga.id" />
+                        </SwiperSlide>
+                    </Swiper>
 
-            </section>
+                </section>
+            </div>
         </div>
     </main>
 </template>
