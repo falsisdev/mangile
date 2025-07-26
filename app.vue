@@ -25,7 +25,7 @@ const infos = [
   "Mangile'ın adı Manga ve İngilizce timsah anlamına gelen crocodile'ın birleşmesiyle oluşmuştur.",
   "Mangile'ın geliştirilmesine ilham veren web sitesi MangaDex'tir.",
   "Falsis, Mangile'ı geliştirmeden önce Ani+ adında bir anime sitesi denemesi yapıp vazgeçmişti.",
-  "Mangile geliştirilmeye başlandığında, geliştirilmede kullanılan yazılımın 3. sürümü henüz erken erişimde bile değildi. Birkaç gün önce 4. sürümü yayınlandı.",
+  "Mangile geliştirilmeye başlandığında, Nuxt 3. sürümü henüz erken erişimde bile değildi.",
   "Mangile geliştirilmeye başlandığında 2022 Dünya Kupası başlamamıştı.",
   "Mangile geliştirilmeye başlandığında 1 Dolar 18 Liraydı.",
   "Mangile'ın planlanan stabil sürüm yayınlanma tarihi, geliştirilmeye başlandığı tarihten daha uzak.",
@@ -59,7 +59,7 @@ nuxtApp.hook('app:error', () => {
     <div v-if="isLoading" class="fixed inset-0 bg-background flex items-center justify-center z-[9999]">
       <div class="flex flex-col items-center p-6">
         <Icon icon="mingcute:loading-line" class="animate-spin text-6xl text-primary" />
-        <p class="mt-4 text-lg text-primary">Bunu Biliyor Muydunuz?</p>
+        <p class="mt-4 text-lg text-primary font-semibold">Bunu Biliyor Muydunuz?</p>
         <p class="text-md text-primary"> {{ infos[Math.floor(Math.random() * infos.length)] }}</p>
       </div>
     </div>

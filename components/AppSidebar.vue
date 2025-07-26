@@ -75,7 +75,7 @@ const menuItems = [
   {
     title: "Sistem",
     items: [
-      { title: "Hakkımızda", url: "" /*"/articles/about"*/, icon: "material-symbols:article-person-outline-sharp" },
+      { title: "Hakkımızda", url: "/articles/about", icon: "material-symbols:article-person-outline-sharp" },
       { title: "İletişim", url: "mailto: falsis@proton.me", icon: "material-symbols:contact-support-outline-rounded" },
       { title: "Gizlilik Prensipleri", url: "" /*"/articles/privacy-policy"*/, icon: "material-symbols:privacy-tip-outline-rounded" },
       { title: "Güvenlik İpuçları", url: "" /*"/articles/security-tips"*/, icon: "material-symbols:lock-person-outline-sharp" },

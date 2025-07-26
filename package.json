@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@logto/nuxt": "^1.2.6",
-    "@nuxt/content": "3.6.3",
     "@nuxt/icon": "1.15.0",
     "@nuxt/image": "1.10.0",
     "@nuxtjs/device": "3.2.4",

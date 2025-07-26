@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     "@nuxtjs/device",
     "@logto/nuxt",
     "@nuxtjs/sanity",
-    "@nuxt/content",
     '@nuxt/image',
     "shadcn-nuxt",
     '@nuxtjs/color-mode',

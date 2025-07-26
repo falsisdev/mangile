@@ -1,8 +1,8 @@
 <script setup>
+import { h, toRaw, ref, watchEffect, onMounted, onBeforeUnmount, computed } from 'vue';
 import imageUrlBuilder from "@sanity/image-url";
 import { Icon } from "@iconify/vue";
 
-// State management
 const isSettingsOpen = ref(false);
 const isWebtoonMode = ref(false);
 const zoomLevel = ref(100);
@@ -13,7 +13,6 @@ const route = useRoute();
 const { isMobileOrTablet } = useDevice();
 const builder = imageUrlBuilder(useSanity().config);
 
-// Data states
 const sanityData = ref(null);
 const chapter = ref(null);
 const images = ref([]);
@@ -26,7 +25,78 @@ const startY = ref(0);
 const scrollLeft = ref(0);
 const scrollTop = ref(0);
 
-// Query for Sanity data
+const portableTextComponents = {
+    block: {
+        h1: (props) => h('h1', { class: 'text-4xl font-bold mb-4' }, props.children),
+        h2: (props) => h('h2', { class: 'text-3xl font-semibold mb-3' }, props.children),
+        normal: (props) => h('p', { class: 'mb-4' }, props.children),
+        h3: (props) => h('h3', { class: 'text-2xl font-semibold mb-3' }, props.children),
+        h4: (props) => h('h4', { class: 'text-xl font-semibold mb-2' }, props.children),
+        blockquote: (props) => h('blockquote', { class: 'border-l-4 border-gray-300 pl-4 italic mb-4' }, props.children),
+    },
+    marks: {
+        link: (props) => h('a', { href: props.value.href, target: '_blank', rel: 'noopener noreferrer', class: 'text-blue-600 hover:underline' }, props.children),
+        strong: (props) => h('strong', {}, props.children),
+        em: (props) => h('em', {}, props.children),
+        code: (props) => h('code', { class: 'bg-gray-100 p-1 rounded text-sm' }, props.children),
+    },
+    list: {
+        bullet: (props) => h('ul', { class: 'list-disc ml-6 mb-4' }, props.children),
+        number: (props) => h('ol', { class: 'list-decimal ml-6 mb-4' }, props.children),
+    },
+    listItem: {
+        bullet: (props) => h('li', {}, props.children),
+        number: (props) => h('li', {}, props.children),
+    },
+    types: {
+        image: ({ value }) => {
+            // Use value.src if it exists (from transformLinksToImages), otherwise build from asset
+            const imageUrl = value.src || (value.asset ? builder.image(value.asset._ref).url() : '');
+            return h('img', { src: imageUrl, alt: value.alt || '', class: 'my-6 rounded-lg max-w-full h-auto' });
+        },
+        codeBlock: ({ value }) => {
+            return h('pre', { class: 'bg-gray-800 text-white p-4 rounded-lg overflow-x-auto my-4' },
+                h('code', { class: `language-${value.language || 'plaintext'}` }, value.code));
+        }
+    }
+};
+
+const renderPortableText = (blocks) => {
+    if (!blocks || !Array.isArray(blocks)) {
+        return [];
+    }
+
+    return blocks.map(block => {
+        if (block._type === 'block') {
+            const children = block.children.map(span => {
+                let text = span.text;
+                if (span.marks && span.marks.length > 0) {
+                    span.marks.forEach(mark => {
+                        const markDef = block.markDefs.find(def => def._key === mark);
+                        if (markDef && portableTextComponents.marks[markDef._type]) {
+                            text = portableTextComponents.marks[markDef._type]({ value: markDef, children: text });
+                        } else if (portableTextComponents.marks[mark]) {
+                            text = portableTextComponents.marks[mark]({ children: text });
+                        }
+                    });
+                }
+                return text;
+            });
+
+            const blockComponent = portableTextComponents.block[block.style || 'normal'];
+            if (blockComponent) {
+                return blockComponent({ children: children });
+            }
+        }
+        else if (portableTextComponents.types[block._type]) {
+            return portableTextComponents.types[block._type]({ value: block });
+        }
+        return h('div', {}, JSON.stringify(block));
+    });
+};
+
+const renderedLightNovelContent = ref([]);
+
 const query = groq`*[myAnimeListId == ${route.params.titleID}] {
   ...,
   chapters[] {
@@ -76,7 +146,6 @@ const transformLinksToImages = (content) => {
     });
 };
 
-// Watch for data changes
 watchEffect(() => {
     if (preSanityData.value) {
         sanityData.value = toRaw(preSanityData.value);
@@ -95,7 +164,6 @@ watchEffect(() => {
                         builder.image(page.asset._ref).auto("format").url()
                     ) || [];
 
-                    // Set initial mode based on manga type
                     if (sanityData.value[0].mangaType === "manhwa" || sanityData.value[0].mangaType === "webtoon") {
                         isWebtoonMode.value = true;
                         isSinglePageMode.value = false;
@@ -104,21 +172,20 @@ watchEffect(() => {
                         isSinglePageMode.value = false;
                     }
                 } else if (sanityData.value[0]._type === "lightNovel") {
-                    chapter.value.content = transformLinksToImages(chapter.value.content || []);
+                    const transformedContent = transformLinksToImages(chapter.value.content || []);
+                    renderedLightNovelContent.value = renderPortableText(transformedContent);
                 }
             }
         }
     }
 });
 
-// Chapter navigation
 const handleChapterChange = (selectedKey) => {
     if (selectedKey) {
         navigateTo(`/title/${route.params.titleID}/chapter/${selectedKey}`);
     }
 };
 
-// Fullscreen control
 const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen()
@@ -130,7 +197,6 @@ const toggleFullscreen = () => {
     }
 };
 
-// Zoom controls
 const zoomIn = () => {
     if (zoomLevel.value < 200) {
         zoomLevel.value += 25;
@@ -158,19 +224,16 @@ const updateZoom = () => {
     saveSettings();
 };
 
-// Webtoon mode toggle
 const toggleWebtoonMode = () => {
     isWebtoonMode.value = !isWebtoonMode.value;
     saveSettings();
 };
 
-// Single page mode toggle
 const toggleSinglePageMode = () => {
     isSinglePageMode.value = !isSinglePageMode.value;
     saveSettings();
 };
 
-// Chapter navigation
 const getNextChapterKey = () => {
     if (!sanityData.value?.[0]?.chapters || !chapter.value) return '';
     const currentIndex = sanityData.value[0].chapters.findIndex(chap => chap._key === chapter.value._key);
@@ -185,7 +248,6 @@ const getPreviousChapterKey = () => {
     return sanityData.value[0].chapters[currentIndex - 1]._key;
 };
 
-// Settings persistence
 const saveSettings = () => {
     localStorage.setItem('mangaReaderSettings', JSON.stringify({
         isWebtoonMode: isWebtoonMode.value,
@@ -208,7 +270,6 @@ const loadSettings = () => {
     }
 };
 
-// Scroll to top
 const scrollToTop = () => {
     window.scrollTo({
         top: 0,
@@ -224,7 +285,7 @@ const startDrag = (e) => {
     if (zoomLevel.value <= 100) return;
 
     e.preventDefault();
-    e.stopPropagation(); // Eventin yayılmasını durdur
+    e.stopPropagation();
 
     isDragging.value = true;
     startX.value = e.clientX;
@@ -232,7 +293,6 @@ const startDrag = (e) => {
     scrollLeft.value = window.scrollX;
     scrollTop.value = window.scrollY;
 
-    // Sadece ilgili resmin cursorunu değiştir
     e.target.style.cursor = 'grabbing';
     document.body.style.userSelect = 'none';
 };
@@ -254,14 +314,12 @@ const endDrag = (e) => {
     if (!isDragging.value) return;
     isDragging.value = false;
 
-    // Sadece ilgili resmin cursorunu eski haline getir
     if (e.target) {
         e.target.style.cursor = zoomLevel.value > 100 ? 'grab' : 'default';
     }
     document.body.style.userSelect = '';
 };
 
-// Update current page based on scroll position
 const updateCurrentPage = () => {
     if (!images.value.length) return;
 
@@ -281,7 +339,6 @@ const updateCurrentPage = () => {
     }
 };
 
-// Initialize
 onMounted(() => {
     loadSettings();
     document.addEventListener('fullscreenchange', () => {
@@ -293,7 +350,6 @@ onMounted(() => {
         window.addEventListener('scroll', checkScroll);
         updateCurrentPage();
 
-        // Add event listeners for drag to pan
         document.addEventListener('mousemove', doDrag);
         document.addEventListener('mouseup', endDrag);
         document.addEventListener('mouseleave', endDrag);
@@ -311,15 +367,12 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="min-h-screen max-w-screen w-full bg-background text-foreground">
-        <!-- Loading state -->
+    <div class="min-h-screen max-w-screen w-full bg-background text-foreground flex flex-col">
         <div v-if="!sanityData" class="flex h-screen items-center justify-center">
             <Icon name="svg-spinners:270-ring" class="w-12 h-12 text-primary" />
         </div>
 
-        <!-- Content when loaded -->
         <div v-else class="relative">
-            <!-- Header with chapter selector -->
             <header class="mt-20 bg-background/95 border-b">
                 <div class="container flex h-14 items-center justify-between px-4">
                     <div class="flex items-center gap-2">
@@ -356,7 +409,6 @@ onBeforeUnmount(() => {
                 </div>
             </header>
 
-            <!-- Floating controls - Only show for manga -->
             <div v-if="sanityData[0]._type === 'manga'"
                 class="fixed right-4 bottom-20 z-50 flex flex-col gap-2 p-2 bg-background/80 rounded-lg shadow-lg border">
                 <Button variant="outline" size="icon" @click="zoomIn" :disabled="zoomLevel >= 200" title="Yakınlaştır">
@@ -381,9 +433,7 @@ onBeforeUnmount(() => {
                 </Button>
             </div>
 
-            <!-- Main content -->
             <div class="container px-5 pt-5 pb-16">
-                <!-- Manga content -->
                 <div v-if="sanityData[0]._type === 'manga'" class="space-y-6">
                     <div class="flex flex-col">
                         <h2 class="text-xl font-semibold">
@@ -397,7 +447,6 @@ onBeforeUnmount(() => {
                         </div>
                     </div>
 
-                    <!-- Pages -->
                     <div :class="{ 'flex flex-col gap-4': isWebtoonMode, 'space-y-4': !isWebtoonMode }">
                         <div v-for="(image, index) in images" :key="index"
                             class="manga-page-container overflow-hidden flex justify-center" :id="`page-${index + 1}`">
@@ -413,7 +462,6 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
 
-                <!-- Light Novel content -->
                 <div v-else-if="sanityData[0]._type === 'lightNovel'" class="prose prose-invert max-w-none space-y-8">
                     <div class="flex flex-col gap-2">
                         <h2 class="text-2xl font-bold">
@@ -425,26 +473,8 @@ onBeforeUnmount(() => {
                     </div>
 
                     <div class="space-y-6">
-                        <template v-for="(block, blockIndex) in chapter?.content" :key="blockIndex">
-                            <template v-if="block._type === 'image'">
-                                <img :src="block.src" :alt="block.alt || `Image ${blockIndex}`"
-                                    class="mx-auto my-4 rounded-md border max-w-full" />
-                            </template>
-                            <template v-else-if="block._type === 'block'">
-                                <p class="my-2">
-                                    <template v-for="(child, childIndex) in block.children" :key="childIndex">
-                                        <template v-if="child._type === 'image'">
-                                            <img :src="child.src"
-                                                :alt="child.alt || `Image ${blockIndex}-${childIndex}`"
-                                                class="mx-auto my-2 rounded-md border max-w-full" />
-                                        </template>
-                                        <template v-else>
-                                            {{ child.text }}
-                                        </template>
-                                    </template>
-                                </p>
-                            </template>
-                        </template>
+                        <component :is="block" v-for="(block, blockIndex) in renderedLightNovelContent"
+                            :key="blockIndex" />
                     </div>
                 </div>
             </div>
@@ -481,7 +511,6 @@ onBeforeUnmount(() => {
     transition: transform 0.2s ease;
 }
 
-/* Webtoon modu için ek stiller */
 .webtoon-mode .manga-page {
     width: 100% !important;
     max-width: 100% !important;
@@ -490,7 +519,6 @@ onBeforeUnmount(() => {
     margin-bottom: 1rem;
 }
 
-/* Light Novel stilleri */
 .prose {
     color: inherit;
 }
@@ -500,7 +528,6 @@ onBeforeUnmount(() => {
     margin-bottom: 1rem;
 }
 
-/* Single page mode */
 .single-page {
     max-width: 50% !important;
     margin: 0 auto;
@@ -510,7 +537,6 @@ onBeforeUnmount(() => {
     width: 100%;
 }
 
-/* Draggable page */
 .manga-page[style*="cursor: grab"] {
     cursor: grab;
 }
