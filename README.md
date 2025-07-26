@@ -1,75 +1,72 @@
-# Nuxt Minimal Starter
+# Mangile
+<img src="https://cdn.sanity.io/images/1yge7tlr/production/5da7fab2f4103d1f13847fdfc879637b6e40d8a7-426x240.gif">
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+**Dinamik, etkili ve kullanışlı manga/webtoon/roman okuma, takip etme ve paylaşma sistemi.**
 
-## Setup
+Mangile, tüm Türkçe manga, webtoon ve roman çevirilerini tek bir çatı altında toplayarak kullanıcıya tek bir kaynaktan tamamen düzenli ve kafa karışıklığını önleyerek sunmayı amaçlayan bir projedir.
 
-Make sure to install dependencies:
+**Website (rc):** [mangile.vercel.app](https://mangile.vercel.app)
+Not: Proje hala geliştirme aşamasındadır, web sitesinde çeşitli hatalar bulunabilir.
 
-```bash
-# npm
-npm install
+---
 
-# pnpm
-pnpm install
+## 📖 Proje Hakkında
 
-# yarn
-yarn install
+Mangile, serileri resmi yayın sıralamasına göre ve sorunsuz bir şekilde sunarak takip etmeyi kolaylaştırır. Böylece çevirmen ve çevir ekiplerinin kimi zaman kendi çevirme işlemlerini kolaylaştırmak kimi zaman kendi web sitelerine daha kolay yüklemek amacıyla resmi yayınlanma sıralamasını ve düzenini görmezden gelerek rastgele ve/vey düzensiz şekilde bölümleri paylaşmasının kullanıcılarda yarattığı kafa karışıklığının önüne geçmek amaçlanır.
 
-# bun
-bun install
-```
+Kullanıcıların serilere yorum yapabileceği, puanlayabileceği, paylaşabileceği, yeni seriler talep edebileceği; serileri, listeleri, bölümleri ve hatta sayfaları favorilerine ekleyebilecekleri; kendi listelerini oluşturup diledikleri gibi düzenleyebilecekleri ve okuma durumlarını güncelleyip takip edebilecekleri bir nevi bir sosyal medya platformu oluşturmak misyon olarak belirlenmiştir.
 
-## Development Server
+Mangile ayrıca hem masaüstü hem de mobil cihazlarda rahatça kullanılabilen kullanıcı dostu bir okuyucuya sahiptir. Sistem bu okuyucuyu manga, webtoon ve romanlar için sunar.
 
-Start the development server on `http://localhost:3000`:
+## ✨ Özellikler
 
-```bash
-# npm
-npm run dev
+- **Okuyucu:** Manga, webtoon ve romanlar için özel okuyucu.
+- **Profil İşlemleri:** Profili düzenleme, silme, kullanıcıları takip edip takip edilebilme.
+- **Kitaplık İşlemleri:** Kitaplığa seri ekleme, düzenleme ve kaldırma.
+- **Liste İşlemleri:** Özel listeler oluşturma, listeye seri ekleme, düzenleme, kaldırma ve listeyi silme.
+- **Yorumlar:** Disqus entegrasyonu ile serilere yorum yapabilme.
+- **Bildirimler:** Gelişmiş websocket bildirim sistemi.
+- **SEO & Meta:** Gelişmiş SEO ve meta etiket desteği.
 
-# pnpm
-pnpm dev
+## 🛠️ Geliştirme Aşaması
 
-# yarn
-yarn dev
+Projenin güncel geliştirme aşaması aşağıdaki tabloda gösterilmektedir:
 
-# bun
-bun run dev
-```
+| Özellik                | Aşama 1 | Aşama 2 | Aşama 3 | Aşama 4 |
+| ---------------------- | :-----: | :-----: | :-----: | :-----: |
+| **Manhwa Okuyucu** |    ✅    |    ✅    |    ✅    |    ✅    |
+| **Roman Okuyucu** |    ✅    |    ✅    |    ✅    |    ✅    |
+| **Manga Okuyucu** |    ✅    |    ✅    |    ✅    |    ✅    |
+| **Profil İşlemleri** |         |        |    ✅    |    ✅    |
+| **Kitaplık İşlemleri** |         |        |    ✅    |    ✅    |
+| **Liste İşlemleri** |         |  ✅       |    ✅    |    ✅    |
+| **Yorumlar** |         |         |    ✅    |    ✅    |
+| **Bildirimler** |         |         |         |    ✅    |
+| **Gelişmiş SEO & Meta**|         |         |         |    ✅    |
 
-## Production
+- **Aşama 1:** İçerikleri sorunsuz bir şekilde okuyabilirsiniz.
+- **Aşama 2 ve sonrası:** Kullanıcı etkileşimleri ve ek özellikler geliştirme aşamasındadır.
 
-Build the application for production:
+Yeni güncellemeler için projenin "releases" ve "projects" bölümlerini takip edebilirsiniz.
 
-```bash
-# npm
-npm run build
+## 💻 Kullanılan Teknolojiler
 
-# pnpm
-pnpm build
+- **Vue 3**
+- **Nuxt 3**
+- **Tailwind 4**
+- **Shadcn-Vue**
+- **TypeScript**
+- **Sanity**
+- **Logto**
+- **Swiperjs**
+- **Jikan API v4**
 
-# yarn
-yarn build
+## 🤝 Katkıda Bulunma
 
-# bun
-bun run build
-```
+Katkılarınız projeyi daha iyi hale getirecektir! Katkıda bulunmak isterseniz, lütfen bir "issue" açın veya "pull request" gönderin.
 
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+1.  Projeyi "Fork" edin.
+2.  Kendi branch'inizi oluşturun (`git checkout -b ozellik/yeni-ozellik`).
+3.  Değişikliklerinizi "Commit" edin (`git commit -m 'feat: Yeni bir özellik eklendi'`).
+4.  Branch'inizi "Push" edin (`git push origin ozellik/yeni-ozellik`).
+5.  Bir "Pull Request" açın.
