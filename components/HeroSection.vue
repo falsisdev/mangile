@@ -131,7 +131,7 @@ onMounted(() => {
                 </div>
             </div>
         </SwiperSlide>
-        <div class="absolute top-0 left-0 w-full h-1 bg-background z-20 overflow-hidden">
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-background z-20 overflow-hidden rounded-none">
             <div class="h-full bg-primary transition-all duration-100 ease-linear"
                 :style="{ width: currentProgress + '%' }"></div>
         </div>
