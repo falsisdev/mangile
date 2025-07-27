@@ -85,7 +85,7 @@ const menuItems = [
 ]
 
 const userItems = [
-  { title: "Profili Görüntüle", url: "" /*`/user/${user?.sub}`*/, icon: "material-symbols:person-outline" },
+  { title: "Profili Görüntüle", url: `/user/${user?.sub}`, icon: "material-symbols:person-outline" },
   { title: "Ayarlar", url: "" /* "/settings" */, icon: "mdi:cog-outline" },
   { title: "Çıkış Yap", url: "/sign-out", icon: "mdi:logout-variant" }
 ]

@@ -5,15 +5,6 @@ import { toRaw } from "vue";
 import imageUrlBuilder from "@sanity/image-url";
 import { toast } from 'vue-sonner'
 
-// DefaultCard ve Swiper bileşenlerinin import edildiğini varsayıyoruz.
-// Eğer DefaultCard veya Swiper/SwiperSlide global olarak tanımlı değilse, buraya import etmeniz gerekebilir:
-// import DefaultCard from '~/components/DefaultCard.vue';
-// import { Swiper, SwiperSlide } from 'swiper/vue';
-// import 'swiper/css'; // Swiper temel CSS
-// import 'swiper/css/navigation'; // Navigasyon okları için
-// import 'swiper/css/pagination'; // Sayfalama noktaları için
-// import { Navigation, Pagination } from 'swiper/modules'; // Modülleri import edin
-
 const route = useRoute();
 const sanityConfig = useSanity().config;
 const builder = imageUrlBuilder(sanityConfig);
@@ -640,13 +631,13 @@ const isSingleChapter = computed(() => {
                                                     <Button variant="outline"
                                                         class="w-10 h-10 rounded-md flex items-center justify-center">
                                                         <span class="font-medium">{{ chapterGroup[0].chapterNumber
-                                                        }}</span>
+                                                            }}</span>
                                                     </Button>
                                                     <div>
                                                         <p>{{ chapterGroup[0].title || `Bölüm
                                                             ${chapterGroup[0].chapterNumber}` }}</p>
                                                         <p class="text-sm text-gray-500">{{ chapterGroup[0].source?.name
-                                                        }}</p>
+                                                            }}</p>
                                                     </div>
                                                 </div>
                                                 <NuxtLink
