@@ -5,6 +5,15 @@ import { toRaw } from "vue";
 import imageUrlBuilder from "@sanity/image-url";
 import { toast } from 'vue-sonner'
 
+// DefaultCard ve Swiper bileşenlerinin import edildiğini varsayıyoruz.
+// Eğer DefaultCard veya Swiper/SwiperSlide global olarak tanımlı değilse, buraya import etmeniz gerekebilir:
+// import DefaultCard from '~/components/DefaultCard.vue';
+// import { Swiper, SwiperSlide } from 'swiper/vue';
+// import 'swiper/css'; // Swiper temel CSS
+// import 'swiper/css/navigation'; // Navigasyon okları için
+// import 'swiper/css/pagination'; // Sayfalama noktaları için
+// import { Navigation, Pagination } from 'swiper/modules'; // Modülleri import edin
+
 const route = useRoute();
 const sanityConfig = useSanity().config;
 const builder = imageUrlBuilder(sanityConfig);
@@ -38,6 +47,7 @@ const listMenuItem = ref({})
 
 const sanityUser = ref({})
 const isFavoriteLoading = ref(false)
+const isLoadingRelations = ref(true); // İlişkili seriler için yükleme durumu
 
 if (Boolean(user)) {
     const query = groq`*[_type == "auth" && logtoId == $logtoId][0]{
@@ -187,6 +197,7 @@ function formatDate(dateString) {
 }
 
 async function fetchManga() {
+    isLoadingRelations.value = true; // İlişki çekme başlamadan önce true yap
     try {
         const [mangaData, imagesData] = await Promise.all([
             retryFetch(`https://api.jikan.moe/v4/manga/${mangaID.value}/full`),
@@ -244,6 +255,8 @@ async function fetchManga() {
             description: 'Manga bilgileri yüklenirken bir sorun oluştu.',
             variant: 'destructive'
         })
+    } finally {
+        isLoadingRelations.value = false; // İlişki çekme bittikten sonra (hata olsa bile) false yap
     }
 }
 
@@ -534,7 +547,7 @@ const isSingleChapter = computed(() => {
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>Konu</CardTitle>
+                                <CardTitle class="text-xl">Konu</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <ScrollArea class="h-24">
@@ -547,7 +560,7 @@ const isSingleChapter = computed(() => {
 
                         <Card v-if="sanityData[0]?.notes">
                             <CardHeader>
-                                <CardTitle>Notlar</CardTitle>
+                                <CardTitle class="text-xl">Notlar</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <ScrollArea class="h-24 text-sm">
@@ -559,7 +572,7 @@ const isSingleChapter = computed(() => {
                         <Card v-if="groupedChapters.length > 0" class="mb-2">
                             <CardHeader>
                                 <div class="flex items-center justify-between">
-                                    <CardTitle>Bölümler</CardTitle>
+                                    <CardTitle class="text-xl">Bölümler</CardTitle>
                                     <div class="flex items-center gap-2">
                                         <span class="text-sm text-gray-500">Sıralama:</span>
                                         <DropdownMenu>
@@ -649,6 +662,23 @@ const isSingleChapter = computed(() => {
                             </CardContent>
                         </Card>
                     </div>
+                </div>
+                <Separator class="my-4" />
+                <div class="mb-5">
+                    <h1 class="text-2xl font-semibold mb-4">Bağlantılı Seriler</h1>
+                    <div v-if="isLoadingRelations" class="flex justify-center items-center h-48">
+                        <Icon icon="mingcute:loading-line" class="animate-spin text-primary text-6xl" />
+                    </div>
+                    <swiper v-else-if="relations.length > 0" :slides-per-view="5.75" :space-between="20">
+                        <swiper-slide v-for="relationItem in relations" :key="relationItem.entry.mal_id">
+                            <DefaultCard :id="relationItem.entry.mal_id"
+                                :cover="relationItem.entry.images.jpg.large_image_url" :title="relationItem.entry.title"
+                                :type="relationItem.entry['type'].replaceAll('Light', 'Hafif').replaceAll('Novel', 'Roman')"
+                                :badgeContent="relationItem['relation'].replaceAll('Other', 'Diğer').replaceAll('Adaptation', 'Adaptasyon').replaceAll('Sequel', 'Devam Serisi').replaceAll('Prequel', 'Önceki Seri').replaceAll('Side Story', 'Yan Öykü').replaceAll('Alternative Version', 'Alternatif Yorum').replaceAll('Parent Story', 'Ana Öykü').replaceAll('Character', 'Karakter')"
+                                :badgeTooltip="relationItem.relation" />
+                        </swiper-slide>
+                    </swiper>
+                    <p v-else class="text-center text-gray-500">Bağlantılı seri bulunamadı.</p>
                 </div>
             </div>
         </div>

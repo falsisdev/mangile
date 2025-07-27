@@ -92,7 +92,7 @@ useSeoMeta({
         </h2>
 
         <div v-if="isLoading" class="flex justify-center items-center h-64">
-            <Icon name="svg-spinners:270-ring" class="w-12 h-12 text-primary" />
+            <Icon icon="mingcute:loading-line" class="animate-spin w-12 h-12 text-primary" />
         </div>
 
         <div v-else-if="titleData?.length" class="flex flex-row flex-wrap gap-3">
