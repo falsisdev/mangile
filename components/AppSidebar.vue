@@ -28,7 +28,10 @@ if (Boolean(user)) {
   listsMenuItem.value = {
     title: "Listelerin",
     items: lists ? listItems.map((list) => ({
-      title: list.title,
+      title: (list.title || `Bölüm ${list.chapterNumber}`).length >= 17 ?
+        (list.title || `Bölüm ${list.chapterNumber}`).slice(0, 17) +
+        '...' :
+        (list.title || `Bölüm ${list.chapterNumber}`),
       url: `/list/${list._id}`,
       icon: "material-symbols:list-alt-outline-rounded",
     }))
