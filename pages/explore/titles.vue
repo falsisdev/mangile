@@ -91,9 +91,8 @@ useSeoMeta({
             İçerikleri Keşfet
         </h2>
 
-        <div v-if="isLoading" class="flex justify-center items-center h-64">
-            <Icon icon="mingcute:loading-line" class="animate-spin w-12 h-12 text-primary" />
-        </div>
+
+        <Loading v-if="isLoading" class="h-64" type="default" what="Keşfet İçeriği" />
 
         <div v-else-if="titleData?.length" class="flex flex-row flex-wrap gap-3">
             <NuxtLink v-for="title in titleData" :key="title.mal_id" :to="`/title/${title.mal_id}`">

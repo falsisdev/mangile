@@ -631,13 +631,13 @@ const isSingleChapter = computed(() => {
                                                     <Button variant="outline"
                                                         class="w-10 h-10 rounded-md flex items-center justify-center">
                                                         <span class="font-medium">{{ chapterGroup[0].chapterNumber
-                                                            }}</span>
+                                                        }}</span>
                                                     </Button>
                                                     <div>
                                                         <p>{{ chapterGroup[0].title || `Bölüm
                                                             ${chapterGroup[0].chapterNumber}` }}</p>
                                                         <p class="text-sm text-gray-500">{{ chapterGroup[0].source?.name
-                                                            }}</p>
+                                                        }}</p>
                                                     </div>
                                                 </div>
                                                 <NuxtLink
@@ -657,9 +657,7 @@ const isSingleChapter = computed(() => {
                 <Separator class="my-4" />
                 <div class="mb-5">
                     <h1 class="text-2xl font-semibold mb-4">Bağlantılı Seriler</h1>
-                    <div v-if="isLoadingRelations" class="flex justify-center items-center h-48">
-                        <Icon icon="mingcute:loading-line" class="animate-spin text-primary text-6xl" />
-                    </div>
+                    <Loading v-if="isLoadingRelations" class="h-48" type="default" what="Bağlantılı Seriler İçeriği" />
                     <swiper v-else-if="relations.length > 0" :slides-per-view="5.75" :space-between="20">
                         <swiper-slide v-for="relationItem in relations" :key="relationItem.entry.mal_id">
                             <DefaultCard :id="relationItem.entry.mal_id"

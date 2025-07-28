@@ -1,5 +1,4 @@
 <script setup>
-import { toRaw, ref, computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import imageUrlBuilder from "@sanity/image-url";
 
@@ -65,12 +64,16 @@ const selectedProgressStatus = ref('reading');
 
 const isLoadingBookcase = ref(true);
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 try {
     if (user.value && user.value[0]?.bookcase) {
         for (const status in user.value[0].bookcase) {
             if (user.value[0].bookcase[status]) {
                 const items = toRaw(user.value[0].bookcase[status]);
-                userBookcase.value[status] = await Promise.all(items.map(async (item) => {
+                userBookcase.value[status] = await Promise.all(items.map(async (item, index) => {
+                    await sleep(index * 500);
+
                     try {
                         const response = await fetch(`https://api.jikan.moe/v4/manga/${item.id}`);
                         if (!response.ok) {
@@ -79,7 +82,6 @@ try {
                         }
                         const jikanData = await response.json();
                         if (jikanData.data) {
-
                             return {
                                 myAnimeListId: jikanData.data.mal_id,
                                 title: jikanData.data.title,
@@ -92,7 +94,7 @@ try {
                             };
                         }
                     } catch (error) {
-                        //
+                        console.error("Jikan API çağrısı sırasında hata oluştu:", error);
                     }
                     return null;
                 }));
@@ -226,14 +228,13 @@ const handleSelectChange = (value) => {
                         </Select>
                     </span>
 
-                    <!-- Kitaplık içeriği burada listelenecek -->
-                    <div v-if="isLoadingBookcase" class="text-center text-gray-500 dark:text-gray-400 py-10">
-                        Kitaplık yükleniyor...
-                    </div>
-                    <div v-else-if="filteredBookcase.length > 0" class="flex flex-row flex-wrap gap-4">
-                        <DefaultCard v-for="book in filteredBookcase" :key="book.myAnimeListId"
-                            :cover="book.coverImage.asset._ref" :title="book.title" :id="book.mal_id"
-                            :type="book.type" />
+                    <Loading v-if="isLoadingBookcase" class="py-10" type="default" what="Kitaplık İçeriği" />
+                    <div v-else-if="filteredBookcase.length > 0">
+                        <div class="flex flex-wrap flex-row gap-3">
+                            <DefaultCard v-for="book in filteredBookcase" :key="book.myAnimeListId"
+                                :cover="book.coverImage.asset._ref" :title="book.title" :id="book.mal_id"
+                                :type="book.type" />
+                        </div>
                     </div>
                     <div v-else class="text-center text-gray-500 dark:text-gray-400 py-10">
                         Bu kategoride henüz içerik bulunmamaktadır.

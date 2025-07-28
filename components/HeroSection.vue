@@ -71,9 +71,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div v-if="loading" class="w-full h-[500px] flex items-center justify-center">
-        <Icon icon="mingcute:loading-line" class="animate-spin text-4xl" />
-    </div>
+    <Loading v-if="isLoading" class="h-[500px] w-full" type="default" what="İçerik" />
 
     <div v-else-if="error" class="w-full h-[500px] flex items-center justify-center">
         <p>Hata: {{ error }}</p>
