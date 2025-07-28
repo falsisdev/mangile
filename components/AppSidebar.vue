@@ -262,7 +262,7 @@ function handleContextMenuClick(menuItem, baseUrl) {
               </a>
             </DropdownMenuTrigger>
             <DropdownMenuContent v-if="Boolean(user)" side="top" class="max-w-screen min-w-56">
-              <DropdownMenuItem v-for="item in userItems" :key="item.title" as-child>
+              <DropdownMenuItem v-for="item in userItems" :key="item.title" as-child class="cursor-pointer">
                 <a :href="item.url" class="flex items-center">
                   <Icon :icon="item.icon" class="mr-2 w-4 h-4" />
                   <span>{{ item.title }}</span>

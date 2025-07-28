@@ -1,5 +1,5 @@
 <script setup>
-import { toRaw } from 'vue';
+import { toRaw, ref, computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import imageUrlBuilder from "@sanity/image-url";
 
@@ -21,7 +21,8 @@ const query = groq`*[logtoId == "${route.params.userID}"] {
         name,
     }
 }`;
-const { data: user } = useSanityQuery(query)
+
+const { data: user } = await useSanityQuery(query)
 
 const isMe = Boolean(loggedUser) ? loggedUser.sub == route.params.userID : false
 
@@ -50,7 +51,68 @@ const closeAlertDialog = () => {
     modalTitle.value = '';
     modalUsers.value = [];
 };
+
+const userBookcase = ref({
+    "reading": [],
+    "completed": [],
+    "onHold": [],
+    "dropped": [],
+    "planned": [],
+    "rereading": [],
+});
+
+const selectedProgressStatus = ref('reading');
+
+const isLoadingBookcase = ref(true);
+
+try {
+    if (user.value && user.value[0]?.bookcase) {
+        for (const status in user.value[0].bookcase) {
+            if (user.value[0].bookcase[status]) {
+                const items = toRaw(user.value[0].bookcase[status]);
+                userBookcase.value[status] = await Promise.all(items.map(async (item) => {
+                    try {
+                        const response = await fetch(`https://api.jikan.moe/v4/manga/${item.id}`);
+                        if (!response.ok) {
+                            console.error(`Jikan API'den veri çekilemedi: ${response.status} ${response.statusText}`);
+                            return null;
+                        }
+                        const jikanData = await response.json();
+                        if (jikanData.data) {
+
+                            return {
+                                myAnimeListId: jikanData.data.mal_id,
+                                title: jikanData.data.title,
+                                description: jikanData.data.synopsis,
+                                coverImage: {
+                                    asset: {
+                                        _ref: jikanData.data.images?.jpg?.image_url || 'https://placehold.co/250x350/cccccc/333333?text=Resim+Yok'
+                                    }
+                                }
+                            };
+                        }
+                    } catch (error) {
+                        //
+                    }
+                    return null;
+                }));
+                userBookcase.value[status] = userBookcase.value[status].filter(item => item !== null);
+            }
+        }
+    }
+} finally {
+    isLoadingBookcase.value = false;
+}
+
+const filteredBookcase = computed(() => {
+    return userBookcase.value[selectedProgressStatus.value] || [];
+});
+
+const handleSelectChange = (value) => {
+    selectedProgressStatus.value = value;
+};
 </script>
+
 <template>
     <main v-if="user && user[0]">
         <div class="relative h-96 w-full overflow-hidden">
@@ -119,10 +181,10 @@ const closeAlertDialog = () => {
                 </TabsList>
 
                 <TabsContent value="bookcase" class="flex-1 p-4 border rounded-xl">
-                    <span class="flex flex-row">
-                        <h3 class="text-2xl font-semibold mb-4">Kitaplık</h3>
+                    <span class="flex flex-row items-center mb-4">
+                        <h3 class="text-2xl font-semibold">Kitaplık</h3>
                         <span class="grow" />
-                        <Select>
+                        <Select v-model="selectedProgressStatus" @update:model-value="handleSelectChange">
                             <SelectTrigger class="w-full max-w-3xs">
                                 <SelectValue placeholder="İlerleme Durumu Seç" />
                             </SelectTrigger>
@@ -130,28 +192,52 @@ const closeAlertDialog = () => {
                                 <SelectGroup>
                                     <SelectLabel>İlerleme Durumları</SelectLabel>
                                     <SelectItem value="reading">
-                                        <Icon icon="material-symbols:play-arrow" /> Okunuyor
+                                        <div class="flex items-center gap-2">
+                                            <Icon icon="material-symbols:play-arrow" /> Okunuyor
+                                        </div>
                                     </SelectItem>
-                                    <SelectItem value=" completed">
-                                        <Icon icon="material-symbols:bookmark-added" /> Tamamlandı
+                                    <SelectItem value="completed">
+                                        <div class="flex items-center gap-2">
+                                            <Icon icon="material-symbols:bookmark-added" /> Tamamlandı
+                                        </div>
                                     </SelectItem>
                                     <SelectItem value="onHold">
-                                        <Icon icon="material-symbols:pause" /> Beklemede
+                                        <div class="flex items-center gap-2">
+                                            <Icon icon="material-symbols:pause" /> Beklemede
+                                        </div>
                                     </SelectItem>
                                     <SelectItem value="dropped">
-                                        <Icon icon="material-symbols:tab-close-inactive-rounded" /> Bırakıldı
+                                        <div class="flex items-center gap-2">
+                                            <Icon icon="material-symbols:tab-close-inactive-rounded" /> Bırakıldı
+                                        </div>
                                     </SelectItem>
                                     <SelectItem value="planned">
-                                        <Icon icon="mingcute:pin-fill" /> Planlandı
+                                        <div class="flex items-center gap-2">
+                                            <Icon icon="mingcute:pin-fill" /> Planlandı
+                                        </div>
                                     </SelectItem>
                                     <SelectItem value="rereading">
-                                        <Icon icon="material-symbols:autoplay-rounded" /> Yeniden Okunuyor
+                                        <div class="flex items-center gap-2">
+                                            <Icon icon="material-symbols:autoplay-rounded" /> Yeniden Okunuyor
+                                        </div>
                                     </SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
                     </span>
-                    Burada kullanıcının kitaplığı yer alacak.
+
+                    <!-- Kitaplık içeriği burada listelenecek -->
+                    <div v-if="isLoadingBookcase" class="text-center text-gray-500 dark:text-gray-400 py-10">
+                        Kitaplık yükleniyor...
+                    </div>
+                    <div v-else-if="filteredBookcase.length > 0" class="flex flex-row flex-wrap gap-4">
+                        <DefaultCard v-for="book in filteredBookcase" :key="book.myAnimeListId"
+                            :cover="book.coverImage.asset._ref" :title="book.title" :id="book.mal_id"
+                            :type="book.type" />
+                    </div>
+                    <div v-else class="text-center text-gray-500 dark:text-gray-400 py-10">
+                        Bu kategoride henüz içerik bulunmamaktadır.
+                    </div>
                 </TabsContent>
                 <TabsContent value="library" class="flex-1 p-4 border rounded-xl">
                     <h3 class="text-2xl font-semibold mb-4">Kütüphane</h3>
@@ -163,8 +249,6 @@ const closeAlertDialog = () => {
                 </TabsContent>
             </Tabs>
         </div>
-
-        <!-- Follower/Following AlertDialog -->
         <AlertDialog :open="isAlertDialogOpen" @update:open="isAlertDialogOpen = $event">
             <AlertDialogContent>
                 <AlertDialogHeader>
