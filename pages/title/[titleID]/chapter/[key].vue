@@ -345,11 +345,11 @@ onMounted(() => {
         isFullscreen.value = !!document.fullscreenElement;
     });
 
-    if (sanityData.value?.[0]?._type === 'manga') {
-        window.addEventListener('scroll', updateCurrentPage);
-        window.addEventListener('scroll', checkScroll);
-        updateCurrentPage();
+    window.addEventListener('scroll', updateCurrentPage);
+    window.addEventListener('scroll', checkScroll);
+    updateCurrentPage();
 
+    if (sanityData.value?.[0]?._type === 'manga') {
         document.addEventListener('mousemove', doDrag);
         document.addEventListener('mouseup', endDrag);
         document.addEventListener('mouseleave', endDrag);
@@ -374,7 +374,7 @@ onBeforeUnmount(() => {
 
         <div v-else class="relative">
             <header class="mt-20 bg-background/95 border-b">
-                <div class="container flex h-14 items-center justify-between px-4">
+                <div class="flex h-14 items-center justify-between px-4">
                     <div class="flex items-center gap-2">
                         <Button variant="ghost" size="sm" as-child>
                             <NuxtLink to="/">
@@ -409,35 +409,57 @@ onBeforeUnmount(() => {
                 </div>
             </header>
 
-            <div v-if="sanityData[0]._type === 'manga'"
-                class="fixed right-4 bottom-20 z-50 flex flex-col gap-2 p-2 bg-background/80 rounded-lg shadow-lg border">
-                <Button variant="outline" size="icon" @click="zoomIn" :disabled="zoomLevel >= 200" title="Yakınlaştır">
+            <div
+                class="fixed right-4 bottom-20 z-50 flex flex-col gap-2 p-2 bg-transparent border-0 rounded-lg border items-center">
+                <Button v-if="sanityData[0]._type === 'manga'" variant="secondary" size="icon" @click="zoomIn"
+                    :disabled="zoomLevel >= 200" title="Yakınlaştır">
                     <Icon icon="lucide:zoom-in" class="h-5 w-5" />
                 </Button>
-                <Button variant="outline" size="icon" @click="resetZoom" title="Sıfırla">
+                <Button v-if="sanityData[0]._type === 'manga'" variant="secondary" size="icon" @click="resetZoom"
+                    title="Sıfırla">
                     <span class="text-xs">{{ zoomLevel }}%</span>
                 </Button>
-                <Button variant="outline" size="icon" @click="zoomOut" :disabled="zoomLevel <= 50" title="Uzaklaştır">
+                <Button v-if="sanityData[0]._type === 'manga'" variant="secondary" size="icon" @click="zoomOut"
+                    :disabled="zoomLevel <= 50" title="Uzaklaştır">
                     <Icon icon="lucide:zoom-out" class="h-5 w-5" />
                 </Button>
-                <Button variant="outline" size="icon" @click="toggleWebtoonMode"
-                    :title="isWebtoonMode ? 'Standart Mod' : 'Webtoon Modu'">
+                <Button v-if="sanityData[0]._type === 'manga'" variant="secondary" size="icon"
+                    @click="toggleWebtoonMode" :title="isWebtoonMode ? 'Standart Mod' : 'Webtoon Modu'">
                     <Icon :icon="isWebtoonMode ? 'lucide:panel-top' : 'lucide:scroll'" class="h-5 w-5" />
                 </Button>
-                <Button variant="outline" size="icon" @click="toggleFullscreen"
+                <Button variant="secondary" size="icon" @click="toggleFullscreen"
                     :title="isFullscreen ? 'Tam Ekrandan Çık' : 'Tam Ekran'">
                     <Icon :icon="isFullscreen ? 'lucide:minimize' : 'lucide:maximize'" class="h-5 w-5" />
                 </Button>
-                <Button variant="outline" size="icon" v-if="showBackToTop" @click="scrollToTop" title="Başa Dön">
+                <Button variant="secondary" size="icon" v-if="showBackToTop" @click="scrollToTop" title="Başa Dön">
                     <Icon icon="lucide:arrow-up" class="h-5 w-5" />
                 </Button>
+                <span v-if="sanityData[0]._type === 'manga'" class="text-sm text-muted-foreground">
+                    {{ currentPage }}/{{ images.length || 1 }}
+                </span>
             </div>
 
-            <div class="container px-5 pt-5 pb-16">
-                <div v-if="sanityData[0]._type === 'manga'" class="space-y-6">
-                    <div class="flex flex-col">
+            <div class="fixed right-0 bottom-5 z-50 flex flex-col rounded-lg bg-transparent border-0 items-center">
+                <div class="gap-1 flex flex-row items-center px-4">
+                    <Button variant="secondary" :disabled="!getPreviousChapterKey()"
+                        @click="navigateTo(`/title/${route.params.titleID}/chapter/${getPreviousChapterKey()}`)">
+                        <Icon icon="lucide:chevron-left" class="h-4 w-4" />
+                        Önceki Bölüm
+                    </Button>
+                    <Button variant="secondary" :disabled="!getNextChapterKey()"
+                        @click="navigateTo(`/title/${route.params.titleID}/chapter/${getNextChapterKey()}`)">
+                        Sonraki Bölüm
+                        <Icon icon="lucide:chevron-right" class="h-4 w-4" />
+                    </Button>
+                </div>
+            </div>
+
+            <div class="px-5 pt-5 pb-16">
+                <div v-if="sanityData[0]._type === 'manga'" class="space-y-6 flex flex-col">
+                    <div class="flex flex-row justify-between">
                         <h2 class="text-xl font-semibold">
-                            {{ chapter?.chapterNumber ? `${chapter.chapterNumber}` : '' }} {{ chapter?.title ? `-
+                            {{ chapter?.chapterNumber ? `${chapter.chapterNumber}` : '' }} {{ chapter?.title ?
+                                `-
                             ${chapter.title}` : '' }}
                         </h2>
                         <div>
@@ -462,7 +484,8 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
 
-                <div v-else-if="sanityData[0]._type === 'lightNovel'" class="prose prose-invert max-w-none space-y-8">
+                <div v-else-if="sanityData[0]._type === 'lightNovel'"
+                    class="prose prose-invert max-w-none space-y-8 flex flex-col">
                     <div class="flex flex-col gap-2">
                         <h2 class="text-2xl font-bold">
                             {{ chapter?.title }}
@@ -476,29 +499,6 @@ onBeforeUnmount(() => {
                         <component :is="block" v-for="(block, blockIndex) in renderedLightNovelContent"
                             :key="blockIndex" />
                     </div>
-                </div>
-            </div>
-
-            <div class="fixed bottom-0 right-0 bg-background/95 border-t py-2 z-40"
-                style="width: calc(100% - 16rem); margin-left: 8rem;">
-                <div class="w-full h-1.5 mb-4">
-                    <div class="bg-primary h-1.5"
-                        :style="{ width: `${((currentPage - 1) / (images.length - 1)) * 100}%` }"></div>
-                </div>
-                <div class="container flex items-center justify-between px-4">
-                    <Button variant="outline" :disabled="!getPreviousChapterKey()"
-                        @click="navigateTo(`/title/${route.params.titleID}/chapter/${getPreviousChapterKey()}`)">
-                        <Icon icon="lucide:chevron-left" class="mr-2 h-4 w-4" />
-                        Önceki Bölüm
-                    </Button>
-                    <span class="text-sm text-muted-foreground">
-                        Sayfa {{ currentPage }} / {{ images.length || 1 }}
-                    </span>
-                    <Button variant="outline" :disabled="!getNextChapterKey()"
-                        @click="navigateTo(`/title/${route.params.titleID}/chapter/${getNextChapterKey()}`)">
-                        Sonraki Bölüm
-                        <Icon icon="lucide:chevron-right" class="ml-2 h-4 w-4" />
-                    </Button>
                 </div>
             </div>
         </div>
