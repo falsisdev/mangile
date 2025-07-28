@@ -114,8 +114,8 @@ onMounted(() => {
                                     {{ truncateSynopsis(manga.synopsis) }}
                                 </p>
                                 <div class="flex mt-6">
-                                    <Button @click="() => navigateTo(`/title/${manga.mal_id}`)" variant="default"
-                                        class="cursor-pointer">
+                                    <Button @click="() => navigateTo(`/title/${manga.mal_id}`)" variant="outline"
+                                        class="cursor-pointer shadow-lg">
                                         <Icon icon="mdi:eye" class="mr-2" /> Görüntüle
                                     </Button>
                                 </div>
