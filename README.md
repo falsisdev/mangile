@@ -6,7 +6,9 @@
 Mangile, tüm Türkçe manga, webtoon ve roman çevirilerini tek bir çatı altında toplayarak kullanıcıya tek bir kaynaktan tamamen düzenli ve kafa karışıklığını önleyerek sunmayı amaçlayan bir projedir.
 
 **Website (rc):** [mangile.vercel.app](https://mangile.vercel.app)
+
 [Gitlab (rc)](https://gitlab.com/falsis/mangile), [GitHub (rc)](https://github.com/falsisdev/mangile)
+
 Not: Proje hala geliştirme aşamasındadır, web sitesinde çeşitli hatalar bulunabilir.
 
 ---
