@@ -1,6 +1,10 @@
 # Mangile
 <img src="https://cdn.sanity.io/images/1yge7tlr/production/5da7fab2f4103d1f13847fdfc879637b6e40d8a7-426x240.gif">
 
+
+### ⚠️ Proje geliştirilmesi 2026 yılının 6. ayına kadar durdurulmuş vaziyettedir. Belirtilen müddet sonrasında geliştirme tüm hızıyla planlı ve programlı şekilde devam edecektir.
+
+
 **Dinamik, etkili ve kullanışlı manga/webtoon/roman okuma, takip etme ve paylaşma sistemi.**
 
 Mangile, tüm Türkçe manga, webtoon ve roman çevirilerini tek bir çatı altında toplayarak kullanıcıya tek bir kaynaktan tamamen düzenli ve kafa karışıklığını önleyerek sunmayı amaçlayan bir projedir.
