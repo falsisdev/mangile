@@ -69,29 +69,32 @@ onClickOutside(searchWrapper, () => {
                 </Button>
             </div>
 
-            <Card v-if="isDropdownVisible" class="absolute w-full mt-2 max-h-96 overflow-y-auto">
-                <div v-if="isLoading" class="p-4 text-center text-muted-foreground">
+            <Card v-if="isDropdownVisible" class="absolute left-0 right-0 mt-4 overflow-hidden rounded-[28px] backdrop-blur-xl">
+                <div class="border-b pb-5 px-6">
+                    <p class="text-md font-semibold tracking-wide">Arama sonuçları</p>
+                </div>
+
+                <div v-if="isLoading" class="p-6 text-center text-slate-500">
                     Yükleniyor...
                 </div>
-                <div v-else-if="results.length > 0">
+                <div v-else-if="results.length > 0" class="space-y-1">
                     <ul>
                         <li v-for="item in results" :key="item.mal_id">
                             <NuxtLink :to="`/title/${item.mal_id}`" @click="handleResultClick"
-                                class="flex items-center p-3 hover:bg-accent transition-colors duration-200">
-                                <Avatar class="h-16 w-12 rounded-md">
-                                    <AvatarImage :src="item.images.webp.image_url" :alt="item.title"
-                                        class="object-cover" />
+                                class="group flex items-center gap-4 px-5 py-4 transition duration-500 hover:opacity-70">
+                                <Avatar class="h-16 w-16 rounded-sm h-full overflow-hidden">
+                                    <AvatarImage :src="item.images.webp.image_url" :alt="item.title" class="object-cover" />
                                     <AvatarFallback>{{ item.title.charAt(0) }}</AvatarFallback>
                                 </Avatar>
-                                <div class="ml-4">
-                                    <p class="font-semibold text-sm">{{ item.title }}</p>
-                                    <p class="text-xs text-muted-foreground">{{ item.type }}</p>
+                                <div class="min-w-0 flex-1">
+                                    <p>{{ item.title }}</p>
+                                    <p class="mt-1 text-xs text-slate-500">{{ item.type }}</p>
                                 </div>
                             </NuxtLink>
                         </li>
                     </ul>
                 </div>
-                <div v-else-if="searchQuery.length >= 3 && !isLoading" class="p-4 text-center text-muted-foreground">
+                <div v-else-if="searchQuery.length >= 3 && !isLoading" class="p-6 text-center text-slate-500">
                     Sonuç bulunamadı.
                 </div>
             </Card>
