@@ -34,8 +34,8 @@ watch(
 </script>
 
 <template>
-    <div class="container mx-auto pt-20">
-        <h1 v-if="searchQuery" class="text-3xl font-bold mb-6">
+    <div class="container mx-auto py-20">
+        <h1 v-if="searchQuery" class="text-3xl font-bold mb-6 mx-6">
             Arama Sonuçları: <span class="text-primary">{{ searchQuery }}</span>
         </h1>
         <h1 v-else class="text-3xl font-bold mb-6">
@@ -51,9 +51,8 @@ watch(
         </div>
 
         <div v-else-if="searchResults.length > 0" class="flex flex-wrap justify-center gap-4">
-            <DefaultCard v-for="item in searchResults" :key="item.mal_id" :id="item.mal_id" :title="item.title"
-                :cover="item.images.webp.large_image_url" :type="item.type"
-                :badge-content="item.score ? item.score.toString() : 'N/A'" badge-tooltip="Puan" />
+            <DetailsCard v-for="item in searchResults" :key="item.mal_id" :id="item.mal_id" :title="item.title"
+                :cover="item.images.webp.large_image_url" :type="item.type" />
         </div>
 
         <div v-else-if="!isLoading && searchQuery" class="text-center h-64 flex items-center justify-center">
