@@ -1,6 +1,8 @@
 <script setup>
 import { data } from '~/assets/data';
 import { Icon } from '@iconify/vue';
+import DefaultCard from '~/components/DefaultCard.vue';
+import DetailsCard from '~/components/DetailsCard.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -13,6 +15,11 @@ const orderBy = ref(route.query.order_by || "score");
 const sort = ref(route.query.sort || "desc");
 const sfw = ref(route.query.sfw !== undefined ? route.query.sfw === "true" : true);
 const isLoading = ref(true);
+const cardType = ref("default");
+const cardComponents = {
+    default: DefaultCard,
+    details: DetailsCard,
+};
 
 const genres = ref([]);
 const genreOptions = data.genreIDs;
@@ -88,7 +95,24 @@ useSeoMeta({
 <template>
     <main class="mt-20 container mx-auto px-4">
         <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
-            İçerikleri Keşfet
+            <div class="flex items-center justify-between gap-4">
+                <span>İçerikleri Keşfet</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-sm text-gray-500">Kart Tipi:</span>
+                    <Select v-model="cardType">
+                        <SelectTrigger>
+                            <SelectValue placeholder="Kart Tipi" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="default">Şatafatlı</SelectItem>
+                            <SelectItem value="details">Minimal</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <span class="text-sm text-gray-500">
+                        Seçilen: {{ cardType === 'default' ? 'Şatafatlı' : 'Minimal' }}
+                    </span>
+                </div>
+            </div>
         </h2>
 
 
@@ -96,7 +120,7 @@ useSeoMeta({
 
         <div v-else-if="titleData?.length" class="flex flex-row flex-wrap gap-3">
             <NuxtLink v-for="title in titleData" :key="title.mal_id" :to="`/title/${title.mal_id}`">
-                <DefaultCard :cover="title.images?.webp?.large_image_url" :title="title.title"
+                <component :is="cardComponents[cardType]" :cover="title.images?.webp?.large_image_url" :title="title.title"
                     :type="title.type?.replace('Light Novel', 'Hafif Roman')" :id="title.mal_id" />
             </NuxtLink>
         </div>
