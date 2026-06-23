@@ -149,12 +149,12 @@ const handleSelectChange = (value) => {
                     <Button variant="secondary" class="gap-2 cursor-pointer shadow-lg"
                         @click="openFollowModal('followers')">
                         <Icon icon="mdi:account-arrow-left-outline" />
-                        {{ user[0]['userFollowers'].length }} Takipçi
+                        {{ user[0]['userFollowers'] ? user[0]['userFollowers'].length : '0' }} Takipçi
                     </Button>
                     <Button variant="secondary" class="gap-2 cursor-pointer shadow-lg"
                         @click="openFollowModal('following')">
                         <Icon icon="mdi:account-arrow-right-outline" />
-                        {{ user[0]['userFollows'].length }} Takip
+                        {{ user[0]['userFollows'] ? user[0]['userFollows'].length : '0' }} Takip
                     </Button>
                     <Button variant="outline" v-if="isMe" class="gap-2 cursor-pointer shadow-lg">
                         <Icon icon="material-symbols:person-edit-outline-rounded" />
