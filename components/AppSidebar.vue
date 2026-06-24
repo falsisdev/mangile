@@ -188,7 +188,7 @@ function handleContextMenuClick(menuItem, baseUrl) {
 
                       <!-- Sağ taraf: sadece Listelerin grubunda görünür -->
                       <template v-if="group.title === 'Listelerin'">
-                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity mr-2">
+                        <div class="flex gap-1 opacity-0 hover:opacity-100 transition-opacity mr-2 pl-6">
                           <NuxtLink :to="`${''/*item.url + '/edit'*/}`"
                             class="text-muted-foreground hover:text-primary duration-300" @click.stop>
                             <Icon icon="material-symbols:edit-outline-rounded" class="w-[1rem] h-[1rem]" />
