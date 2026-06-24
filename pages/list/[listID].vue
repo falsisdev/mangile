@@ -1,10 +1,12 @@
 <script setup>
 import { Icon } from '@iconify/vue';
+import { toast } from 'vue-sonner';
 
 const list = ref(null);
 const itemsData = ref([]);
 const loading = ref(true);
 const isFav = ref(false);
+const isFavLoading = ref(false);
 const user = useLogtoUser();
 
 const showLikesModal = ref(false);
@@ -24,7 +26,7 @@ async function fetchData() {
         const query = groq`
       *[_type == "lists" && _id == $listID][0]{
         ...,
-        user->{logtoId, name, avatar, username},
+        user->{_id, logtoId, name, avatar, username},
         likes[]->{
           _id,
           name,
@@ -34,34 +36,45 @@ async function fetchData() {
       }
     `;
 
-        const sanityList = await sanity.fetch(query, { listID: route.params.listID });
+        // CDN Önbelleklemesini (Caching) devre dışı bırakıyoruz. 
+        // Böylece listeye başlık ekleyip bu sayfaya geldiğinizde her zaman güncel liste yüklenir.
+        const rawClient = sanity.client || sanity;
+        const sanityList = await rawClient.withConfig({ useCdn: false }).fetch(query, { listID: route.params.listID });
         list.value = sanityList;
 
+        // Kullanıcı giriş yapmışsa, bu listeyi beğenip beğenmediğini kontrol et
         if (user?.sub && Array.isArray(list.value?.likes)) {
-            isFav.value = list.value.likes.some(u => u._id === user.sub);
+            // Logto sub id'si ile beğenenlerin auth dokümanı _id'sini veya logtoId'sini eşleştiriyoruz
+            isFav.value = list.value.likes.some(u => u.logtoId === user.sub);
         } else {
             isFav.value = false;
         }
 
         if (list.value?.items?.length) {
+            // Listeyi indeks sırasına göre sıralayıp ID'leri alıyoruz
             const sortedItems = [...list.value.items]
-                .sort((a, b) => a.item[1] - b.item[1])
+                .sort((a, b) => {
+                    const idxA = a.item && a.item[1] !== undefined ? a.item[1] : 0;
+                    const idxB = b.item && b.item[1] !== undefined ? b.item[1] : 0;
+                    return idxA - idxB;
+                })
                 .map((item) => ({ id: item.item[0], index: item.item[1] }));
 
             const fetchedMangaData = [];
             for (const item of sortedItems) {
                 try {
+                    // Jikan API rate limit (429) koruması için bekleme ekliyoruz
                     await delay(1000);
 
                     const res = await fetch(`https://api.jikan.moe/v4/manga/${item.id}`);
                     if (!res.ok) {
-                        fetchedMangaData.push({ mal_id: item.id, error: `Manga yuklenemedi (ID: ${item.id})` });
+                        fetchedMangaData.push({ mal_id: item.id, error: `Manga yüklenemedi (ID: ${item.id})` });
                     } else {
                         const json = await res.json();
                         fetchedMangaData.push(json.data);
                     }
                 } catch (e) {
-                    fetchedMangaData.push({ mal_id: item.id, error: `Manga cekilirken hata (ID: ${item.id})` });
+                    fetchedMangaData.push({ mal_id: item.id, error: `Manga çekilirken hata (ID: ${item.id})` });
                 }
             }
             itemsData.value = fetchedMangaData;
@@ -69,16 +82,62 @@ async function fetchData() {
             itemsData.value = [];
         }
     } catch (err) {
+        console.error("Veri çekme hatası:", err);
+        toast.error("Hata", {
+            description: "Liste yüklenirken bir hata oluştu."
+        });
     } finally {
         loading.value = false;
     }
 }
 
-function favList() {
-    if (isFav.value) {
-        showMessageModal("Favoriden Kaldirma", "Favoriden kaldirma islemi Sanity backend ile entegre edilmeli.");
-    } else {
-        showMessageModal("Favorileme", "Favorileme islemi Sanity backend ile entegre edilmeli.");
+// Favori (Beğeni) ekleme ve çıkarma işlemini gerçek Sanity backend API'sine bağlıyoruz
+async function favList() {
+    if (!user?.sub) {
+        toast.error("Hata", {
+            description: "Giriş yapmanız gerekmektedir."
+        });
+        return;
+    }
+
+    isFavLoading.value = true;
+    try {
+        const action = isFav.value ? 'remove' : 'add';
+
+        // Backend API'mize istek atıyoruz
+        const response = await $fetch('/api/user/list-like', {
+            method: 'POST',
+            body: {
+                listId: list.value._id,
+                logtoId: user.sub,
+                action: action
+            }
+        });
+
+        if (response.success) {
+            isFav.value = !isFav.value;
+            // Listenin yerel beğenilerini güncelleyerek anında arayüze yansıtıyoruz
+            list.value.likes = response.likes;
+            
+            if (action === 'add') {
+                toast.success("Beğenildi", {
+                    description: "Liste beğendikleriniz arasına eklendi."
+                });
+            } else {
+                toast.info("Beğenmekten Vazgeçildi", {
+                    description: "Liste beğendiklerinizden kaldırıldı."
+                });
+            }
+        } else {
+            throw new Error(response.message || "İşlem başarısız.");
+        }
+    } catch (error) {
+        console.error("Beğeni güncellenemedi:", error);
+        toast.error("Hata", {
+            description: "Beğeni durumu güncellenirken bir sorun oluştu."
+        });
+    } finally {
+        isFavLoading.value = false;
     }
 }
 
@@ -115,17 +174,18 @@ onMounted(fetchData);
 useSeoMeta({
     title: () => list.value?.title ? `${list.value.title}` : "Liste",
     ogTitle: () => list.value?.title ? `${list.value.title}` : "Liste",
-    description: "Mangile - Turkce Manga, Hafif Roman, Webtoon oku!",
-    ogDescription: "Mangile - Dinamik, Efektif, Kullanisli ve Turkce manga okuma, takip etme ve paylasma sistemi genel ag sitesi.",
+    description: "Mangile - Türkçe Manga, Hafif Roman, Webtoon oku!",
+    ogDescription: "Mangile - Dinamik, Efektif, Kullanışlı ve Türkçe manga okuma, takip etme ve paylaşma sistemi genel ağ sitesi.",
 });
 </script>
+
 <template>
     <main class="container px-4 py-8 mt-20">
         <div v-if="list" class="mb-8">
             <div class="flex flex-col md:flex-row gap-6 items-start md:items-center">
-                <div class="w-screen">
+                <div class="w-full">
                     <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors">
-                        {{ list.title || "Liste Basligi" }}
+                        {{ list.title || "Liste Başlığı" }}
                     </h2>
 
                     <div class="mt-4 flex items-center gap-4">
@@ -139,18 +199,19 @@ useSeoMeta({
                             {{ new Date(list._createdAt).toLocaleDateString() }}
                         </span>
 
-                        <button @click="handleLikeClick" class="flex items-center gap-1 text-sm cursor-pointer"
+                        <button @click="handleLikeClick" :disabled="isFavLoading" class="flex items-center gap-1 text-sm cursor-pointer disabled:opacity-50"
                             :class="isFav ? 'text-red-500' : 'text-muted-foreground'">
-                            <Icon :icon="isFav ? 'mdi:heart' : 'mdi:heart-outline'" />
+                            <Icon v-if="isFavLoading" icon="svg-spinners:270-ring" class="w-4 h-4" />
+                            <Icon v-else :icon="isFav ? 'mdi:heart' : 'mdi:heart-outline'" class="w-5 h-5" />
                             <span>{{ list.likes?.length || 0 }}</span>
                         </button>
                     </div>
                 </div>
 
-                <div v-if="user?.sub === list.user?.logtoId" class="flex gap-2">
+                <div v-if="user?.sub === list.user?.logtoId" class="flex gap-2 whitespace-nowrap">
                     <Button variant="outline" @click="goToEdit">
                         <Icon icon="mdi:pencil" class="mr-2" />
-                        Duzenle
+                        Düzenle
                     </Button>
                 </div>
             </div>
@@ -162,16 +223,15 @@ useSeoMeta({
 
         <Loading v-if="loading" class="w-full h-96" type="default" what="Liste İçeriği" />
 
-        <div v-else-if="itemsData.length > 0" class="flex flex-row flex-wrap gap-3 justify-center md:justify-start">
+        <div v-else-if="itemsData.length > 0" class="flex flex-row flex-wrap gap-4 justify-center md:justify-start">
             <div v-for="(item, index) in itemsData" :key="item.mal_id || `error-${index}`"
                 class="flex gap-4 items-start">
                 <template v-if="item.error">
                     <div
-                        class="border rounded-lg p-4 flex flex-col items-center justify-center w-56 h-[400px] bg-sidebar text-primary shadow-md">
+                        class="border rounded-lg p-4 flex flex-col items-center justify-center w-56 h-[380px] bg-sidebar text-primary shadow-md">
                         <Icon icon="mdi:alert-circle-outline" class="w-12 h-12 mb-2 text-red-400" />
-                        <p class="text-center text-sm font-semibold">{{ item.error }}</p>
-                        <p class="text-xs mt-1">ID: {{ item.mal_id }}</p>
-                        <Button @click="fetchData" variant="default">Tekrar Dene</Button>
+                        <p class="text-center text-sm font-semibold mb-3">{{ item.error }}</p>
+                        <Button @click="fetchData" variant="default" size="sm">Tekrar Dene</Button>
                     </div>
                 </template>
                 <template v-else>
@@ -184,20 +244,21 @@ useSeoMeta({
             </div>
         </div>
 
-        <div v-else class="w-full text-center py-10">
+        <div v-else class="w-full text-center py-12">
             <Icon icon="heroicons:exclamation-triangle" class="w-12 h-12 mx-auto text-yellow-500" />
-            <p class="mt-4 text-lg">Listede gosterilecek icerik bulunamadi</p>
+            <p class="mt-4 text-lg text-muted-foreground">Listede gösterilecek içerik bulunamadı.</p>
         </div>
 
+        <!-- Beğenenler Modalı -->
         <Dialog v-model:open="showLikesModal">
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Bu listeyi beğenenler</DialogTitle>
-                    <DialogDescription>Bu listeyi beğenen kullanicilari goruyorsunuz.</DialogDescription>
+                    <DialogTitle>Bu listeyi beğenenler</DialogTitle>
+                    <DialogDescription>Bu listeyi beğenen kullanıcıları görüyorsunuz.</DialogDescription>
                 </DialogHeader>
 
-                <div v-if="list?.likes?.length" class="mt-4 space-y-3">
-                    <NuxtLink v-for="like in list.likes" :key="like._id" to="#"
+                <div v-if="list?.likes?.length" class="mt-4 space-y-3 max-h-60 overflow-y-auto">
+                    <NuxtLink v-for="like in list.likes" :key="like._id" :to="`/user/${like.logtoId}`"
                         class="flex items-center gap-3 p-2 hover:bg-accent rounded-lg">
                         <img :src="like.avatar || 'https://placehold.co/40x40/cccccc/ffffff?text=AV'" :alt="like.name"
                             class="w-10 h-10 rounded-full object-cover">
@@ -209,7 +270,7 @@ useSeoMeta({
                 </div>
 
                 <div v-else class="mt-4 text-center py-6 text-muted-foreground">
-                    Henuz kimse bu listeyi beğenmemiş
+                    Henüz kimse bu listeyi beğenmemiş.
                 </div>
 
                 <DialogFooter>
@@ -222,6 +283,7 @@ useSeoMeta({
             </DialogContent>
         </Dialog>
 
+        <!-- Mesaj Modalı -->
         <Dialog v-model:open="showMessageModalState">
             <DialogContent>
                 <DialogHeader>

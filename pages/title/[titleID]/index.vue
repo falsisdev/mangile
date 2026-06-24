@@ -34,30 +34,92 @@ const sortOrder = ref('asc'); // Bölüm sıralama için
 
 const user = useLogtoUser();
 const sanity = useSanity()
-const listMenuItem = ref({})
 
 const sanityUser = ref({})
 const isFavoriteLoading = ref(false)
 const isLoadingRelations = ref(true); // İlişkili seriler için yükleme durumu
+const isListUpdating = ref({}); // Listelere ekleme/çıkarma yükleme durumu
 
 if (Boolean(user)) {
+    // items alanını da çekmek için query'i güncelliyoruz
     const query = groq`*[_type == "auth" && logtoId == $logtoId][0]{
     ...,
     lists[]-> {
       _id,
-      title
+      title,
+      items
     },
 }`
-    sanityUser.value = await sanity.fetch(query, { logtoId: user.sub })
-    const lists = sanityUser.value.lists;
-    const listItems = Array.isArray(toRaw(lists))
-        ? toRaw(lists)
-        : [toRaw(lists)]
-    listMenuItem.value = toRaw(lists) ? toRaw(listItems).map((list) => ({
-        title: list.title,
-        id: list._id,
-        icon: "material-symbols:list-alt-outline-rounded",
-    })) : null
+    // CDN Caching (Önbellek) sorununu çözmek için withConfig({ useCdn: false }) ekliyoruz.
+    // Bu sayede sayfadan gidip gelince eski (cachelenmiş) veri değil, anlık veri gelir.
+    const rawClient = sanity.client || sanity;
+    sanityUser.value = await rawClient.withConfig({ useCdn: false }).fetch(query, { logtoId: user.sub })
+}
+
+// Yeni Ekleme ve Çıkarma Fonksiyonu - Backend API kullanacak şekilde güncellendi
+async function toggleTitleInList(listId) {
+    if (!sanityUser.value?._id) {
+        toast.error('Hata', {
+            description: 'Giriş yapmanız gerekiyor'
+        });
+        return;
+    }
+
+    isListUpdating.value[listId] = true;
+    try {
+        const currentMangaId = Number(route.params.titleID);
+        const targetList = sanityUser.value.lists.find((l) => l._id === listId);
+        
+        if (!targetList) throw new Error("Liste bulunamadı");
+        if (!targetList.items) targetList.items = [];
+
+        const existingItemIndex = targetList.items.findIndex((i) => i.item && Number(i.item[0]) === currentMangaId);
+        const isAdding = existingItemIndex === -1;
+
+        // Backend API'ye gönderilecek veriler (titleID olarak güncellendi)
+        const bodyData = {
+            listId: listId,
+            titleID: currentMangaId,
+            action: isAdding ? 'add' : 'remove',
+            itemKey: isAdding ? null : targetList.items[existingItemIndex]._key
+        };
+
+        // Kendi Nuxt 3 API rotamıza istek atıyoruz
+        const response = await $fetch('/api/user/list', {
+            method: 'POST',
+            body: bodyData
+        });
+
+        if (response.success) {
+            if (isAdding) {
+                // Sunucudan dönen sıralanmış items listesi ile reaktif veriyi güncelliyoruz
+                targetList.items = response.items;
+                sanityUser.value = { ...sanityUser.value }; // Arayüzün (yeşil tik) güncellenmesini garanti altına alıyoruz
+
+                toast.success('Eklendi', {
+                    description: `${targetList.title} listesine başarıyla eklendi.`
+                });
+            } else {
+                // Sildiğimiz item'ı listeden filtreleyip re-index edilmiş yeni listeyi uyguluyoruz
+                targetList.items = response.items;
+                sanityUser.value = { ...sanityUser.value }; // Arayüzün (yeşil tik) güncellenmesini garanti altına alıyoruz
+
+                toast.info('Kaldırıldı', {
+                    description: `${targetList.title} listesinden çıkarıldı.`
+                });
+            }
+        } else {
+            throw new Error(response.message || 'İşlem başarısız oldu');
+        }
+
+    } catch (error) {
+        console.error("Liste güncelleme hatası:", error);
+        toast.error('Hata', {
+            description: 'İşlem sırasında bir hata oluştu.'
+        });
+    } finally {
+        isListUpdating.value[listId] = false;
+    }
 }
 
 const groupChaptersBySource = (chapters) => {
@@ -241,10 +303,8 @@ async function fetchManga() {
         }
     } catch (error) {
         console.error("Ana veri çekme hatası:", error);
-        toast({
-            title: 'Hata',
-            description: 'Manga bilgileri yüklenirken bir sorun oluştu.',
-            variant: 'destructive'
+        toast.error('Hata', {
+            description: 'Manga bilgileri yüklenirken bir sorun oluştu.'
         })
     } finally {
         isLoadingRelations.value = false; // İlişki çekme bittikten sonra (hata olsa bile) false yap
@@ -255,10 +315,8 @@ async function setFavorite() {
     isFavoriteLoading.value = true
     try {
         if (!sanityUser.value?._id) {
-            toast({
-                title: 'Hata',
-                description: 'Giriş yapmanız gerekiyor',
-                variant: 'destructive'
+            toast.error('Hata', {
+                description: 'Giriş yapmanız gerekiyor'
             })
             return
         }
@@ -277,23 +335,23 @@ async function setFavorite() {
         if (success) {
             sanityUser.value.favoriteTitles = favorites
 
-            toast({
-                title: isFavorite ? 'Kaldırıldı' : 'Eklendi',
-                description: isFavorite
-                    ? 'En sevdiğin içeriklerden kaldırıldı'
-                    : 'En sevdiğin içerikler arasına eklendi',
-                variant: 'default'
-            })
+            if (isFavorite) {
+                toast.info('Kaldırıldı', {
+                    description: 'En sevdiğin içeriklerden kaldırıldı'
+                });
+            } else {
+                toast.success('Eklendi', {
+                    description: 'En sevdiğin içerikler arasına eklendi'
+                });
+            }
         } else {
             throw new Error('İşlem başarısız oldu')
         }
 
     } catch (err) {
         console.error("Favorite güncelleme hatası:", err)
-        toast({
-            title: 'Hata',
-            description: 'En sevdiğin içeriklere eklenemedi',
-            variant: 'destructive'
+        toast.error('Hata', {
+            description: 'En sevdiğin içeriklere eklenemedi'
         })
     } finally {
         isFavoriteLoading.value = false
@@ -323,8 +381,6 @@ watchEffect(() => {
 // mangaID değiştiğinde veya userData değiştiğinde fetchManga'yı tetikle
 watch([mangaID, userData], async ([newMangaID, newUserData], [oldMangaID, oldUserData]) => {
     // Sadece mangaID veya userData gerçekten değiştiğinde fetchManga'yı çağır
-    // İlk yüklemede de çağrılması gerektiği için onMounted'a ekledik.
-    // Bu watch sadece değişikliklerde tetiklenmeli.
     if (newMangaID !== oldMangaID || newUserData !== oldUserData) {
         await fetchManga();
     }
@@ -351,7 +407,6 @@ onMounted(() => {
 
     if (dbStyleCookie.value == 0) dbStyle.value = 0;
 });
-// onMounted(fetchManga); // Bu satırı yukarıdaki watch içine taşıdık ve immediate: true ekledik.
 
 const bannerOpacity = ref(1);
 
@@ -507,10 +562,10 @@ const isSingleChapter = computed(() => {
 
                             <div class="flex gap-2" v-if="Boolean(user)">
                                 <Button variant="outline" class="gap-2 cursor-pointer shadow-lg">
-                                    <Icon icon="mdi:playlist-plus" />
-                                    Kitaplık Girdisi
+                                    <Icon icon="material-symbols:sync" />
+                                    İzleyici
                                 </Button>
-                                <DropdownMenu v-if="listMenuItem">
+                                <DropdownMenu v-if="sanityUser?.lists?.length > 0">
                                     <DropdownMenuTrigger as-child>
                                         <Button variant="default" class="cursor-pointer">
                                             <Icon icon="material-symbols:list-alt-add-outline" />
@@ -518,10 +573,16 @@ const isSingleChapter = computed(() => {
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
-                                        <DropdownMenuItem v-for="item of listMenuItem" :key="item.id">
-                                            <Icon :icon="item.icon" />
-                                            {{ item.title }}
-                                        </DropdownMenuItem>
+                                        <div v-for="item of sanityUser.lists" :key="item._id">
+                                            <DropdownMenuItem class="cursor-pointer flex justify-between items-center min-w-[160px]" @click.prevent="toggleTitleInList(item._id)">
+                                                <div class="flex items-center gap-2">
+                                                    <Icon icon="material-symbols:list-alt-outline-rounded" />
+                                                    {{ item.title }}
+                                                </div>
+                                                <Icon v-if="isListUpdating[item._id]" icon="svg-spinners:270-ring" class="ml-2 text-primary" />
+                                                <Icon v-else-if="item.items?.some(i => i.item?.[0] == Number(mangaID))" icon="material-symbols:check-circle-rounded" class="ml-2 text-green-500" />
+                                            </DropdownMenuItem>
+                                        </div>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                                 <Button variant="ghost" @click="setFavorite()" :disabled="isFavoriteLoading" :class="{
