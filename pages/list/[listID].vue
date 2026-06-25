@@ -141,9 +141,9 @@ useSeoMeta({
 
                     <div class="mt-4 flex items-center gap-4">
                         <NuxtLink :to="`/user/${list.user?.logtoId}`" class="flex items-center gap-2 hover:underline">
-                            <img :src="list.user?.avatar || 'https://placehold.co/32x32/cccccc/ffffff?text=AV'"
-                                :alt="list.user?.name || 'Kullanici'" class="w-8 h-8 rounded-full object-cover">
-                            <span>{{ list.user?.name || "Kullanici" }}</span>
+                            <img :src="list.user?.avatar || 'https://placehold.co/32x32/020618/ffffff?text=?'"
+                                :alt="list.user?.name || 'Kullanıcı'" class="w-8 h-8 rounded-full object-cover">
+                            <span>{{ list.user?.name || "Kullanıcı" }}</span>
                         </NuxtLink>
 
                         <span class="text-muted-foreground text-sm">
@@ -153,7 +153,7 @@ useSeoMeta({
                         <Button @click="handleLikeClick" :disabled="isFavLoading" class="flex items-center gap-1 text-sm cursor-pointer disabled:opacity-50" variant="ghost">
                             <Icon v-if="isFavLoading" icon="svg-spinners:270-ring" class="w-4 h-4" />
                             <Icon v-else :icon="isFav ? 'mdi:heart' : 'mdi:heart-outline'" />
-                            <span>{{ list.likes?.length || '?' }}</span>
+                            <span>{{ list.likes?.length || '0' }}</span>
                         </Button>
                     </div>
                 </div>
@@ -210,7 +210,7 @@ useSeoMeta({
                 <div v-if="list?.likes?.length" class="mt-4 space-y-3 max-h-60 overflow-y-auto">
                     <NuxtLink v-for="like in list.likes" :key="like._id" :to="`/user/${like.logtoId}`"
                         class="flex items-center gap-3 p-2 hover:bg-accent rounded-lg">
-                        <img :src="like.avatar || 'https://placehold.co/40x40/cccccc/ffffff?text=AV'" :alt="like.name"
+                        <img :src="like.avatar || 'https://placehold.co/40x40/020618/ffffff?text=?'" :alt="like.name"
                             class="w-10 h-10 rounded-full object-cover">
                         <div>
                             <p class="font-medium">{{ like.name }}</p>
