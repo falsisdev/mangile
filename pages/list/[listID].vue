@@ -23,35 +23,33 @@ const router = useRouter();
 async function fetchData() {
     loading.value = true;
     try {
+        // GÜNCELLEME: 'likes' referanslarını çözerken logtoId verisini de projeksiyona ekledik.
         const query = groq`
-      *[_type == "lists" && _id == $listID][0]{
-        ...,
-        user->{_id, logtoId, name, avatar, username},
-        likes[]->{
-          _id,
-          name,
-          avatar,
-          username
-        }
-      }
-    `;
+          *[_type == "lists" && _id == $listID][0]{
+            ...,
+            user->{_id, logtoId, name, avatar, username},
+            "likes": likes[]->{
+              _id,
+              name,
+              avatar,
+              username,
+              logtoId
+            }
+          }
+        `;
 
-        // CDN Önbelleklemesini (Caching) devre dışı bırakıyoruz. 
-        // Böylece listeye başlık ekleyip bu sayfaya geldiğinizde her zaman güncel liste yüklenir.
         const rawClient = sanity.client || sanity;
         const sanityList = await rawClient.withConfig({ useCdn: false }).fetch(query, { listID: route.params.listID });
         list.value = sanityList;
 
-        // Kullanıcı giriş yapmışsa, bu listeyi beğenip beğenmediğini kontrol et
+        // Beğeni durumunu veritabanından gelen güncel 'likes' dizisi üzerinden kontrol ediyoruz.
         if (user?.sub && Array.isArray(list.value?.likes)) {
-            // Logto sub id'si ile beğenenlerin auth dokümanı _id'sini veya logtoId'sini eşleştiriyoruz
             isFav.value = list.value.likes.some(u => u.logtoId === user.sub);
         } else {
             isFav.value = false;
         }
 
         if (list.value?.items?.length) {
-            // Listeyi indeks sırasına göre sıralayıp ID'leri alıyoruz
             const sortedItems = [...list.value.items]
                 .sort((a, b) => {
                     const idxA = a.item && a.item[1] !== undefined ? a.item[1] : 0;
@@ -63,79 +61,52 @@ async function fetchData() {
             const fetchedMangaData = [];
             for (const item of sortedItems) {
                 try {
-                    // Jikan API rate limit (429) koruması için bekleme ekliyoruz
                     await delay(1000);
-
                     const res = await fetch(`https://api.jikan.moe/v4/manga/${item.id}`);
                     if (!res.ok) {
-                        fetchedMangaData.push({ mal_id: item.id, error: `Manga yüklenemedi (ID: ${item.id})` });
+                        fetchedMangaData.push({ mal_id: item.id, error: `Manga yüklenemedi` });
                     } else {
                         const json = await res.json();
                         fetchedMangaData.push(json.data);
                     }
                 } catch (e) {
-                    fetchedMangaData.push({ mal_id: item.id, error: `Manga çekilirken hata (ID: ${item.id})` });
+                    fetchedMangaData.push({ mal_id: item.id, error: `Hata oluştu` });
                 }
             }
             itemsData.value = fetchedMangaData;
-        } else {
-            itemsData.value = [];
         }
     } catch (err) {
         console.error("Veri çekme hatası:", err);
-        toast.error("Hata", {
-            description: "Liste yüklenirken bir hata oluştu."
-        });
+        toast.error("Hata", { description: "Liste yüklenirken bir hata oluştu." });
     } finally {
         loading.value = false;
     }
 }
 
-// Favori (Beğeni) ekleme ve çıkarma işlemini gerçek Sanity backend API'sine bağlıyoruz
 async function favList() {
     if (!user?.sub) {
-        toast.error("Hata", {
-            description: "Giriş yapmanız gerekmektedir."
-        });
+        toast.error("Hata", { description: "Giriş yapmanız gerekmektedir." });
         return;
     }
 
     isFavLoading.value = true;
     try {
         const action = isFav.value ? 'remove' : 'add';
-
-        // Backend API'mize istek atıyoruz
         const response = await $fetch('/api/user/list-like', {
             method: 'POST',
-            body: {
-                listId: list.value._id,
-                logtoId: user.sub,
-                action: action
-            }
+            body: { listId: list.value._id, logtoId: user.sub, action: action }
         });
 
         if (response.success) {
             isFav.value = !isFav.value;
-            // Listenin yerel beğenilerini güncelleyerek anında arayüze yansıtıyoruz
+            // Güncel likes dizisini backend'den gelen yanıtla senkronize ediyoruz.
             list.value.likes = response.likes;
-            
-            if (action === 'add') {
-                toast.success("Beğenildi", {
-                    description: "Liste beğendikleriniz arasına eklendi."
-                });
-            } else {
-                toast.info("Beğenmekten Vazgeçildi", {
-                    description: "Liste beğendiklerinizden kaldırıldı."
-                });
-            }
+            toast.success(action === 'add' ? "Beğenildi" : "Beğenmekten vazgeçildi");
         } else {
             throw new Error(response.message || "İşlem başarısız.");
         }
     } catch (error) {
-        console.error("Beğeni güncellenemedi:", error);
-        toast.error("Hata", {
-            description: "Beğeni durumu güncellenirken bir sorun oluştu."
-        });
+        toast.error("Hata", { description: "Beğeni güncellenemedi." });
     } finally {
         isFavLoading.value = false;
     }
@@ -146,26 +117,6 @@ function handleLikeClick() {
         showLikesModal.value = true;
     } else {
         favList();
-    }
-}
-
-function closeLikesModal() {
-    showLikesModal.value = false;
-}
-
-function showMessageModal(title, content) {
-    messageModalTitle.value = title;
-    messageModalContent.value = content;
-    showMessageModalState.value = true;
-}
-
-function closeMessageModal() {
-    showMessageModalState.value = false;
-}
-
-function goToEdit() {
-    if (list.value?._id) {
-        router.push(`/lists/edit/${list.value._id}`);
     }
 }
 
@@ -199,12 +150,11 @@ useSeoMeta({
                             {{ new Date(list._createdAt).toLocaleDateString() }}
                         </span>
 
-                        <button @click="handleLikeClick" :disabled="isFavLoading" class="flex items-center gap-1 text-sm cursor-pointer disabled:opacity-50"
-                            :class="isFav ? 'text-red-500' : 'text-muted-foreground'">
+                        <Button @click="handleLikeClick" :disabled="isFavLoading" class="flex items-center gap-1 text-sm cursor-pointer disabled:opacity-50" variant="ghost">
                             <Icon v-if="isFavLoading" icon="svg-spinners:270-ring" class="w-4 h-4" />
-                            <Icon v-else :icon="isFav ? 'mdi:heart' : 'mdi:heart-outline'" class="w-5 h-5" />
-                            <span>{{ list.likes?.length || 0 }}</span>
-                        </button>
+                            <Icon v-else :icon="isFav ? 'mdi:heart' : 'mdi:heart-outline'" />
+                            <span>{{ list.likes?.length || '?' }}</span>
+                        </Button>
                     </div>
                 </div>
 
