@@ -9,7 +9,7 @@ const props = defineProps({
 })
 </script>
 <template>
-    <Card class="w-56 h-[400px] relative overflow-hidden group cursor-pointer">
+    <Card class="w-56 h-[350px] relative overflow-hidden group cursor-pointer">
         <NuxtLink :to="`/title/${id}`">
             <div class="absolute inset-0 z-0">
                 <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"

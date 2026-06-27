@@ -83,7 +83,7 @@ onMounted(() => {
     <Swiper v-else :modules="[SwiperAutoplay]" :slides-per-view="1" :loop="true" :autoplay="{
         delay: autoplayDelay,
         disableOnInteraction: false,
-    }" class="w-full h-[500px] rounded-lg" @autoplayTimeLeft="updateProgressBar">
+    }" class="w-full h-[500px]" @autoplayTimeLeft="updateProgressBar">
         <SwiperSlide v-for="manga in topMangas" :key="manga.mal_id">
             <div :style="{ backgroundImage: `url('${manga?.images?.webp?.large_image_url}')` }"
                 class="w-full h-full bg-cover bg-no-repeat bg-center relative">
