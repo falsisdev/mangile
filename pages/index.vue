@@ -172,19 +172,19 @@ const formatTooltipDate = (dateString) => {
                     </h2>
                     <Swiper :slides-per-view="1" :space-between="10" :loop="false" :breakpoints="{
                         '640': {
-                            slidesPerView: 2,
+                            slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 4,
+                            slidesPerView: 5,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 5,
+                            slidesPerView: 6,
                             spaceBetween: 40,
                         },
                         '1280': {
-                            slidesPerView: 6,
+                            slidesPerView: 7,
                         },
                     }">
                         <SwiperSlide v-for="title in updatedSeries" :key="title.id">
@@ -203,20 +203,19 @@ const formatTooltipDate = (dateString) => {
                     </h2>
                     <Swiper :loop="false" :breakpoints="{
                         '640': {
-                            slidesPerView: 2,
+                            slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 4,
+                            slidesPerView: 5,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 5,
+                            slidesPerView: 6,
                             spaceBetween: 40,
                         },
                         '1280': {
-                            slidesPerView: 6,
-
+                            slidesPerView: 7,
                         },
                     }">
                         <SwiperSlide v-for="title in createdSeries" :key="title.id">
@@ -235,19 +234,19 @@ const formatTooltipDate = (dateString) => {
                     </h2>
                     <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
                         '640': {
-                            slidesPerView: 2,
+                            slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 4,
+                            slidesPerView: 5,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 5,
+                            slidesPerView: 6,
                             spaceBetween: 40,
                         },
                         '1280': {
-                            slidesPerView: 6,
+                            slidesPerView: 7,
                         },
                     }">
                         <SwiperSlide v-for="manga in highlights" :key="manga.id">
@@ -263,19 +262,19 @@ const formatTooltipDate = (dateString) => {
                     </h2>
                     <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
                         '640': {
-                            slidesPerView: 2,
+                            slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 4,
+                            slidesPerView: 5,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 5,
+                            slidesPerView: 6,
                             spaceBetween: 40,
                         },
                         '1280': {
-                            slidesPerView: 6,
+                            slidesPerView: 7,
                         },
                     }">
                         <SwiperSlide v-for="manga in topMangas" :key="manga.id">
@@ -290,19 +289,19 @@ const formatTooltipDate = (dateString) => {
                     </h2>
                     <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
                         '640': {
-                            slidesPerView: 2,
+                            slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 4,
+                            slidesPerView: 5,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 5,
+                            slidesPerView: 6,
                             spaceBetween: 40,
                         },
                         '1280': {
-                            slidesPerView: 6,
+                            slidesPerView: 7,
                         },
                     }">
                         <SwiperSlide v-for="manga in pubs" :key="manga.id">
