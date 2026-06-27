@@ -44,7 +44,7 @@ nuxtApp.hook('app:error', () => {
       <Loading type="app" />
     </div>
 
-    <NuxtLayout :name="layout">
+    <NuxtLayout :name="layout == 'tablet' ? 'mobile' : layout">
       <NuxtPage />
     </NuxtLayout>
   </main>

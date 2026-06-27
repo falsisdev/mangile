@@ -47,10 +47,10 @@ const infos = [
 </script>
 <template>
     <main class="flex flex-col items-center justify-center px-15">
-        <svg class="w-12 h-12 text-primary mb-2 animate-spin" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from SVG Spinners by Utkarsh Verma - https://github.com/n3r4zzurr0/svg-spinners/blob/main/LICENSE --><path fill="#ffffff" d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
-        <span v-if="props.type == 'default'" class="opacity-75 text-sm">{{ props.what || '' }} Yükleniyor...</span>
+        <svg class="w-12 h-12 text-primary mb-2 animate-spin" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#ffffff" d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></svg>
+        <span v-if="props.type == 'default'" :class="`${layout == 'mobile' ? 'opacity-75 text-xs' : 'opacity-75 text-md'} text-center`">{{ props.what || '' }} Yükleniyor...</span>
         <p v-if="props.type == 'app'" class="mt-4 text-lg text-primary font-semibold">Bunu Biliyor Muydunuz?</p>
-        <p v-if="props.type == 'app'" class="text-md text-primary"> {{ infos[Math.floor(Math.random() * infos.length)]
-        }}</p>
+        <p v-if="props.type == 'app'" :class="`${layout == 'mobile' ? 'text-xs' : 'text-md'} text-primary text-center`"> {{ infos[Math.floor(Math.random() * infos.length)] }}
+        </p>
     </main>
 </template>

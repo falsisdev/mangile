@@ -183,7 +183,7 @@ function handleContextMenuClick(menuItem, baseUrl) {
 </script>
 
 <template>
-  <Sidebar>
+  <Sidebar variant="floating">
     <SidebarHeader class="mx-1 flex gap-2 items-center sidebar-header">
       <SidebarMenu class="flex flex-row">
         <SidebarMenuItem>

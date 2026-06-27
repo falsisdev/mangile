@@ -124,10 +124,6 @@ const handleSelectChange = (value) => {
             <img :src="user[0].banner ? builder.image(user[0].banner.asset._ref).auto('format').url() :
                 'https://cdn.sanity.io/images/1yge7tlr/production/71efea64a9adc5415bdbb834cb959b0e66890688-480x270.gif'"
                 class="w-full h-full object-cover opacity-75" />
-
-            <Button variant="secondary" class="absolute top-2 left-7 z-20 cursor-pointer" @click="goBack">
-                <Icon icon="material-symbols:arrow-back-ios-rounded" class="ml-2" />
-            </Button>
         </div>
 
         <div class="container mx-auto px-10 -mt-40 relative z-20">

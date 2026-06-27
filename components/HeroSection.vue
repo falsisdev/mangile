@@ -29,6 +29,16 @@ const topMangas = ref<Manga[]>([])
 const currentProgress = ref(0)
 const autoplayDelay = 5000
 
+const { isMobile, isTablet } = useDevice();
+let layout = ref("default");
+if (isMobile) {
+  layout.value = "mobile";
+} else if (isTablet) {
+  layout.value = "tablet";
+} else {
+  layout.value = "default";
+}
+
 const fetchTopMangas = async () => {
     loading.value = true
     error.value = null
@@ -87,33 +97,36 @@ onMounted(() => {
         <SwiperSlide v-for="manga in topMangas" :key="manga.mal_id">
             <div :style="{ backgroundImage: `url('${manga?.images?.webp?.large_image_url}')` }"
                 class="w-full h-full bg-cover bg-no-repeat bg-center relative">
-                <div class="absolute inset-0 backdrop-blur-xs bg-black/20"></div>
+                <div :class="`${layout == 'mobile' ? 'absolute inset-0 backdrop-blur-xs bg-black/20' : 'absolute inset-0 backdrop-blur-xs bg-black/20'}`"></div>
                 <div class="relative z-10 bg-gradient-to-r from-background to-transparent h-full">
                     <div class="h-full bg-gradient-to-t from-background to-transparent flex flex-col justify-center">
-                        <div class="container mx-auto px-4 sm:px-8 py-8">
+                        <div :class="`${layout == 'mobile' ? 'container mx-auto px-4 sm:px-8 py-8 mt-5' : 'container mx-auto px-4 sm:px-8 py-8'}`">
                             <div>
-                                <h1 class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-primary">
+                                <h1 :style="layout === 'mobile' ? { display: '-webkit-box', WebkitLineClamp: '2', WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {}"
+                                    class="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-primary">
                                     {{ manga.title }}
                                 </h1>
-                                <p class="text-sm text-muted-foreground mt-2">
+                                <p :style="layout === 'mobile' ? { display: '-webkit-box', WebkitLineClamp: '1', WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {}"
+                                   :class="`${layout === 'mobile' ? 'text-xs text-gray-200' : 'text-sm mt-2 text-gray-200'}`">
                                     {{ manga.type?.replaceAll('Light Novel', 'Hafif Roman').replaceAll('Novel', 'Roman')
                                     }}
                                 </p>
                                 <div class="mt-4 flex flex-wrap items-center gap-2">
-                                    <Badge variant="default">
+                                    <Badge variant="default" :class="`${layout == 'mobile' ? 'text-[0.625rem] max-h-5' : ''}`">
                                         {{ data?.malstatus[manga.status] || 'Bilinmiyor' }}
                                     </Badge>
                                     <Badge v-for="(genre, index) in manga.genres?.slice(0, 4)" :key="index"
-                                        variant="secondary">
+                                        variant="secondary" :class="`${layout == 'mobile' ? 'text-[0.625rem] max-h-5' : ''}`">
                                         {{ data?.malgenres[genre.name] }}
                                     </Badge>
                                 </div>
-                                <p class="text-sm mt-4">
+                                <p :style="layout === 'mobile' ? { display: '-webkit-box', WebkitLineClamp: '12', WebkitBoxOrient: 'vertical', overflow: 'hidden' } : {}"
+                                   :class="`${layout === 'mobile' ? 'text-xs mt-4' : 'text-sm mt-4'}`">
                                     {{ truncateSynopsis(manga.synopsis) }}
                                 </p>
                                 <div class="flex mt-6">
                                     <Button @click="() => navigateTo(`/title/${manga.mal_id}`)" variant="outline"
-                                        class="cursor-pointer shadow-lg">
+                                        class="cursor-pointer shadow-lg" :size="layout == 'mobile' ? 'sm' : 'lg'">
                                         <Icon icon="mdi:eye" class="mr-2" /> Görüntüle
                                     </Button>
                                 </div>

@@ -9,6 +9,15 @@ const isDropdownVisible = ref(false)
 const router = useRouter()
 const searchWrapper = ref(null)
 
+const { isMobile, isTablet } = useDevice();
+let layout = ref("default");
+if (isMobile) {
+  layout.value = "mobile";
+} else if (isTablet) {
+  layout.value = "tablet";
+} else {
+  layout.value = "default";
+}
 const fetchSearchResults = async () => {
     if (searchQuery.value.length < 3) {
         results.value = []
@@ -59,10 +68,10 @@ onClickOutside(searchWrapper, () => {
 
 <template>
     <div class="w-full max-w-lg items-center flex flex-row backdrop-blur-md absolute z-50 mt-2">
-        <div ref="searchWrapper" class="w-full max-w-lg items-center relative backdrop-blur-md z-50 mt-2">
+        <div ref="searchWrapper" :class="`${layout == 'default' ? 'w-full max-w-lg items-center relative backdrop-blur-md z-50 mt-2' : 'w-full max-w-6/7 absolute top-0 right-0 z-50 items-center mr-2'}`">
             <div class="flex flex-row">
                 <Input id="search" type="text" placeholder="Manga, manhwa veya novel ara..."
-                    class="rounded-r-none max-w-screen ml-1 w-full" v-model="searchQuery"
+                    class="rounded-r-none max-w-screen ml-1 w-full size-xs" v-model="searchQuery"
                     @keydown.enter="goToSearchPage" @focus="isDropdownVisible = results.length > 0" />
                 <Button variant="outline" class="rounded-l-none mr-1" @click="goToSearchPage">
                     <Icon icon="material-symbols:search-rounded" />

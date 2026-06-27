@@ -463,10 +463,6 @@ const isSingleChapter = computed(() => {
                 <img v-if="sanityData[0]?.bannerImage || manga?.images?.jpg?.large_image_url"
                     :src="sanityData[0]?.bannerImage ? builder.image(sanityData[0]?.bannerImage.asset._ref).auto('format').url() : manga?.images?.jpg?.large_image_url"
                     class="w-full h-full object-cover opacity-75" />
-
-                <Button variant="secondary" class="absolute top-2 left-7 z-20 cursor-pointer" @click="goBack">
-                    <Icon icon="material-symbols:arrow-back-ios-rounded" class="ml-2" />
-                </Button>
             </div>
 
             <div class="container mx-auto px-4 -mt-40 relative z-20">
@@ -719,7 +715,27 @@ const isSingleChapter = computed(() => {
                 <div class="mb-5">
                     <h1 class="text-2xl font-semibold mb-4">Bağlantılı Seriler</h1>
                     <Loading v-if="isLoadingRelations" class="h-48" type="default" what="Bağlantılı Seriler İçeriği" />
-                    <swiper v-else-if="relations.length > 0" :slides-per-view="5.75" :space-between="20">
+                    <swiper v-else-if="relations.length > 0" :slides-per-view="2" :space-between="10" :modules="[SwiperAutoplay]" :breakpoints="{
+                        '400': {
+                            slidesPerView: 2.5,
+                            spaceBetween: 20,
+                        },
+                        '640': {
+                            slidesPerView: 3,
+                            spaceBetween: 20,
+                        },
+                        '768': {
+                            slidesPerView: 5,
+                            spaceBetween: 30,
+                        },
+                        '1024': {
+                            slidesPerView: 6,
+                            spaceBetween: 40,
+                        },
+                        '1280': {
+                            slidesPerView: 7,
+                        },
+                    }">
                         <swiper-slide v-for="relationItem in relations" :key="relationItem.entry.mal_id">
                             <DefaultCard :id="relationItem.entry.mal_id"
                                 :cover="relationItem.entry.images.jpg.large_image_url" :title="relationItem.entry.title"

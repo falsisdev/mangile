@@ -21,6 +21,16 @@ const cardComponents = {
     details: DetailsCard,
 };
 
+const { isMobile, isTablet } = useDevice();
+let layout = ref("default");
+if (isMobile) {
+  layout.value = "mobile";
+} else if (isTablet) {
+  layout.value = "tablet";
+} else {
+  layout.value = "default";
+}
+
 const genres = ref([]);
 const genreOptions = data.genreIDs;
 const currentOrderByOptions = data.orderOptions;
@@ -97,8 +107,8 @@ useSeoMeta({
         <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
             <div class="flex items-center justify-between gap-4">
                 <span>İçerikleri Keşfet</span>
-                <div class="flex items-center gap-3">
-                    <span class="text-sm text-gray-500">Kart Tipi:</span>
+                <div class="flex items-center gap-1">
+                    <span v-if="layout != 'mobile'" class="text-sm text-gray-500">Kart Tipi:</span>
                     <Select v-model="cardType">
                         <SelectTrigger>
                             <SelectValue placeholder="Kart Tipi" />
@@ -108,7 +118,7 @@ useSeoMeta({
                             <SelectItem value="details">Minimal</SelectItem>
                         </SelectContent>
                     </Select>
-                    <span class="text-sm text-gray-500">
+                    <span v-if="layout != 'mobile'" class="text-sm text-gray-500">
                         Seçilen: {{ cardType === 'default' ? 'Şatafatlı' : 'Minimal' }}
                     </span>
                 </div>
@@ -118,7 +128,7 @@ useSeoMeta({
 
         <Loading v-if="isLoading" class="h-64" type="default" what="Keşfet İçeriği" />
 
-        <div v-else-if="titleData?.length" class="flex flex-row flex-wrap gap-3">
+        <div v-else-if="titleData?.length" class="flex flex-row flex-wrap gap-3 justify-center">
             <NuxtLink v-for="title in titleData" :key="title.mal_id" :to="`/title/${title.mal_id}`">
                 <component :is="cardComponents[cardType]" :cover="title.images?.webp?.large_image_url" :title="title.title"
                     :type="title.type?.replace('Light Novel', 'Hafif Roman')" :id="title.mal_id" />

@@ -164,27 +164,36 @@ const formatTooltipDate = (dateString) => {
 <template>
     <main>
         <HeroSection />
-        <div class="flex justify-center w-full">
+        <div class="flex justify-center w-full max-w-screen">
             <div class="container px-7 py-8">
                 <section class="mb-12" v-if="updatedSeries.length > 0">
                     <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
                         Son Güncellenen İçerikler
                     </h2>
-                    <Swiper :slides-per-view="1" :space-between="10" :loop="false" :breakpoints="{
+                    <Swiper :slides-per-view="2" :space-between="10" :loop="false" :breakpoints="{
+                        '400': {
+                            slidesPerView: 2.5,
+                            spaceBetween: 20,
+                        },
                         '640': {
                             slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 5,
+                            slidesPerView: 3.75,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 6,
-                            spaceBetween: 40,
+                            slidesPerView: 5,
+                            spaceBetween: 30,
                         },
                         '1280': {
+                            slidesPerView: 6.25,
+                            spaceBetween: 30,
+                        },
+                        '1700': {
                             slidesPerView: 7,
+                            spaceBetween: 30,
                         },
                     }">
                         <SwiperSlide v-for="title in updatedSeries" :key="title.id">
@@ -201,21 +210,30 @@ const formatTooltipDate = (dateString) => {
                     <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
                         Son Eklenen İçerikler
                     </h2>
-                    <Swiper :loop="false" :breakpoints="{
+                    <Swiper :slides-per-view="2" :space-between="10" :loop="false" :breakpoints="{
+                        '400': {
+                            slidesPerView: 2.5,
+                            spaceBetween: 20,
+                        },
                         '640': {
                             slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 5,
+                            slidesPerView: 3.75,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 6,
-                            spaceBetween: 40,
+                            slidesPerView: 5,
+                            spaceBetween: 30,
                         },
                         '1280': {
+                            slidesPerView: 6.25,
+                            spaceBetween: 30,
+                        },
+                        '1700': {
                             slidesPerView: 7,
+                            spaceBetween: 30,
                         },
                     }">
                         <SwiperSlide v-for="title in createdSeries" :key="title.id">
@@ -232,21 +250,30 @@ const formatTooltipDate = (dateString) => {
                     <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
                         Öne Çıkan İçerikler
                     </h2>
-                    <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                    <Swiper :slides-per-view="2" :space-between="10" :modules="[SwiperAutoplay]" :loop="true" :breakpoints="{
+                        '400': {
+                            slidesPerView: 2.5,
+                            spaceBetween: 20,
+                        },
                         '640': {
                             slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 5,
+                            slidesPerView: 3.75,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 6,
-                            spaceBetween: 40,
+                            slidesPerView: 5,
+                            spaceBetween: 30,
                         },
                         '1280': {
+                            slidesPerView: 6.25,
+                            spaceBetween: 30,
+                        },
+                        '1700': {
                             slidesPerView: 7,
+                            spaceBetween: 30,
                         },
                     }">
                         <SwiperSlide v-for="manga in highlights" :key="manga.id">
@@ -260,21 +287,33 @@ const formatTooltipDate = (dateString) => {
                     <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
                         En Yüksek Puanlı İçerikler
                     </h2>
-                    <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                    <Swiper :slides-per-view="2" :space-between="10" :modules="[SwiperAutoplay]" :autoplay="{
+                        delay: 4000,
+                        disableOnInteraction: false,
+                    }" :loop="true" :breakpoints="{
+                        '400': {
+                            slidesPerView: 2.5,
+                            spaceBetween: 20,
+                        },
                         '640': {
                             slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 5,
+                            slidesPerView: 3.75,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 6,
-                            spaceBetween: 40,
+                            slidesPerView: 5,
+                            spaceBetween: 30,
                         },
                         '1280': {
+                            slidesPerView: 6.25,
+                            spaceBetween: 30,
+                        },
+                        '1700': {
                             slidesPerView: 7,
+                            spaceBetween: 30,
                         },
                     }">
                         <SwiperSlide v-for="manga in topMangas" :key="manga.id">
@@ -287,21 +326,33 @@ const formatTooltipDate = (dateString) => {
                     <h2 class="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors mb-5">
                         Yayınlanıyor
                     </h2>
-                    <Swiper :modules="[SwiperAutoplay]" :breakpoints="{
+                    <Swiper :slides-per-view="2" :space-between="10" :modules="[SwiperAutoplay]" :autoplay="{
+                        delay: 6000,
+                        disableOnInteraction: false,
+                    }" :loop="true" :breakpoints="{
+                        '400': {
+                            slidesPerView: 2.5,
+                            spaceBetween: 20,
+                        },
                         '640': {
                             slidesPerView: 3,
                             spaceBetween: 20,
                         },
                         '768': {
-                            slidesPerView: 5,
+                            slidesPerView: 3.75,
                             spaceBetween: 30,
                         },
                         '1024': {
-                            slidesPerView: 6,
-                            spaceBetween: 40,
+                            slidesPerView: 5,
+                            spaceBetween: 30,
                         },
                         '1280': {
+                            slidesPerView: 6.25,
+                            spaceBetween: 30,
+                        },
+                        '1700': {
                             slidesPerView: 7,
+                            spaceBetween: 30,
                         },
                     }">
                         <SwiperSlide v-for="manga in pubs" :key="manga.id">
