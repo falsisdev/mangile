@@ -11,6 +11,9 @@ importers:
       '@logto/nuxt':
         specifier: ^1.2.6
         version: 1.2.6(magicast@0.3.5)
+      '@mangile/aligator':
+        specifier: workspace:*
+        version: link:packages/aligator
       '@nuxt/icon':
         specifier: 1.15.0
         version: 1.15.0(magicast@0.3.5)(vite@6.3.5(@types/node@24.0.15)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.0))(vue@3.5.17(typescript@6.0.3))
@@ -117,6 +120,15 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+
+  packages/aligator:
+    dependencies:
+      lucide-vue-next:
+        specifier: ^0.469.0
+        version: 0.469.0(vue@3.5.17(typescript@6.0.3))
+      vue:
+        specifier: ^3.5.0
+        version: 3.5.17(typescript@6.0.3)
 
 packages:
 
@@ -5154,6 +5166,12 @@ packages:
   lru-cache@6.0.0:
     resolution: {integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==}
     engines: {node: '>=10'}
+
+  lucide-vue-next@0.469.0:
+    resolution: {integrity: sha512-EjOap+vY3xEzCMrnaccDHO4BH3k3Lr+sOyvzRQCaayYxkxKla0w6Jr4h3cHAzA4vMSp63Dcy7vDiGeCPcCY+Gg==}
+    deprecated: Package deprecated. Please use @lucide/vue instead.
+    peerDependencies:
+      vue: '>=3.0.1'
 
   lucide-vue-next@0.525.0:
     resolution: {integrity: sha512-Xf8+x8B2DrnGDV/rxylS+KBp2FIe6ljwDn2JsGTZZvXIfhmm/q+nv8RuGO1OyoMjOVkkz7CqtUqJfwtFPRbB2w==}
@@ -13371,6 +13389,10 @@ snapshots:
   lru-cache@6.0.0:
     dependencies:
       yallist: 4.0.0
+
+  lucide-vue-next@0.469.0(vue@3.5.17(typescript@6.0.3)):
+    dependencies:
+      vue: 3.5.17(typescript@6.0.3)
 
   lucide-vue-next@0.525.0(vue@3.5.17(typescript@6.0.3)):
     dependencies:

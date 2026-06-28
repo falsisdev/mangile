@@ -1,0 +1,15 @@
+{
+  "name": "@mangile/aligator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "lucide-vue-next": "^0.469.0",
+    "vue": "^3.5.0"
+  }
+}

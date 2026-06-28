@@ -1,16 +1,11 @@
 <script setup>
-import { h, toRaw, ref, watchEffect, onMounted, onBeforeUnmount, computed } from 'vue';
+import { h, toRaw, ref, watchEffect } from 'vue';
 import imageUrlBuilder from "@sanity/image-url";
 import { Icon } from "@iconify/vue";
+import { AligatorReader } from '@mangile/aligator'
 
-const isSettingsOpen = ref(false);
-const isWebtoonMode = ref(false);
-const zoomLevel = ref(100);
-const isFullscreen = ref(false);
-const currentPage = ref(1);
 const showBackToTop = ref(false);
 const route = useRoute();
-const { isMobileOrTablet } = useDevice();
 const builder = imageUrlBuilder(useSanity().config);
 
 const sanityData = ref(null);
@@ -18,12 +13,6 @@ const chapter = ref(null);
 const images = ref([]);
 const manga = ref(null);
 const selectedChapterKey = ref(route.params.key);
-const isSinglePageMode = ref(false);
-const isDragging = ref(false);
-const startX = ref(0);
-const startY = ref(0);
-const scrollLeft = ref(0);
-const scrollTop = ref(0);
 
 const portableTextComponents = {
     block: {
@@ -50,7 +39,6 @@ const portableTextComponents = {
     },
     types: {
         image: ({ value }) => {
-            // Use value.src if it exists (from transformLinksToImages), otherwise build from asset
             const imageUrl = value.src || (value.asset ? builder.image(value.asset._ref).url() : '');
             return h('img', { src: imageUrl, alt: value.alt || '', class: 'my-6 rounded-lg max-w-full h-auto' });
         },
@@ -58,6 +46,12 @@ const portableTextComponents = {
             return h('pre', { class: 'bg-gray-800 text-white p-4 rounded-lg overflow-x-auto my-4' },
                 h('code', { class: `language-${value.language || 'plaintext'}` }, value.code));
         }
+    }
+};
+
+const handleChapterChange = (selectedKey) => {
+    if (selectedKey) {
+        navigateTo(`/title/${route.params.titleID}/chapter/${selectedKey}`);
     }
 };
 
@@ -163,14 +157,6 @@ watchEffect(() => {
                     images.value = chapter.value.pages?.map((page) =>
                         builder.image(page.asset._ref).auto("format").url()
                     ) || [];
-
-                    if (sanityData.value[0].mangaType === "manhwa" || sanityData.value[0].mangaType === "webtoon") {
-                        isWebtoonMode.value = true;
-                        isSinglePageMode.value = false;
-                    } else {
-                        isWebtoonMode.value = false;
-                        isSinglePageMode.value = false;
-                    }
                 } else if (sanityData.value[0]._type === "lightNovel") {
                     const transformedContent = transformLinksToImages(chapter.value.content || []);
                     renderedLightNovelContent.value = renderPortableText(transformedContent);
@@ -180,59 +166,7 @@ watchEffect(() => {
     }
 });
 
-const handleChapterChange = (selectedKey) => {
-    if (selectedKey) {
-        navigateTo(`/title/${route.params.titleID}/chapter/${selectedKey}`);
-    }
-};
 
-const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen()
-            .then(() => isFullscreen.value = true)
-            .catch(err => console.error('Fullscreen error:', err));
-    } else {
-        document.exitFullscreen()
-            .then(() => isFullscreen.value = false);
-    }
-};
-
-const zoomIn = () => {
-    if (zoomLevel.value < 200) {
-        zoomLevel.value += 25;
-        updateZoom();
-    }
-};
-
-const zoomOut = () => {
-    if (zoomLevel.value > 50) {
-        zoomLevel.value -= 25;
-        updateZoom();
-    }
-};
-
-const resetZoom = () => {
-    zoomLevel.value = 100;
-    updateZoom();
-};
-
-const updateZoom = () => {
-    const pages = document.querySelectorAll('.manga-page');
-    pages.forEach(page => {
-        page.style.transform = `scale(${zoomLevel.value / 100})`;
-    });
-    saveSettings();
-};
-
-const toggleWebtoonMode = () => {
-    isWebtoonMode.value = !isWebtoonMode.value;
-    saveSettings();
-};
-
-const toggleSinglePageMode = () => {
-    isSinglePageMode.value = !isSinglePageMode.value;
-    saveSettings();
-};
 
 const getNextChapterKey = () => {
     if (!sanityData.value?.[0]?.chapters || !chapter.value) return '';
@@ -248,28 +182,6 @@ const getPreviousChapterKey = () => {
     return sanityData.value[0].chapters[currentIndex - 1]._key;
 };
 
-const saveSettings = () => {
-    localStorage.setItem('mangaReaderSettings', JSON.stringify({
-        isWebtoonMode: isWebtoonMode.value,
-        zoomLevel: zoomLevel.value,
-        isSinglePageMode: isSinglePageMode.value
-    }));
-};
-
-const loadSettings = () => {
-    const savedSettings = localStorage.getItem('mangaReaderSettings');
-    if (savedSettings) {
-        try {
-            const { isWebtoonMode: savedMode, zoomLevel: savedZoom, isSinglePageMode: savedSinglePage } = JSON.parse(savedSettings);
-            isWebtoonMode.value = savedMode ?? false;
-            zoomLevel.value = savedZoom ?? 100;
-            isSinglePageMode.value = savedSinglePage ?? false;
-        } catch (e) {
-            console.error('Settings parse error:', e);
-        }
-    }
-};
-
 const scrollToTop = () => {
     window.scrollTo({
         top: 0,
@@ -279,45 +191,6 @@ const scrollToTop = () => {
 
 const checkScroll = () => {
     showBackToTop.value = window.scrollY > 500;
-};
-
-const startDrag = (e) => {
-    if (zoomLevel.value <= 100) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    isDragging.value = true;
-    startX.value = e.clientX;
-    startY.value = e.clientY;
-    scrollLeft.value = window.scrollX;
-    scrollTop.value = window.scrollY;
-
-    e.target.style.cursor = 'grabbing';
-    document.body.style.userSelect = 'none';
-};
-
-const doDrag = (e) => {
-    if (!isDragging.value) return;
-    e.preventDefault();
-    e.stopPropagation();
-
-    const x = e.clientX;
-    const y = e.clientY;
-    const walkX = (startX.value - x) * 2;
-    const walkY = (startY.value - y) * 2;
-
-    window.scrollTo(scrollLeft.value + walkX, scrollTop.value + walkY);
-};
-
-const endDrag = (e) => {
-    if (!isDragging.value) return;
-    isDragging.value = false;
-
-    if (e.target) {
-        e.target.style.cursor = zoomLevel.value > 100 ? 'grab' : 'default';
-    }
-    document.body.style.userSelect = '';
 };
 
 const updateCurrentPage = () => {
@@ -338,32 +211,6 @@ const updateCurrentPage = () => {
         }
     }
 };
-
-onMounted(() => {
-    loadSettings();
-    document.addEventListener('fullscreenchange', () => {
-        isFullscreen.value = !!document.fullscreenElement;
-    });
-
-    window.addEventListener('scroll', updateCurrentPage);
-    window.addEventListener('scroll', checkScroll);
-    updateCurrentPage();
-
-    if (sanityData.value?.[0]?._type === 'manga') {
-        document.addEventListener('mousemove', doDrag);
-        document.addEventListener('mouseup', endDrag);
-        document.addEventListener('mouseleave', endDrag);
-    }
-});
-
-onBeforeUnmount(() => {
-    window.removeEventListener('scroll', updateCurrentPage);
-    window.removeEventListener('scroll', checkScroll);
-    document.removeEventListener('fullscreenchange', () => { });
-    document.removeEventListener('mousemove', doDrag);
-    document.removeEventListener('mouseup', endDrag);
-    document.removeEventListener('mouseleave', endDrag);
-});
 </script>
 
 <template>
@@ -372,7 +219,7 @@ onBeforeUnmount(() => {
             <Icon name="svg-spinners:270-ring" class="w-12 h-12 text-primary" />
         </div>
 
-        <div v-else class="relative">
+        <div v-else class="relative flex flex-col">
             <header class="mt-20 bg-background/95 border-b">
                 <div class="flex h-14 items-center justify-between px-4">
                     <div class="flex items-center gap-2">
@@ -408,38 +255,7 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
             </header>
-
-            <div
-                class="fixed right-4 bottom-20 z-50 flex flex-col gap-2 p-2 bg-transparent border-0 rounded-lg border items-center">
-                <Button v-if="sanityData[0]._type === 'manga'" variant="secondary" size="icon" @click="zoomIn"
-                    :disabled="zoomLevel >= 200" title="Yakınlaştır">
-                    <Icon icon="lucide:zoom-in" class="h-5 w-5" />
-                </Button>
-                <Button v-if="sanityData[0]._type === 'manga'" variant="secondary" size="icon" @click="resetZoom"
-                    title="Sıfırla">
-                    <span class="text-xs">{{ zoomLevel }}%</span>
-                </Button>
-                <Button v-if="sanityData[0]._type === 'manga'" variant="secondary" size="icon" @click="zoomOut"
-                    :disabled="zoomLevel <= 50" title="Uzaklaştır">
-                    <Icon icon="lucide:zoom-out" class="h-5 w-5" />
-                </Button>
-                <Button v-if="sanityData[0]._type === 'manga'" variant="secondary" size="icon"
-                    @click="toggleWebtoonMode" :title="isWebtoonMode ? 'Standart Mod' : 'Webtoon Modu'">
-                    <Icon :icon="isWebtoonMode ? 'lucide:panel-top' : 'lucide:scroll'" class="h-5 w-5" />
-                </Button>
-                <Button variant="secondary" size="icon" @click="toggleFullscreen"
-                    :title="isFullscreen ? 'Tam Ekrandan Çık' : 'Tam Ekran'">
-                    <Icon :icon="isFullscreen ? 'lucide:minimize' : 'lucide:maximize'" class="h-5 w-5" />
-                </Button>
-                <Button variant="secondary" size="icon" v-if="showBackToTop" @click="scrollToTop" title="Başa Dön">
-                    <Icon icon="lucide:arrow-up" class="h-5 w-5" />
-                </Button>
-                <span v-if="sanityData[0]._type === 'manga'" class="text-sm text-muted-foreground">
-                    {{ currentPage }}/{{ images.length || 1 }}
-                </span>
-            </div>
-
-            <div class="fixed right-0 bottom-5 z-50 flex flex-col rounded-lg bg-transparent border-0 items-center">
+             <div v-if="sanityData[0]._type === 'lightNovel'" class="fixed right-0 bottom-5 z-50 flex flex-col rounded-lg bg-transparent border-0 items-center">
                 <div class="gap-1 flex flex-row items-center px-4">
                     <Button variant="secondary" :disabled="!getPreviousChapterKey()"
                         @click="navigateTo(`/title/${route.params.titleID}/chapter/${getPreviousChapterKey()}`)">
@@ -454,37 +270,13 @@ onBeforeUnmount(() => {
                 </div>
             </div>
 
-            <div class="px-5 pt-5 pb-16">
-                <div v-if="sanityData[0]._type === 'manga'" class="space-y-6 flex flex-col">
-                    <div class="flex flex-row justify-between">
-                        <h2 class="text-xl font-semibold">
-                            {{ chapter?.chapterNumber ? `${chapter.chapterNumber}` : '' }} {{ chapter?.title ?
-                                `-
-                            ${chapter.title}` : '' }}
-                        </h2>
-                        <div>
-                            <span class="text-sm text-muted-foreground">
-                                Kaynak: {{ chapter?.source?.name }}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div :class="{ 'flex flex-col gap-4': isWebtoonMode, 'space-y-4': !isWebtoonMode }">
-                        <div v-for="(image, index) in images" :key="index"
-                            class="manga-page-container overflow-hidden flex justify-center" :id="`page-${index + 1}`">
-                            <img :src="image" :alt="`Sayfa ${index + 1}`"
-                                class="manga-page w-full object-contain mx-auto transition-transform duration-200"
-                                :style="{
-                                    transform: `scale(${zoomLevel / 100})`,
-                                    maxHeight: isWebtoonMode ? 'none' : '90vh',
-                                    cursor: zoomLevel > 100 ? 'grab' : 'default'
-                                }" @mousedown="startDrag" @mousemove="doDrag" @mouseup="endDrag"
-                                @mouseleave="endDrag" />
-                        </div>
-                    </div>
+            <div :class="sanityData[0]._type === 'lightNovel' ? 'px-5 pt-5 pb-16' : ''">
+                <div v-if="sanityData[0]._type === 'manga'" class="flex flex-col gap-4">
+                    <AligatorReader :pages="images" :mangaTitle="sanityData[0].title" :chapterTitle="chapter?.title"
+                        :nextChapterKey="getNextChapterKey()" :prevChapterKey="getPreviousChapterKey()"
+                        :scan="chapter?.source?.name" readingMode="manga" />
                 </div>
-
-                <div v-else-if="sanityData[0]._type === 'lightNovel'"
+                <div v-if="sanityData[0]._type === 'lightNovel'"
                     class="prose prose-invert max-w-none space-y-8 flex flex-col">
                     <div class="flex flex-col gap-2">
                         <h2 class="text-2xl font-bold">

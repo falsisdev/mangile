@@ -1,0 +1,1 @@
+export { default as AligatorReader } from './AligatorReader.vue'
