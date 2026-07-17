@@ -17,6 +17,7 @@
     "@nuxt/image": "2.0.0",
     "@nuxt/ui": "^4.9.0",
     "@nuxtjs/device": "4.0.0",
+    "@portabletext/vue": "^1.0.14",
     "@vueuse/core": "^14.3.0",
     "nuxt": "^4.4.8",
     "nuxt-swiper": "2.0.2",

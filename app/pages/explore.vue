@@ -48,8 +48,10 @@ const { data: titles, status } = await useLazyFetch<MangaCard[]>(`${config.publi
         <USeparator />
 
         <div class="flex flex-row flex-wrap my-2">
-            <CardExplore v-for="item of titles" :key="item.title" :title="item.title" :cover="item.cover"
+            <NuxtLink v-for="item of titles" :key="item.title" :to="`/title/${item.id}`">
+            <CardExplore :title="item.title" :cover="item.cover"
                 :type="item.type" :year="item.year" :id="item.id" class="m-1" />
+                </NuxtLink>
         </div>
 
         <USeparator />

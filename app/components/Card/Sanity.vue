@@ -46,42 +46,38 @@ const swiperBreakpoints = computed(() => {
 })
 
 const timeAgo = (dateString: string) => {
-    if (!dateString) return "bilinmiyor";
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((Number(now) - Number(date)) / 1000);
+  if (!dateString) return "bilinmiyor";
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((Number(now) - Number(date)) / 1000);
 
-    const intervals = {
-        yıl: 31536000,
-        ay: 2592000,
-        hafta: 604800,
-        gün: 86400,
-        saat: 3600,
-        dakika: 60,
-    };
+  const intervals = {
+    yıl: 31536000,
+    ay: 2592000,
+    hafta: 604800,
+    gün: 86400,
+    saat: 3600,
+    dakika: 60,
+  };
 
-    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-        const interval = Math.floor(seconds / secondsInUnit);
-        if (interval >= 1) {
-            return `${interval} ${unit} önce`;
-        }
+  for (const [unit, secondsInUnit] of Object.entries(intervals)) {
+    const interval = Math.floor(seconds / secondsInUnit);
+    if (interval >= 1) {
+      return `${interval} ${unit} önce`;
     }
-    return "az önce";
+  }
+  return "az önce";
 }
 </script>
 
 <template>
-    <swiper-container
-      :key="String(isSidebarOpen)" 
-      :loop="false"
-      :slides-per-view="8"
-      :breakpoints="swiperBreakpoints"
-    >
-      <swiper-slide v-for="item of items" :key="item.id"> <div class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden shadow-lg bg-zinc-900 cursor-pointer">
-          <img 
-            :src="item.cover" alt="Manga Cover" 
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+  <swiper-container :key="String(isSidebarOpen)" :loop="false" :slides-per-view="8" :breakpoints="swiperBreakpoints">
+    <swiper-slide v-for="item of items" :key="item.id">
+      <div
+        class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden shadow-lg bg-zinc-900 cursor-pointer">
+        <NuxtLink :to="`/title/${item.id}`">
+          <img :src="item.cover" alt="Manga Cover"
+            class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
 
           <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-900/60 to-transparent" />
 
@@ -96,7 +92,8 @@ const timeAgo = (dateString: string) => {
               </UBadge>
             </div>
           </div>
-        </div>
-      </swiper-slide>
-    </swiper-container>
+        </NuxtLink>
+      </div>
+    </swiper-slide>
+  </swiper-container>
 </template>
