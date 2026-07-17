@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  --font-sans: 'Raleway', sans-serif;
+}
+
+:root {
+  --ui-primary: black;
+}
+
+.dark {
+  --ui-primary: white;
+}
+
+.swiper-slide-active img{
+    animation: heroZoom 6s linear forwards;
+}
+
+@keyframes heroZoom{
+
+from{
+    transform:scale(1);
+}
+
+to{
+    transform:scale(1.08);
+}
+
+}
