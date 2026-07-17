@@ -113,7 +113,7 @@ onUnmounted(() => {
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative z-20 -mt-24 md:-mt-24 px-4 md:px-8">
                 <div class="flex flex-col items-center md:items-stretch space-y-4">
-                    <div class="w-48 md:w-full aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl bg-muted">
+                    <div class="w-48 md:w-full aspect-[2/3] rounded-2xl overflow-hidden bg-muted">
                         <img :src="serie.cover || serie.anilistCover" class="w-full h-full object-cover" :alt="serie.title" />
                     </div>
 
@@ -131,14 +131,14 @@ onUnmounted(() => {
                         </UButton>
                         
                         <div class="grid grid-cols-2 gap-2 text-center pt-2">
-                            <div class="p-3 bg-neutral-900/50 dark:bg-neutral-100/5 rounded-xl border border-neutral-200/10">
+                            <div class="p-3 rounded-2xl bg-primary/10">
                                 <span class="text-xs text-muted-foreground block mb-0.5">AniList Skoru</span>
                                 <div class="flex items-center justify-center gap-1 font-bold text-emerald-500">
                                     <UIcon name="i-lucide-star" class="w-4 h-4 fill-current" />
                                     {{ serie.anilistScore ? serie.anilistScore.toFixed(1) : '-' }}
                                 </div>
                             </div>
-                            <div class="p-3 bg-neutral-900/50 dark:bg-neutral-100/5 rounded-xl border border-neutral-200/10">
+                            <div class="p-3 rounded-2xl bg-primary/10">
                                 <span class="text-xs text-muted-foreground block mb-0.5">MAL Skoru</span>
                                 <div class="flex items-center justify-center gap-1 font-bold text-amber-500">
                                     <UIcon name="i-lucide-star" class="w-4 h-4 fill-current" />
@@ -176,7 +176,7 @@ onUnmounted(() => {
                         <h3 class="text-lg font-bold flex items-center gap-2">
                             <UIcon name="i-lucide-book-open" /> Özet
                         </h3>
-                        <p class="text-sm md:text-base text-muted-foreground leading-relaxed bg-neutral-900/20 dark:bg-neutral-100/5 p-4 rounded-2xl border border-neutral-200/5">
+                        <p class="text-sm p-4 rounded-2xl bg-primary/10">
                             {{ serie.description || serie.anilistDescription || 'Bu seri için henüz bir açıklama eklenmemiş.' }}
                         </p>
                     </div>
@@ -218,7 +218,7 @@ onUnmounted(() => {
                             </UCard>
                         </div>
 
-                        <div v-else class="text-center py-12 bg-neutral-900/10 dark:bg-neutral-100/5 rounded-2xl border border-dashed border-neutral-200/10">
+                        <div v-else class="text-center py-12 rounded-2xl bg-primary/10">
                             <UIcon name="i-lucide-folder-open" class="w-8 h-8 text-muted-foreground mb-2" />
                             <p class="text-sm text-muted-foreground">Henüz bu seriye ait bir bölüm yüklenmemiş.</p>
                         </div>
