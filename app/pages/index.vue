@@ -6,7 +6,7 @@ breadcrumbs.value = [
   { label: 'Ana Sayfa' }
 ]
 
-const { data: heroData, pending: heroPending } = await useFetch(`${config.public.backend.baseUrl}/api/mangaList?filterType=POPULARITY_DESC&limit=12`, { lazy: true })
+const { data: heroData, pending: heroPending } = await useFetch(`${config.public.backend.baseUrl}/api/mangaList?filterType=POPULARITY_DESC&limit=12`, { lazy: true, server: false })
 
 const slides = computed(() => {
   if (!heroData.value) return []
@@ -33,7 +33,7 @@ const slides = computed(() => {
   }))
 })
 
-const { data: updatedData } = await useFetch(`${config.public.backend.baseUrl}/api/sanityList?filterType=updatedAt`)
+const { data: updatedData } = await useFetch(`${config.public.backend.baseUrl}/api/sanityList?filterType=updatedAt`, { lazy: true, server: false })
 
 const updatedItems = computed(() => {
   if (!updatedData.value) return []
@@ -46,7 +46,7 @@ const updatedItems = computed(() => {
   }))
 })
 
-const { data: createdData } = await useFetch(`${config.public.backend.baseUrl}/api/sanityList?filterType=createdAt`)
+const { data: createdData } = await useFetch(`${config.public.backend.baseUrl}/api/sanityList?filterType=createdAt`, { lazy: true, server: false })
 
 const createdItems = computed(() => {
   if (!createdData.value) return []
