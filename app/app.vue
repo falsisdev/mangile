@@ -1,6 +1,7 @@
 <script setup>
 const openSidebar = ref(false)
 const breadcrumbs = useBreadcrumbs()
+const route = useRoute()
 
 useHead({
   meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
@@ -22,7 +23,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp>
+  <UApp v-if="route.meta.isLayouted !== false">
     <div class="flex h-screen w-screen overflow-hidden bg-background">
       <Sidebar v-model:open="openSidebar" />
       <div class="flex flex-1 flex-col overflow-hidden">
@@ -67,4 +68,5 @@ useSeoMeta({
       </div>
     </div>
   </UApp>
+  <NuxtPage v-else />
 </template>

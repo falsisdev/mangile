@@ -204,7 +204,7 @@ onUnmounted(() => {
                                 :key="chapter.id"
                                 class="transition-all cursor-pointer group"
                             >
-                                <div class="flex items-center justify-between -m-3">
+                                <NuxtLink :to="`/chapter/${chapter._key}/${serie['type'].toLowerCase()}`" class="flex items-center justify-between -m-3">
                                     <div class="truncate pr-2">
                                         <p class="font-bold group-hover:text-primary transition-colors truncate">
                                             {{ chapter.title || `Bölüm ${chapter.chapter_number || chapter.id}` }}
@@ -214,7 +214,7 @@ onUnmounted(() => {
                                         </p>
                                     </div>
                                     <UButton size="xs" color="primary" variant="ghost" icon="i-lucide-chevron-right" square />
-                                </div>
+                                </NuxtLink>
                             </UCard>
                         </div>
 
