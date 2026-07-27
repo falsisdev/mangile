@@ -1,64 +1,197 @@
-# Nuxt Starter Template
+<div align="center">
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+# Mangile
 
-Use this template to get started with [Nuxt UI](https://ui.nuxt.com) quickly.
+A modern open-source manga, manhwa and light novel reading platform built with performance, scalability and user experience in mind.
 
-- [Live demo](https://starter-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
+</div>
 
-<a href="https://starter-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png">
-    <img alt="Nuxt Starter Template" src="https://ui.nuxt.com/assets/templates/nuxt/starter-light.png" width="830" height="466">
-  </picture>
-</a>
+---
 
-> The starter template for Vue is on https://github.com/nuxt-ui-templates/starter-vue.
+## 📖 About
 
-## Quick Start
+Mangile is a modern web platform for reading manga, manhwa, manhua and light novels.
 
-```bash [Terminal]
-npm create nuxt@latest -- -t ui
+The project focuses on delivering a clean reading experience while providing rich metadata, user libraries, authentication, bookmarks, favorites and scalable content management in Turkish Language.
+
+Unlike traditional readers, Mangile is designed with a modern architecture that separates the frontend, backend and content services, making it easier to maintain and extend.
+
+---
+
+## ✨ Features
+
+- 📚 Manga, Manhwa and Light Novel support
+- 📖 Advanced reader experience
+- 🔖 Personal Lists
+- 🔄 Sync with Anilist & MAL
+- 👤 User authentication
+- 🔍 Powerful search
+- 🏷 Rich metadata
+- 📱 Fully responsive UI
+- ⚡ Fast page loading
+- 🌙 Switch Mode
+- 🔄 Scalable backend architecture
+- 🌍 Multi-language ready
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- Nuxt 4
+- TypeScript
+- Tailwind CSS
+- Nuxt UI
+
+### Backend
+
+- Go
+- REST API
+
+### Authentication
+
+- Logto
+
+### Content
+
+- Sanity CMS
+- AniList
+- MyAnimeList
+- MangaDex
+
+---
+
+## 🚀 Getting Started
+
+### Clone the repository
+
+```bash
+git clone https://github.com/falsisdev/mangile.git
+
+cd mangile
 ```
 
-## Deploy your own
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=starter&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fstarter&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fstarter-dark.png&demo-url=https%3A%2F%2Fstarter-template.nuxt.dev%2F&demo-title=Nuxt%20Starter%20Template&demo-description=A%20minimal%20template%20to%20get%20started%20with%20Nuxt%20UI.)
-
-## Setup
-
-Make sure to install the dependencies:
+### Install dependencies
 
 ```bash
 pnpm install
 ```
 
-## Development Server
+### Configure environment variables
 
-Start the development server on `http://localhost:3000`:
+Create a `.env` file.
+
+Example:
+
+```env
+NUXT_BACKENDBASE=
+NUXT_SANITY_PROJECT_ID=
+NUXT_SANITY_DATASET=
+```
+
+---
+
+### Start development server
 
 ```bash
 pnpm dev
 ```
 
-## Production
+The application will be available at:
 
-Build the application for production:
-
-```bash
-pnpm build
+```
+http://localhost:3000
 ```
 
-Locally preview production build:
+---
+
+## 🎯 Project Goals
+
+Mangile aims to provide:
+
+- A beautiful reading experience
+- Modern UI/UX
+- High performance
+- Clean architecture
+- Easy deployment
+- Extensible codebase
+- Open-source community contributions
+
+---
+
+## 📸 Screenshots
+
+Coming soon.
+
+---
+
+## 🗺 Roadmap
+
+- [x] Searching
+- [x] Manga Reader
+- [x] Novel Reader
+- [ ] Explore Page Filter
+- [ ] User authentication
+- [ ] User Profile
+- [ ] List Actions
+- [ ] Reading history
+- [ ] Offline reading
+- [ ] Synch MAL, AniList & MangaDex
+- [ ] Metadata integration
+- [ ] PWA support
+- [ ] Reading statistics
+- [ ] Community reviews
+- [ ] Recommendation system
+- [ ] Mobile application
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome.
+
+1. Fork the repository.
+2. Create a new branch.
 
 ```bash
-pnpm preview
+git checkout -b feature/my-feature
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+3. Commit your changes.
 
-## Renovate integration
+```bash
+git commit -m "feat: add amazing feature"
+```
 
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+4. Push your branch.
+
+```bash
+git push origin feature/my-feature
+```
+
+5. Open a Pull Request.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Author
+
+Developed by **Falsis**
+
+GitHub
+
+https://github.com/falsisdev
+
+---
+
+<div align="center">
+
+Made with ❤️ for manga & novel readers.
+
+</div>
