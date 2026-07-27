@@ -1,19 +1,19 @@
 <script setup lang="ts">
 const route = useRoute();
-const config = useRuntimeConfig()
+const config = useRuntimeConfig();
 const chapterKey = computed(() => route.params.chapterKey as string);
 
 interface ChapterResponse {
-  title: string,
-  type: string,
-  myAnimeListId: number,
+  title: string;
+  type: string;
+  myAnimeListId: number;
   chapter: {
-    title: string
+    title: string;
     pages: {
-      url: string
-    }[]
-  },
-  chapterKeys: string[]
+      url: string;
+    }[];
+  };
+  chapterKeys: string[];
 }
 
 const { data: chapterData, pending } = await useFetch<ChapterResponse>(
@@ -23,20 +23,18 @@ const { data: chapterData, pending } = await useFetch<ChapterResponse>(
     lazy: true,
     server: false,
     watch: [chapterKey],
-  }
+  },
 );
 
 interface Page {
-  url: string
+  url: string;
 }
 
-const images = computed<Page[]>(
-  () => chapterData.value?.chapter?.pages ?? []
-);
+const images = computed<Page[]>(() => chapterData.value?.chapter?.pages ?? []);
 
-type ReadingMode = 'paged' | 'webtoon';
+type ReadingMode = "paged" | "webtoon";
 
-const readingMode = ref<ReadingMode>('paged');
+const readingMode = ref<ReadingMode>("paged");
 const currentPage = ref(1);
 const controlsVisible = ref(true);
 let controlsTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -44,13 +42,14 @@ const webtoonWrapper = ref<HTMLElement | null>(null);
 
 const totalPages = computed(() => images.value.length);
 const currentImage = computed(
-  () => images.value[currentPage.value - 1]?.url ?? null
+  () => images.value[currentPage.value - 1]?.url ?? null,
 );
 
-const currentChapterIndex = computed(() =>
-  chapterData.value?.chapterKeys.findIndex(
-    key => key === chapterKey.value
-  ) ?? -1
+const currentChapterIndex = computed(
+  () =>
+    chapterData.value?.chapterKeys.findIndex(
+      (key) => key === chapterKey.value,
+    ) ?? -1,
 );
 
 const previousChapterKey = computed(() => {
@@ -92,7 +91,7 @@ const prevPage = () => {
 const goToPage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
-    if (readingMode.value === 'webtoon') {
+    if (readingMode.value === "webtoon") {
       scrollToPage(page);
     }
   }
@@ -104,7 +103,6 @@ const handlePageSelect = (event: Event) => {
 const handleSliderInput = (event: Event) => {
   goToPage(Number((event.target as HTMLInputElement).value));
 };
-
 
 const handlePagedClick = (event: MouseEvent) => {
   const { clientX, currentTarget } = event;
@@ -143,20 +141,22 @@ const resetControlsTimeout = () => {
 };
 
 const toggleReadingMode = () => {
-  readingMode.value = readingMode.value === 'paged' ? 'webtoon' : 'paged';
+  readingMode.value = readingMode.value === "paged" ? "webtoon" : "paged";
   nextTick(() => {
-    if (readingMode.value === 'webtoon') {
+    if (readingMode.value === "webtoon") {
       scrollToPage(currentPage.value);
     }
   });
 };
 
 const scrollToPage = (page: number) => {
-  const pageElement = webtoonWrapper.value?.querySelector(`[data-page-index="${page}"]`) as HTMLElement;
+  const pageElement = webtoonWrapper.value?.querySelector(
+    `[data-page-index="${page}"]`,
+  ) as HTMLElement;
   if (pageElement) {
     webtoonWrapper.value?.scrollTo({
       top: pageElement.offsetTop - 20,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   }
 };
@@ -166,43 +166,50 @@ const updatePageOnScroll = () => {
   const { scrollTop, scrollHeight, clientHeight } = webtoonWrapper.value;
 
   if (scrollTop + clientHeight >= scrollHeight - 5) {
-     if (currentPage.value !== totalPages.value) currentPage.value = totalPages.value;
-     return;
+    if (currentPage.value !== totalPages.value)
+      currentPage.value = totalPages.value;
+    return;
   }
 
-  const pageElements = Array.from(webtoonWrapper.value.querySelectorAll('.webtoon-page'));
+  const pageElements = Array.from(
+    webtoonWrapper.value.querySelectorAll(".webtoon-page"),
+  );
   let mostVisiblePage = 1;
   let maxVisibility = 0;
 
   for (const el of pageElements) {
-      const rect = el.getBoundingClientRect();
-      const viewportHeight = webtoonWrapper.value.clientHeight;
-      const visibleHeight = Math.max(0, Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0));
-      const visibility = visibleHeight / rect.height;
+    const rect = el.getBoundingClientRect();
+    const viewportHeight = webtoonWrapper.value.clientHeight;
+    const visibleHeight = Math.max(
+      0,
+      Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0),
+    );
+    const visibility = visibleHeight / rect.height;
 
-      if (visibility > maxVisibility) {
-          maxVisibility = visibility;
-          mostVisiblePage = parseInt(el.getAttribute('data-page-index')!, 10);
-      }
+    if (visibility > maxVisibility) {
+      maxVisibility = visibility;
+      mostVisiblePage = parseInt(el.getAttribute("data-page-index")!, 10);
+    }
   }
-  if (currentPage.value !== mostVisiblePage) currentPage.value = mostVisiblePage;
+  if (currentPage.value !== mostVisiblePage)
+    currentPage.value = mostVisiblePage;
   showControls();
 };
 
 const handleKeydown = (event: KeyboardEvent) => {
-  if (readingMode.value === 'paged') {
-    if (event.key === 'ArrowRight') nextPage();
-    else if (event.key === 'ArrowLeft') prevPage();
+  if (readingMode.value === "paged") {
+    if (event.key === "ArrowRight") nextPage();
+    else if (event.key === "ArrowLeft") prevPage();
   }
 };
 
 onMounted(() => {
-  window.addEventListener('keydown', handleKeydown);
+  window.addEventListener("keydown", handleKeydown);
   resetControlsTimeout();
 });
 
 onUnmounted(() => {
-  window.removeEventListener('keydown', handleKeydown);
+  window.removeEventListener("keydown", handleKeydown);
   if (controlsTimeout) clearTimeout(controlsTimeout);
 });
 
@@ -217,8 +224,8 @@ useHead(() => ({
 }));
 
 definePageMeta({
-    isLayouted: false
-})
+  isLayouted: false,
+});
 </script>
 <template>
   <div
@@ -265,11 +272,18 @@ definePageMeta({
       <div v-show="controlsVisible" class="controls-overlay">
         <!-- Üst Bar -->
         <div class="top-bar">
-          <NuxtLink :to="`/title/${chapterData?.myAnimeListId}`" class="close-button">×</NuxtLink>
+          <NuxtLink
+            :to="`/title/${chapterData?.myAnimeListId}`"
+            class="close-button"
+            >×</NuxtLink
+          >
           <div class="chapter-info">
             <span class="chapter-title">{{ chapterData?.title }}</span>
-            <br/>
-            <span class="chapter-key">Bölüm {{ chapterData?.chapter?.chapterNumber }} - {{ chapterData?.chapter?.source.name }}</span>
+            <br />
+            <span class="chapter-key"
+              >Bölüm {{ chapterData?.chapter?.chapterNumber }} -
+              {{ chapterData?.chapter?.source.name }}</span
+            >
           </div>
           <div class="page-counter">{{ currentPage }} / {{ totalPages }}</div>
         </div>
@@ -277,7 +291,7 @@ definePageMeta({
         <!-- Alt Bar -->
         <div class="bottom-bar">
           <button class="mode-toggle" @click="toggleReadingMode">
-            Mod:{{ readingMode === 'paged' ? 'Webtoon' : 'Sayfalı' }}
+            Aktif Mod: {{ readingMode === "paged" ? "Sayfalı" : "Webtoon" }}
           </button>
           <select
             :value="currentPage"
@@ -296,21 +310,21 @@ definePageMeta({
             class="page-slider"
             @input="handleSliderInput"
           />
-            <button
-              class="mode-toggle"
-              :disabled="!previousChapterKey"
-              @click="goToPreviousChapter"
-            >
-              Önceki Bölüm
-            </button>
+          <UButton
+            class="mode-toggle"
+            :disabled="!previousChapterKey"
+            @click="goToPreviousChapter"
+          >
+            <Icon name="i-lucide-arrow-left" /> Önceki Bölüm
+          </UButton>
 
-            <button
-              class="mode-toggle"
-              :disabled="!nextChapterKey"
-              @click="goToNextChapter"
-            >
-              Sonraki Bölüm
-            </button>
+          <UButton
+            class="mode-toggle"
+            :disabled="!nextChapterKey"
+            @click="goToNextChapter"
+          >
+            Sonraki Bölüm <Icon name="i-lucide-arrow-right" />
+          </UButton>
         </div>
       </div>
     </transition>
