@@ -25,7 +25,6 @@ const { data: chapterData, pending } = await useFetch<ChapterResponse>(
   },
 );
 
-// --- NAVİGASYON VE BÖLÜM MANTIĞI ---
 const currentChapterIndex = computed(
   () =>
     chapterData.value?.chapterKeys.findIndex(
@@ -115,12 +114,34 @@ onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
 });
 
-// --- PORTABLE TEXT PARSER (JSON -> HTML) ---
+const getSanityImageUrl = (ref: string) => {
+  if (!ref) return "";
+  const projectId = config.public.sanity?.projectId;
+  const dataset = config.public.sanity?.dataset || "production";
+
+  const [, id, dimensions, format] = ref.split("-");
+  return `https://cdn.sanity.io/images/${projectId}/${dataset}/${id}-${dimensions}.${format}`;
+};
+
 const renderedContent = computed(() => {
   if (!chapterData.value?.chapter?.content) return "";
 
   return chapterData.value.chapter.content
     .map((block: any) => {
+      if (block._type === "image") {
+        const imageUrl =
+          block.asset?.url ||
+          (block.asset?._ref ? getSanityImageUrl(block.asset._ref) : "");
+        if (!imageUrl) return "";
+
+        const caption = block.caption || block.alt || "";
+
+        return `<figure class="my-10 flex flex-col items-center">
+          <img src="${imageUrl}" alt="${caption}" loading="lazy" class="rounded-xl shadow-xl max-w-full h-auto max-h-[80vh] object-contain border border-gray-200 dark:border-gray-800" />
+          ${caption ? `<figcaption class="text-sm text-gray-500 mt-3 italic">${caption}</figcaption>` : ""}
+        </figure>`;
+      }
+
       if (block._type !== "block") return "";
 
       let htmlContent = block.children
@@ -140,8 +161,7 @@ const renderedContent = computed(() => {
               } else if (block.markDefs) {
                 const def = block.markDefs.find((m: any) => m._key === mark);
                 if (def && def._type === "link") {
-                  // Resim url kontrolü (png, jpg vs.)
-                  if (def.href.match(/\.(jpeg|jpg|gif|png)(?:\?.*)?$/i)) {
+                  if (def.href.match(/\.(jpeg|jpg|gif|png|webp)(?:\?.*)?$/i)) {
                     tagsOpen += `<figure class="my-10 flex flex-col items-center">
                               <img src="${def.href}" alt="${text}" loading="lazy" class="rounded-xl shadow-xl max-w-full h-auto max-h-[80vh] object-contain border border-gray-200 dark:border-gray-800" />
                               <figcaption class="text-sm text-gray-500 mt-3 italic">${text}</figcaption>
