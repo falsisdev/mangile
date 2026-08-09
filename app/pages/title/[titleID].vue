@@ -135,7 +135,7 @@ onUnmounted(() => {
           class="absolute inset-0 bg-gradient-to-b from-default/20 via-transparent to-transparent z-10"
         ></div>
         <img
-          :src="serie.banner || serie.anilistBanner"
+          :src="serie.banner || serie.anilistBanner || serie.cover || serie.anilistCover"
           class="w-full h-full object-cover select-none"
           alt="Banner"
         />
@@ -197,7 +197,7 @@ onUnmounted(() => {
               <p v-if="serie.malStatus">
                 <b class="text-foreground">Durum:</b>
                 {{
-                  serie["malStatus"].replaceAll("Publishing", "Yayınlanıyor")
+                  serie["malStatus"].replaceAll("Publishing", "Yayınlanıyor").replaceAll("Finished", "Tamamlandı").replaceAll("On Hiatus", "Ara Verildi").replaceAll("Not yet published", "Henüz Yayınlanmadı")
                 }}
               </p>
               <p v-if="serie.malAuthors?.length">

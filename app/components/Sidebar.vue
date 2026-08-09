@@ -30,7 +30,7 @@ const libraryItems: NavigationMenuItem[] = [
   {
     label: 'Senkronizasyon',
     icon: 'i-lucide-cloud-backup',
-    to: '/synch'
+    to: '/sync'
   },
   {
     label: 'Listeler',
