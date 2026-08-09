@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { PortableText } from "@portabletext/vue";
-
 const breadcrumbs = useBreadcrumbs();
 const config = useRuntimeConfig();
 const route = useRoute();
@@ -48,6 +47,26 @@ const { data: serie, status } = await useLazyAsyncData(
     },
   },
 );
+
+const { data: recommendations } = await useLazyAsyncData(
+  "title-recommendations-" + route.params.titleID,
+  async () => {
+    const type = route.params.titleID ? "manga" : "lightNovel";
+    return await $fetch(
+      `${config.public.backend.baseUrl}/api/manga/${route.params.titleID}/recommendations`,
+    );
+  },
+  {
+    transform: (items: any[]) =>
+      (items || []).map((item) => ({
+        id: item.id,
+        title: item.title?.english || item.title?.romaji || item.title?.native || "Bilinmeyen",
+        cover: item.coverImage?.extraLarge || "",
+        type: item.type?.replaceAll("MANGA", "Manga").replaceAll("LIGHT_NOVEL", "Hafif Roman") || "Manga",
+      })),
+  }
+);
+
 
 const breadcrumbsList = computed(() => [
   { label: "Ana Sayfa", to: "/" },
@@ -332,6 +351,10 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
+      <USeparator position="start" class="font-bold text-3xl mt-5 mb-3">
+        <span class="mr-3"> Önerilen Seriler </span>
+      </USeparator>
+      <CardRecommendations v-if="recommendations.length" :items="recommendations" />
     </div>
   </UContainer>
 </template>

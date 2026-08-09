@@ -131,6 +131,7 @@ Coming soon.
 - [x] Searching
 - [x] Manga Reader
 - [x] Novel Reader
+- [ ] Serie Recommendations
 - [ ] Explore Page Filter
 - [ ] User authentication
 - [ ] User Profile
