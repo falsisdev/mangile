@@ -59,7 +59,7 @@ const { data: recommendations } = await useLazyAsyncData(
   {
     transform: (items: any[]) =>
       (items || []).map((item) => ({
-        id: item.id,
+        id: item.idMal,
         title: item.title?.english || item.title?.romaji || item.title?.native || "Bilinmeyen",
         cover: item.coverImage?.extraLarge || "",
         type: item.type?.replaceAll("MANGA", "Manga").replaceAll("LIGHT_NOVEL", "Hafif Roman") || "Manga",
