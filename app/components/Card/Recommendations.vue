@@ -46,7 +46,7 @@ const swiperBreakpoints = computed(() => {
 </script>
 
 <template>
-  <swiper-container :key="String(isSidebarOpen)" :loop="false" :slides-per-view="8" :breakpoints="swiperBreakpoints">
+  <swiper-container :key="String(isSidebarOpen)" :loop="false" :slides-per-view="8" :breakpoints="swiperBreakpoints" :mousewheel="true" :free-mode="true">
     <swiper-slide v-for="item in items" :key="item.id">
       <NuxtLink
         :to="`/title/${item.id}`"

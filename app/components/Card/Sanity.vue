@@ -71,7 +71,7 @@ const timeAgo = (dateString: string) => {
 </script>
 
 <template>
-  <swiper-container :key="String(isSidebarOpen)" :loop="false" :slides-per-view="8" :breakpoints="swiperBreakpoints">
+  <swiper-container :key="String(isSidebarOpen)" :loop="false" :slides-per-view="8" :breakpoints="swiperBreakpoints" :mousewheel="true" :free-mode="true">
     <swiper-slide v-for="item of items" :key="item.id">
       <div
         class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden shadow-lg bg-zinc-900 cursor-pointer">
