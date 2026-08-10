@@ -47,8 +47,8 @@ useSeoMeta({
             />
             <h1 class="font-semibold text-sm hidden md:block"><UBreadcrumb :items="breadcrumbs"/></h1>
           </div>
-          <Search/>
           <div class="flex items-center gap-2">
+            <Search />
             <UColorModeButton />
             <UButton
               to="https://github.com/falsisdev/mangile"

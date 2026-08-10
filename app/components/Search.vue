@@ -63,9 +63,15 @@ function onSelect(item: any) {
 </script>
 
 <template>
-  <UModal v-model:open="isOpen">
-    <UButton label="Ara..." color="neutral" variant="subtle" icon="i-lucide-search" class="w-1/2" />
+  <UButton
+    icon="i-lucide-search"
+    color="neutral"
+    variant="ghost"
+    aria-label="Ara"
+    @click="isOpen = true"
+  />
 
+  <UModal v-model:open="isOpen">
     <template #content>
       <UCommandPalette v-model:search-term="searchTerm" :loading="status === 'pending'" :groups="groups"
         placeholder="İçerikleri ara..." class="h-80" @update:model-value="onSelect" />
