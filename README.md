@@ -132,7 +132,7 @@ Coming soon.
 - [x] Manga Reader
 - [x] Novel Reader
 - [x] Serie Recommendations
-- [ ] Article Pages
+- [x] Article Pages
 - [ ] Explore Page Filter
 - [ ] User authentication
 - [ ] User Profile
@@ -143,7 +143,7 @@ Coming soon.
 - [ ] PWA support
 - [ ] Reading statistics
 - [ ] Community reviews
-- [ ] Recommendation system
+- [ ] AI Recommendation system
 - [ ] Mobile application
 - [ ] Offline reading
 
