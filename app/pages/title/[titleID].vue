@@ -51,7 +51,6 @@ const { data: serie, status } = await useLazyAsyncData(
 const { data: recommendations } = await useLazyAsyncData(
   "title-recommendations-" + route.params.titleID,
   async () => {
-    const type = route.params.titleID ? "manga" : "lightNovel";
     return await $fetch(
       `${config.public.backend.baseUrl}/api/manga/${route.params.titleID}/recommendations`,
     );

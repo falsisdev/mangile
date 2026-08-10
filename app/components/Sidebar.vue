@@ -48,17 +48,17 @@ const companyItems: NavigationMenuItem[] = [
   {
     label: 'Bilgilendirme',
     icon: 'i-lucide-info',
-    to: '/notice'
+    to: '/article/notice'
   },
   {
     label: 'Hakkımızda',
     icon: 'i-lucide-users',
-    to: '/about'
+    to: '/article/about'
   },
   {
     label: 'İletişim',
     icon: 'i-lucide-phone',
-    to: '/contact'
+    to: '/article/contact'
   }
 ]
 
@@ -66,12 +66,12 @@ const legalItems: NavigationMenuItem[] = [
   {
     label: 'Hizmet Koşulları',
     icon: 'i-lucide-scale',
-    to: '/tos'
+    to: '/article/tos'
   },
   {
     label: 'Lisanslandırma',
     icon: 'i-lucide-copyright',
-    to: '/licence'
+    to: '/article/licence'
   }
 ]
 </script>

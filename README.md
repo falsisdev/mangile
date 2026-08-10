@@ -132,19 +132,20 @@ Coming soon.
 - [x] Manga Reader
 - [x] Novel Reader
 - [x] Serie Recommendations
+- [ ] Article Pages
 - [ ] Explore Page Filter
 - [ ] User authentication
 - [ ] User Profile
 - [ ] List Actions
 - [ ] Reading history
-- [ ] Offline reading
-- [ ] Synch MAL, AniList & MangaDex
+- [ ] Sync MAL, AniList & MangaDex
 - [ ] Metadata integration
 - [ ] PWA support
 - [ ] Reading statistics
 - [ ] Community reviews
 - [ ] Recommendation system
 - [ ] Mobile application
+- [ ] Offline reading
 
 ---
 

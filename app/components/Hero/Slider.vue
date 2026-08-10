@@ -49,7 +49,7 @@ const props = withDefaults(
 <template>
   <swiper-container class="hero-slider" :loop="true" effect="fade" :speed="1000" :autoplay-delay="5000" :pagination="{
     clickable: true
-  }" :mousewheel="true">
+  }">
     <swiper-slide v-for="slide in slides" :key="slide.title">
       <section :class="sectionClass">
         <div class="absolute inset-0 bg-cover bg-center slide-bg-layer" :style="{
