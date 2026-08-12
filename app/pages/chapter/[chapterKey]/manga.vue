@@ -7,13 +7,17 @@ interface ChapterResponse {
   title: string;
   type: string;
   myAnimeListId: number;
-  chapter: {
-    title: string;
-    pages: {
+  chapter?: {
+    title?: string;
+    chapterNumber?: number | string;
+    source?: {
+      name?: string;
+    };
+    pages?: {
       url: string;
     }[];
   };
-  chapterKeys: string[];
+  chapterKeys?: string[];
 }
 
 const { data: chapterData, pending } = await useFetch<ChapterResponse>(
@@ -45,12 +49,10 @@ const currentImage = computed(
   () => images.value[currentPage.value - 1]?.url ?? null,
 );
 
-const currentChapterIndex = computed(
-  () =>
-    chapterData.value?.chapterKeys.findIndex(
-      (key) => key === chapterKey.value,
-    ) ?? -1,
-);
+const currentChapterIndex = computed(() => {
+  const keys = chapterData.value?.chapterKeys ?? [];
+  return keys.findIndex((key) => key === chapterKey.value);
+});
 
 const previousChapterKey = computed(() => {
   const keys = chapterData.value?.chapterKeys;
@@ -281,8 +283,9 @@ definePageMeta({
             <span class="chapter-title">{{ chapterData?.title }}</span>
             <br />
             <span class="chapter-key"
-              >Bölüm {{ chapterData?.chapter?.chapterNumber }} -
-              {{ chapterData?.chapter?.source.name }}</span
+              >Bölüm
+              {{ chapterData?.chapter?.chapterNumber ?? chapterData?.title }} -
+              {{ chapterData?.chapter?.source?.name ?? "Bilinmeyen" }}</span
             >
           </div>
           <div class="page-counter">{{ currentPage }} / {{ totalPages }}</div>

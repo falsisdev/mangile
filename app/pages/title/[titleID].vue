@@ -1,71 +1,126 @@
 <script setup lang="ts">
 import { PortableText } from "@portabletext/vue";
+
+interface SerieData {
+  id: number;
+  title: string;
+  type?: string;
+  description?: string;
+  banner?: string;
+  cover?: string;
+  tags?: string[];
+  anilistID?: number;
+  anilistTitle?: string;
+  anilistScore?: number;
+  anilistBanner?: string;
+  anilistCover?: string;
+  anilistDescription?: string;
+  anilistRelations?: any[];
+  malID?: number;
+  malStatus?: string;
+  malScore?: number;
+  malAuthors?: Array<{ name: string }>;
+  malURL?: string;
+  notes?: any[];
+  chapters?: any[];
+}
+
+interface RecommendationItem {
+  id: number;
+  title: string;
+  cover: string;
+  type: string;
+}
+
 const breadcrumbs = useBreadcrumbs();
 const config = useRuntimeConfig();
 const route = useRoute();
+const titleId = computed(() => {
+  const value = route.params.titleID;
+  return Array.isArray(value) ? (value[0] ?? "") : (value ?? "");
+});
+const titleApiBase = String(config.public.backend.baseUrl ?? "");
 
-const { data: serie, status } = await useLazyAsyncData(
-  "title-" + route.params.titleID,
+const { data: serie, status } = await useLazyAsyncData<SerieData | null>(
+  "title-" + titleId.value,
   async () => {
+    const id = titleId.value;
+    if (!id) return null;
+
     try {
-      return await $fetch(
-        `${config.public.backend.baseUrl}/api/manga/${route.params.titleID}`,
+      const response = await fetch(
+        `${titleApiBase}/api/manga/${encodeURIComponent(id)}`,
       );
+      if (!response.ok) throw new Error("Manga request failed");
+      return (await response.json()) as SerieData;
     } catch (e) {
-      return await $fetch(
-        `${config.public.backend.baseUrl}/api/lightNovel/${route.params.titleID}`,
+      const response = await fetch(
+        `${titleApiBase}/api/lightNovel/${encodeURIComponent(id)}`,
       );
+      if (!response.ok) return null;
+      return (await response.json()) as SerieData;
     }
   },
   {
-    transform: (title: any) => {
-      return {
-        id: title.id,
-        title: title.sanity_title,
-        type: title.type
-          ?.replaceAll("manga", "Manga")
-          .replaceAll("lightNovel", "Hafif Roman"),
-        description: title.sanity_description,
-        banner: title.sanity_banner,
-        cover: title.sanity_cover,
-        tags: title.sanity_tags,
-        anilistID: title.anilist_id,
-        anilistTitle: title.anilist_title,
-        anilistScore: Number(title.anilist_score) / 10 || 0,
-        anilistBanner: title.anilist_banner,
-        anilistCover: title.anilist_cover,
-        anilistDescription: title.anilist_description,
-        anilistRelations: title.anilist_relations,
-        malID: title.mal_id,
-        malStatus: title.mal_status,
-        malScore: title.mal_score,
-        malAuthors: title.mal_authors,
-        malURL: title.mal_url,
-        notes: title.notes,
-        chapters: title.chapters || [],
-      };
-    },
+    default: () => null,
+    transform: (title: any): SerieData => ({
+      id: title.id,
+      title: title.sanity_title,
+      type: title.type
+        ?.replaceAll("manga", "Manga")
+        .replaceAll("lightNovel", "Hafif Roman"),
+      description: title.sanity_description,
+      banner: title.sanity_banner,
+      cover: title.sanity_cover,
+      tags: title.sanity_tags,
+      anilistID: title.anilist_id,
+      anilistTitle: title.anilist_title,
+      anilistScore: Number(title.anilist_score) / 10 || 0,
+      anilistBanner: title.anilist_banner,
+      anilistCover: title.anilist_cover,
+      anilistDescription: title.anilist_description,
+      anilistRelations: title.anilist_relations,
+      malID: title.mal_id,
+      malStatus: title.mal_status,
+      malScore: title.mal_score,
+      malAuthors: title.mal_authors,
+      malURL: title.mal_url,
+      notes: title.notes,
+      chapters: title.chapters || [],
+    }),
   },
 );
 
-const { data: recommendations } = await useLazyAsyncData(
-  "title-recommendations-" + route.params.titleID,
+const { data: recommendations } = await useLazyAsyncData<RecommendationItem[]>(
+  "title-recommendations-" + titleId.value,
   async () => {
-    return await $fetch(
-      `${config.public.backend.baseUrl}/api/manga/${route.params.titleID}/recommendations`,
+    const id = titleId.value;
+    if (!id) return [];
+
+    const response = await fetch(
+      `${titleApiBase}/api/manga/${encodeURIComponent(id)}/recommendations`,
     );
+    if (!response.ok) return [];
+    return (await response.json()) as RecommendationItem[];
   },
   {
-    transform: (items: any[]) =>
-      (items || []).map((item) => ({
+    default: () => [],
+    transform: (items: any[] = []) =>
+      items.map((item) => ({
         id: item.idMal,
-        title: item.title?.english || item.title?.romaji || item.title?.native || "Bilinmeyen",
+        title:
+          item.title?.english ||
+          item.title?.romaji ||
+          item.title?.native ||
+          "Bilinmeyen",
         cover: item.coverImage?.extraLarge || "",
-        type: item.type?.replaceAll("MANGA", "Manga").replaceAll("LIGHT_NOVEL", "Hafif Roman") || "Manga",
+        type:
+          item.type
+            ?.replaceAll("MANGA", "Manga")
+            .replaceAll("LIGHT_NOVEL", "Hafif Roman") || "Manga",
       })),
-  }
+  },
 );
-
 
 const breadcrumbsList = computed(() => [
   { label: "Ana Sayfa", to: "/" },
@@ -73,20 +128,23 @@ const breadcrumbsList = computed(() => [
   { label: serie.value?.title || serie.value?.anilistTitle || "Yükleniyor..." },
 ]);
 
-const customComponents = {
+const customComponents: any = {
   marks: {
-    link: ({ value }, { slots }) =>
+    link: (props: any, context: any) =>
       h(
         "a",
         {
-          href: value?.href,
+          href: props.value?.href,
           class: "text-primary hover:underline font-semibold",
           target: "_blank",
         },
-        slots.default?.(),
+        context.slots.default?.(),
       ),
   },
 };
+
+const chapterRouteType = (type?: string) =>
+  (type ?? "manga").toLowerCase().replaceAll("hafif roman", "novel");
 
 watchEffect(() => {
   breadcrumbs.value = breadcrumbsList.value;
@@ -147,13 +205,18 @@ onUnmounted(() => {
         :style="{ opacity: bannerOpacity }"
       >
         <div
-          class="absolute inset-0 bg-gradient-to-t from-default via-default/40 to-transparent z-10"
+          class="absolute inset-0 bg-linear-to-t from-default via-default/40 to-transparent z-10"
         ></div>
         <div
-          class="absolute inset-0 bg-gradient-to-b from-default/20 via-transparent to-transparent z-10"
+          class="absolute inset-0 bg-linear-to-b from-default/20 via-transparent to-transparent z-10"
         ></div>
         <img
-          :src="serie.banner || serie.anilistBanner || serie.cover || serie.anilistCover"
+          :src="
+            serie.banner ||
+            serie.anilistBanner ||
+            serie.cover ||
+            serie.anilistCover
+          "
           class="w-full h-full object-cover select-none"
           alt="Banner"
         />
@@ -215,7 +278,11 @@ onUnmounted(() => {
               <p v-if="serie.malStatus">
                 <b class="text-foreground">Durum:</b>
                 {{
-                  serie["malStatus"].replaceAll("Publishing", "Yayınlanıyor").replaceAll("Finished", "Tamamlandı").replaceAll("On Hiatus", "Ara Verildi").replaceAll("Not yet published", "Henüz Yayınlanmadı")
+                  serie["malStatus"]
+                    .replaceAll("Publishing", "Yayınlanıyor")
+                    .replaceAll("Finished", "Tamamlandı")
+                    .replaceAll("On Hiatus", "Ara Verildi")
+                    .replaceAll("Not yet published", "Henüz Yayınlanmadı")
                 }}
               </p>
               <p v-if="serie.malAuthors?.length">
@@ -311,7 +378,7 @@ onUnmounted(() => {
                 class="transition-all cursor-pointer group"
               >
                 <NuxtLink
-                  :to="`/chapter/${chapter._key}/${serie['type'].toLowerCase().replaceAll('hafif roman', 'novel')}`"
+                  :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
                   class="flex items-center justify-between -m-3"
                 >
                   <div class="truncate pr-2">
@@ -353,7 +420,10 @@ onUnmounted(() => {
       <USeparator position="start" class="font-bold text-3xl mt-5 mb-3">
         <span class="mr-3"> Önerilen Seriler </span>
       </USeparator>
-      <CardRecommendations v-if="recommendations.length" :items="recommendations" />
+      <CardRecommendations
+        v-if="recommendations.length"
+        :items="recommendations"
+      />
     </div>
   </UContainer>
 </template>

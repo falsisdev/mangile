@@ -87,10 +87,14 @@ const isDark = computed({
   get() {
     return colorMode.value === "dark";
   },
-  set() {
-    colorMode.preference = colorMode.value === "dark" ? "light" : "dark";
+  set(value: boolean) {
+    colorMode.preference = value ? "dark" : "light";
   },
 });
+
+const toggleTheme = () => {
+  isDark.value = !isDark.value;
+};
 
 const handleScroll = () => {
   showBackToTop.value = window.scrollY > 400;
@@ -104,6 +108,10 @@ const handleScroll = () => {
 
 const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+const goHome = () => {
+  void navigateTo("/");
 };
 
 onMounted(() => {
@@ -224,7 +232,7 @@ definePageMeta({
             @click="goToPreviousChapter"
             icon="i-lucide-arrow-left"
             size="lg"
-            color="gray"
+            color="neutral"
             variant="soft"
             class="w-full sm:w-auto justify-center rounded-xl"
           >
@@ -242,14 +250,14 @@ definePageMeta({
           >
             <UButton
               icon="i-lucide-a-arrow-down"
-              color="gray"
+              color="neutral"
               variant="ghost"
               @click="changeFontSize(-1)"
               title="Yazıyı Küçült"
             />
             <UButton
               icon="i-lucide-a-arrow-up"
-              color="gray"
+              color="neutral"
               variant="ghost"
               @click="changeFontSize(1)"
               title="Yazıyı Büyüt"
@@ -258,10 +266,10 @@ definePageMeta({
 
           <UButton
             :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
-            color="gray"
+            color="neutral"
             variant="soft"
             class="rounded-full"
-            @click="isDark = !isDark"
+            @click="toggleTheme"
             aria-label="Tema Değiştir"
           />
           <UButton
@@ -269,7 +277,7 @@ definePageMeta({
             @click="goToNextChapter"
             trailing-icon="i-lucide-arrow-right"
             size="lg"
-            color="gray"
+            color="neutral"
             variant="soft"
             class="w-full sm:w-auto justify-center"
           >
@@ -300,9 +308,7 @@ definePageMeta({
           description="Görünüşe göre sistemde kayıtlı böyle bir bölüm yok veya bağlantı koptu."
         >
           <template #action>
-            <UButton color="primary" @click="navigateTo('/')"
-              >Ana Sayfaya Dön</UButton
-            >
+            <UButton color="primary" @click="goHome">Ana Sayfaya Dön</UButton>
           </template>
         </UEmpty>
       </div>
@@ -326,7 +332,7 @@ definePageMeta({
           @click="goToPreviousChapter"
           icon="i-lucide-arrow-left"
           size="lg"
-          color="gray"
+          color="neutral"
           variant="soft"
           class="w-full sm:w-auto justify-center rounded-xl"
         >
@@ -344,7 +350,7 @@ definePageMeta({
           @click="goToNextChapter"
           trailing-icon="i-lucide-arrow-right"
           size="lg"
-          color="gray"
+          color="neutral"
           variant="soft"
           class="w-full sm:w-auto justify-center"
         >

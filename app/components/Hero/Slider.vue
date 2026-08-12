@@ -1,86 +1,124 @@
 <script setup lang="ts">
-import { useWindowSize } from '@vueuse/core'
+import { useWindowSize } from "@vueuse/core";
 
 interface Title {
-  title: string,
-  type: string,
-  year: string,
-  score: string,
-  description: string,
-  banner: string,
-  id: number,
+  title: string;
+  type: string;
+  year: string;
+  score: string;
+  description: string;
+  banner: string;
+  id: number;
 }
 
-const isSidebarOpen = useSidebar()
-const { width } = useWindowSize()
+const isSidebarOpen = useSidebar();
+const { width } = useWindowSize();
 
-const sectionClass = ref('relative h-[80vh] overflow-hidden rounded-3xl')
+const sectionClass = computed(() => {
+  if (width.value >= 1700)
+    return `relative ${isSidebarOpen.value ? "h-[70vh]" : "h-[70vh]"} overflow-hidden rounded-3xl`;
+  if (width.value >= 1280)
+    return `relative ${isSidebarOpen.value ? "h-[60vh]" : "h-[60vh]"} overflow-hidden rounded-3xl`;
+  if (width.value >= 1024)
+    return `relative ${isSidebarOpen.value ? "h-[60vh]" : "h-[60vh]"} overflow-hidden rounded-3xl`;
+  if (width.value >= 768)
+    return "relative h-[70vh] overflow-hidden rounded-3xl";
+  if (width.value >= 640)
+    return "relative h-[60vh] overflow-hidden rounded-3xl";
+  return "relative h-[65vh] overflow-hidden rounded-3xl";
+});
 
-switch (true) {
-  case width.value >= 1700:
-    sectionClass.value = `relative ${isSidebarOpen ? 'h-[70vh]' : 'h-[90vh]'} overflow-hidden rounded-3xl`
-    break;
-  case width.value >= 1280:
-    sectionClass.value = `relative ${isSidebarOpen ? 'h-[60vh]' : 'h-[80vh]'} overflow-hidden rounded-3xl`
-    break;
-  case width.value >= 1024:
-    sectionClass.value = `relative ${isSidebarOpen ? 'h-[60vh]' : 'h-[80vh]'} overflow-hidden rounded-3xl`
-    break;
-  case width.value >= 768:
-    sectionClass.value = `relative 'h-[70vh]overflow-hidden rounded-3xl`
-    break;
-  case width.value >= 640:
-    sectionClass.value = `relative h-[60vh]overflow-hidden rounded-3xl`
-    break;
-  case width.value < 640:
-    sectionClass.value = `relative h-[65vh]overflow-hidden rounded-3xl`
-    break;
-}
-
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    slides: Title[],
+    slides: Title[];
   }>(),
   {
-    slides: () => []
-  })
+    slides: () => [],
+  },
+);
 </script>
 
 <template>
-  <swiper-container class="hero-slider" :loop="true" effect="fade" :speed="1000" :autoplay-delay="5000" :pagination="{
-    clickable: true
-  }">
+  <swiper-container
+    class="hero-slider"
+    :loop="true"
+    effect="fade"
+    :speed="1000"
+    :autoplay-delay="5000"
+    :pagination="{
+      clickable: true,
+    }"
+  >
     <swiper-slide v-for="slide in slides" :key="slide.title">
       <section :class="sectionClass">
-        <div class="absolute inset-0 bg-cover bg-center slide-bg-layer" :style="{
-          backgroundImage: `url(${slide.banner})`
-        }" />
-        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent z-10" />
-        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+        <div
+          class="absolute inset-0 bg-cover bg-center slide-bg-layer"
+          :style="{
+            backgroundImage: `url(${slide.banner})`,
+          }"
+        />
+        <div
+          class="absolute inset-0 bg-linear-to-r from-black via-black/70 to-transparent z-10"
+        />
+        <div
+          class="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent z-10"
+        />
 
         <UContainer class="relative z-20 flex h-full items-center">
           <div class="max-w-2xl space-y-4 text-white content-layer">
-            <div v-if="width.value >= 640" class="flex gap-2">
-              <UBadge color="neutral" variant="soft" size="lg">{{ slide.type }}</UBadge>
-              <UBadge color="neutral" variant="soft" size="lg">{{ slide.year }}</UBadge>
-              <UBadge icon="i-lucide-star" color="warning" variant="soft" size="md">{{ slide.score }}</UBadge>
+            <div v-if="width >= 640" class="flex gap-2">
+              <UBadge color="neutral" variant="soft" size="lg">{{
+                slide.type
+              }}</UBadge>
+              <UBadge color="neutral" variant="soft" size="lg">{{
+                slide.year
+              }}</UBadge>
+              <UBadge
+                icon="i-lucide-star"
+                color="warning"
+                variant="soft"
+                size="md"
+                >{{ slide.score }}</UBadge
+              >
             </div>
 
             <h1 class="text-3xl font-black whitespace-nowrap md:text-6xl">
-              {{ slide["title"].length > 23 ? (slide["title"]).slice(0, 23) + '...' : slide["title"] }}
+              {{
+                slide["title"].length > 23
+                  ? slide["title"].slice(0, 23) + "..."
+                  : slide["title"]
+              }}
             </h1>
 
             <p class="max-w-xl text-md md:text-lg text-gray-200">
-              {{ (slide['description'].replaceAll(/<[^>]*>/g, '')).length > 400 ? (slide['description'].replaceAll(/<[^>]*> /g, '')).slice(0, 397) + '...' : slide['description'].replaceAll(/ <[^>]*>/g, '') }}
+              {{
+                slide["description"].replaceAll(/<[^>]*>/g, "").length > 400
+                  ? slide["description"]
+                      .replaceAll(/<[^>]*> /g, "")
+                      .slice(0, 397) + "..."
+                  : slide["description"].replaceAll(/ <[^>]*>/g, "")
+              }}
             </p>
 
             <div class="flex gap-3">
-              <UButton :to="'/title/' + slide.id" size="lg" icon="i-lucide-info" class="cursor-pointer" variant="solid"
-                color="neutral">
+              <UButton
+                :to="'/title/' + slide.id"
+                size="lg"
+                icon="i-lucide-info"
+                class="cursor-pointer"
+                variant="solid"
+                color="neutral"
+              >
                 Detaylar
               </UButton>
-              <UButton :to="'/synch?mal_id=' + slide.id" size="lg" color="neutral" variant="subtle"
-                icon="i-lucide-cloud-backup" class="cursor-pointer">
+              <UButton
+                :to="'/synch?mal_id=' + slide.id"
+                size="lg"
+                color="neutral"
+                variant="subtle"
+                icon="i-lucide-cloud-backup"
+                class="cursor-pointer"
+              >
                 Senkronize Et
               </UButton>
             </div>
@@ -99,7 +137,10 @@ swiper-container {
 swiper-container::part(bullet) {
   background: white;
   opacity: 0.5;
-  transition: width 0.3s ease, background-color 0.3s ease, opacity 0.3s ease;
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease,
+    opacity 0.3s ease;
 }
 
 swiper-container::part(bullet-active) {
@@ -127,7 +168,9 @@ swiper-container::part(bullet-active) {
   opacity: 0;
   transform: translateY(10px) translateZ(0);
   will-change: transform, opacity;
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transition:
+    opacity 0.8s ease-out,
+    transform 0.8s ease-out;
 }
 
 :deep(.swiper-slide-active) .content-layer {
