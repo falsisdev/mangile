@@ -81,7 +81,7 @@ const timeAgo = (dateString: string) => {
   >
     <swiper-slide v-for="item of items" :key="item.id">
       <div
-        class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden shadow-lg bg-zinc-900 cursor-pointer"
+        class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden bg-zinc-900 cursor-pointer shadow-[0px_0px_10px_0px_var(--color-neutral-900)]"
       >
         <NuxtLink :to="`/title/${item.id}`">
           <img
@@ -91,7 +91,7 @@ const timeAgo = (dateString: string) => {
           />
 
           <div
-            class="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-900/60 to-transparent"
+            class="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-900/60 to-transparent"
           />
 
           <div class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-3">

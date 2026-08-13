@@ -229,7 +229,7 @@ onUnmounted(() => {
       >
         <div class="flex flex-col items-center md:items-stretch space-y-4">
           <div
-            class="w-48 md:w-full aspect-[2/3] rounded-2xl overflow-hidden bg-muted"
+            class="w-48 md:w-full aspect-2/3 rounded-2xl overflow-hidden bg-muted shadow-[0px_0px_30px_0px_var(--color-neutral-700)]"
           >
             <img
               :src="serie.cover || serie.anilistCover"
@@ -238,7 +238,7 @@ onUnmounted(() => {
             />
           </div>
 
-          <div class="w-full space-y-2 max-w-[240px] md:max-w-none">
+          <div class="w-full space-y-2 max-w-60 md:max-w-none">
             <UButton
               v-if="serie.malURL"
               :to="serie.malURL"

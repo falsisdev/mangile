@@ -57,7 +57,7 @@ const swiperBreakpoints = computed(() => {
     <swiper-slide v-for="item in items" :key="item.id">
       <NuxtLink
         :to="`/title/${item.id}`"
-        class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden shadow-lg bg-zinc-900 cursor-pointer block"
+        class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden bg-zinc-900 cursor-pointer block shadow-[0px_0px_10px_0px_var(--color-neutral-900)]"
       >
         <img
           :src="item.cover"
