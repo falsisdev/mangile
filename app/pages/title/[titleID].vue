@@ -9,6 +9,7 @@ interface SerieData {
   banner?: string;
   cover?: string;
   tags?: string[];
+  uploadStatus?: string;
   anilistID?: number;
   anilistTitle?: string;
   anilistScore?: number;
@@ -69,6 +70,7 @@ const { data: serie, status } = await useLazyAsyncData<SerieData | null>(
       type: title.type
         ?.replaceAll("manga", "Manga")
         .replaceAll("lightNovel", "Hafif Roman"),
+      uploadStatus: title.uploadStatus,
       description: title.sanity_description,
       banner: title.sanity_banner,
       cover: title.sanity_cover,
@@ -272,6 +274,17 @@ onUnmounted(() => {
                   {{ serie.malScore || "-" }}
                 </div>
               </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-primary/10 text-sm">
+              Durum:
+              {{
+                serie["uploadStatus"]
+                  .replaceAll("uploading", "Yükleme Aşamasında")
+                  .replaceAll("completed", "Yüklemesi Tamamlandı")
+                  .replaceAll("hiatus", "Yüklemeye Ara Verildi")
+                  .replaceAll("cancelled", "Yükleme İptal Edildi") ||
+                "Belirtilmedi"
+              }}
             </div>
 
             <div class="text-xs space-y-2 pt-2 text-muted-foreground">
