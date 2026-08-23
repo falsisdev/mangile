@@ -1,3 +1,3 @@
 export const useSidebar = () => {
-  return useState('sidebar-open', () => true);
+  return useState('sidebar-open', () => true)
 }

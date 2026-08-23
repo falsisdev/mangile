@@ -1,32 +1,31 @@
 <script setup lang="ts">
-import { useStorage } from "@vueuse/core";
+import { useStorage } from '@vueuse/core'
 
-const route = useRoute();
-const config = useRuntimeConfig();
-const colorMode = useColorMode();
-const chapterKey = computed(() => route.params.chapterKey as string);
+const route = useRoute()
+const config = useRuntimeConfig()
+useColorMode()
+const chapterKey = computed(() => route.params.chapterKey as string)
 
 interface ChapterResponse {
-  title: string;
-  type: string;
-  myAnimeListId: number;
+  title: string
+  type: string
+  myAnimeListId: number
   chapter?: {
-    title?: string;
-    chapterNumber?: number | string;
+    title?: string
+    chapterNumber?: number | string
     source?: {
-      name?: string;
-    };
+      name?: string
+    }
     pages?: {
-      url: string;
-    }[];
-  };
-  chapterKeys?: string[];
+      url: string
+    }[]
+  }
+  chapterKeys?: string[]
 }
 
 const {
   data: chapterData,
-  pending,
-  error,
+  pending
 } = await useFetch<ChapterResponse>(
   () =>
     `${config.public.backend.baseUrl}/api/chapter?filterType=manga&key=${chapterKey.value}`,
@@ -35,295 +34,295 @@ const {
     server: false,
     watch: [chapterKey],
     retry: 3,
-    retryDelay: 1000,
-  },
-);
+    retryDelay: 1000
+  }
+)
 
 interface Page {
-  url: string;
+  url: string
 }
 
-const images = computed<Page[]>(() => chapterData.value?.chapter?.pages ?? []);
+const images = computed<Page[]>(() => chapterData.value?.chapter?.pages ?? [])
 
-type ReadingMode = "paged" | "webtoon" | "continuous";
+type ReadingMode = 'paged' | 'webtoon' | 'continuous'
 
 const settings = reactive({
   readingMode: useStorage<ReadingMode>(
-    "manga-reading-mode",
-    "paged",
+    'manga-reading-mode',
+    'paged'
   ) as Ref<ReadingMode>,
-  autoScroll: useStorage("manga-auto-scroll", false),
-  scrollSpeed: useStorage("manga-scroll-speed", 3),
-  brightness: useStorage("manga-brightness", 100),
-  contrast: useStorage("manga-contrast", 100),
-});
+  autoScroll: useStorage('manga-auto-scroll', false),
+  scrollSpeed: useStorage('manga-scroll-speed', 3),
+  brightness: useStorage('manga-brightness', 100),
+  contrast: useStorage('manga-contrast', 100)
+})
 
-const currentPage = ref(1);
-const controlsVisible = ref(true);
-const showSettings = ref(false);
-let controlsTimeout: ReturnType<typeof setTimeout> | null = null;
-let autoScrollInterval: ReturnType<typeof setInterval> | null = null;
-const webtoonWrapper = ref<HTMLElement | null>(null);
+const currentPage = ref(1)
+const controlsVisible = ref(true)
+const showSettings = ref(false)
+let controlsTimeout: ReturnType<typeof setTimeout> | null = null
+let autoScrollInterval: ReturnType<typeof setInterval> | null = null
+const webtoonWrapper = ref<HTMLElement | null>(null)
 
-const totalPages = computed(() => images.value.length);
+const totalPages = computed(() => images.value.length)
 const currentImage = computed(
-  () => images.value[currentPage.value - 1]?.url ?? null,
-);
+  () => images.value[currentPage.value - 1]?.url ?? null
+)
 const readingPercentage = computed(() =>
   totalPages.value > 0
     ? Math.round((currentPage.value / totalPages.value) * 100)
-    : 0,
-);
+    : 0
+)
 
 const currentChapterIndex = computed(() => {
-  const keys = chapterData.value?.chapterKeys ?? [];
-  return keys.findIndex((key) => key === chapterKey.value);
-});
+  const keys = chapterData.value?.chapterKeys ?? []
+  return keys.findIndex(key => key === chapterKey.value)
+})
 
 const previousChapterKey = computed(() => {
-  const keys = chapterData.value?.chapterKeys;
-  const index = currentChapterIndex.value;
-  if (!keys || index <= 0) return null;
-  return keys[index - 1];
-});
+  const keys = chapterData.value?.chapterKeys
+  const index = currentChapterIndex.value
+  if (!keys || index <= 0) return null
+  return keys[index - 1]
+})
 
 const nextChapterKey = computed(() => {
-  const keys = chapterData.value?.chapterKeys;
-  const index = currentChapterIndex.value;
-  if (!keys || index === -1 || index >= keys.length - 1) return null;
-  return keys[index + 1];
-});
+  const keys = chapterData.value?.chapterKeys
+  const index = currentChapterIndex.value
+  if (!keys || index === -1 || index >= keys.length - 1) return null
+  return keys[index + 1]
+})
 
-const hasPreviousChapter = computed(() => !!previousChapterKey.value);
-const hasNextChapter = computed(() => !!nextChapterKey.value);
+const hasPreviousChapter = computed(() => !!previousChapterKey.value)
+const hasNextChapter = computed(() => !!nextChapterKey.value)
 
 const goToPreviousChapter = () => {
-  if (!previousChapterKey.value) return;
-  navigateTo(`/chapter/${previousChapterKey.value}/manga`);
-};
+  if (!previousChapterKey.value) return
+  navigateTo(`/chapter/${previousChapterKey.value}/manga`)
+}
 
 const goToNextChapter = () => {
-  if (!nextChapterKey.value) return;
-  navigateTo(`/chapter/${nextChapterKey.value}/manga`);
-};
+  if (!nextChapterKey.value) return
+  navigateTo(`/chapter/${nextChapterKey.value}/manga`)
+}
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {
-    currentPage.value++;
+    currentPage.value++
   } else if (hasNextChapter.value) {
-    goToNextChapter();
+    goToNextChapter()
   }
-};
+}
 
 const prevPage = () => {
   if (currentPage.value > 1) {
-    currentPage.value--;
+    currentPage.value--
   } else if (hasPreviousChapter.value) {
-    goToPreviousChapter();
+    goToPreviousChapter()
   }
-};
+}
 
 const goToPage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page;
-    if (["webtoon", "continuous"].includes(settings.readingMode)) {
-      scrollToPage(page);
+    currentPage.value = page
+    if (['webtoon', 'continuous'].includes(settings.readingMode)) {
+      scrollToPage(page)
     }
   }
-};
+}
 
 const handlePageSelect = (event: Event) => {
-  goToPage(Number((event.target as HTMLSelectElement).value));
-};
+  goToPage(Number((event.target as HTMLSelectElement).value))
+}
 
 const handleSliderInput = (event: Event) => {
-  goToPage(Number((event.target as HTMLInputElement).value));
-};
+  goToPage(Number((event.target as HTMLInputElement).value))
+}
 
 const handlePagedClick = (event: MouseEvent) => {
-  if (showSettings.value) return;
-  const { clientX, currentTarget } = event;
-  const { offsetWidth } = currentTarget as HTMLElement;
-  const clickPosition = clientX / offsetWidth;
+  if (showSettings.value) return
+  const { clientX, currentTarget } = event
+  const { offsetWidth } = currentTarget as HTMLElement
+  const clickPosition = clientX / offsetWidth
 
-  if (clickPosition < 0.25) prevPage();
-  else if (clickPosition > 0.75) nextPage();
-  else toggleControls();
-};
+  if (clickPosition < 0.25) prevPage()
+  else if (clickPosition > 0.75) nextPage()
+  else toggleControls()
+}
 
 const toggleControls = () => {
-  controlsVisible.value = !controlsVisible.value;
+  controlsVisible.value = !controlsVisible.value
   if (controlsVisible.value) {
-    resetControlsTimeout();
+    resetControlsTimeout()
   } else if (controlsTimeout) {
-    clearTimeout(controlsTimeout);
+    clearTimeout(controlsTimeout)
   }
-};
+}
 
 const showControls = () => {
-  controlsVisible.value = true;
-  resetControlsTimeout();
-};
+  controlsVisible.value = true
+  resetControlsTimeout()
+}
 
 const hideControls = () => {
-  if (controlsTimeout) clearTimeout(controlsTimeout);
-  controlsVisible.value = false;
-};
+  if (controlsTimeout) clearTimeout(controlsTimeout)
+  controlsVisible.value = false
+}
 
 const resetControlsTimeout = () => {
-  if (controlsTimeout) clearTimeout(controlsTimeout);
+  if (controlsTimeout) clearTimeout(controlsTimeout)
   controlsTimeout = setTimeout(() => {
-    if (!showSettings.value) controlsVisible.value = false;
-  }, 4000);
-};
+    if (!showSettings.value) controlsVisible.value = false
+  }, 4000)
+}
 
 const toggleReadingMode = () => {
-  const modes: ReadingMode[] = ["paged", "webtoon", "continuous"];
-  const currentIndex = modes.indexOf(settings.readingMode);
-  settings.readingMode = modes[(currentIndex + 1) % modes.length];
+  const modes: ReadingMode[] = ['paged', 'webtoon', 'continuous']
+  const currentIndex = modes.indexOf(settings.readingMode)
+  settings.readingMode = modes[(currentIndex + 1) % modes.length]
   nextTick(() => {
-    if (["webtoon", "continuous"].includes(settings.readingMode)) {
-      scrollToPage(currentPage.value);
+    if (['webtoon', 'continuous'].includes(settings.readingMode)) {
+      scrollToPage(currentPage.value)
     }
-  });
-};
+  })
+}
 
 const scrollToPage = (page: number) => {
   const pageElement = webtoonWrapper.value?.querySelector(
-    `[data-page-index="${page}"]`,
-  ) as HTMLElement;
+    `[data-page-index="${page}"]`
+  ) as HTMLElement
   if (pageElement) {
     webtoonWrapper.value?.scrollTo({
       top: pageElement.offsetTop - 10,
-      behavior: "smooth",
-    });
+      behavior: 'smooth'
+    })
   }
-};
+}
 
 const updatePageOnScroll = () => {
-  if (!webtoonWrapper.value) return;
-  const { scrollTop, scrollHeight, clientHeight } = webtoonWrapper.value;
+  if (!webtoonWrapper.value) return
+  const { scrollTop, scrollHeight, clientHeight } = webtoonWrapper.value
 
   if (scrollTop + clientHeight >= scrollHeight - 50) {
     if (currentPage.value !== totalPages.value) {
-      currentPage.value = totalPages.value;
+      currentPage.value = totalPages.value
     }
-    return;
+    return
   }
 
   const pageElements = Array.from(
-    webtoonWrapper.value.querySelectorAll("[data-page-index]"),
-  );
-  let mostVisiblePage = currentPage.value;
-  let maxVisibility = 0;
+    webtoonWrapper.value.querySelectorAll('[data-page-index]')
+  )
+  let mostVisiblePage = currentPage.value
+  let maxVisibility = 0
 
   for (const el of pageElements) {
-    const rect = el.getBoundingClientRect();
-    const viewportHeight = webtoonWrapper.value.clientHeight;
+    const rect = el.getBoundingClientRect()
+    const viewportHeight = webtoonWrapper.value.clientHeight
     const visibleHeight = Math.max(
       0,
-      Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0),
-    );
-    const visibility = visibleHeight / (rect.height || 1);
+      Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0)
+    )
+    const visibility = visibleHeight / (rect.height || 1)
 
     if (visibility > maxVisibility) {
-      maxVisibility = visibility;
-      mostVisiblePage = parseInt(el.getAttribute("data-page-index") || "1", 10);
+      maxVisibility = visibility
+      mostVisiblePage = parseInt(el.getAttribute('data-page-index') || '1', 10)
     }
   }
   if (currentPage.value !== mostVisiblePage) {
-    currentPage.value = mostVisiblePage;
+    currentPage.value = mostVisiblePage
   }
-  showControls();
-};
+  showControls()
+}
 
 const startAutoScroll = () => {
-  if (autoScrollInterval) clearInterval(autoScrollInterval);
+  if (autoScrollInterval) clearInterval(autoScrollInterval)
   autoScrollInterval = setInterval(() => {
     if (webtoonWrapper.value) {
-      webtoonWrapper.value.scrollTop += settings.scrollSpeed;
+      webtoonWrapper.value.scrollTop += settings.scrollSpeed
     }
-  }, 50);
-};
+  }, 50)
+}
 
 const stopAutoScroll = () => {
-  if (autoScrollInterval) clearInterval(autoScrollInterval);
-};
+  if (autoScrollInterval) clearInterval(autoScrollInterval)
+}
 
 const handleKeydown = (event: KeyboardEvent) => {
   if (
-    event.target instanceof HTMLInputElement ||
-    event.target instanceof HTMLSelectElement
+    event.target instanceof HTMLInputElement
+    || event.target instanceof HTMLSelectElement
   )
-    return;
+    return
 
   switch (event.key) {
-    case "ArrowRight":
-      event.preventDefault();
-      nextPage();
-      break;
-    case "ArrowLeft":
-      event.preventDefault();
-      prevPage();
-      break;
-    case "a":
-    case "A":
-      event.preventDefault();
-      settings.autoScroll = !settings.autoScroll;
-      break;
-    case " ":
-      event.preventDefault();
-      toggleControls();
-      break;
-    case "Escape":
-      showSettings.value = false;
-      break;
+    case 'ArrowRight':
+      event.preventDefault()
+      nextPage()
+      break
+    case 'ArrowLeft':
+      event.preventDefault()
+      prevPage()
+      break
+    case 'a':
+    case 'A':
+      event.preventDefault()
+      settings.autoScroll = !settings.autoScroll
+      break
+    case ' ':
+      event.preventDefault()
+      toggleControls()
+      break
+    case 'Escape':
+      showSettings.value = false
+      break
   }
-};
+}
 
 watch(
   () => settings.autoScroll,
   (newVal) => {
-    if (newVal) startAutoScroll();
-    else stopAutoScroll();
-  },
-);
+    if (newVal) startAutoScroll()
+    else stopAutoScroll()
+  }
+)
 
 watch(
   () => settings.readingMode,
   () => {
     if (settings.autoScroll) {
-      stopAutoScroll();
-      settings.autoScroll = false;
+      stopAutoScroll()
+      settings.autoScroll = false
     }
-  },
-);
+  }
+)
 
 onMounted(() => {
-  window.addEventListener("keydown", handleKeydown);
-  resetControlsTimeout();
-});
+  window.addEventListener('keydown', handleKeydown)
+  resetControlsTimeout()
+})
 
 onUnmounted(() => {
-  window.removeEventListener("keydown", handleKeydown);
-  if (controlsTimeout) clearTimeout(controlsTimeout);
-  stopAutoScroll();
-});
+  window.removeEventListener('keydown', handleKeydown)
+  if (controlsTimeout) clearTimeout(controlsTimeout)
+  stopAutoScroll()
+})
 
 watch(chapterKey, () => {
-  currentPage.value = 1;
-  settings.autoScroll = false;
-});
+  currentPage.value = 1
+  settings.autoScroll = false
+})
 
 useHead(() => ({
   title: `Okunuyor: Bölüm ${
-    chapterData.value?.chapter?.title ?? ""
-  } - Sayfa ${currentPage.value}/${totalPages.value}`,
-}));
+    chapterData.value?.chapter?.title ?? ''
+  } - Sayfa ${currentPage.value}/${totalPages.value}`
+}))
 
 definePageMeta({
-  isLayouted: false,
-});
+  isLayouted: false
+})
 </script>
 
 <template>
@@ -338,18 +337,25 @@ definePageMeta({
       class="image-wrapper"
       @click="handlePagedClick"
     >
-      <transition name="page-fade" mode="out-in">
-        <div v-if="currentImage" :key="currentImage" class="image-container">
+      <transition
+        name="page-fade"
+        mode="out-in"
+      >
+        <div
+          v-if="currentImage"
+          :key="currentImage"
+          class="image-container"
+        >
           <img
             :src="currentImage"
             :alt="`Sayfa ${currentPage}`"
             class="manga-page"
             :style="{
-              filter: `brightness(${settings.brightness}%) contrast(${settings.contrast}%)`,
+              filter: `brightness(${settings.brightness}%) contrast(${settings.contrast}%)`
             }"
             loading="lazy"
             decoding="async"
-          />
+          >
         </div>
       </transition>
     </div>
@@ -368,11 +374,11 @@ definePageMeta({
         class="webtoon-page"
         :data-page-index="index + 1"
         :style="{
-          filter: `brightness(${settings.brightness}%) contrast(${settings.contrast}%)`,
+          filter: `brightness(${settings.brightness}%) contrast(${settings.contrast}%)`
         }"
         loading="lazy"
         decoding="async"
-      />
+      >
     </div>
 
     <div
@@ -390,18 +396,18 @@ definePageMeta({
           class="continuous-page"
           :data-page-index="index + 1"
           :style="{
-            filter: `brightness(${settings.brightness}%) contrast(${settings.contrast}%)`,
+            filter: `brightness(${settings.brightness}%) contrast(${settings.contrast}%)`
           }"
           loading="lazy"
           decoding="async"
-        />
+        >
       </div>
     </div>
 
     <div
       class="fixed top-0 left-0 w-full h-1 bg-linear-to-r from-primary via-primary to-primary/50 z-50"
       :style="{ width: readingPercentage + '%' }"
-    ></div>
+    />
 
     <transition name="fade">
       <div
@@ -428,9 +434,7 @@ definePageMeta({
             </p>
           </div>
           <div class="ml-auto flex items-center gap-2">
-            <span class="text-white font-bold text-sm"
-              >{{ currentPage }} / {{ totalPages }}</span
-            >
+            <span class="text-white font-bold text-sm">{{ currentPage }} / {{ totalPages }}</span>
             <span class="text-gray-400 text-xs">%{{ readingPercentage }}</span>
           </div>
         </div>
@@ -439,19 +443,19 @@ definePageMeta({
           <div class="flex items-center gap-2 flex-1">
             <UButton
               :disabled="!hasPreviousChapter"
-              @click="goToPreviousChapter"
               icon="i-lucide-skip-back"
               size="sm"
               color="gray"
               variant="soft"
+              @click="goToPreviousChapter"
             />
             <UButton
               :disabled="currentPage <= 1"
-              @click="prevPage"
               icon="i-lucide-chevron-left"
               size="sm"
               color="gray"
               variant="soft"
+              @click="prevPage"
             />
             <input
               :value="currentPage"
@@ -460,30 +464,30 @@ definePageMeta({
               :max="totalPages"
               class="flex-1 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
               @input="handleSliderInput"
-            />
+            >
             <UButton
               :disabled="currentPage >= totalPages"
-              @click="nextPage"
               icon="i-lucide-chevron-right"
               size="sm"
               color="gray"
               variant="soft"
+              @click="nextPage"
             />
             <UButton
               :disabled="!hasNextChapter"
-              @click="goToNextChapter"
               icon="i-lucide-skip-forward"
               size="sm"
               color="gray"
               variant="soft"
+              @click="goToNextChapter"
             />
           </div>
           <UButton
-            @click="showSettings = !showSettings"
             :icon="showSettings ? 'i-lucide-x' : 'i-lucide-settings'"
             size="sm"
             color="gray"
             variant="soft"
+            @click="showSettings = !showSettings"
           />
         </div>
 
@@ -495,18 +499,19 @@ definePageMeta({
           leave-from-class="opacity-100 translate-y-0"
           leave-to-class="opacity-0 -translate-y-2"
         >
-          <div v-if="showSettings" class="settings-panel">
+          <div
+            v-if="showSettings"
+            class="settings-panel"
+          >
             <div class="space-y-4">
               <div>
                 <div class="flex justify-between items-center mb-2">
-                  <label class="text-white text-sm font-medium"
-                    >Okuma Modu</label
-                  >
+                  <label class="text-white text-sm font-medium">Okuma Modu</label>
                   <UButton
-                    @click="toggleReadingMode"
                     size="xs"
                     color="primary"
                     variant="soft"
+                    @click="toggleReadingMode"
                   >
                     {{
                       settings.readingMode === "paged"
@@ -520,63 +525,57 @@ definePageMeta({
               </div>
 
               <div v-if="settings.readingMode !== 'paged'">
-                <label class="text-white text-sm font-medium block mb-2"
-                  >Otomatik Kaydırma</label
-                >
+                <label class="text-white text-sm font-medium block mb-2">Otomatik Kaydırma</label>
                 <UToggle v-model="settings.autoScroll" />
               </div>
 
               <div
                 v-if="settings.autoScroll && settings.readingMode !== 'paged'"
               >
-                <label class="text-white text-sm font-medium block mb-2"
-                  >Kaydırma Hızı: {{ settings.scrollSpeed }}</label
-                >
+                <label class="text-white text-sm font-medium block mb-2">Kaydırma Hızı: {{ settings.scrollSpeed }}</label>
                 <input
                   v-model.number="settings.scrollSpeed"
                   type="range"
                   min="1"
                   max="10"
                   class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
-                />
+                >
               </div>
 
               <div>
-                <label class="text-white text-sm font-medium block mb-2"
-                  >Parlaklık: {{ settings.brightness }}%</label
-                >
+                <label class="text-white text-sm font-medium block mb-2">Parlaklık: {{ settings.brightness }}%</label>
                 <input
                   v-model.number="settings.brightness"
                   type="range"
                   min="50"
                   max="150"
                   class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
-                />
+                >
               </div>
 
               <div>
-                <label class="text-white text-sm font-medium block mb-2"
-                  >Kontrast: {{ settings.contrast }}%</label
-                >
+                <label class="text-white text-sm font-medium block mb-2">Kontrast: {{ settings.contrast }}%</label>
                 <input
                   v-model.number="settings.contrast"
                   type="range"
                   min="50"
                   max="150"
                   class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
-                />
+                >
               </div>
 
               <div>
-                <label class="text-white text-sm font-medium block mb-2"
-                  >Sayfa Seç</label
-                >
+                <label class="text-white text-sm font-medium block mb-2">Sayfa Seç</label>
                 <select
                   :value="currentPage"
                   class="w-full px-3 py-2 rounded-lg bg-gray-700 text-white text-sm border border-gray-600"
                   @change="handlePageSelect"
                 >
-                  <option v-for="page in totalPages" :key="page" :value="page">
+                  <option
+                    v-for="page in totalPages"
+                    :key="page"
+                    :value="page"
+                  >
                     Sayfa {{ page }}
                   </option>
                 </select>
@@ -595,7 +594,12 @@ definePageMeta({
         description="Lütfen tekrar deneyiniz veya sayfaya dönüp başka bir bölüm seçiniz."
       >
         <template #action>
-          <UButton to="/" variant="soft">Geri Dön</UButton>
+          <UButton
+            to="/"
+            variant="soft"
+          >
+            Geri Dön
+          </UButton>
         </template>
       </UEmpty>
     </div>
@@ -606,7 +610,9 @@ definePageMeta({
   >
     <div class="space-y-4 text-center">
       <USkeleton class="h-96 w-96 rounded-lg" />
-      <p class="text-white text-sm">Bölüm yükleniyor...</p>
+      <p class="text-white text-sm">
+        Bölüm yükleniyor...
+      </p>
     </div>
   </div>
 </template>

@@ -1,11 +1,11 @@
 <script setup>
-const props = defineProps({
+defineProps({
   id: Number,
   cover: String,
   title: String,
   type: String,
-  year: Number,
-});
+  year: Number
+})
 </script>
 
 <template>
@@ -16,7 +16,7 @@ const props = defineProps({
       :src="cover"
       alt="Manga Cover"
       class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-    />
+    >
 
     <div
       class="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-900/60 to-transparent"
@@ -30,7 +30,10 @@ const props = defineProps({
       </h3>
 
       <div class="self-start">
-        <UBadge color="neutral" variant="soft">
+        <UBadge
+          color="neutral"
+          variant="soft"
+        >
           {{ type }}
         </UBadge>
       </div>

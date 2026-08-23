@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const route = useRoute()
-const chapterKey = route.params.chapterKey
+const _chapterKey = route.params.chapterKey
 </script>
 
 <template>
-    <NuxtPage />
+  <NuxtPage />
 </template>

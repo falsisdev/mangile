@@ -1,26 +1,25 @@
 <script setup lang="ts">
-import { useStorage } from "@vueuse/core";
+import { useStorage } from '@vueuse/core'
 
-const route = useRoute();
-const config = useRuntimeConfig();
-const colorMode = useColorMode();
-const chapterKey = computed(() => route.params.chapterKey as string);
+const route = useRoute()
+const config = useRuntimeConfig()
+useColorMode()
+const chapterKey = computed(() => route.params.chapterKey as string)
 
 interface ChapterResponse {
-  title: string;
-  type: string;
-  myAnimeListId: number;
+  title: string
+  type: string
+  myAnimeListId: number
   chapter: {
-    title: string;
-    content: any;
-  };
-  chapterKeys: string[];
+    title: string
+    content: unknown
+  }
+  chapterKeys: string[]
 }
 
 const {
   data: chapterData,
-  pending,
-  error,
+  pending
 } = await useFetch<ChapterResponse>(
   () =>
     `${config.public.backend.baseUrl}/api/chapter?filterType=lightNovel&key=${chapterKey.value}`,
@@ -29,254 +28,256 @@ const {
     server: false,
     watch: [chapterKey],
     retry: 3,
-    retryDelay: 1000,
-  },
-);
+    retryDelay: 1000
+  }
+)
 
 const currentChapterIndex = computed(
   () =>
     chapterData.value?.chapterKeys.findIndex(
-      (key) => key === chapterKey.value,
-    ) ?? -1,
-);
+      key => key === chapterKey.value
+    ) ?? -1
+)
 
 const previousChapterKey = computed(() => {
-  const keys = chapterData.value?.chapterKeys;
-  const index = currentChapterIndex.value;
-  if (!keys || index <= 0) return null;
-  return keys[index - 1];
-});
+  const keys = chapterData.value?.chapterKeys
+  const index = currentChapterIndex.value
+  if (!keys || index <= 0) return null
+  return keys[index - 1]
+})
 
 const nextChapterKey = computed(() => {
-  const keys = chapterData.value?.chapterKeys;
-  const index = currentChapterIndex.value;
-  if (!keys || index === -1 || index >= keys.length - 1) return null;
-  return keys[index + 1];
-});
+  const keys = chapterData.value?.chapterKeys
+  const index = currentChapterIndex.value
+  if (!keys || index === -1 || index >= keys.length - 1) return null
+  return keys[index + 1]
+})
 
-const hasPreviousChapter = computed(() => !!previousChapterKey.value);
-const hasNextChapter = computed(() => !!nextChapterKey.value);
+const hasPreviousChapter = computed(() => !!previousChapterKey.value)
+const hasNextChapter = computed(() => !!nextChapterKey.value)
 
 const goToPreviousChapter = () => {
   if (previousChapterKey.value)
-    navigateTo(`/chapter/${previousChapterKey.value}/novel`);
-};
+    navigateTo(`/chapter/${previousChapterKey.value}/novel`)
+}
 
 const goToNextChapter = () => {
   if (nextChapterKey.value)
-    navigateTo(`/chapter/${nextChapterKey.value}/novel`);
-};
+    navigateTo(`/chapter/${nextChapterKey.value}/novel`)
+}
 
 const settings = reactive({
-  fontSize: useStorage("novel-font-size", 18),
-  lineHeight: useStorage("novel-line-height", 1.8),
-  letterSpacing: useStorage("novel-letter-spacing", 0),
-  fontFamily: useStorage("novel-font-family", "sans") as Ref<
-    "sans" | "serif" | "mono"
+  fontSize: useStorage('novel-font-size', 18),
+  lineHeight: useStorage('novel-line-height', 1.8),
+  letterSpacing: useStorage('novel-letter-spacing', 0),
+  fontFamily: useStorage('novel-font-family', 'sans') as Ref<
+    'sans' | 'serif' | 'mono'
   >,
-  textAlignment: useStorage("novel-alignment", "justify") as Ref<
-    "left" | "justify" | "center"
+  textAlignment: useStorage('novel-alignment', 'justify') as Ref<
+    'left' | 'justify' | 'center'
   >,
-  brightness: useStorage("novel-brightness", 100),
-  lineWidth: useStorage("novel-line-width", 100),
-});
+  brightness: useStorage('novel-brightness', 100),
+  lineWidth: useStorage('novel-line-width', 100)
+})
 
-const readingProgress = ref(0);
-const showBackToTop = ref(false);
-const showSettings = ref(false);
+const readingProgress = ref(0)
+const showBackToTop = ref(false)
+const showSettings = ref(false)
 
 const changeFontSize = (step: number) => {
-  const newSize = settings.fontSize + step * 2;
+  const newSize = settings.fontSize + step * 2
   if (newSize >= 12 && newSize <= 32) {
-    settings.fontSize = newSize;
+    settings.fontSize = newSize
   }
-};
+}
+
+const colorMode = useColorMode()
 
 const isDark = computed({
   get() {
-    return colorMode.value === "dark";
+    return colorMode.value === 'dark'
   },
   set(value: boolean) {
-    colorMode.preference = value ? "dark" : "light";
-  },
-});
+    colorMode.preference = value ? 'dark' : 'light'
+  }
+})
 
 const toggleTheme = () => {
-  isDark.value = !isDark.value;
-};
+  isDark.value = !isDark.value
+}
 
 const handleScroll = () => {
-  showBackToTop.value = window.scrollY > 300;
-  const winScroll =
-    document.body.scrollTop || document.documentElement.scrollTop;
-  const height =
-    document.documentElement.scrollHeight -
-    document.documentElement.clientHeight;
-  readingProgress.value = (winScroll / height) * 100;
-};
+  showBackToTop.value = window.scrollY > 300
+  const winScroll
+    = document.body.scrollTop || document.documentElement.scrollTop
+  const height
+    = document.documentElement.scrollHeight
+    - document.documentElement.clientHeight
+  readingProgress.value = (winScroll / height) * 100
+}
 
 const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 const goHome = () => {
-  navigateTo("/");
-};
+  navigateTo('/')
+}
 
 const handleKeydown = (event: KeyboardEvent) => {
   if (
-    event.target instanceof HTMLInputElement ||
-    event.target instanceof HTMLSelectElement
+    event.target instanceof HTMLInputElement
+    || event.target instanceof HTMLSelectElement
   )
-    return;
+    return
 
   switch (event.key) {
-    case "ArrowUp":
-      event.preventDefault();
-      window.scrollBy({ top: -100, behavior: "smooth" });
-      break;
-    case "ArrowDown":
-      event.preventDefault();
-      window.scrollBy({ top: 100, behavior: "smooth" });
-      break;
-    case " ":
-      event.preventDefault();
-      window.scrollBy({ top: window.innerHeight * 0.8, behavior: "smooth" });
-      break;
-    case "Escape":
-      showSettings.value = false;
-      break;
+    case 'ArrowUp':
+      event.preventDefault()
+      window.scrollBy({ top: -100, behavior: 'smooth' })
+      break
+    case 'ArrowDown':
+      event.preventDefault()
+      window.scrollBy({ top: 100, behavior: 'smooth' })
+      break
+    case ' ':
+      event.preventDefault()
+      window.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' })
+      break
+    case 'Escape':
+      showSettings.value = false
+      break
   }
-};
+}
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-  window.addEventListener("keydown", handleKeydown);
-});
+  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('keydown', handleKeydown)
+})
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
-  window.removeEventListener("keydown", handleKeydown);
-});
+  window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('keydown', handleKeydown)
+})
 
 const getSanityImageUrl = (ref: string) => {
-  if (!ref) return "";
-  const projectId = config.public.sanity?.projectId;
-  const dataset = config.public.sanity?.dataset || "production";
-  const [, id, dimensions, format] = ref.split("-");
-  return `https://cdn.sanity.io/images/${projectId}/${dataset}/${id}-${dimensions}.${format}`;
-};
+  if (!ref) return ''
+  const projectId = config.public.sanity?.projectId
+  const dataset = config.public.sanity?.dataset || 'production'
+  const [, id, dimensions, format] = ref.split('-')
+  return `https://cdn.sanity.io/images/${projectId}/${dataset}/${id}-${dimensions}.${format}`
+}
 
 const isImageUrl = (url: string) =>
-  /\.(jpeg|jpg|gif|png|webp|avif|svg)(\?.*)?$/i.test(url || "");
+  /\.(jpeg|jpg|gif|png|webp|avif|svg)(\?.*)?$/i.test(url || '')
 
-const toImageFigure = (src: string, alt = "", className = "") => {
-  if (!src) return "";
-  const caption = alt?.trim() || "";
+const toImageFigure = (src: string, alt = '', className = '') => {
+  if (!src) return ''
+  const caption = alt?.trim() || ''
   return `<figure class="my-10 flex flex-col items-center ${className}">
     <img src="${src}" alt="${caption}" loading="lazy" class="max-w-full h-auto max-h-[80vh] object-contain rounded-xl shadow-xl border border-gray-200 dark:border-gray-800" style="filter: brightness(${settings.brightness}%);" />
-    ${caption ? `<figcaption class="mt-3 text-sm text-gray-500 dark:text-gray-400 italic text-center">${caption}</figcaption>` : ""}
-  </figure>`;
-};
+    ${caption ? `<figcaption class="mt-3 text-sm text-gray-500 dark:text-gray-400 italic text-center">${caption}</figcaption>` : ''}
+  </figure>`
+}
 
 const renderedContent = computed(() => {
-  if (!chapterData.value?.chapter?.content) return "";
+  if (!chapterData.value?.chapter?.content) return ''
 
   return chapterData.value.chapter.content
     .map((block: any) => {
-      if (block._type === "image") {
-        const imageUrl =
-          block.asset?.url ||
-          (block.asset?._ref ? getSanityImageUrl(block.asset._ref) : "");
-        const caption = block.caption || block.alt || "";
+      if (block._type === 'image') {
+        const imageUrl
+          = block.asset?.url
+          || (block.asset?._ref ? getSanityImageUrl(block.asset._ref) : '')
+        const caption = block.caption || block.alt || ''
 
-        return toImageFigure(imageUrl, caption, "my-12");
+        return toImageFigure(imageUrl, caption, 'my-12')
       }
 
-      if (block._type !== "block") return "";
+      if (block._type !== 'block') return ''
 
-      let htmlContent = block.children
+      const htmlContent = block.children
         .map((child: any) => {
-          const marks = child.marks || [];
+          const marks = child.marks || []
           const linkDef = marks
             .map((mark: string) =>
-              block.markDefs?.find((m: any) => m._key === mark),
+              block.markDefs?.find((m: any) => m._key === mark)
             )
-            .find((def: any) => def?._type === "link" && isImageUrl(def.href));
+            .find((def: any) => def?._type === 'link' && isImageUrl(def.href))
 
           if (linkDef && linkDef.href) {
-            return toImageFigure(linkDef.href, child.text || "", "my-8");
+            return toImageFigure(linkDef.href, child.text || '', 'my-8')
           }
 
-          const markdownImageMatch = (child.text || "").match(
-            /!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/i,
-          );
+          const markdownImageMatch = (child.text || '').match(
+            /!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/i
+          )
           if (markdownImageMatch?.[1] && isImageUrl(markdownImageMatch[1])) {
             return toImageFigure(
               markdownImageMatch[1],
-              child.text || "",
-              "my-8",
-            );
+              child.text || '',
+              'my-8'
+            )
           }
 
-          let text = child.text || "";
-          let tagsOpen = "";
-          let tagsClose = "";
+          const text = child.text || ''
+          let tagsOpen = ''
+          let tagsClose = ''
 
           if (marks.length > 0) {
             marks.forEach((mark: string) => {
-              if (mark === "strong") {
-                tagsOpen += '<strong class="font-bold text-foreground">';
-                tagsClose = "</strong>" + tagsClose;
-              } else if (mark === "em") {
-                tagsOpen += '<em class="italic">';
-                tagsClose = "</em>" + tagsClose;
-              } else if (mark === "code") {
-                tagsOpen +=
-                  '<code class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono">';
-                tagsClose = "</code>" + tagsClose;
+              if (mark === 'strong') {
+                tagsOpen += '<strong class="font-bold text-foreground">'
+                tagsClose = '</strong>' + tagsClose
+              } else if (mark === 'em') {
+                tagsOpen += '<em class="italic">'
+                tagsClose = '</em>' + tagsClose
+              } else if (mark === 'code') {
+                tagsOpen
+                  += '<code class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono">'
+                tagsClose = '</code>' + tagsClose
               } else if (block.markDefs) {
-                const def = block.markDefs.find((m: any) => m._key === mark);
-                if (def && def._type === "link") {
+                const def = block.markDefs.find((m: any) => m._key === mark)
+                if (def && def._type === 'link') {
                   if (isImageUrl(def.href)) {
-                    return;
+                    return
                   }
-                  tagsOpen += `<a href="${def.href}" class="text-primary hover:underline font-semibold transition-colors" target="_blank" rel="noopener">`;
-                  tagsClose = `</a>` + tagsClose;
+                  tagsOpen += `<a href="${def.href}" class="text-primary hover:underline font-semibold transition-colors" target="_blank" rel="noopener">`
+                  tagsClose = `</a>` + tagsClose
                 }
               }
-            });
+            })
           }
-          return tagsOpen + text.replace(/\n/g, "<br/>") + tagsClose;
+          return tagsOpen + text.replace(/\n/g, '<br/>') + tagsClose
         })
-        .join("");
+        .join('')
 
-      const style = block.style || "normal";
-      if (style === "h1")
-        return `<h1 class="text-4xl md:text-5xl font-black mt-12 mb-8 leading-tight text-foreground">${htmlContent}</h1>`;
-      if (style === "h2")
-        return `<h2 class="text-3xl md:text-4xl font-bold mt-10 mb-6 leading-tight text-foreground">${htmlContent}</h2>`;
-      if (style === "h3")
-        return `<h3 class="text-2xl font-bold mt-8 mb-4 text-foreground">${htmlContent}</h3>`;
-      if (style === "h4")
-        return `<h4 class="text-xl font-bold mt-6 mb-3 text-foreground">${htmlContent}</h4>`;
-      if (style === "blockquote")
-        return `<blockquote class="border-l-4 border-primary pl-6 py-2 my-6 italic text-gray-700 dark:text-gray-300 bg-primary/5 rounded">${htmlContent}</blockquote>`;
+      const style = block.style || 'normal'
+      if (style === 'h1')
+        return `<h1 class="text-4xl md:text-5xl font-black mt-12 mb-8 leading-tight text-foreground">${htmlContent}</h1>`
+      if (style === 'h2')
+        return `<h2 class="text-3xl md:text-4xl font-bold mt-10 mb-6 leading-tight text-foreground">${htmlContent}</h2>`
+      if (style === 'h3')
+        return `<h3 class="text-2xl font-bold mt-8 mb-4 text-foreground">${htmlContent}</h3>`
+      if (style === 'h4')
+        return `<h4 class="text-xl font-bold mt-6 mb-3 text-foreground">${htmlContent}</h4>`
+      if (style === 'blockquote')
+        return `<blockquote class="border-l-4 border-primary pl-6 py-2 my-6 italic text-gray-700 dark:text-gray-300 bg-primary/5 rounded">${htmlContent}</blockquote>`
 
-      return `<p class="mb-6 text-foreground leading-relaxed">${htmlContent}</p>`;
+      return `<p class="mb-6 text-foreground leading-relaxed">${htmlContent}</p>`
     })
-    .join("");
-});
+    .join('')
+})
 
 useHead(() => ({
   title: pending.value
-    ? "Yükleniyor..."
-    : `Okunuyor: ${chapterData.value?.chapter?.title ?? ""}`,
-}));
+    ? 'Yükleniyor...'
+    : `Okunuyor: ${chapterData.value?.chapter?.title ?? ''}`
+}))
 
 definePageMeta({
-  isLayouted: false,
-});
+  isLayouted: false
+})
 </script>
 
 <template>
@@ -292,11 +293,11 @@ definePageMeta({
         <div class="flex items-center gap-2 w-full sm:w-auto">
           <UButton
             :disabled="!hasPreviousChapter"
-            @click="goToPreviousChapter"
             icon="i-lucide-chevron-left"
             size="sm"
             color="gray"
             variant="soft"
+            @click="goToPreviousChapter"
           />
           <UButton
             :to="`/title/${chapterData?.myAnimeListId}`"
@@ -308,7 +309,7 @@ definePageMeta({
           <span
             class="text-xs font-medium text-gray-600 dark:text-gray-400 truncate flex-1 sm:flex-none"
           >
-            {{ chapterData?.title }}
+            {{ chapterData?.title }} | {{ chapterData?.chapter?.title }}
           </span>
         </div>
 
@@ -320,15 +321,15 @@ definePageMeta({
               icon="i-lucide-a-arrow-down"
               color="gray"
               variant="ghost"
-              @click="changeFontSize(-1)"
               title="Yazıyı Küçült"
+              @click="changeFontSize(-1)"
             />
             <UButton
               icon="i-lucide-a-arrow-up"
               color="gray"
               variant="ghost"
-              @click="changeFontSize(1)"
               title="Yazıyı Büyüt"
+              @click="changeFontSize(1)"
             />
           </UButtonGroup>
 
@@ -342,19 +343,19 @@ definePageMeta({
 
           <UButton
             icon="i-lucide-settings"
-            @click="showSettings = !showSettings"
             color="gray"
             variant="soft"
             size="xs"
+            @click="showSettings = !showSettings"
           />
 
           <UButton
             :disabled="!hasNextChapter"
-            @click="goToNextChapter"
             icon="i-lucide-chevron-right"
             size="sm"
             color="gray"
             variant="soft"
+            @click="goToNextChapter"
           />
         </div>
       </UContainer>
@@ -376,10 +377,10 @@ definePageMeta({
           <h3 class="text-lg font-bold">Okuma Ayarları</h3>
           <UButton
             icon="i-lucide-x"
-            @click="showSettings = false"
             variant="ghost"
             size="xs"
             square
+            @click="showSettings = false"
           />
         </div>
 
@@ -387,20 +388,20 @@ definePageMeta({
           <div>
             <div class="flex justify-between items-center mb-2">
               <label class="text-sm font-semibold"
-                >Yazı Boyutu: {{ settings.fontSize }}px</label
+              >Yazı Boyutu: {{ settings.fontSize }}px</label
               >
               <UButtonGroup size="xs">
                 <UButton
                   icon="i-lucide-minus"
-                  @click="changeFontSize(-1)"
                   variant="soft"
                   color="gray"
+                  @click="changeFontSize(-1)"
                 />
                 <UButton
                   icon="i-lucide-plus"
-                  @click="changeFontSize(1)"
                   variant="soft"
                   color="gray"
+                  @click="changeFontSize(1)"
                 />
               </UButtonGroup>
             </div>
@@ -416,7 +417,7 @@ definePageMeta({
 
           <div>
             <label class="text-sm font-semibold block mb-2"
-              >Satır Yüksekliği:
+            >Satır Yüksekliği:
               {{ (settings.lineHeight * 10).toFixed(0) }}%</label
             >
             <input
@@ -433,23 +434,23 @@ definePageMeta({
             <label class="text-sm font-semibold block mb-2">Yazı Tipi</label>
             <UButtonGroup size="sm" orientation="horizontal" class="w-full">
               <UButton
-                @click="settings.fontFamily = 'sans'"
                 :variant="settings.fontFamily === 'sans' ? 'soft' : 'ghost'"
                 class="flex-1"
+                @click="settings.fontFamily = 'sans'"
               >
                 Düz
               </UButton>
               <UButton
-                @click="settings.fontFamily = 'serif'"
                 :variant="settings.fontFamily === 'serif' ? 'soft' : 'ghost'"
                 class="flex-1"
+                @click="settings.fontFamily = 'serif'"
               >
                 Serif
               </UButton>
               <UButton
-                @click="settings.fontFamily = 'mono'"
                 :variant="settings.fontFamily === 'mono' ? 'soft' : 'ghost'"
                 class="flex-1"
+                @click="settings.fontFamily = 'mono'"
               >
                 Monospace
               </UButton>
@@ -460,33 +461,33 @@ definePageMeta({
             <label class="text-sm font-semibold block mb-2">Hizalama</label>
             <UButtonGroup size="sm" orientation="horizontal" class="w-full">
               <UButton
-                @click="settings.textAlignment = 'left'"
                 :variant="settings.textAlignment === 'left' ? 'soft' : 'ghost'"
                 icon="i-lucide-align-left"
                 class="flex-1"
+                @click="settings.textAlignment = 'left'"
               />
               <UButton
-                @click="settings.textAlignment = 'justify'"
                 :variant="
                   settings.textAlignment === 'justify' ? 'soft' : 'ghost'
                 "
                 icon="i-lucide-align-justify"
                 class="flex-1"
+                @click="settings.textAlignment = 'justify'"
               />
               <UButton
-                @click="settings.textAlignment = 'center'"
                 :variant="
                   settings.textAlignment === 'center' ? 'soft' : 'ghost'
                 "
                 icon="i-lucide-align-center"
                 class="flex-1"
+                @click="settings.textAlignment = 'center'"
               />
             </UButtonGroup>
           </div>
 
           <div>
             <label class="text-sm font-semibold block mb-2"
-              >Parlaklık: {{ settings.brightness }}%</label
+            >Parlaklık: {{ settings.brightness }}%</label
             >
             <input
               v-model.number="settings.brightness"
@@ -500,7 +501,7 @@ definePageMeta({
 
           <div>
             <label class="text-sm font-semibold block mb-2"
-              >Sayfa Genişliği: {{ settings.lineWidth }}%</label
+            >Sayfa Genişliği: {{ settings.lineWidth }}%</label
             >
             <input
               v-model.number="settings.lineWidth"
@@ -540,7 +541,7 @@ definePageMeta({
           description="Lütfen tekrar deneyiniz veya sayfaya dönüp başka bir bölüm seçiniz."
         >
           <template #action>
-            <UButton color="primary" @click="goHome">Ana Sayfaya Dön</UButton>
+            <UButton color="primary" @click="goHome"> Ana Sayfaya Dön </UButton>
           </template>
         </UEmpty>
       </div>
@@ -562,7 +563,7 @@ definePageMeta({
               : settings.fontFamily === 'mono'
                 ? 'monospace'
                 : 'inherit',
-          textAlign: settings.textAlignment,
+          textAlign: settings.textAlignment
         }"
       >
         <div class="mb-10 text-center">
@@ -582,12 +583,12 @@ definePageMeta({
       >
         <UButton
           :disabled="!hasPreviousChapter"
-          @click="goToPreviousChapter"
           icon="i-lucide-chevron-left"
           size="lg"
           color="primary"
           variant="soft"
           class="w-full sm:w-auto"
+          @click="goToPreviousChapter"
         >
           Önceki Bölüm
         </UButton>
@@ -600,12 +601,12 @@ definePageMeta({
 
         <UButton
           :disabled="!hasNextChapter"
-          @click="goToNextChapter"
           trailing-icon="i-lucide-chevron-right"
           size="lg"
           color="primary"
           variant="soft"
           class="w-full sm:w-auto"
+          @click="goToNextChapter"
         >
           Sonraki Bölüm
         </UButton>
@@ -625,12 +626,13 @@ definePageMeta({
         icon="i-lucide-arrow-up"
         size="lg"
         color="primary"
-        @click="scrollToTop"
         class="fixed bottom-8 right-8 shadow-xl z-50"
+        @click="scrollToTop"
       />
     </Transition>
   </div>
 </template>
+
 <style scoped>
 .slider::-webkit-slider-thumb {
   appearance: none;

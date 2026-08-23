@@ -1,21 +1,21 @@
 <script setup lang="ts">
 interface RecommendationItem {
-  id: number;
-  title: string;
-  cover: string;
-  type: string;
+  id: number
+  title: string
+  cover: string
+  type: string
 }
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    items: RecommendationItem[];
+    items?: RecommendationItem[]
   }>(),
   {
-    items: () => [],
-  },
-);
+    items: () => []
+  }
+)
 
-const isSidebarOpen = useSidebar();
+const isSidebarOpen = useSidebar()
 
 const swiperBreakpoints = computed(() => {
   const baseBreakpoints = {
@@ -24,25 +24,25 @@ const swiperBreakpoints = computed(() => {
     420: { slidesPerView: 2, spaceBetween: 20 },
     520: { slidesPerView: 2, spaceBetween: 20 },
     640: { slidesPerView: 3, spaceBetween: 20 },
-    768: { slidesPerView: 4, spaceBetween: 30 },
-  };
+    768: { slidesPerView: 4, spaceBetween: 30 }
+  }
 
   if (isSidebarOpen.value) {
     return {
       ...baseBreakpoints,
       1024: { slidesPerView: 5, spaceBetween: 30 },
       1280: { slidesPerView: 6, spaceBetween: 30 },
-      1700: { slidesPerView: 6, spaceBetween: 30 },
-    };
+      1700: { slidesPerView: 6, spaceBetween: 30 }
+    }
   }
 
   return {
     ...baseBreakpoints,
     1024: { slidesPerView: 5, spaceBetween: 30 },
     1280: { slidesPerView: 6, spaceBetween: 30 },
-    1700: { slidesPerView: 6, spaceBetween: 30 },
-  };
-});
+    1700: { slidesPerView: 6, spaceBetween: 30 }
+  }
+})
 </script>
 
 <template>
@@ -54,7 +54,10 @@ const swiperBreakpoints = computed(() => {
     :mousewheel="true"
     :free-mode="true"
   >
-    <swiper-slide v-for="item in items" :key="item.id">
+    <swiper-slide
+      v-for="item in items"
+      :key="item.id"
+    >
       <NuxtLink
         :to="`/title/${item.id}`"
         class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden bg-zinc-900 cursor-pointer block shadow-[0px_0px_10px_0px_var(--color-neutral-900)]"
@@ -63,7 +66,7 @@ const swiperBreakpoints = computed(() => {
           :src="item.cover"
           :alt="item.title"
           class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
+        >
 
         <div
           class="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-900/60 to-transparent"
@@ -76,7 +79,10 @@ const swiperBreakpoints = computed(() => {
             {{ item.title }}
           </h3>
           <div class="self-start">
-            <UBadge color="neutral" variant="soft">
+            <UBadge
+              color="neutral"
+              variant="soft"
+            >
               {{ item.type }}
             </UBadge>
           </div>

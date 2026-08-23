@@ -11,20 +11,20 @@ const { data: heroData, pending: heroPending } = await useFetch(`${config.public
 const slides = computed(() => {
   if (!heroData.value) return []
 
-  let list = [];
+  let list = []
   if (Array.isArray(heroData.value)) {
-    list = heroData.value;
+    list = heroData.value
   } else if (heroData.value.data && Array.isArray(heroData.value.data)) {
-    list = heroData.value.data;
+    list = heroData.value.data
   } else if (heroData.value.results && Array.isArray(heroData.value.results)) {
-    list = heroData.value.results;
+    list = heroData.value.results
   } else {
-    return [];
+    return []
   }
 
   return list.map(item => ({
     title: item.anilist_title,
-    type: item["anilist_type"]?.replaceAll("MANGA", "Manga").replaceAll("NOVEL", "Hafif Roman").replaceAll("ONE_SHOT", "One-Shot") || '',
+    type: item.anilist_type?.replaceAll('MANGA', 'Manga').replaceAll('NOVEL', 'Hafif Roman').replaceAll('ONE_SHOT', 'One-Shot') || '',
     year: item.mal_year,
     score: String(Number(item.anilist_score) / 10),
     description: item.has_local_content ? item.sanity_description : item.anilist_description,
@@ -61,14 +61,34 @@ const createdItems = computed(() => {
 </script>
 
 <template>
-  <USkeleton v-if="heroPending" class="relative h-[80vh] overflow-hidden rounded-3xl" />
-  <HeroSlider v-else :slides="slides" />
-  <USeparator position="start" class="font-bold text-3xl mt-5 mb-3">
-    <span class="mr-3"> Son Güncellenen İçerikler </span>
-  </USeparator>
-  <CardSanity variant="updated" :items="updatedItems" />
-  <USeparator position="start" class="font-bold text-3xl mt-5 mb-3">
-    <span class="mr-3"> Son Oluşturulan İçerikler </span>
-  </USeparator>
-  <CardSanity variant="created" :items="createdItems" />
+  <main>
+    <USkeleton
+      v-if="heroPending"
+      class="relative h-[80vh] overflow-hidden rounded-3xl"
+    />
+    <HeroSlider
+      v-else
+      :slides="slides"
+    />
+    <USeparator
+      position="start"
+      class="font-bold text-3xl mt-5 mb-3"
+    >
+      <span class="mr-3"> Son Güncellenen İçerikler </span>
+    </USeparator>
+    <CardSanity
+      variant="updated"
+      :items="updatedItems"
+    />
+    <USeparator
+      position="start"
+      class="font-bold text-3xl mt-5 mb-3"
+    >
+      <span class="mr-3"> Son Oluşturulan İçerikler </span>
+    </USeparator>
+    <CardSanity
+      variant="created"
+      :items="createdItems"
+    />
+  </main>
 </template>

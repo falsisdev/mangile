@@ -1,91 +1,90 @@
 <script setup lang="ts">
-import { useStorage } from "@vueuse/core";
+import { useStorage } from '@vueuse/core'
 
-type NeutralPreference =
-  | "mauve"
-  | "neutral"
-  | "mist"
-  | "taupe"
-  | "slate"
-  | "stone"
-  | "olive"
-  | "zinc"
-  | "gray";
+type NeutralPreference
+  = | 'mauve'
+    | 'neutral'
+    | 'mist'
+    | 'taupe'
+    | 'slate'
+    | 'stone'
+    | 'olive'
+    | 'zinc'
+    | 'gray'
 
-const appConfig = useAppConfig();
-const openSidebar = ref(false);
-const themePanelOpen = ref(false);
-const breadcrumbs = useBreadcrumbs();
-const route = useRoute();
+const appConfig = useAppConfig()
+const openSidebar = ref(false)
+const themePanelOpen = ref(false)
+const breadcrumbs = useBreadcrumbs()
+const route = useRoute()
 
-const defaultNeutralTheme = "mist";
+const defaultNeutralTheme = 'mist'
 const neutralThemeOptions = [
-  "mauve",
-  "neutral",
-  "mist",
-  "taupe",
-  "slate",
-  "stone",
-  "olive",
-  "zinc",
-  "gray",
-] as const satisfies readonly NeutralPreference[];
+  'mauve',
+  'neutral',
+  'mist',
+  'taupe',
+  'slate',
+  'stone',
+  'olive',
+  'zinc',
+  'gray'
+] as const satisfies readonly NeutralPreference[]
 const neutralThemeLabels: Record<NeutralPreference, string> = {
-  mauve: "Leylak",
-  neutral: "Yavan",
-  mist: "Duman",
-  taupe: "Boz",
-  slate: "Arduvaz",
-  stone: "Kaya",
-  olive: "Zeytin",
-  zinc: "Çinko",
-  gray: "Kır",
-};
+  mauve: 'Leylak',
+  neutral: 'Yavan',
+  mist: 'Duman',
+  taupe: 'Boz',
+  slate: 'Arduvaz',
+  stone: 'Kaya',
+  olive: 'Zeytin',
+  zinc: 'Çinko',
+  gray: 'Kır'
+}
 
 const neutralThemePreference = useStorage<NeutralPreference>(
-  "mangile-neutral-theme",
-  "mist",
-);
+  'mangile-neutral-theme',
+  'mist'
+)
 
-const selectedNeutralTheme = computed(() => {
-  return neutralThemePreference.value === "mist"
+computed(() => {
+  return neutralThemePreference.value === 'mist'
     ? defaultNeutralTheme
-    : neutralThemePreference.value;
-});
+    : neutralThemePreference.value
+})
 
 const isNeutralThemeSelected = (option: NeutralPreference) =>
-  neutralThemePreference.value === option;
+  neutralThemePreference.value === option
 
 watch(
   neutralThemePreference,
   (preference) => {
-    const nextNeutralTone =
-      preference === "mist" ? defaultNeutralTheme : preference;
+    const nextNeutralTone
+      = preference === 'mist' ? defaultNeutralTheme : preference
     if (appConfig.ui?.colors) {
-      appConfig.ui.colors.neutral = nextNeutralTone;
+      appConfig.ui.colors.neutral = nextNeutralTone
     }
   },
-  { immediate: true },
-);
+  { immediate: true }
+)
 
 useHead({
-  meta: [{ name: "viewport", content: "width=device-width, initial-scale=1" }],
-  link: [{ rel: "icon", href: "/favicon.ico" }],
-  htmlAttrs: { lang: "en" },
-});
+  meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
+  link: [{ rel: 'icon', href: '/favicon.ico' }],
+  htmlAttrs: { lang: 'en' }
+})
 
-const title = "Mangile";
-const description =
-  "Dinamik, etkili ve kullanışlı manga/webtoon/roman okuma, takip etme ve paylaşma sistemi.";
+const title = 'Mangile'
+const description = 'Dinamik, etkili ve kullanışlı manga/webtoon/roman okuma, takip etme ve paylaşma sistemi.'
 
 useSeoMeta({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: "https://mangile.vercel.app",
-  twitterCard: "summary_large_image",
-});
+  ogImage: 'https://mangile.vercel.app',
+  twitterCard: 'summary_large_image'
+})
 </script>
 
 <template>

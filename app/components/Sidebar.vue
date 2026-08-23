@@ -1,87 +1,87 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
+import type { NavigationMenuItem } from '@nuxt/ui'
 
-const open = defineModel<boolean>("open", { default: false });
+const open = defineModel<boolean>('open', { default: false })
 
-const globalSidebarOpen = useSidebar();
+const globalSidebarOpen = useSidebar()
 
 watch(
   open,
   (newValue) => {
-    globalSidebarOpen.value = newValue;
+    globalSidebarOpen.value = newValue
   },
-  { immediate: true },
-);
+  { immediate: true }
+)
 
 watch(globalSidebarOpen, (newValue) => {
-  open.value = newValue;
-});
+  open.value = newValue
+})
 
 const mainItems: NavigationMenuItem[] = [
   {
-    label: "Ana Sayfa",
-    icon: "i-lucide-house",
-    to: "/",
+    label: 'Ana Sayfa',
+    icon: 'i-lucide-house',
+    to: '/'
   },
   {
-    label: "Keşfet",
-    icon: "i-lucide-compass",
-    to: "/explore",
-  },
-];
+    label: 'Keşfet',
+    icon: 'i-lucide-compass',
+    to: '/explore'
+  }
+]
 
 const libraryItems: NavigationMenuItem[] = [
   {
-    label: "Senkronizasyon",
-    icon: "i-lucide-cloud-backup",
-    to: "/sync",
+    label: 'Senkronizasyon',
+    icon: 'i-lucide-cloud-backup',
+    to: '/sync'
   },
   {
-    label: "Listeler",
-    icon: "i-lucide-library",
-    to: "/lists",
+    label: 'Listeler',
+    icon: 'i-lucide-library',
+    to: '/lists'
   },
   {
-    label: "Okuma Geçmişi",
-    icon: "i-lucide-history",
-    to: "/history",
-  },
-];
+    label: 'Okuma Geçmişi',
+    icon: 'i-lucide-history',
+    to: '/history'
+  }
+]
 
 const toggleSidebar = () => {
-  open.value = !open.value;
-};
+  open.value = !open.value
+}
 
 const companyItems: NavigationMenuItem[] = [
   {
-    label: "Bilgilendirme",
-    icon: "i-lucide-info",
-    to: "/article/notice",
+    label: 'Bilgilendirme',
+    icon: 'i-lucide-info',
+    to: '/article/notice'
   },
   {
-    label: "Hakkımızda",
-    icon: "i-lucide-users",
-    to: "/article/about",
+    label: 'Hakkımızda',
+    icon: 'i-lucide-users',
+    to: '/article/about'
   },
   {
-    label: "İletişim",
-    icon: "i-lucide-phone",
-    to: "/article/contact",
-  },
-];
+    label: 'İletişim',
+    icon: 'i-lucide-phone',
+    to: '/article/contact'
+  }
+]
 
 const legalItems: NavigationMenuItem[] = [
   {
-    label: "Hizmet Koşulları",
-    icon: "i-lucide-scale",
-    to: "/article/tos",
+    label: 'Hizmet Koşulları',
+    icon: 'i-lucide-scale',
+    to: '/article/tos'
   },
   {
-    label: "Lisanslandırma",
-    icon: "i-lucide-copyright",
-    to: "/article/licence",
-  },
-];
+    label: 'Lisanslandırma',
+    icon: 'i-lucide-copyright',
+    to: '/article/licence'
+  }
+]
 </script>
 
 <template>
@@ -91,11 +91,14 @@ const legalItems: NavigationMenuItem[] = [
     collapsible="icon"
     side="left"
   >
-    <template #header class="flex flex-row">
+    <template
+      #header
+      class="flex flex-row"
+    >
       <img
         src="https://cdn.sanity.io/images/1yge7tlr/production/b8497ba054d01f92ecf4f359a835f55e6a321d90-1080x1080.png?fit=max&w=600&h=600"
         class="size-8"
-      />
+      >
       <span class="grow" />
       <UButton
         v-if="$device.isMobile && open"
@@ -157,7 +160,12 @@ const legalItems: NavigationMenuItem[] = [
     </div>
 
     <template #footer>
-      <UButton label="Giriş Yap" icon="i-lucide-log-in" block to="/login" />
+      <UButton
+        label="Giriş Yap"
+        icon="i-lucide-log-in"
+        block
+        to="/login"
+      />
     </template>
   </USidebar>
 </template>

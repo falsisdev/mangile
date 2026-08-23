@@ -1,41 +1,41 @@
 <script setup lang="ts">
-import { useWindowSize } from "@vueuse/core";
+import { useWindowSize } from '@vueuse/core'
 
 interface Title {
-  title: string;
-  type: string;
-  year: string;
-  score: string;
-  description: string;
-  banner: string;
-  id: number;
+  title: string
+  type: string
+  year: string
+  score: string
+  description: string
+  banner: string
+  id: number
 }
 
-const isSidebarOpen = useSidebar();
-const { width } = useWindowSize();
+const isSidebarOpen = useSidebar()
+const { width } = useWindowSize()
 
 const sectionClass = computed(() => {
   if (width.value >= 1700)
-    return `relative ${isSidebarOpen.value ? "h-[70vh]" : "h-[70vh]"} overflow-hidden rounded-3xl`;
+    return `relative ${isSidebarOpen.value ? 'h-[70vh]' : 'h-[70vh]'} overflow-hidden rounded-3xl`
   if (width.value >= 1280)
-    return `relative ${isSidebarOpen.value ? "h-[60vh]" : "h-[60vh]"} overflow-hidden rounded-3xl`;
+    return `relative ${isSidebarOpen.value ? 'h-[60vh]' : 'h-[60vh]'} overflow-hidden rounded-3xl`
   if (width.value >= 1024)
-    return `relative ${isSidebarOpen.value ? "h-[60vh]" : "h-[60vh]"} overflow-hidden rounded-3xl`;
+    return `relative ${isSidebarOpen.value ? 'h-[60vh]' : 'h-[60vh]'} overflow-hidden rounded-3xl`
   if (width.value >= 768)
-    return "relative h-[70vh] overflow-hidden rounded-3xl";
+    return 'relative h-[70vh] overflow-hidden rounded-3xl'
   if (width.value >= 640)
-    return "relative h-[60vh] overflow-hidden rounded-3xl";
-  return "relative h-[65vh] overflow-hidden rounded-3xl";
-});
+    return 'relative h-[60vh] overflow-hidden rounded-3xl'
+  return 'relative h-[65vh] overflow-hidden rounded-3xl'
+})
 
 withDefaults(
   defineProps<{
-    slides: Title[];
+    slides?: Title[]
   }>(),
   {
-    slides: () => [],
-  },
-);
+    slides: () => []
+  }
+)
 </script>
 
 <template>
@@ -46,15 +46,18 @@ withDefaults(
     :speed="1000"
     :autoplay-delay="5000"
     :pagination="{
-      clickable: true,
+      clickable: true
     }"
   >
-    <swiper-slide v-for="slide in slides" :key="slide.title">
+    <swiper-slide
+      v-for="slide in slides"
+      :key="slide.title"
+    >
       <section :class="sectionClass">
         <div
           class="absolute inset-0 bg-cover bg-center slide-bg-layer"
           :style="{
-            backgroundImage: `url(${slide.banner})`,
+            backgroundImage: `url(${slide.banner})`
           }"
         />
         <div
@@ -66,37 +69,53 @@ withDefaults(
 
         <UContainer class="relative z-20 flex h-full items-center">
           <div class="max-w-2xl space-y-4 text-white content-layer">
-            <div v-if="width >= 640" class="flex gap-2">
-              <UBadge color="neutral" variant="soft" size="lg">{{
-                slide.type
-              }}</UBadge>
-              <UBadge color="neutral" variant="soft" size="lg">{{
-                slide.year
-              }}</UBadge>
+            <div
+              v-if="width >= 640"
+              class="flex gap-2"
+            >
+              <UBadge
+                color="neutral"
+                variant="soft"
+                size="lg"
+              >
+                {{
+                  slide.type
+                }}
+              </UBadge>
+              <UBadge
+                color="neutral"
+                variant="soft"
+                size="lg"
+              >
+                {{
+                  slide.year
+                }}
+              </UBadge>
               <UBadge
                 icon="i-lucide-star"
                 color="warning"
                 variant="soft"
                 size="md"
-                >{{ slide.score }}</UBadge
               >
+                {{ slide.score }}
+              </UBadge>
             </div>
 
             <h1 class="text-3xl font-black whitespace-nowrap md:text-6xl">
               {{
-                slide["title"].length > 23
-                  ? slide["title"].slice(0, 23) + "..."
-                  : slide["title"]
+                slide.title.length > 23
+                  ? slide.title.slice(0, 23) + '...'
+                  : slide.title
               }}
             </h1>
 
             <p class="max-w-xl text-md md:text-lg text-gray-200">
               {{
-                slide["description"].replaceAll(/<[^>]*>/g, "").length > 400
-                  ? slide["description"]
-                      .replaceAll(/<[^>]*> /g, "")
-                      .slice(0, 397) + "..."
-                  : slide["description"].replaceAll(/ <[^>]*>/g, "")
+                slide.description.replaceAll(/<[^>]*>/g, '').length > 400
+                  ? slide.description
+                    .replaceAll(/<[^>]*> /g, '')
+                    .slice(0, 397) + '...'
+                  : slide.description.replaceAll(/ <[^>]*>/g, '')
               }}
             </p>
 
@@ -128,6 +147,7 @@ withDefaults(
     </swiper-slide>
   </swiper-container>
 </template>
+
 <style scoped>
 swiper-container {
   width: 100%;
