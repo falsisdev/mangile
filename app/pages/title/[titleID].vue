@@ -304,9 +304,8 @@ onUnmounted(() => {
           </div>
 
           <!-- Mobil Kapak ve Başlık Hizalaması -->
-          <div class="px-4 -mt-24 relative z-20 flex gap-4 items-end">
-            <div
-              class="w-32 aspect-2/3 rounded-2xl overflow-hidden shadow-2xl shrink-0 ring-2 ring-background/80 bg-background">
+          <div class="px-4 -mt-32 relative z-20 flex gap-4 items-end">
+            <div class="w-32 aspect-2/3 rounded-2xl overflow-hidden shadow-2xl shrink-0 bg-background">
               <img :src="serie.cover || serie.anilistCover" class="w-full h-full object-cover" :alt="serie.title" />
             </div>
 
@@ -340,13 +339,15 @@ onUnmounted(() => {
               <span class="text-[10px] text-muted-foreground font-normal">MAL</span>
             </div>
 
-            <UBadge color="neutral" variant="subtle" size="sm" class="rounded-xl px-3 py-1 font-semibold">
+            <div
+              class="px-3 py-1 rounded-xl bg-muted/80 ring-1 ring-default/30 text-xs font-bold flex items-center gap-1.5">
+              <UIcon name="i-lucide-chart-no-axes-column-increasing" class="w-4 h-4 text-primary fill-current" />
               {{ serie.uploadStatus.replaceAll("uploading", "Yükleniyor").replaceAll("completed", "Tamamlandı") ||
-              "Yükleniyor" }}
-            </UBadge>
+                "Yükleniyor" }}
+            </div>
 
-            <UBadge v-for="tag in serie.tags" :key="tag" color="neutral" variant="subtle" size="sm"
-              class="rounded-xl px-2.5 py-1">
+            <UBadge v-for="tag in serie.tags" :key="tag" color="neutral" variant="subtle" size="md"
+              class="rounded-lg px-2">
               {{ tag }}
             </UBadge>
           </div>
@@ -397,12 +398,12 @@ onUnmounted(() => {
             </button>
           </div>
 
-          <!-- Mobil Bölüm Arama Header -->
+          <!-- Mobil Bölümler Alanı -->
           <div class="space-y-3 pt-2">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <h3 class="text-xl font-black text-foreground">Bölümler</h3>
-                <UBadge color="neutral" variant="subtle" size="sm" class="rounded-lg font-bold px-2.5 py-0.5">
+                <UBadge color="neutral" variant="soft" size="md" class="rounded-lg font-bold px-2.5 py-0.5">
                   {{ serie.chapters?.length || 0 }} Bölüm
                 </UBadge>
               </div>
@@ -414,26 +415,56 @@ onUnmounted(() => {
               </UButton>
             </div>
 
-            <UInput v-model="chapterSearchQuery" icon="i-lucide-search" placeholder="Bölüm ara..." size="md"
-              color="neutral" variant="outline" class="w-full rounded-xl" clearable />
+            <!-- Küçültülmüş Bölüm Arama Çubuğu -->
+            <UInput v-model="chapterSearchQuery" icon="i-lucide-search" placeholder="Bölüm ara..." size="xs"
+              color="neutral" variant="outline" class="w-full rounded-lg" clearable />
+
+            <!-- Mobil Bölüm Kartları Listesi (Ezilme ve Taşma Düzeltildi) -->
+            <div v-if="sortedChapters.length" class="space-y-3 pt-1">
+              <div class="relative">
+                <div class="flex flex-col gap-2 transition-[max-height] duration-300 ease-in-out overflow-hidden"
+                  :class="isChaptersExpanded || chapterSearchQuery.trim() ? 'max-h-[25000px]' : 'max-h-[440px]'">
+                  <UCard v-for="chapter in sortedChapters" :key="chapter.id"
+                    class="shrink-0 transition-all hover:border-primary/40 cursor-pointer rounded-xl mx-1 mt-0.5"
+                    :ui="{ body: { padding: 'p-3' } }">
+                    <NuxtLink :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
+                      class="flex items-center justify-between gap-2">
+                      <div class="truncate pr-1">
+                        <p class="font-bold text-xs text-foreground truncate">
+                          {{ chapter.title || `Bölüm ${chapter.chapter_number || chapter.id}` }}
+                        </p>
+                        <p class="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
+                          <UIcon name="i-lucide-languages" class="w-3 h-3 text-muted-foreground/70" />
+                          {{ chapter.source?.name || "Bilinmeyen Çevirmen" }}
+                        </p>
+                      </div>
+                      <UIcon name="i-lucide-chevron-right" class="w-4 h-4 text-muted-foreground shrink-0" />
+                    </NuxtLink>
+                  </UCard>
+                </div>
+
+                <div v-if="!isChaptersExpanded && sortedChapters.length > chapterLimit && !chapterSearchQuery.trim()"
+                  class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none z-10" />
+              </div>
+
+              <div v-if="sortedChapters.length > chapterLimit && !chapterSearchQuery.trim()"
+                class="pt-2 flex justify-center">
+                <UButton :icon="isChaptersExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" variant="soft"
+                  color="primary" size="xs" class="rounded-lg px-5 font-semibold"
+                  @click="isChaptersExpanded = !isChaptersExpanded">
+                  {{ isChaptersExpanded ? 'Daha Az Göster' : `Tümünü Göster (${sortedChapters.length - chapterLimit}
+                  bölüm daha)` }}
+                </UButton>
+              </div>
+            </div>
+
+            <div v-else class="text-center py-8 rounded-xl bg-muted/20 border border-dashed border-default">
+              <UIcon name="i-lucide-folder-open" class="w-6 h-6 text-muted-foreground mb-1 mx-auto" />
+              <p class="text-xs font-medium text-muted-foreground">
+                {{ chapterSearchQuery ? 'Aramanıza uygun bölüm bulunamadı.' : 'Henüz bu seriye ait bir bölüm yüklenmemiş.' }}
+              </p>
+            </div>
           </div>
-        </div>
-
-        <!-- Mobil Sabit Alt Bar -->
-        <div v-if="serie.chapters && serie.chapters.length"
-          class="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-t border-border/50 p-3 px-4 flex items-center gap-3 shadow-2xl">
-          <UButton v-if="firstChapter" :to="`/chapter/${firstChapter._key}/${chapterRouteType(serie?.type)}`"
-            color="primary" variant="solid" size="md" icon="i-lucide-play"
-            class="flex-1 justify-center rounded-xl font-bold py-2.5 shadow-md active:scale-95 transition-all">
-            İlk Bölüm {{ getChapterDisplayValue(firstChapter) ? `(${getChapterDisplayValue(firstChapter)})` : '' }}
-          </UButton>
-
-          <UButton v-if="lastChapter && lastChapter._key !== firstChapter?._key"
-            :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type)}`" color="primary" variant="soft"
-            size="md" icon="i-lucide-fast-forward"
-            class="flex-1 justify-center rounded-xl font-bold py-2.5 active:scale-95 transition-all">
-            Son Bölüm {{ getChapterDisplayValue(lastChapter) ? `(${getChapterDisplayValue(lastChapter)})` : '' }}
-          </UButton>
         </div>
       </div>
 
@@ -607,15 +638,15 @@ onUnmounted(() => {
           <!-- Hızlı Okuma Butonları -->
           <div v-if="serie.chapters && serie.chapters.length" class="flex flex-col sm:flex-row items-center gap-3 pt-1">
             <UButton v-if="firstChapter" :to="`/chapter/${firstChapter._key}/${chapterRouteType(serie?.type)}`"
-              color="primary" variant="solid" size="lg" icon="i-lucide-play"
-              class="w-full sm:w-1/2 justify-center rounded-2xl font-bold py-3 shadow-md hover:scale-[1.005] active:scale-[0.98] transition-all">
+              color="primary" variant="solid" size="md" icon="i-lucide-play"
+              class="w-full sm:w-1/2 justify-center rounded-xl font-bold py-3 shadow-md hover:scale-[1.005] active:scale-[0.98] transition-all">
               İlk Bölüm {{ getChapterDisplayValue(firstChapter) ? `(${getChapterDisplayValue(firstChapter)})` : '' }}
             </UButton>
 
             <UButton v-if="lastChapter && lastChapter._key !== firstChapter?._key"
               :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type)}`" color="primary" variant="soft"
-              size="lg" icon="i-lucide-fast-forward"
-              class="w-full sm:w-1/2 justify-center rounded-2xl font-bold py-3 hover:scale-[1.005] active:scale-[0.98] transition-all">
+              size="md" icon="i-lucide-fast-forward"
+              class="w-full sm:w-1/2 justify-center rounded-xl font-bold py-3 hover:scale-[1.005] active:scale-[0.98] transition-all">
               Son Bölüm {{ getChapterDisplayValue(lastChapter) ? `(${getChapterDisplayValue(lastChapter)})` : '' }}
             </UButton>
           </div>
