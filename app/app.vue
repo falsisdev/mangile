@@ -90,7 +90,7 @@ useSeoMeta({
 <template>
   <UApp v-if="route.meta.isLayouted !== false">
     <div class="flex h-screen w-screen overflow-hidden bg-background">
-      <Sidebar v-model:open="openSidebar" />
+      <AppSidebar v-model:open="openSidebar" />
       <div class="flex flex-1 flex-col overflow-hidden">
         <header
           class="h-(--ui-header-height) shrink-0 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-800"
@@ -121,7 +121,7 @@ useSeoMeta({
             </h1>
           </div>
           <div class="flex items-center gap-2">
-            <Search />
+            <AppSearch />
             <UPopover
               v-model:open="themePanelOpen"
               :ui="{ content: 'w-72 p-3' }"

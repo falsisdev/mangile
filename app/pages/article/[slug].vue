@@ -1,8 +1,32 @@
 <script setup lang="ts">
+interface SanityMark {
+  _key: string
+  _type: string
+  href?: string
+}
+
+interface SanityChild {
+  text: string
+  marks?: string[]
+}
+
+interface SanityBlock {
+  _type: string
+  style?: string
+  children: SanityChild[]
+  markDefs?: SanityMark[]
+  asset?: {
+    _ref?: string
+    url?: string
+  }
+  caption?: string
+  alt?: string
+}
+
 interface ArticleData {
   title: string
   description: string
-  article: Array<Record<string, any>>
+  article: SanityBlock[]
 }
 
 const route = useRoute()
@@ -61,7 +85,7 @@ const renderedContent = computed(() => {
   if (!article.value?.article) return ''
 
   return article.value?.article
-    .map((block: any) => {
+    .map((block) => {
       if (block._type === 'image') {
         const imageUrl
           = block.asset?.url
@@ -79,13 +103,13 @@ const renderedContent = computed(() => {
       if (block._type !== 'block') return ''
 
       const htmlContent = block.children
-        .map((child: any) => {
+        .map((child) => {
           const text = child.text
           let tagsOpen = ''
           let tagsClose = ''
 
           if (child.marks && child.marks.length > 0) {
-            child.marks.forEach((mark: string) => {
+            child.marks.forEach((mark) => {
               if (mark === 'strong') {
                 tagsOpen += '<strong class="font-bold">'
                 tagsClose = '</strong>' + tagsClose
@@ -93,8 +117,8 @@ const renderedContent = computed(() => {
                 tagsOpen += '<em class="italic">'
                 tagsClose = '</em>' + tagsClose
               } else if (block.markDefs) {
-                const def = block.markDefs.find((m: any) => m._key === mark)
-                if (def && def._type === 'link') {
+                const def = block.markDefs.find(m => m._key === mark)
+                if (def && def._type === 'link' && def.href) {
                   if (def.href.match(/\.(jpeg|jpg|gif|png|webp)(?:\?.*)?$/i)) {
                     tagsOpen += `<figure class="my-10 flex flex-col items-center">
                               <img src="${def.href}" alt="${text}" loading="lazy" class="rounded-xl shadow-xl max-w-full h-auto max-h-[80vh] object-contain border border-gray-200 dark:border-gray-800" />

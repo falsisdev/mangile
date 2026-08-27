@@ -6,13 +6,37 @@ const config = useRuntimeConfig()
 useColorMode()
 const chapterKey = computed(() => route.params.chapterKey as string)
 
+interface SanityMark {
+  _key: string
+  _type: string
+  href?: string
+}
+
+interface SanityChild {
+  text: string
+  marks?: string[]
+}
+
+interface SanityBlock {
+  _type: string
+  style?: string
+  children: SanityChild[]
+  markDefs?: SanityMark[]
+  asset?: {
+    _ref?: string
+    url?: string
+  }
+  caption?: string
+  alt?: string
+}
+
 interface ChapterResponse {
   title: string
   type: string
   myAnimeListId: number
   chapter: {
     title: string
-    content: unknown
+    content: SanityBlock[]
   }
   chapterKeys: string[]
 }
@@ -112,7 +136,7 @@ const handleScroll = () => {
     = document.body.scrollTop || document.documentElement.scrollTop
   const height
     = document.documentElement.scrollHeight
-    - document.documentElement.clientHeight
+      - document.documentElement.clientHeight
   readingProgress.value = (winScroll / height) * 100
 }
 
@@ -184,11 +208,11 @@ const renderedContent = computed(() => {
   if (!chapterData.value?.chapter?.content) return ''
 
   return chapterData.value.chapter.content
-    .map((block: any) => {
+    .map((block) => {
       if (block._type === 'image') {
         const imageUrl
           = block.asset?.url
-          || (block.asset?._ref ? getSanityImageUrl(block.asset._ref) : '')
+            || (block.asset?._ref ? getSanityImageUrl(block.asset._ref) : '')
         const caption = block.caption || block.alt || ''
 
         return toImageFigure(imageUrl, caption, 'my-12')
@@ -197,13 +221,13 @@ const renderedContent = computed(() => {
       if (block._type !== 'block') return ''
 
       const htmlContent = block.children
-        .map((child: any) => {
+        .map((child) => {
           const marks = child.marks || []
           const linkDef = marks
-            .map((mark: string) =>
-              block.markDefs?.find((m: any) => m._key === mark)
+            .map(mark =>
+              block.markDefs?.find(m => m._key === mark)
             )
-            .find((def: any) => def?._type === 'link' && isImageUrl(def.href))
+            .find(def => def?._type === 'link' && isImageUrl(def.href ?? ''))
 
           if (linkDef && linkDef.href) {
             return toImageFigure(linkDef.href, child.text || '', 'my-8')
@@ -225,7 +249,7 @@ const renderedContent = computed(() => {
           let tagsClose = ''
 
           if (marks.length > 0) {
-            marks.forEach((mark: string) => {
+            marks.forEach((mark) => {
               if (mark === 'strong') {
                 tagsOpen += '<strong class="font-bold text-foreground">'
                 tagsClose = '</strong>' + tagsClose
@@ -237,8 +261,8 @@ const renderedContent = computed(() => {
                   += '<code class="bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded text-sm font-mono">'
                 tagsClose = '</code>' + tagsClose
               } else if (block.markDefs) {
-                const def = block.markDefs.find((m: any) => m._key === mark)
-                if (def && def._type === 'link') {
+                const def = block.markDefs.find(m => m._key === mark)
+                if (def && def._type === 'link' && def.href) {
                   if (isImageUrl(def.href)) {
                     return
                   }
@@ -316,7 +340,10 @@ definePageMeta({
         <div
           class="flex items-center gap-1 w-full sm:w-auto justify-center sm:justify-end"
         >
-          <UButtonGroup size="xs" orientation="horizontal">
+          <UButtonGroup
+            size="xs"
+            orientation="horizontal"
+          >
             <UButton
               icon="i-lucide-a-arrow-down"
               color="gray"
@@ -374,7 +401,9 @@ definePageMeta({
         class="fixed top-20 right-4 z-40 w-full sm:w-96 bg-default/90 dark:bg-default/90 backdrop-blur-lg border border-primary/50 rounded-xl shadow-lg p-6 transition-all duration-300"
       >
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-bold">Okuma Ayarları</h3>
+          <h3 class="text-lg font-bold">
+            Okuma Ayarları
+          </h3>
           <UButton
             icon="i-lucide-x"
             variant="ghost"
@@ -387,9 +416,7 @@ definePageMeta({
         <div class="space-y-5">
           <div>
             <div class="flex justify-between items-center mb-2">
-              <label class="text-sm font-semibold"
-              >Yazı Boyutu: {{ settings.fontSize }}px</label
-              >
+              <label class="text-sm font-semibold">Yazı Boyutu: {{ settings.fontSize }}px</label>
               <UButtonGroup size="xs">
                 <UButton
                   icon="i-lucide-minus"
@@ -412,14 +439,12 @@ definePageMeta({
               max="32"
               step="1"
               class="w-full accent-primary"
-            />
+            >
           </div>
 
           <div>
-            <label class="text-sm font-semibold block mb-2"
-            >Satır Yüksekliği:
-              {{ (settings.lineHeight * 10).toFixed(0) }}%</label
-            >
+            <label class="text-sm font-semibold block mb-2">Satır Yüksekliği:
+              {{ (settings.lineHeight * 10).toFixed(0) }}%</label>
             <input
               v-model.number="settings.lineHeight"
               type="range"
@@ -427,12 +452,16 @@ definePageMeta({
               max="2.5"
               step="0.1"
               class="w-full accent-primary"
-            />
+            >
           </div>
 
           <div>
             <label class="text-sm font-semibold block mb-2">Yazı Tipi</label>
-            <UButtonGroup size="sm" orientation="horizontal" class="w-full">
+            <UButtonGroup
+              size="sm"
+              orientation="horizontal"
+              class="w-full"
+            >
               <UButton
                 :variant="settings.fontFamily === 'sans' ? 'soft' : 'ghost'"
                 class="flex-1"
@@ -459,7 +488,11 @@ definePageMeta({
 
           <div>
             <label class="text-sm font-semibold block mb-2">Hizalama</label>
-            <UButtonGroup size="sm" orientation="horizontal" class="w-full">
+            <UButtonGroup
+              size="sm"
+              orientation="horizontal"
+              class="w-full"
+            >
               <UButton
                 :variant="settings.textAlignment === 'left' ? 'soft' : 'ghost'"
                 icon="i-lucide-align-left"
@@ -486,9 +519,7 @@ definePageMeta({
           </div>
 
           <div>
-            <label class="text-sm font-semibold block mb-2"
-            >Parlaklık: {{ settings.brightness }}%</label
-            >
+            <label class="text-sm font-semibold block mb-2">Parlaklık: {{ settings.brightness }}%</label>
             <input
               v-model.number="settings.brightness"
               type="range"
@@ -496,13 +527,11 @@ definePageMeta({
               max="150"
               step="5"
               class="w-full accent-primary"
-            />
+            >
           </div>
 
           <div>
-            <label class="text-sm font-semibold block mb-2"
-            >Sayfa Genişliği: {{ settings.lineWidth }}%</label
-            >
+            <label class="text-sm font-semibold block mb-2">Sayfa Genişliği: {{ settings.lineWidth }}%</label>
             <input
               v-model.number="settings.lineWidth"
               type="range"
@@ -510,14 +539,17 @@ definePageMeta({
               max="100"
               step="5"
               class="w-full accent-primary"
-            />
+            >
           </div>
         </div>
       </div>
     </Transition>
 
     <UContainer class="max-w-5xl py-10">
-      <div v-if="pending" class="space-y-6">
+      <div
+        v-if="pending"
+        class="space-y-6"
+      >
         <USkeleton class="h-12 w-2/3 mx-auto mb-12" />
         <div class="space-y-4">
           <USkeleton class="h-6 w-full" />
@@ -541,7 +573,12 @@ definePageMeta({
           description="Lütfen tekrar deneyiniz veya sayfaya dönüp başka bir bölüm seçiniz."
         >
           <template #action>
-            <UButton color="primary" @click="goHome"> Ana Sayfaya Dön </UButton>
+            <UButton
+              color="primary"
+              @click="goHome"
+            >
+              Ana Sayfaya Dön
+            </UButton>
           </template>
         </UEmpty>
       </div>
