@@ -833,7 +833,7 @@ onUnmounted(() => {
               ? 'warning'
               : tag === 'Vahşet' || tag === 'Cinsellik'
                 ? 'error'
-                : 'neutral'
+                : tag == 'Adaptasyon' ? 'info' : 'neutral'
           "
               variant="subtle"
               size="md"
