@@ -31,14 +31,26 @@ interface SanityBlock {
 }
 
 interface ChapterResponse {
-  title: string
-  type: string
-  myAnimeListId: number
-  chapter: {
-    title: string
-    content: SanityBlock[]
+  _id: string
+  _type?: string
+  title?: string
+  chapterNumber?: number
+  volumeNumber?: number
+  content?: SanityBlock[]
+  source?: {
+    name?: string
+    logo?: { url?: string }
   }
-  chapterKeys: string[]
+  lightNovel?: {
+    myAnimeListId?: number
+    title?: string
+  }
+  chapters?: {
+    _id: string
+    title?: string
+    chapterNumber?: number
+    volumeNumber?: number
+  }[]
 }
 
 const {
@@ -46,7 +58,7 @@ const {
   pending
 } = await useFetch<ChapterResponse>(
   () =>
-    `${config.public.backend.baseUrl}/api/chapter?filterType=lightNovel&key=${chapterKey.value}`,
+    `${config.public.backend.baseUrl}/api/chapter?id=${chapterKey.value}`,
   {
     lazy: true,
     server: false,
@@ -56,38 +68,58 @@ const {
   }
 )
 
-const currentChapterIndex = computed(
-  () =>
-    chapterData.value?.chapterKeys.findIndex(
-      key => key === chapterKey.value
-    ) ?? -1
+const siblingChapters = computed(() => chapterData.value?.chapters ?? [])
+
+const currentChapterIndex = computed(() =>
+  siblingChapters.value.findIndex(
+    chapter => chapter._id === chapterKey.value
+  )
 )
 
-const previousChapterKey = computed(() => {
-  const keys = chapterData.value?.chapterKeys
+const previousChapterId = computed(() => {
   const index = currentChapterIndex.value
-  if (!keys || index <= 0) return null
-  return keys[index - 1]
+  if (index <= 0) return null
+  return siblingChapters.value[index - 1]?._id ?? null
 })
 
-const nextChapterKey = computed(() => {
-  const keys = chapterData.value?.chapterKeys
+const nextChapterId = computed(() => {
   const index = currentChapterIndex.value
-  if (!keys || index === -1 || index >= keys.length - 1) return null
-  return keys[index + 1]
+  if (index === -1 || index >= siblingChapters.value.length - 1) return null
+  return siblingChapters.value[index + 1]?._id ?? null
 })
 
-const hasPreviousChapter = computed(() => !!previousChapterKey.value)
-const hasNextChapter = computed(() => !!nextChapterKey.value)
+const hasPreviousChapter = computed(() => !!previousChapterId.value)
+const hasNextChapter = computed(() => !!nextChapterId.value)
+
+const selectedSiblingChapter = ref<string | undefined>(undefined)
+
+const getSiblingChapterLabel = (chapter: {
+  _id?: string
+  title?: string
+  chapterNumber?: number
+}): string => {
+  const num = chapter.chapterNumber
+  const t = chapter.title
+  if (num !== undefined && num !== null) {
+    return t ? `Bölüm ${num} - ${t}` : `Bölüm ${num}`
+  }
+  return t ?? 'Bilinmeyen bölüm'
+}
+
+watch(selectedSiblingChapter, (chapterId) => {
+  if (chapterId && chapterId !== chapterKey.value) {
+    void navigateTo(`/chapter/${chapterId}/novel`)
+  }
+})
 
 const goToPreviousChapter = () => {
-  if (previousChapterKey.value)
-    navigateTo(`/chapter/${previousChapterKey.value}/novel`)
+  if (previousChapterId.value)
+    navigateTo(`/chapter/${previousChapterId.value}/novel`)
 }
 
 const goToNextChapter = () => {
-  if (nextChapterKey.value)
-    navigateTo(`/chapter/${nextChapterKey.value}/novel`)
+  if (nextChapterId.value)
+    navigateTo(`/chapter/${nextChapterId.value}/novel`)
 }
 
 const settings = reactive({
@@ -205,9 +237,9 @@ const toImageFigure = (src: string, alt = '', className = '') => {
 }
 
 const renderedContent = computed(() => {
-  if (!chapterData.value?.chapter?.content) return ''
+  if (!chapterData.value?.content) return ''
 
-  return chapterData.value.chapter.content
+  return chapterData.value.content
     .map((block) => {
       if (block._type === 'image') {
         const imageUrl
@@ -296,7 +328,7 @@ const renderedContent = computed(() => {
 useHead(() => ({
   title: pending.value
     ? 'Yükleniyor...'
-    : `Okunuyor: ${chapterData.value?.chapter?.title ?? ''}`
+    : `Okunuyor: ${chapterData.value?.title ?? ''}`
 }))
 
 definePageMeta({
@@ -319,12 +351,12 @@ definePageMeta({
             :disabled="!hasPreviousChapter"
             icon="i-lucide-chevron-left"
             size="sm"
-            color="gray"
+            color="neutral"
             variant="soft"
             @click="goToPreviousChapter"
           />
           <UButton
-            :to="`/title/${chapterData?.myAnimeListId}`"
+            :to="`/title/${chapterData?.lightNovel?.myAnimeListId}`"
             icon="i-lucide-book-open"
             size="sm"
             color="primary"
@@ -333,7 +365,7 @@ definePageMeta({
           <span
             class="text-xs font-medium text-gray-600 dark:text-gray-400 truncate flex-1 sm:flex-none"
           >
-            {{ chapterData?.title }} | {{ chapterData?.chapter?.title }}
+            {{ chapterData?.lightNovel?.title }} | {{ chapterData?.title }}
           </span>
         </div>
 
@@ -346,14 +378,14 @@ definePageMeta({
           >
             <UButton
               icon="i-lucide-a-arrow-down"
-              color="gray"
+              color="neutral"
               variant="ghost"
               title="Yazıyı Küçült"
               @click="changeFontSize(-1)"
             />
             <UButton
               icon="i-lucide-a-arrow-up"
-              color="gray"
+              color="neutral"
               variant="ghost"
               title="Yazıyı Büyüt"
               @click="changeFontSize(1)"
@@ -362,7 +394,7 @@ definePageMeta({
 
           <UButton
             :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
-            color="gray"
+            color="neutral"
             variant="soft"
             size="xs"
             @click="toggleTheme"
@@ -370,19 +402,30 @@ definePageMeta({
 
           <UButton
             icon="i-lucide-settings"
-            color="gray"
+            color="neutral"
             variant="soft"
             size="xs"
-            @click="showSettings = !showSettings"
+            @click="void (showSettings = !showSettings)"
           />
 
           <UButton
             :disabled="!hasNextChapter"
             icon="i-lucide-chevron-right"
             size="sm"
-            color="gray"
+            color="neutral"
             variant="soft"
             @click="goToNextChapter"
+          />
+
+          <USelect
+            v-if="siblingChapters.length"
+            v-model="selectedSiblingChapter"
+            :items="siblingChapters"
+            :item-value="(item: any) => item._id"
+            :item-label="(item: any) => getSiblingChapterLabel(item)"
+            :placeholder="`Bölüm ${chapterData?.chapterNumber ?? '-'} / ${siblingChapters.length}`"
+            size="xs"
+            class="w-40"
           />
         </div>
       </UContainer>
@@ -409,7 +452,7 @@ definePageMeta({
             variant="ghost"
             size="xs"
             square
-            @click="showSettings = false"
+            @click="void (showSettings = false)"
           />
         </div>
 
@@ -421,13 +464,13 @@ definePageMeta({
                 <UButton
                   icon="i-lucide-minus"
                   variant="soft"
-                  color="gray"
+                  color="neutral"
                   @click="changeFontSize(-1)"
                 />
                 <UButton
                   icon="i-lucide-plus"
                   variant="soft"
-                  color="gray"
+                  color="neutral"
                   @click="changeFontSize(1)"
                 />
               </UButtonGroup>
@@ -465,21 +508,21 @@ definePageMeta({
               <UButton
                 :variant="settings.fontFamily === 'sans' ? 'soft' : 'ghost'"
                 class="flex-1"
-                @click="settings.fontFamily = 'sans'"
+                @click="void (settings.fontFamily = 'sans')"
               >
                 Düz
               </UButton>
               <UButton
                 :variant="settings.fontFamily === 'serif' ? 'soft' : 'ghost'"
                 class="flex-1"
-                @click="settings.fontFamily = 'serif'"
+                @click="void (settings.fontFamily = 'serif')"
               >
                 Serif
               </UButton>
               <UButton
                 :variant="settings.fontFamily === 'mono' ? 'soft' : 'ghost'"
                 class="flex-1"
-                @click="settings.fontFamily = 'mono'"
+                @click="void (settings.fontFamily = 'mono')"
               >
                 Monospace
               </UButton>
@@ -497,7 +540,7 @@ definePageMeta({
                 :variant="settings.textAlignment === 'left' ? 'soft' : 'ghost'"
                 icon="i-lucide-align-left"
                 class="flex-1"
-                @click="settings.textAlignment = 'left'"
+                @click="void (settings.textAlignment = 'left')"
               />
               <UButton
                 :variant="
@@ -505,7 +548,7 @@ definePageMeta({
                 "
                 icon="i-lucide-align-justify"
                 class="flex-1"
-                @click="settings.textAlignment = 'justify'"
+                @click="void (settings.textAlignment = 'justify')"
               />
               <UButton
                 :variant="
@@ -513,7 +556,7 @@ definePageMeta({
                 "
                 icon="i-lucide-align-center"
                 class="flex-1"
-                @click="settings.textAlignment = 'center'"
+                @click="void (settings.textAlignment = 'center')"
               />
             </UButtonGroup>
           </div>
@@ -564,7 +607,7 @@ definePageMeta({
       </div>
 
       <div
-        v-else-if="!chapterData?.chapter"
+        v-else-if="!chapterData"
         class="min-h-[60vh] flex items-center justify-center"
       >
         <UEmpty
@@ -607,7 +650,7 @@ definePageMeta({
           <h1
             class="font-black text-4xl md:text-5xl leading-tight text-foreground"
           >
-            {{ chapterData.chapter.title }}
+            {{ chapterData.title }}
           </h1>
         </div>
 
@@ -615,7 +658,7 @@ definePageMeta({
       </article>
 
       <div
-        v-if="!pending && chapterData?.chapter"
+        v-if="!pending && chapterData"
         class="pt-12 mt-12 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4"
       >
         <UButton
@@ -633,7 +676,7 @@ definePageMeta({
         <span
           class="text-sm text-gray-500 dark:text-gray-400 font-medium text-center line-clamp-2 px-4 flex-1"
         >
-          {{ chapterData.chapter.title }}
+          {{ chapterData.title }}
         </span>
 
         <UButton

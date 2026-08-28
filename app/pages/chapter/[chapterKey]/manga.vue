@@ -7,20 +7,32 @@ useColorMode()
 const chapterKey = computed(() => route.params.chapterKey as string)
 
 interface ChapterResponse {
-  title: string
-  type: string
-  myAnimeListId: number
-  chapter?: {
+  _id: string
+  _type?: string
+  title?: string
+  chapterNumber?: number
+  volumeNumber?: number
+  pages?: {
+    url: string
+  }[]
+  source?: {
+    name?: string
+    logo?: { url?: string }
+  }
+  manga?: {
+    myAnimeListId?: number
     title?: string
-    chapterNumber?: number | string
+  }
+  chapters?: {
+    _id: string
+    title?: string
+    chapterNumber?: number
+    volumeNumber?: number
     source?: {
       name?: string
+      logo?: { url?: string }
     }
-    pages?: {
-      url: string
-    }[]
-  }
-  chapterKeys?: string[]
+  }[]
 }
 
 const {
@@ -28,7 +40,7 @@ const {
   pending
 } = await useFetch<ChapterResponse>(
   () =>
-    `${config.public.backend.baseUrl}/api/chapter?filterType=manga&key=${chapterKey.value}`,
+    `${config.public.backend.baseUrl}/api/chapter?id=${chapterKey.value}`,
   {
     lazy: true,
     server: false,
@@ -42,15 +54,15 @@ interface Page {
   url: string
 }
 
-const images = computed<Page[]>(() => chapterData.value?.chapter?.pages ?? [])
+const images = computed<Page[]>(() => chapterData.value?.pages ?? [])
 
 type ReadingMode = 'paged' | 'webtoon' | 'continuous'
 
 const settings = reactive({
   readingMode: useStorage<ReadingMode>(
     'manga-reading-mode',
-    'paged'
-  ) as Ref<ReadingMode>,
+    'paged' as ReadingMode
+  ),
   autoScroll: useStorage('manga-auto-scroll', false),
   scrollSpeed: useStorage('manga-scroll-speed', 3),
   brightness: useStorage('manga-brightness', 100),
@@ -74,36 +86,58 @@ const readingPercentage = computed(() =>
     : 0
 )
 
-const currentChapterIndex = computed(() => {
-  const keys = chapterData.value?.chapterKeys ?? []
-  return keys.findIndex(key => key === chapterKey.value)
-})
+const siblingChapters = computed(() => chapterData.value?.chapters ?? [])
 
-const previousChapterKey = computed(() => {
-  const keys = chapterData.value?.chapterKeys
+const currentChapterIndex = computed(() =>
+  siblingChapters.value.findIndex(
+    chapter => chapter._id === chapterKey.value
+  )
+)
+
+const previousChapterId = computed(() => {
   const index = currentChapterIndex.value
-  if (!keys || index <= 0) return null
-  return keys[index - 1]
+  if (index <= 0) return null
+  return siblingChapters.value[index - 1]?._id ?? null
 })
 
-const nextChapterKey = computed(() => {
-  const keys = chapterData.value?.chapterKeys
+const nextChapterId = computed(() => {
   const index = currentChapterIndex.value
-  if (!keys || index === -1 || index >= keys.length - 1) return null
-  return keys[index + 1]
+  if (index === -1 || index >= siblingChapters.value.length - 1) return null
+  return siblingChapters.value[index + 1]?._id ?? null
 })
 
-const hasPreviousChapter = computed(() => !!previousChapterKey.value)
-const hasNextChapter = computed(() => !!nextChapterKey.value)
+const hasPreviousChapter = computed(() => !!previousChapterId.value)
+const hasNextChapter = computed(() => !!nextChapterId.value)
+
+const selectedSiblingChapter = ref<string | undefined>(undefined)
+
+const getSiblingChapterLabel = (chapter: {
+  _id?: string
+  title?: string
+  chapterNumber?: number
+}): string => {
+  const num = chapter.chapterNumber
+  const t = chapter.title
+  if (num !== undefined && num !== null) {
+    return t ? `Bölüm ${num} - ${t}` : `Bölüm ${num}`
+  }
+  return t ?? 'Bilinmeyen bölüm'
+}
+
+watch(selectedSiblingChapter, (chapterId) => {
+  if (chapterId && chapterId !== chapterKey.value) {
+    void navigateTo(`/chapter/${chapterId}/manga`)
+  }
+})
 
 const goToPreviousChapter = () => {
-  if (!previousChapterKey.value) return
-  navigateTo(`/chapter/${previousChapterKey.value}/manga`)
+  if (!previousChapterId.value) return
+  navigateTo(`/chapter/${previousChapterId.value}/manga`)
 }
 
 const goToNextChapter = () => {
-  if (!nextChapterKey.value) return
-  navigateTo(`/chapter/${nextChapterKey.value}/manga`)
+  if (!nextChapterId.value) return
+  navigateTo(`/chapter/${nextChapterId.value}/manga`)
 }
 
 const nextPage = () => {
@@ -178,8 +212,9 @@ const resetControlsTimeout = () => {
 
 const toggleReadingMode = () => {
   const modes: ReadingMode[] = ['paged', 'webtoon', 'continuous']
-  const currentIndex = modes.indexOf(settings.readingMode)
-  settings.readingMode = modes[(currentIndex + 1) % modes.length]
+  const current = settings.readingMode as ReadingMode
+  const currentIndex = Math.max(0, modes.indexOf(current))
+  settings.readingMode = modes[(currentIndex + 1) % modes.length] as ReadingMode
   nextTick(() => {
     if (['webtoon', 'continuous'].includes(settings.readingMode)) {
       scrollToPage(currentPage.value)
@@ -316,7 +351,7 @@ watch(chapterKey, () => {
 
 useHead(() => ({
   title: `Okunuyor: Bölüm ${
-    chapterData.value?.chapter?.title ?? ''
+    chapterData.value?.title ?? ''
   } - Sayfa ${currentPage.value}/${totalPages.value}`
 }))
 
@@ -327,7 +362,7 @@ definePageMeta({
 
 <template>
   <div
-    v-if="chapterData?.chapter && !pending"
+    v-if="chapterData && !pending"
     class="reader-container"
     @mousemove="showControls"
     @mouseleave="hideControls"
@@ -417,7 +452,7 @@ definePageMeta({
       >
         <div class="top-bar">
           <UButton
-            :to="`/title/${chapterData?.myAnimeListId}`"
+            :to="`/title/${chapterData?.manga?.myAnimeListId}`"
             variant="ghost"
             size="lg"
             icon="i-lucide-x"
@@ -425,12 +460,12 @@ definePageMeta({
           />
           <div class="chapter-info hidden sm:block">
             <p class="font-bold text-white truncate">
-              {{ chapterData?.title }}
+              {{ chapterData?.manga?.title }}
             </p>
             <p class="text-xs text-gray-300">
               Bölüm
-              {{ chapterData?.chapter?.chapterNumber ?? chapterData?.title }} ·
-              {{ chapterData?.chapter?.source?.name ?? "Bilinmeyen" }}
+              {{ chapterData?.chapterNumber ?? '-' }} ·
+              {{ chapterData?.source?.name ?? "Bilinmeyen" }}
             </p>
           </div>
           <div class="ml-auto flex items-center gap-2">
@@ -445,7 +480,7 @@ definePageMeta({
               :disabled="!hasPreviousChapter"
               icon="i-lucide-skip-back"
               size="sm"
-              color="gray"
+              color="neutral"
               variant="soft"
               @click="goToPreviousChapter"
             />
@@ -453,7 +488,7 @@ definePageMeta({
               :disabled="currentPage <= 1"
               icon="i-lucide-chevron-left"
               size="sm"
-              color="gray"
+              color="neutral"
               variant="soft"
               @click="prevPage"
             />
@@ -469,7 +504,7 @@ definePageMeta({
               :disabled="currentPage >= totalPages"
               icon="i-lucide-chevron-right"
               size="sm"
-              color="gray"
+              color="neutral"
               variant="soft"
               @click="nextPage"
             />
@@ -477,17 +512,28 @@ definePageMeta({
               :disabled="!hasNextChapter"
               icon="i-lucide-skip-forward"
               size="sm"
-              color="gray"
+              color="neutral"
               variant="soft"
               @click="goToNextChapter"
+            />
+
+            <USelect
+              v-if="siblingChapters.length"
+              v-model="selectedSiblingChapter"
+              :items="siblingChapters"
+              :item-value="(item: any) => item._id"
+              :item-label="(item: any) => getSiblingChapterLabel(item)"
+              :placeholder="`Bölüm ${chapterData?.chapterNumber ?? '-'} / ${siblingChapters.length}`"
+              size="xs"
+              class="w-40"
             />
           </div>
           <UButton
             :icon="showSettings ? 'i-lucide-x' : 'i-lucide-settings'"
             size="sm"
-            color="gray"
+            color="neutral"
             variant="soft"
-            @click="showSettings = !showSettings"
+            @click="void (showSettings = !showSettings)"
           />
         </div>
 
