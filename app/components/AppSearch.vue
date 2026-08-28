@@ -69,7 +69,8 @@ const groups = computed(() => [
   }
 ])
 
-function onSelect(item: { id?: number }) {
+function onSelect(value: CommandPaletteItem | null) {
+  const item = value as SearchItem | null
   if (item?.id) {
     navigateTo(`/title/${item.id}`)
     isOpen.value = false

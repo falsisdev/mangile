@@ -106,7 +106,7 @@ useSeoMeta({
               color="neutral"
               variant="ghost"
               aria-label="Toggle sidebar"
-              @click="openSidebar = !openSidebar"
+              @click="void (openSidebar = !openSidebar)"
             />
             <UButton
               v-else-if="$device.isMobile && !openSidebar"
@@ -114,7 +114,7 @@ useSeoMeta({
               color="neutral"
               variant="ghost"
               aria-label="Open sidebar"
-              @click="openSidebar = !openSidebar"
+              @click="void (openSidebar = !openSidebar)"
             />
             <h1 class="font-semibold text-sm hidden md:block">
               <UBreadcrumb :items="breadcrumbs" />
@@ -156,7 +156,7 @@ useSeoMeta({
                         isNeutralThemeSelected(option) ? 'solid' : 'soft'
                       "
                       class="justify-start"
-                      @click="neutralThemePreference = option"
+                      @click="void (neutralThemePreference = option)"
                     />
                   </div>
                   <UText class="text-xs text-muted">

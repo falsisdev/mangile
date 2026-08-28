@@ -15,14 +15,14 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  runtimeConfig: {
+      runtimeConfig: {
     public: {
       backend: {
-        baseUrl: import.meta.env.NUXT_BACKENDBASE
+        baseUrl: import.meta.env.NUXT_PUBLIC_BACKEND_BASEURL || import.meta.env.NUXT_BACKENDBASE
       },
       sanity: {
-        projectId: import.meta.env.NUXT_SANITY_PROJECTID,
-        dataset: import.meta.env.NUXT_SANITY_DATASET
+        projectId: import.meta.env.NUXT_PUBLIC_SANITY_PROJECT_ID || import.meta.env.NUXT_SANITY_PROJECT_ID,
+        dataset: import.meta.env.NUXT_PUBLIC_SANITY_DATASET || import.meta.env.NUXT_SANITY_DATASET || 'production'
       }
     }
   },

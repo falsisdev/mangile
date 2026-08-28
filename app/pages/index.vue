@@ -6,7 +6,7 @@ breadcrumbs.value = [
   { label: 'Ana Sayfa' }
 ]
 
-const { data: heroData, pending: heroPending } = await useFetch(`${config.public.backend.baseUrl}/api/mangaList?filterType=POPULARITY_DESC&limit=12`, { lazy: true, server: false })
+const { data: heroData, pending: heroPending } = await useFetch(`${config.public.backend.baseUrl}/api/mangaList?filterType=POPULAR&limit=12`, { lazy: true, server: false })
 
 const slides = computed(() => {
   if (!heroData.value) return []

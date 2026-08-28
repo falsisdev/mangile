@@ -19,23 +19,27 @@ const { data: titles } = await useLazyFetch<ExploreCard[]>(
   {
     key: 'exploreTitles',
     query: computed(() => ({
-      filterType: 'POPULARITY_DESC',
+      filterType: 'POPULAR',
       limit: 50,
       page: page.value || 1
     })),
     transform: (data: unknown) => {
-      const list = Array.isArray(data) ? data : (data as Record<string, unknown>)?.data || []
-      return (list as Record<string, unknown>[]).map((title: Record<string, unknown>) => ({
-        id: title.mal_id,
-        title: title.anilist_title,
-        type:
-          (title.mal_type as string)
-            ?.replaceAll('MANGA', 'Manga')
-            .replaceAll('NOVEL', 'Hafif Roman')
-            .replaceAll('ONE_SHOT', 'One-Shot') || 'Manga',
-        year: title.mal_year,
-        cover: title.anilist_cover_image
-      }))
+      const list = Array.isArray(data)
+        ? data
+        : (data as Record<string, unknown>).data || []
+      return (list as Record<string, unknown>[]).map(
+        (title: Record<string, unknown>): ExploreCard => ({
+          id: Number(title.mal_id),
+          title: String(title.anilist_title ?? ''),
+          type:
+            String(title.mal_type ?? '')
+              ?.replaceAll('MANGA', 'Manga')
+              .replaceAll('NOVEL', 'Hafif Roman')
+              .replaceAll('ONE_SHOT', 'One-Shot') || 'Manga',
+          year: Number(title.mal_year ?? 0),
+          cover: String(title.anilist_cover_image ?? '')
+        })
+      )
     }
   }
 )
