@@ -81,7 +81,7 @@ interface SerieData {
   anilistBanner?: string
   anilistCover?: string
   anilistDescription?: string
-  anilistRelations?: Record<string, unknown>[]
+  anilistRelations?: RelationItem[]
   malID?: number
   malStatus?: string
   malScore?: number
@@ -97,6 +97,14 @@ interface RecommendationItem {
   title: string
   cover: string
   type: string
+}
+
+interface RelationItem {
+  id: number
+  title: string
+  cover: string
+  type: string
+  relationType: string
 }
 
 const breadcrumbs = useBreadcrumbs()
@@ -144,7 +152,34 @@ function mapTitleResponse(title: TitleApiResponse | null): SerieData {
     anilistBanner: anilist?.bannerImage,
     anilistCover: anilist?.coverImage?.extraLarge,
     anilistDescription: anilist?.description,
-    anilistRelations: anilist?.relations?.edges ?? [],
+    anilistRelations: (anilist?.relations?.edges ?? []).map((edge) => {
+      const e = edge as {
+        relationType?: string
+        node?: {
+          id?: number
+          idMal?: number
+          type?: string
+          title?: { romaji?: string, english?: string, native?: string }
+          coverImage?: { extraLarge?: string }
+        }
+      }
+      return {
+        relationType: e.relationType ?? 'OTHER',
+        id: e.node?.idMal ?? e.node?.id ?? 0,
+        title:
+          e.node?.title?.english
+          || e.node?.title?.romaji
+          || e.node?.title?.native
+          || 'Bilinmeyen',
+        cover: e.node?.coverImage?.extraLarge ?? '',
+        type:
+          (e.node?.type ?? '')
+            .replaceAll('MANGA', 'Manga')
+            .replaceAll('ANIME', 'Anime')
+            .replaceAll('LIGHT_NOVEL', 'Hafif Roman')
+          || 'Manga'
+      }
+    }).filter(r => r.id !== 0),
     malID: title.myAnimeListId,
     malStatus: mal?.status,
     malScore: mal?.score,
@@ -199,12 +234,8 @@ const { data: serie, status } = await useLazyAsyncData<SerieData | null>(
   }
 )
 
-// Oneriler artik /api/titles yanitindaki externalAnilist icinde geliyor.
-const { data: recommendations } = await useLazyAsyncData<RecommendationItem[]>(
-  'title-recommendations-' + titleId.value,
-  async () => serie.value?.recommendations ?? [],
-  { default: () => [] }
-)
+// Oneriler seri verisinden reaktif olarak hesaplanir
+const recommendations = computed(() => serie.value?.recommendations ?? [])
 
 const breadcrumbsList = computed(() => [
   { label: 'Ana Sayfa', to: '/' },
@@ -320,6 +351,15 @@ function getChapterDisplayValue(chapter: ChapterData | null): string {
   return ''
 }
 
+function getChapterLabel(chapter: ChapterData): string {
+  const vol = chapter.volume_number
+  const ch = chapter.chapter_number
+  const hasVol = vol !== undefined && vol !== null && vol !== ''
+  const chNum = ch !== undefined && ch !== null && ch !== '' ? ch : chapter.id
+  const prefix = hasVol ? `Cilt ${vol} Bölüm ${chNum}` : `Bölüm ${chNum}`
+  return chapter.title ? `${prefix}: ${chapter.title}` : prefix
+}
+
 const allChaptersSortedAsc = computed(() => {
   if (!serie.value?.chapters) return []
 
@@ -377,30 +417,63 @@ interface VolumeChapterGroup {
 }
 
 const volumeChapterGroups = computed<VolumeChapterGroup[]>(() => {
-  const groups = new Map<string | number, ChapterData[]>()
-  const order: (string | number)[] = []
+  const query = chapterSearchQuery.value?.toLowerCase().trim()
+  const base = allChaptersSortedAsc.value
 
-  for (const ch of sortedChapters.value) {
+  const filtered = query
+    ? base.filter((ch) => {
+        const titleStr = String(ch.title || '').toLowerCase()
+        const numStr = String(getChapterDisplayValue(ch)).toLowerCase()
+        const rawNumStr = String(
+          ch.chapter_number
+          ?? (ch as Record<string, unknown>).number
+          ?? ch.id
+          ?? ''
+        ).toLowerCase()
+        const srcStr = String(ch.source?.name || '').toLowerCase()
+        return (
+          titleStr.includes(query)
+          || numStr.includes(query)
+          || rawNumStr.includes(query)
+          || srcStr.includes(query)
+        )
+      })
+    : base
+
+  const groups = new Map<string | number, ChapterData[]>()
+
+  for (const ch of filtered) {
     const vol = ch.volume_number
     const key = vol !== undefined && vol !== null && vol !== '' ? vol : 'single'
-    if (!groups.has(key)) {
-      groups.set(key, [])
-      order.push(key)
-    }
+    if (!groups.has(key)) groups.set(key, [])
     groups.get(key)!.push(ch)
   }
 
-  return order.map((key) => {
-    const volNum = typeof key === 'number' ? key : NaN
-    const volumeTitle
-      = key === 'single'
+  // Cilt numaralarini kucukten buyuge sirala ('single' en sona)
+  const sortedKeys = [...groups.keys()].sort((a, b) => {
+    if (a === 'single') return 1
+    if (b === 'single') return -1
+    const na = Number(a)
+    const nb = Number(b)
+    if (isNaN(na) && isNaN(nb)) return String(a).localeCompare(String(b))
+    if (isNaN(na)) return 1
+    if (isNaN(nb)) return -1
+    return na - nb
+  })
+
+  return sortedKeys.map((key) => {
+    const volNum = Number(key)
+    const volumeTitle =
+      key === 'single'
         ? 'Tek Cilt'
         : `Cilt ${!isNaN(volNum) ? volNum : key}`
-    return {
-      volumeKey: key,
-      volumeTitle,
-      chapters: groups.get(key)!
-    }
+
+    const chapters = groups.get(key)!
+    // Cilt icindeki bolumler siralama moduna gore duzenlenir
+    const sortedChaps =
+      chapterSortOrder.value === 'desc' ? [...chapters].reverse() : chapters
+
+    return { volumeKey: key, volumeTitle, chapters: sortedChaps }
   })
 })
 
@@ -559,7 +632,13 @@ onUnmounted(() => {
               <UBadge
                 v-for="tag in serie.tags"
                 :key="tag"
-                color="neutral"
+                :color="
+                  tag === 'Ödüllü'
+                    ? 'warning'
+                    : tag === 'Vahşet' || tag === 'Cinsellik'
+                      ? 'error'
+                      : tag === 'Adaptasyon' ? 'info' : 'neutral'
+                "
                 variant="subtle"
                 size="md"
                 class="rounded-lg px-2"
@@ -726,7 +805,7 @@ onUnmounted(() => {
                         >
                           <div class="truncate pr-1">
                             <p class="font-bold text-xs text-foreground truncate">
-                              {{ chapter.title || `Bölüm ${chapter.chapter_number || chapter.id}` }}
+                              {{ getChapterLabel(chapter) }}
                             </p>
 
                             <p
@@ -1195,70 +1274,93 @@ onUnmounted(() => {
               </div>
 
               <div
-                v-if="sortedChapters.length"
-                class="space-y-4"
+                v-if="volumeChapterGroups.length"
+                class="space-y-6"
               >
-                <div class="relative">
-                  <div
-                    class="transition-[max-height] duration-500 ease-in-out overflow-hidden"
-                    :class="[
-                      isChaptersExpanded || chapterSearchQuery.trim()
-                        ? 'max-h-[25000px]'
-                        : 'max-h-[580px]',
-                      {
-                        'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3': chapterViewMode === 'grid',
-                        'flex flex-col gap-2': chapterViewMode === 'list',
-                        'flex flex-wrap gap-2': chapterViewMode === 'compact'
-                      }
-                    ]"
-                  >
-                    <UCard
-                      v-for="chapter in sortedChapters"
-                      :key="chapter.id"
-                      class="transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer group rounded-2xl mx-0.5 mt-0.5"
-                      :class="{ 'flex-auto min-w-[120px]': chapterViewMode === 'compact' }"
-                      :ui="{ body: chapterViewMode === 'compact' ? 'p-3' : 'p-4' }"
+                <div
+                  v-for="group in volumeChapterGroups"
+                  :key="group.volumeKey"
+                  class="space-y-3"
+                >
+                  <h4 class="text-sm font-bold text-foreground flex items-center gap-2 border-b border-border/30 pb-2">
+                    <UIcon
+                      name="i-lucide-book"
+                      class="w-4 h-4 text-primary"
+                    />
+                    {{ group.volumeTitle }}
+
+                    <UBadge
+                      color="neutral"
+                      variant="soft"
+                      size="xs"
+                      class="rounded-md font-semibold ml-1"
                     >
-                      <NuxtLink
-                        :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
-                        class="flex items-center justify-between gap-2"
+                      {{ group.chapters.length }} Bölüm
+                    </UBadge>
+                  </h4>
+
+                  <div class="relative">
+                    <div
+                      class="transition-[max-height] duration-500 ease-in-out overflow-hidden"
+                      :class="[
+                        isChaptersExpanded || chapterSearchQuery.trim()
+                          ? 'max-h-[25000px]'
+                          : 'max-h-[580px]',
+                        {
+                          'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3': chapterViewMode === 'grid',
+                          'flex flex-col gap-2': chapterViewMode === 'list',
+                          'flex flex-wrap gap-2': chapterViewMode === 'compact'
+                        }
+                      ]"
+                    >
+                      <UCard
+                        v-for="chapter in group.chapters"
+                        :key="chapter.id"
+                        class="transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer group rounded-2xl mx-0.5 mt-0.5"
+                        :class="{ 'flex-auto min-w-[120px]': chapterViewMode === 'compact' }"
+                        :ui="{ body: chapterViewMode === 'compact' ? 'p-3' : 'p-4' }"
                       >
-                        <div class="truncate pr-1">
-                          <p
-                            class="font-bold text-sm group-hover:text-primary transition-colors truncate"
-                          >
-                            {{ chapter.title || `Bölüm ${chapter.chapter_number || chapter.id}` }}
-                          </p>
+                        <NuxtLink
+                          :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
+                          class="flex items-center justify-between gap-2"
+                        >
+                          <div class="truncate pr-1">
+                            <p
+                              class="font-bold text-sm group-hover:text-primary transition-colors truncate"
+                            >
+                              {{ getChapterLabel(chapter) }}
+                            </p>
 
-                          <p
+                            <p
+                              v-if="chapterViewMode !== 'compact'"
+                              class="text-xs text-muted-foreground mt-1 flex items-center gap-1"
+                            >
+                              <UIcon
+                                name="i-lucide-languages"
+                                class="w-3 h-3 text-muted-foreground/70"
+                              />
+                              {{ chapter.source?.name || "Bilinmeyen Çevirmen" }}
+                            </p>
+                          </div>
+
+                          <UButton
                             v-if="chapterViewMode !== 'compact'"
-                            class="text-xs text-muted-foreground mt-1 flex items-center gap-1"
-                          >
-                            <UIcon
-                              name="i-lucide-languages"
-                              class="w-3 h-3 text-muted-foreground/70"
-                            />
-                            {{ chapter.source?.name || "Bilinmeyen Çevirmen" }}
-                          </p>
-                        </div>
+                            size="xs"
+                            color="primary"
+                            variant="ghost"
+                            icon="i-lucide-chevron-right"
+                            square
+                            class="group-hover:translate-x-0.5 transition-transform"
+                          />
+                        </NuxtLink>
+                      </UCard>
+                    </div>
 
-                        <UButton
-                          v-if="chapterViewMode !== 'compact'"
-                          size="xs"
-                          color="primary"
-                          variant="ghost"
-                          icon="i-lucide-chevron-right"
-                          square
-                          class="group-hover:translate-x-0.5 transition-transform"
-                        />
-                      </NuxtLink>
-                    </UCard>
+                    <div
+                      v-if="!isChaptersExpanded && group.chapters.length > chapterLimit && !chapterSearchQuery.trim()"
+                      class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none transition-opacity duration-300"
+                    />
                   </div>
-
-                  <div
-                    v-if="!isChaptersExpanded && sortedChapters.length > chapterLimit && !chapterSearchQuery.trim()"
-                    class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none transition-opacity duration-300"
-                  />
                 </div>
 
                 <div
@@ -1291,6 +1393,77 @@ onUnmounted(() => {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div
+          v-if="serie.anilistRelations && serie.anilistRelations.length"
+          class="mt-12 px-4 md:px-0"
+        >
+          <USeparator
+            position="start"
+            class="font-black text-2xl md:text-3xl mb-6"
+          >
+            <span class="mr-3 flex items-center gap-2">
+              <UIcon
+                name="i-lucide-link"
+                class="text-primary w-6 h-6"
+              />
+              İlgili Seriler
+            </span>
+          </USeparator>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+            <NuxtLink
+              v-for="relation in serie.anilistRelations"
+              :key="relation.id"
+              :to="`/title/${relation.id}`"
+              class="group flex flex-col gap-2"
+            >
+              <div class="aspect-2/3 rounded-xl overflow-hidden bg-muted shadow-sm group-hover:shadow-md transition-shadow">
+                <img
+                  :src="relation.cover || serie.cover"
+                  :alt="relation.title"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                >
+              </div>
+
+              <div class="space-y-1 px-0.5">
+                <UBadge
+                  :color="
+                    relation.relationType === 'SEQUEL' ? 'primary'
+                    : relation.relationType === 'PREQUEL' ? 'info'
+                    : relation.relationType === 'ALTERNATIVE' ? 'warning'
+                    : 'neutral'
+                  "
+                  variant="subtle"
+                  size="xs"
+                  class="rounded-md font-semibold text-[10px]"
+                >
+                  {{
+                    relation.relationType === 'SEQUEL' ? 'Devam'
+                    : relation.relationType === 'PREQUEL' ? 'Önceki'
+                    : relation.relationType === 'SIDE_STORY' ? 'Yan Hikaye'
+                    : relation.relationType === 'ALTERNATIVE' ? 'Alternatif'
+                    : relation.relationType === 'PARENT' ? 'Ana Seri'
+                    : relation.relationType === 'ADAPTATION' ? 'Adaptasyon'
+                    : relation.relationType === 'SPIN_OFF' ? 'Spin-off'
+                    : relation.relationType === 'CHARACTER' ? 'Karakter'
+                    : relation.relationType === 'SUMMARY' ? 'Özet'
+                    : relation.relationType === 'SOURCE' ? 'Kaynak'
+                    : 'İlgili'
+                  }}
+                </UBadge>
+
+                <p class="text-xs font-semibold text-foreground line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                  {{ relation.title }}
+                </p>
+
+                <p class="text-[10px] text-muted-foreground">
+                  {{ relation.type }}
+                </p>
+              </div>
+            </NuxtLink>
           </div>
         </div>
 
