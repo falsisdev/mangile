@@ -106,10 +106,21 @@ const getSiblingChapterLabel = (chapter: {
   return t ?? 'Bilinmeyen bölüm'
 }
 
+const siblingChapterOptions = computed(() =>
+  siblingChapters.value.map(chapter => ({
+    value: chapter._id,
+    label: getSiblingChapterLabel(chapter)
+  }))
+)
+
 watch(selectedSiblingChapter, (chapterId) => {
   if (chapterId && chapterId !== chapterKey.value) {
     void navigateTo(`/chapter/${chapterId}/novel`)
   }
+})
+
+watch(chapterKey, (key) => {
+  selectedSiblingChapter.value = key
 })
 
 const goToPreviousChapter = () => {
@@ -418,11 +429,9 @@ definePageMeta({
           />
 
           <USelect
-            v-if="siblingChapters.length"
+            v-if="siblingChapterOptions.length"
             v-model="selectedSiblingChapter"
-            :items="siblingChapters"
-            :item-value="(item: any) => item._id"
-            :item-label="(item: any) => getSiblingChapterLabel(item)"
+            :items="siblingChapterOptions"
             :placeholder="`Bölüm ${chapterData?.chapterNumber ?? '-'} / ${siblingChapters.length}`"
             size="xs"
             class="w-40"

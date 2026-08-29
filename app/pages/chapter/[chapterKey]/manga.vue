@@ -124,6 +124,13 @@ const getSiblingChapterLabel = (chapter: {
   return t ?? 'Bilinmeyen bölüm'
 }
 
+const siblingChapterOptions = computed(() =>
+  siblingChapters.value.map(chapter => ({
+    value: chapter._id,
+    label: getSiblingChapterLabel(chapter)
+  }))
+)
+
 watch(selectedSiblingChapter, (chapterId) => {
   if (chapterId && chapterId !== chapterKey.value) {
     void navigateTo(`/chapter/${chapterId}/manga`)
@@ -344,7 +351,8 @@ onUnmounted(() => {
   stopAutoScroll()
 })
 
-watch(chapterKey, () => {
+watch(chapterKey, (key) => {
+  selectedSiblingChapter.value = key
   currentPage.value = 1
   settings.autoScroll = false
 })
@@ -518,11 +526,9 @@ definePageMeta({
             />
 
             <USelect
-              v-if="siblingChapters.length"
+              v-if="siblingChapterOptions.length"
               v-model="selectedSiblingChapter"
-              :items="siblingChapters"
-              :item-value="(item: any) => item._id"
-              :item-label="(item: any) => getSiblingChapterLabel(item)"
+              :items="siblingChapterOptions"
               :placeholder="`Bölüm ${chapterData?.chapterNumber ?? '-'} / ${siblingChapters.length}`"
               size="xs"
               class="w-40"
@@ -654,11 +660,26 @@ definePageMeta({
     v-else
     class="reader-container bg-default flex items-center justify-center"
   >
-    <div class="space-y-4 text-center">
-      <USkeleton class="h-96 w-96 rounded-lg" />
-      <p class="text-white text-sm">
-        Bölüm yükleniyor...
-      </p>
+    <div class="flex flex-col items-center gap-6 px-6 text-center">
+      <div
+        class="reader-loader"
+        aria-hidden="true"
+      >
+        <span class="reader-loader-ring" />
+        <UIcon
+          name="i-lucide-book-open"
+          class="reader-loader-icon"
+        />
+      </div>
+
+      <div class="space-y-1.5">
+        <p class="text-white font-bold text-base">
+          Bölüm yükleniyor...
+        </p>
+        <p class="text-gray-400 text-xs">
+          Sayfalar hazırlanıyor, lütfen bekleyin.
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -859,5 +880,35 @@ definePageMeta({
 .page-fade-enter-from,
 .page-fade-leave-to {
   opacity: 0;
+}
+
+.reader-loader {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reader-loader-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-primary);
+  animation: reader-spin 0.9s linear infinite;
+}
+
+.reader-loader-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-primary);
+}
+
+@keyframes reader-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

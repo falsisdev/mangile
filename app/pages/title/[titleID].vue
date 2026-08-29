@@ -111,6 +111,7 @@ interface RelationItem {
 const breadcrumbs = useBreadcrumbs()
 const config = useRuntimeConfig()
 const route = useRoute()
+const router = useRouter()
 const titleId = computed(() => {
   const value = route.params.titleID
   return Array.isArray(value) ? (value[0] ?? '') : (value ?? '')
@@ -178,7 +179,7 @@ function mapTitleResponse(title: TitleApiResponse | null): SerieData {
             .replaceAll('MANGA', 'Manga')
             .replaceAll('ANIME', 'Anime')
             .replaceAll('LIGHT_NOVEL', 'Hafif Roman')
-          || 'Manga'
+            || 'Manga'
       }
     }).filter(r => r.id !== 0),
     malID: title.myAnimeListId,
@@ -279,10 +280,7 @@ function toggleVolume(key: string | number) {
   }
 }
 
-const isDescriptionLong = computed(() => {
-  const text = serie.value?.description || serie.value?.anilistDescription || ''
-  return text.length > 250
-})
+const isDescriptionLong = ref(false)
 
 const isNotesLong = computed(() => {
   if (!serie.value?.notes || !serie.value.notes.length) return false
@@ -292,8 +290,6 @@ const isNotesLong = computed(() => {
 
 const isDescriptionExpanded = ref(false)
 const isNotesExpanded = ref(false)
-const isChaptersExpanded = ref(false)
-const chapterLimit = 12
 
 const ageVerified = ref(false)
 
@@ -477,7 +473,7 @@ const volumeChapterGroups = computed<VolumeChapterGroup[]>(() => {
     if (b === 'single') return -1
     const na = Number(a)
     const nb = Number(b)
-    
+
     let diff = 0
     if (isNaN(na) && isNaN(nb)) diff = String(a).localeCompare(String(b))
     else if (isNaN(na)) diff = 1
@@ -489,15 +485,15 @@ const volumeChapterGroups = computed<VolumeChapterGroup[]>(() => {
 
   return sortedKeys.map((key) => {
     const volNum = Number(key)
-    const volumeTitle =
-      key === 'single'
+    const volumeTitle
+      = key === 'single'
         ? 'Tek Cilt'
         : `Cilt ${!isNaN(volNum) ? volNum : key}`
 
     const chapters = groups.get(key)!
     // Cilt icindeki bolumler siralama moduna gore duzenlenir
-    const sortedChaps =
-      chapterSortOrder.value === 'desc' ? [...chapters].reverse() : chapters
+    const sortedChaps
+      = chapterSortOrder.value === 'desc' ? [...chapters].reverse() : chapters
 
     return { volumeKey: key, volumeTitle, chapters: sortedChaps }
   })
@@ -515,6 +511,8 @@ watchEffect(() => {
 
 const bannerOpacity = ref(1)
 const isMobile = ref(false)
+const descriptionMobileEl = useTemplateRef<HTMLElement>('descriptionMobileEl')
+const descriptionDesktopEl = useTemplateRef<HTMLElement>('descriptionDesktopEl')
 
 function handleScroll() {
   if (!isMobile.value) {
@@ -530,14 +528,41 @@ function checkDevice() {
   isMobile.value = window.innerWidth < 768
 }
 
+function measureDescriptionOverflow() {
+  nextTick(() => {
+    requestAnimationFrame(() => {
+      if (isDescriptionExpanded.value) return
+      const el = isMobile.value
+        ? descriptionMobileEl.value
+        : descriptionDesktopEl.value
+      if (el) isDescriptionLong.value = el.scrollHeight > el.clientHeight + 1
+    })
+  })
+}
+
+watch(
+  () => serie.value?.description || serie.value?.anilistDescription || '',
+  () => {
+    isDescriptionExpanded.value = false
+    measureDescriptionOverflow()
+  }
+)
+
+watch(isDescriptionExpanded, (expanded) => {
+  if (!expanded) measureDescriptionOverflow()
+})
+
 onMounted(() => {
   checkDevice()
+  measureDescriptionOverflow()
   window.addEventListener('resize', checkDevice)
+  window.addEventListener('resize', measureDescriptionOverflow)
   window.addEventListener('scroll', handleScroll)
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkDevice)
+  window.removeEventListener('resize', measureDescriptionOverflow)
   window.removeEventListener('scroll', handleScroll)
 })
 </script>
@@ -580,48 +605,75 @@ onUnmounted(() => {
       >
         <div class="block md:hidden space-y-6 -mx-4 -mt-4">
           <div
-            class="relative bg-muted/30 border-b border-border/40 pb-4 overflow-hidden"
+            class="relative bg-background border-b border-border/40 pb-5 overflow-hidden"
           >
-            <div class="relative h-56 w-full overflow-hidden">
+            <div class="relative h-72 w-full overflow-hidden">
               <img
                 :src="serie.banner || serie.anilistBanner || serie.cover || serie.anilistCover"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover select-none"
                 alt="Banner"
+                :style="{ opacity: bannerOpacity }"
               >
               <div
-                class="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-black/70 z-10"
+                class="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/60 to-black/50"
+              />
+              <div
+                class="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-transparent"
               />
             </div>
 
-            <div class="px-4 -mt-32 relative z-20 flex gap-4 items-end">
-              <div
-                class="w-32 aspect-2/3 rounded-2xl overflow-hidden shadow-2xl shrink-0 bg-background"
-              >
-                <img
-                  :src="serie.cover || serie.anilistCover"
-                  class="w-full h-full object-cover"
-                  :alt="serie.title"
+            <UButton
+              icon="i-lucide-arrow-left"
+              variant="ghost"
+              size="lg"
+              square
+              class="absolute top-3 left-3 z-30 rounded-full bg-black/40 text-white backdrop-blur-md ring-1 ring-white/20 hover:bg-black/55"
+              aria-label="Geri dön"
+              @click="router.back()"
+            />
+
+            <div class="px-4 -mt-40 relative z-20 flex gap-4 items-end">
+              <div class="relative w-36 shrink-0">
+                <div
+                  class="aspect-2/3 rounded-2xl overflow-hidden bg-background ring-4 ring-background/50 shadow-2xl"
                 >
+                  <img
+                    :src="serie.cover || serie.anilistCover"
+                    class="w-full h-full object-cover"
+                    :alt="serie.title"
+                  >
+                </div>
+
+                <UBadge
+                  v-if="warningTags.length"
+                  color="error"
+                  variant="solid"
+                  size="xs"
+                  class="absolute -top-2 -right-2 rounded-full font-black shadow-lg px-2 ring-2 ring-background"
+                >
+                  18+
+                </UBadge>
               </div>
 
-              <div class="space-y-1.5 pb-1 overflow-hidden">
+              <div class="min-w-0 flex-1 space-y-2 pb-2">
                 <UBadge
                   color="primary"
-                  size="sm"
-                  class="font-bold rounded-md"
+                  variant="solid"
+                  size="md"
+                  class="font-bold rounded-lg shadow-lg"
                 >
                   {{ serie.type || "Manga" }}
                 </UBadge>
 
                 <h1
-                  class="text-xl md:text-2xl font-black text-foreground leading-tight drop-shadow-md line-clamp-4"
+                  class="text-2xl font-black text-foreground leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)] line-clamp-4"
                 >
                   {{ serie.title }}
                 </h1>
 
                 <p
                   v-if="serie.anilistTitle && serie.anilistTitle !== serie.title"
-                  class="text-xs text-muted-foreground truncate"
+                  class="text-xs font-medium text-foreground/80 truncate"
                 >
                   {{ serie.anilistTitle }}
                 </p>
@@ -630,7 +682,7 @@ onUnmounted(() => {
 
             <div class="px-4 pt-4 flex flex-wrap gap-2 items-center">
               <div
-                class="px-3 py-1 rounded-xl bg-muted/80 ring-1 ring-default/30 text-xs font-bold flex items-center gap-1.5"
+                class="px-3 py-1 rounded-xl bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow-sm text-xs font-bold flex items-center gap-1.5"
               >
                 <UIcon
                   name="i-lucide-star"
@@ -641,7 +693,7 @@ onUnmounted(() => {
               </div>
 
               <div
-                class="px-3 py-1 rounded-xl bg-muted/80 ring-1 ring-default/30 text-xs font-bold flex items-center gap-1.5"
+                class="px-3 py-1 rounded-xl bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow-sm text-xs font-bold flex items-center gap-1.5"
               >
                 <UIcon
                   name="i-lucide-star"
@@ -652,7 +704,7 @@ onUnmounted(() => {
               </div>
 
               <div
-                class="px-3 py-1 rounded-xl bg-muted/80 ring-1 ring-default/30 text-xs font-bold flex items-center gap-1.5"
+                class="px-3 py-1 rounded-xl bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow-sm text-xs font-bold flex items-center gap-1.5"
               >
                 <UIcon
                   name="i-lucide-chart-no-axes-column-increasing"
@@ -678,6 +730,33 @@ onUnmounted(() => {
                 {{ tag }}
               </UBadge>
             </div>
+
+            <div
+              v-if="firstChapter || lastChapter"
+              class="px-4 pt-4 grid grid-cols-2 gap-2"
+            >
+              <UButton
+                v-if="firstChapter"
+                :to="`/chapter/${firstChapter._key}/${chapterRouteType(serie?.type)}`"
+                color="primary"
+                variant="solid"
+                icon="i-lucide-play"
+                class="justify-center rounded-xl font-bold"
+              >
+                Baştan Oku
+              </UButton>
+
+              <UButton
+                v-if="lastChapter && lastChapter._key !== firstChapter?._key"
+                :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type)}`"
+                color="primary"
+                variant="soft"
+                icon="i-lucide-fast-forward"
+                class="justify-center rounded-xl font-bold"
+              >
+                Son Bölüm
+              </UButton>
+            </div>
           </div>
 
           <div class="px-4 space-y-5">
@@ -696,6 +775,7 @@ onUnmounted(() => {
 
               <div class="relative">
                 <p
+                  ref="descriptionMobileEl"
                   class="text-xs text-muted-foreground leading-relaxed transition-[max-height] duration-500 ease-in-out overflow-hidden"
                   :class="isDescriptionExpanded ? 'max-h-[1000px]' : 'max-h-20'"
                 >
@@ -825,56 +905,58 @@ onUnmounted(() => {
                   </h4>
 
                   <div
-                    v-show="expandedVolumes.includes(String(group.volumeKey))"
-                    class="relative"
+                    class="grid transition-[grid-template-rows] duration-500 ease-in-out"
+                    :class="expandedVolumes.includes(String(group.volumeKey)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
                   >
                     <div
-                      class="flex flex-col gap-2 transition-[max-height] duration-300 ease-in-out overflow-hidden"
+                      class="overflow-hidden min-h-0"
                     >
-                      <UCard
-                        v-for="chapter in group.chapters"
-                        :key="chapter.id"
-                        class="shrink-0 transition-all hover:border-primary/40 cursor-pointer rounded-xl mx-1 mt-0.5"
-                        :ui="{ body: 'p-3' }"
-                      >
-                        <NuxtLink
-                          :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
-                          class="flex items-center justify-between gap-2"
+                      <div class="flex flex-col gap-2">
+                        <UCard
+                          v-for="chapter in group.chapters"
+                          :key="chapter.id"
+                          class="shrink-0 transition-all hover:border-primary/40 cursor-pointer rounded-xl mx-1 mt-0.5"
+                          :ui="{ body: 'p-3' }"
                         >
-                          <div class="truncate pr-1 min-w-0 flex-1">
-                            <p class="font-bold text-xs text-foreground truncate">
-                              {{ getChapterLabel(chapter) }}
-                            </p>
+                          <NuxtLink
+                            :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
+                            class="flex items-center justify-between gap-2"
+                          >
+                            <div class="truncate pr-1 min-w-0 flex-1">
+                              <p class="font-bold text-xs text-foreground truncate">
+                                {{ getChapterLabel(chapter) }}
+                              </p>
 
-                            <p
-                              class="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1 truncate"
-                            >
+                              <p
+                                class="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1 truncate"
+                              >
+                                <UIcon
+                                  name="i-lucide-languages"
+                                  class="w-3 h-3 text-muted-foreground/70 shrink-0"
+                                />
+                                <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
+                              </p>
+                            </div>
+
+                            <div class="flex items-center gap-2 shrink-0">
+                              <UBadge
+                                v-if="chapter.chapter_number"
+                                color="primary"
+                                variant="soft"
+                                size="xs"
+                                class="rounded-md text-[10px] font-semibold"
+                              >
+                                {{ chapter.chapter_number }}
+                              </UBadge>
+
                               <UIcon
-                                name="i-lucide-languages"
-                                class="w-3 h-3 text-muted-foreground/70 shrink-0"
+                                name="i-lucide-chevron-right"
+                                class="w-4 h-4 text-muted-foreground"
                               />
-                              <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
-                            </p>
-                          </div>
-
-                          <div class="flex items-center gap-2 shrink-0">
-                            <UBadge
-                              v-if="chapter.chapter_number"
-                              color="primary"
-                              variant="soft"
-                              size="xs"
-                              class="rounded-md text-[10px] font-semibold"
-                            >
-                              {{ chapter.chapter_number }}
-                            </UBadge>
-
-                            <UIcon
-                              name="i-lucide-chevron-right"
-                              class="w-4 h-4 text-muted-foreground"
-                            />
-                          </div>
-                        </NuxtLink>
-                      </UCard>
+                            </div>
+                          </NuxtLink>
+                        </UCard>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1100,6 +1182,7 @@ onUnmounted(() => {
 
               <div class="relative">
                 <div
+                  ref="descriptionDesktopEl"
                   class="p-4 rounded-2xl bg-muted/40 ring-1 ring-default/30 leading-relaxed text-sm text-muted-foreground transition-[max-height] duration-500 ease-in-out overflow-hidden"
                   :class="isDescriptionExpanded ? 'max-h-[1000px]' : 'max-h-36'"
                 >
@@ -1331,60 +1414,63 @@ onUnmounted(() => {
                   </h4>
 
                   <div
-                    v-show="expandedVolumes.includes(String(group.volumeKey))"
-                    class="relative"
+                    class="grid transition-[grid-template-rows] duration-500 ease-in-out"
+                    :class="expandedVolumes.includes(String(group.volumeKey)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
                   >
                     <div
-                      class="transition-[max-height] duration-500 ease-in-out overflow-hidden"
-                      :class="[
-                        {
-                          'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3': chapterViewMode === 'grid',
-                          'flex flex-col gap-2': chapterViewMode === 'list',
-                          'flex flex-wrap gap-2': chapterViewMode === 'compact'
-                        }
-                      ]"
+                      class="overflow-hidden min-h-0"
                     >
-                      <UCard
-                        v-for="chapter in group.chapters"
-                        :key="chapter.id"
-                        class="transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer group rounded-2xl mx-0.5 mt-0.5"
-                        :class="{ 'flex-auto min-w-[120px]': chapterViewMode === 'compact' }"
-                        :ui="{ body: chapterViewMode === 'compact' ? 'p-3' : 'p-4' }"
+                      <div
+                        :class="[
+                          {
+                            'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3': chapterViewMode === 'grid',
+                            'flex flex-col gap-2': chapterViewMode === 'list',
+                            'flex flex-wrap gap-2': chapterViewMode === 'compact'
+                          }
+                        ]"
                       >
-                        <NuxtLink
-                          :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
-                          class="flex items-center justify-between gap-2"
+                        <UCard
+                          v-for="chapter in group.chapters"
+                          :key="chapter.id"
+                          class="transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer group rounded-2xl mx-0.5 mt-0.5"
+                          :class="{ 'flex-auto min-w-[120px]': chapterViewMode === 'compact' }"
+                          :ui="{ body: chapterViewMode === 'compact' ? 'p-3' : 'p-4' }"
                         >
-                          <div class="truncate pr-1 min-w-0 flex-1">
-                            <p
-                              class="font-bold text-sm group-hover:text-primary transition-colors truncate"
-                            >
-                              {{ getChapterLabel(chapter) }}
-                            </p>
+                          <NuxtLink
+                            :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
+                            class="flex items-center justify-between gap-2"
+                          >
+                            <div class="truncate pr-1 min-w-0 flex-1">
+                              <p
+                                class="font-bold text-sm group-hover:text-primary transition-colors truncate"
+                              >
+                                {{ getChapterLabel(chapter) }}
+                              </p>
 
-                            <p
+                              <p
+                                v-if="chapterViewMode !== 'compact'"
+                                class="text-xs text-muted-foreground mt-1 flex items-center gap-1 truncate"
+                              >
+                                <UIcon
+                                  name="i-lucide-languages"
+                                  class="w-3 h-3 text-muted-foreground/70 shrink-0"
+                                />
+                                <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
+                              </p>
+                            </div>
+
+                            <UButton
                               v-if="chapterViewMode !== 'compact'"
-                              class="text-xs text-muted-foreground mt-1 flex items-center gap-1 truncate"
-                            >
-                              <UIcon
-                                name="i-lucide-languages"
-                                class="w-3 h-3 text-muted-foreground/70 shrink-0"
-                              />
-                              <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
-                            </p>
-                          </div>
-
-                          <UButton
-                            v-if="chapterViewMode !== 'compact'"
-                            size="xs"
-                            color="primary"
-                            variant="ghost"
-                            icon="i-lucide-chevron-right"
-                            square
-                            class="group-hover:translate-x-0.5 transition-transform shrink-0"
-                          />
-                        </NuxtLink>
-                      </UCard>
+                              size="xs"
+                              color="primary"
+                              variant="ghost"
+                              icon="i-lucide-chevron-right"
+                              square
+                              class="group-hover:translate-x-0.5 transition-transform shrink-0"
+                            />
+                          </NuxtLink>
+                        </UCard>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1403,181 +1489,182 @@ onUnmounted(() => {
                   {{ chapterSearchQuery ? 'Aramanıza uygun bölüm bulunamadı.' : 'Henüz bu seriye ait bir bölüm yüklenmemiş.' }}
                 </p>
               </div>
-              </div>
             </div>
           </div>
         </div>
+      </div>
 
-    <div
-      v-if="serie?.anilistRelations && serie?.anilistRelations.length"
-      class="mt-12 px-4 md:px-0"
-    >
-      <USeparator
-        position="start"
-        class="font-black text-2xl md:text-3xl mb-6"
+      <div
+        v-if="!showAgeGate && serie?.anilistRelations && serie?.anilistRelations.length"
+        class="mt-12 px-4 md:px-0"
       >
-        <span class="mr-3 flex items-center gap-2">
-          <UIcon
-            name="i-lucide-link"
-            class="text-primary w-6 h-6"
-          />
-          İlgili Seriler
-        </span>
-      </USeparator>
-
-      <swiper-container
-        :key="'relations-' + String(serie?.id)"
-        :slides-per-view="2"
-        :breakpoints="{
-              480: { slidesPerView: 3, spaceBetween: 12 },
-              640: { slidesPerView: 4, spaceBetween: 16 },
-              768: { slidesPerView: 5, spaceBetween: 16 },
-              1024: { slidesPerView: 6, spaceBetween: 20 },
-              1280: { slidesPerView: 7, spaceBetween: 20 }
-            }"
-            :space-between="10"
-            :mousewheel="true"
-            :free-mode="true"
-          >
-            <swiper-slide
-              v-for="relation in serie?.anilistRelations"
-              :key="relation.id"
-            >
-              <NuxtLink
-                :to="`/title/${relation.id}`"
-                class="group flex flex-col gap-2 h-full"
-              >
-                <div class="aspect-2/3 rounded-xl overflow-hidden bg-muted shadow-sm group-hover:shadow-md transition-shadow">
-                  <img
-                    :src="relation.cover || serie?.cover"
-                    :alt="relation.title"
-                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  >
-                </div>
-
-                <div class="space-y-1 px-0.5 flex flex-col flex-1">
-                  <div class="self-start">
-                    <UBadge
-                      :color="
-                        relation.relationType === 'SEQUEL' ? 'primary'
-                        : relation.relationType === 'PREQUEL' ? 'info'
-                        : relation.relationType === 'ALTERNATIVE' ? 'warning'
-                        : 'neutral'
-                      "
-                      variant="subtle"
-                      size="xs"
-                      class="rounded-md font-semibold text-[10px]"
-                    >
-                      {{
-                        relation.relationType === 'SEQUEL' ? 'Devam'
-                        : relation.relationType === 'PREQUEL' ? 'Önceki'
-                        : relation.relationType === 'SIDE_STORY' ? 'Yan Hikaye'
-                        : relation.relationType === 'ALTERNATIVE' ? 'Alternatif'
-                        : relation.relationType === 'PARENT' ? 'Ana Seri'
-                        : relation.relationType === 'ADAPTATION' ? 'Adaptasyon'
-                        : relation.relationType === 'SPIN_OFF' ? 'Spin-off'
-                        : relation.relationType === 'CHARACTER' ? 'Karakter'
-                        : relation.relationType === 'SUMMARY' ? 'Özet'
-                        : relation.relationType === 'SOURCE' ? 'Kaynak'
-                        : 'İlgili'
-                      }}
-                    </UBadge>
-                  </div>
-
-                  <p class="text-xs font-semibold text-foreground line-clamp-2 leading-tight group-hover:text-primary transition-colors">
-                    {{ relation.title }}
-                  </p>
-
-                  <p class="text-[10px] text-muted-foreground mt-auto">
-                    {{ relation.type }}
-                  </p>
-                </div>
-              </NuxtLink>
-            </swiper-slide>
-          </swiper-container>
-        </div>
-
         <USeparator
           position="start"
-          class="font-black text-2xl md:text-3xl mt-12 mb-4 px-4 md:px-0"
+          class="font-black text-2xl md:text-3xl mb-6"
         >
           <span class="mr-3 flex items-center gap-2">
             <UIcon
-              name="i-lucide-sparkles"
-              class="text-amber-500 w-6 h-6"
+              name="i-lucide-link"
+              class="text-primary w-6 h-6"
             />
-            Önerilen Seriler
+            İlgili Seriler
           </span>
         </USeparator>
 
-        <CardRecommendations
-          v-if="recommendations.length"
-          :items="recommendations"
-        />
+        <swiper-container
+          :key="'relations-' + String(serie?.id)"
+          :slides-per-view="2"
+          :breakpoints="{
+            480: { slidesPerView: 3, spaceBetween: 12 },
+            640: { slidesPerView: 4, spaceBetween: 16 },
+            768: { slidesPerView: 5, spaceBetween: 16 },
+            1024: { slidesPerView: 6, spaceBetween: 20 },
+            1280: { slidesPerView: 7, spaceBetween: 20 }
+          }"
+          :space-between="10"
+          :mousewheel="true"
+          :free-mode="true"
+        >
+          <swiper-slide
+            v-for="relation in serie?.anilistRelations"
+            :key="relation.id"
+          >
+            <NuxtLink
+              :to="`/title/${relation.id}`"
+              class="group flex flex-col gap-2 h-full"
+            >
+              <div class="aspect-2/3 rounded-xl overflow-hidden bg-muted shadow-sm group-hover:shadow-md transition-shadow">
+                <img
+                  :src="relation.cover || serie?.cover"
+                  :alt="relation.title"
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                >
+              </div>
 
-    <div
-      v-if="serie && showAgeGate"
-      class="min-h-[70vh] flex items-center justify-center px-4 py-12"
-    >
-      <UCard
-        class="w-full max-w-lg"
-        :ui="{ body: 'p-6 sm:p-8' }"
+              <div class="space-y-1 px-0.5 flex flex-col flex-1">
+                <div class="self-start">
+                  <UBadge
+                    :color="
+                      relation.relationType === 'SEQUEL' ? 'primary'
+                      : relation.relationType === 'PREQUEL' ? 'info'
+                        : relation.relationType === 'ALTERNATIVE' ? 'warning'
+                          : 'neutral'
+                    "
+                    variant="subtle"
+                    size="xs"
+                    class="rounded-md font-semibold text-[10px]"
+                  >
+                    {{
+                      relation.relationType === 'SEQUEL' ? 'Devam'
+                      : relation.relationType === 'PREQUEL' ? 'Önceki'
+                        : relation.relationType === 'SIDE_STORY' ? 'Yan Hikaye'
+                          : relation.relationType === 'ALTERNATIVE' ? 'Alternatif'
+                            : relation.relationType === 'PARENT' ? 'Ana Seri'
+                              : relation.relationType === 'ADAPTATION' ? 'Adaptasyon'
+                                : relation.relationType === 'SPIN_OFF' ? 'Spin-off'
+                                  : relation.relationType === 'CHARACTER' ? 'Karakter'
+                                    : relation.relationType === 'SUMMARY' ? 'Özet'
+                                      : relation.relationType === 'SOURCE' ? 'Kaynak'
+                                        : 'İlgili'
+                    }}
+                  </UBadge>
+                </div>
+
+                <p class="text-xs font-semibold text-foreground line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                  {{ relation.title }}
+                </p>
+
+                <p class="text-[10px] text-muted-foreground mt-auto">
+                  {{ relation.type }}
+                </p>
+              </div>
+            </NuxtLink>
+          </swiper-slide>
+        </swiper-container>
+      </div>
+
+      <USeparator
+        v-if="!showAgeGate"
+        position="start"
+        class="font-black text-2xl md:text-3xl mt-12 mb-4 px-4 md:px-0"
       >
-        <div class="space-y-6 text-center">
-          <div
-            class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-error/10 text-error"
-          >
-            <UIcon
-              name="i-lucide-shield-alert"
-              class="h-7 w-7"
-            />
-          </div>
+        <span class="mr-3 flex items-center gap-2">
+          <UIcon
+            name="i-lucide-sparkles"
+            class="text-amber-500 w-6 h-6"
+          />
+          Önerilen Seriler
+        </span>
+      </USeparator>
 
-          <div class="space-y-2">
-            <h1 class="text-2xl font-black text-foreground">
-              18+ İçerik Uyarısı
-            </h1>
+      <CardRecommendations
+        v-if="!showAgeGate && recommendations.length"
+        :items="recommendations"
+      />
 
-            <p class="text-sm leading-relaxed text-muted-foreground">
-              Bu seri
-              <span class="font-semibold text-foreground">
-                {{ warningTags.join(' ve ') }}
-              </span>
-              etiker(ler)i nedeniyle yetişkin içerik barındırabilir. Devam etmek için
-              18 yaşından büyük olduğunuzu beyan etmek durumundasınız.
-            </p>
-          </div>
-
-          <div
-            class="rounded-xl bg-muted/40 px-4 py-3 text-sm text-muted-foreground"
-          >
-            {{ serie.title }}
-          </div>
-
-          <div class="flex flex-col gap-2 sm:flex-row sm:justify-center">
-            <UButton
-              color="neutral"
-              variant="outline"
-              size="lg"
-              class="rounded-xl"
-              @click="rejectAgeGate"
+      <div
+        v-if="serie && showAgeGate"
+        class="min-h-[70vh] flex items-center justify-center px-4 py-12"
+      >
+        <UCard
+          class="w-full max-w-lg"
+          :ui="{ body: 'p-6 sm:p-8' }"
+        >
+          <div class="space-y-6 text-center">
+            <div
+              class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-error/10 text-error"
             >
-              18 Yaşından Küçüğüm
-            </UButton>
+              <UIcon
+                name="i-lucide-shield-alert"
+                class="h-7 w-7"
+              />
+            </div>
 
-            <UButton
-              color="primary"
-              variant="solid"
-              size="lg"
-              class="rounded-xl"
-              @click="acceptAgeGate"
+            <div class="space-y-2">
+              <h1 class="text-2xl font-black text-foreground">
+                18+ İçerik Uyarısı
+              </h1>
+
+              <p class="text-sm leading-relaxed text-muted-foreground">
+                Bu seri
+                <span class="font-semibold text-foreground">
+                  {{ warningTags.join(' ve ') }}
+                </span>
+                etiker(ler)i nedeniyle yetişkin içerik barındırabilir. Devam etmek için
+                18 yaşından büyük olduğunuzu beyan etmek durumundasınız.
+              </p>
+            </div>
+
+            <div
+              class="rounded-xl bg-muted/40 px-4 py-3 text-sm text-muted-foreground"
             >
-              18 Yaşından Büyüğüm, Devam Et
-            </UButton>
+              {{ serie.title }}
+            </div>
+
+            <div class="flex flex-col gap-2 sm:flex-row sm:justify-center">
+              <UButton
+                color="neutral"
+                variant="outline"
+                size="lg"
+                class="rounded-xl"
+                @click="rejectAgeGate"
+              >
+                18 Yaşından Küçüğüm
+              </UButton>
+
+              <UButton
+                color="primary"
+                variant="solid"
+                size="lg"
+                class="rounded-xl"
+                @click="acceptAgeGate"
+              >
+                18 Yaşından Büyüğüm, Devam Et
+              </UButton>
+            </div>
           </div>
-        </div>
-      </UCard>
-    </div>
-   </UContainer>
+        </UCard>
+      </div>
+    </UContainer>
   </div>
 </template>
