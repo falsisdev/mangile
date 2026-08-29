@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { PortableText } from '@portabletext/vue'
+import { useStorage } from '@vueuse/core'
 import type { VNode } from 'vue'
 
 interface ChapterData {
@@ -264,9 +265,30 @@ const customComponents: Record<string, Record<string, unknown>> = {
 const chapterRouteType = (type?: string) =>
   (type ?? 'manga').toLowerCase().replaceAll('hafif roman', 'novel')
 
-const chapterViewMode = ref<'grid' | 'list' | 'compact'>('grid')
-const chapterSortOrder = ref<'asc' | 'desc'>('asc')
+const chapterViewMode = useStorage<'grid' | 'list' | 'compact'>('mangile-chapter-view-mode', 'grid')
+const chapterSortOrder = useStorage<'asc' | 'desc'>('mangile-chapter-sort-order', 'desc')
 const chapterSearchQuery = ref('')
+
+const expandedVolumes = ref<string[]>([])
+function toggleVolume(key: string | number) {
+  const strKey = String(key)
+  if (expandedVolumes.value.includes(strKey)) {
+    expandedVolumes.value = expandedVolumes.value.filter(k => k !== strKey)
+  } else {
+    expandedVolumes.value.push(strKey)
+  }
+}
+
+const isDescriptionLong = computed(() => {
+  const text = serie.value?.description || serie.value?.anilistDescription || ''
+  return text.length > 250
+})
+
+const isNotesLong = computed(() => {
+  if (!serie.value?.notes || !serie.value.notes.length) return false
+  const text = JSON.stringify(serie.value.notes)
+  return text.length > 300
+})
 
 const isDescriptionExpanded = ref(false)
 const isNotesExpanded = ref(false)
@@ -455,10 +477,14 @@ const volumeChapterGroups = computed<VolumeChapterGroup[]>(() => {
     if (b === 'single') return -1
     const na = Number(a)
     const nb = Number(b)
-    if (isNaN(na) && isNaN(nb)) return String(a).localeCompare(String(b))
-    if (isNaN(na)) return 1
-    if (isNaN(nb)) return -1
-    return na - nb
+    
+    let diff = 0
+    if (isNaN(na) && isNaN(nb)) diff = String(a).localeCompare(String(b))
+    else if (isNaN(na)) diff = 1
+    else if (isNaN(nb)) diff = -1
+    else diff = na - nb
+
+    return chapterSortOrder.value === 'desc' ? -diff : diff
   })
 
   return sortedKeys.map((key) => {
@@ -475,6 +501,12 @@ const volumeChapterGroups = computed<VolumeChapterGroup[]>(() => {
 
     return { volumeKey: key, volumeTitle, chapters: sortedChaps }
   })
+})
+
+watchEffect(() => {
+  if (volumeChapterGroups.value && expandedVolumes.value.length === 0) {
+    expandedVolumes.value = volumeChapterGroups.value.map(g => String(g.volumeKey))
+  }
 })
 
 watchEffect(() => {
@@ -582,7 +614,7 @@ onUnmounted(() => {
                 </UBadge>
 
                 <h1
-                  class="text-2xl font-black text-foreground leading-tight drop-shadow-md line-clamp-2"
+                  class="text-xl md:text-2xl font-black text-foreground leading-tight drop-shadow-md line-clamp-4"
                 >
                   {{ serie.title }}
                 </h1>
@@ -669,14 +701,14 @@ onUnmounted(() => {
                 >
                   {{ serie.description || serie.anilistDescription || "Bu seri için açıklama eklenmemiş." }}
                 </p>
-
                 <div
-                  v-if="!isDescriptionExpanded"
-                  class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none"
+                  v-if="!isDescriptionExpanded && isDescriptionLong"
+                  class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background/90 to-transparent pointer-events-none"
                 />
               </div>
 
               <button
+                v-if="isDescriptionLong"
                 class="text-xs font-bold text-primary flex items-center gap-1 pt-1"
                 @click="isDescriptionExpanded = !isDescriptionExpanded"
               >
@@ -693,9 +725,7 @@ onUnmounted(() => {
               v-if="serie.notes && serie.notes.length"
               class="space-y-2 bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl"
             >
-              <h3
-                class="text-sm font-bold text-amber-500 flex items-center gap-2"
-              >
+              <h3 class="text-sm font-bold text-amber-500 flex items-center gap-2">
                 <UIcon
                   name="i-lucide-sticky-note"
                   class="w-4 h-4"
@@ -715,12 +745,13 @@ onUnmounted(() => {
                 </div>
 
                 <div
-                  v-if="!isNotesExpanded"
+                  v-if="!isNotesExpanded && isNotesLong"
                   class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background/90 to-transparent pointer-events-none"
                 />
               </div>
 
               <button
+                v-if="isNotesLong"
                 class="text-xs font-bold text-amber-500 flex items-center gap-1 pt-1"
                 @click="isNotesExpanded = !isNotesExpanded"
               >
@@ -783,15 +814,22 @@ onUnmounted(() => {
                   class="mb-4 last:mb-0"
                 >
                   <h4
-                    class="font-semibold text-sm text-foreground mb-2 px-1"
+                    class="font-semibold text-sm text-foreground mb-2 px-1 flex items-center justify-between cursor-pointer select-none"
+                    @click="toggleVolume(group.volumeKey)"
                   >
-                    {{ group.volumeTitle }}
+                    <span>{{ group.volumeTitle }}</span>
+                    <UIcon
+                      :name="expandedVolumes.includes(String(group.volumeKey)) ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+                      class="w-4 h-4 text-muted-foreground"
+                    />
                   </h4>
 
-                  <div class="relative">
+                  <div
+                    v-show="expandedVolumes.includes(String(group.volumeKey))"
+                    class="relative"
+                  >
                     <div
                       class="flex flex-col gap-2 transition-[max-height] duration-300 ease-in-out overflow-hidden"
-                      :class="isChaptersExpanded || chapterSearchQuery.trim() ? 'max-h-[25000px]' : 'max-h-[440px]'"
                     >
                       <UCard
                         v-for="chapter in group.chapters"
@@ -803,19 +841,19 @@ onUnmounted(() => {
                           :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
                           class="flex items-center justify-between gap-2"
                         >
-                          <div class="truncate pr-1">
+                          <div class="truncate pr-1 min-w-0 flex-1">
                             <p class="font-bold text-xs text-foreground truncate">
                               {{ getChapterLabel(chapter) }}
                             </p>
 
                             <p
-                              class="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1"
+                              class="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1 truncate"
                             >
                               <UIcon
                                 name="i-lucide-languages"
-                                class="w-3 h-3 text-muted-foreground/70"
+                                class="w-3 h-3 text-muted-foreground/70 shrink-0"
                               />
-                              {{ chapter.source?.name || "Bilinmeyen Çevirmen" }}
+                              <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
                             </p>
                           </div>
 
@@ -838,28 +876,7 @@ onUnmounted(() => {
                         </NuxtLink>
                       </UCard>
                     </div>
-
-                    <div
-                      v-if="!isChaptersExpanded && group.chapters.length > chapterLimit && !chapterSearchQuery.trim()"
-                      class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/95 to-transparent pointer-events-none z-10"
-                    />
                   </div>
-                </div>
-
-                <div
-                  v-if="sortedChapters.length > chapterLimit && !chapterSearchQuery.trim()"
-                  class="pt-2 flex justify-center"
-                >
-                  <UButton
-                    :icon="isChaptersExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-                    variant="soft"
-                    color="primary"
-                    size="xs"
-                    class="rounded-lg px-5 font-semibold"
-                    @click="void (isChaptersExpanded = !isChaptersExpanded)"
-                  >
-                    {{ isChaptersExpanded ? 'Daha Az Göster' : `Tümünü Göster (${sortedChapters.length - chapterLimit} bölüm daha)` }}
-                  </UButton>
                 </div>
               </div>
 
@@ -1094,13 +1111,14 @@ onUnmounted(() => {
                 </div>
 
                 <div
+                  v-if="!isDescriptionExpanded && isDescriptionLong"
                   class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none rounded-b-2xl transition-opacity duration-300"
                   :class="isDescriptionExpanded ? 'opacity-0' : 'opacity-100'"
                 />
               </div>
 
               <div
-                v-if="(serie.description || serie.anilistDescription || '').length > 150"
+                v-if="isDescriptionLong"
                 class="flex justify-end"
               >
                 <UButton
@@ -1142,12 +1160,16 @@ onUnmounted(() => {
                 </div>
 
                 <div
+                  v-if="!isNotesExpanded && isNotesLong"
                   class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none rounded-b-2xl transition-opacity duration-300"
                   :class="isNotesExpanded ? 'opacity-0' : 'opacity-100'"
                 />
               </div>
 
-              <div class="flex justify-end">
+              <div
+                v-if="isNotesLong"
+                class="flex justify-end"
+              >
                 <UButton
                   color="warning"
                   variant="ghost"
@@ -1282,30 +1304,39 @@ onUnmounted(() => {
                   :key="group.volumeKey"
                   class="space-y-3"
                 >
-                  <h4 class="text-sm font-bold text-foreground flex items-center gap-2 border-b border-border/30 pb-2">
-                    <UIcon
-                      name="i-lucide-book"
-                      class="w-4 h-4 text-primary"
-                    />
-                    {{ group.volumeTitle }}
+                  <h4
+                    class="text-sm font-bold text-foreground flex items-center justify-between border-b border-border/30 pb-2 cursor-pointer select-none"
+                    @click="toggleVolume(group.volumeKey)"
+                  >
+                    <div class="flex items-center gap-2">
+                      <UIcon
+                        name="i-lucide-book"
+                        class="w-4 h-4 text-primary"
+                      />
+                      {{ group.volumeTitle }}
 
-                    <UBadge
-                      color="neutral"
-                      variant="soft"
-                      size="xs"
-                      class="rounded-md font-semibold ml-1"
-                    >
-                      {{ group.chapters.length }} Bölüm
-                    </UBadge>
+                      <UBadge
+                        color="neutral"
+                        variant="soft"
+                        size="xs"
+                        class="rounded-md font-semibold ml-1"
+                      >
+                        {{ group.chapters.length }} Bölüm
+                      </UBadge>
+                    </div>
+                    <UIcon
+                      :name="expandedVolumes.includes(String(group.volumeKey)) ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+                      class="w-5 h-5 text-muted-foreground"
+                    />
                   </h4>
 
-                  <div class="relative">
+                  <div
+                    v-show="expandedVolumes.includes(String(group.volumeKey))"
+                    class="relative"
+                  >
                     <div
                       class="transition-[max-height] duration-500 ease-in-out overflow-hidden"
                       :class="[
-                        isChaptersExpanded || chapterSearchQuery.trim()
-                          ? 'max-h-[25000px]'
-                          : 'max-h-[580px]',
                         {
                           'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3': chapterViewMode === 'grid',
                           'flex flex-col gap-2': chapterViewMode === 'list',
@@ -1324,7 +1355,7 @@ onUnmounted(() => {
                           :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
                           class="flex items-center justify-between gap-2"
                         >
-                          <div class="truncate pr-1">
+                          <div class="truncate pr-1 min-w-0 flex-1">
                             <p
                               class="font-bold text-sm group-hover:text-primary transition-colors truncate"
                             >
@@ -1333,13 +1364,13 @@ onUnmounted(() => {
 
                             <p
                               v-if="chapterViewMode !== 'compact'"
-                              class="text-xs text-muted-foreground mt-1 flex items-center gap-1"
+                              class="text-xs text-muted-foreground mt-1 flex items-center gap-1 truncate"
                             >
                               <UIcon
                                 name="i-lucide-languages"
-                                class="w-3 h-3 text-muted-foreground/70"
+                                class="w-3 h-3 text-muted-foreground/70 shrink-0"
                               />
-                              {{ chapter.source?.name || "Bilinmeyen Çevirmen" }}
+                              <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
                             </p>
                           </div>
 
@@ -1350,32 +1381,12 @@ onUnmounted(() => {
                             variant="ghost"
                             icon="i-lucide-chevron-right"
                             square
-                            class="group-hover:translate-x-0.5 transition-transform"
+                            class="group-hover:translate-x-0.5 transition-transform shrink-0"
                           />
                         </NuxtLink>
                       </UCard>
                     </div>
-
-                    <div
-                      v-if="!isChaptersExpanded && group.chapters.length > chapterLimit && !chapterSearchQuery.trim()"
-                      class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none transition-opacity duration-300"
-                    />
                   </div>
-                </div>
-
-                <div
-                  v-if="sortedChapters.length > chapterLimit && !chapterSearchQuery.trim()"
-                  class="mt-4 flex justify-center"
-                >
-                  <UButton
-                    :icon="isChaptersExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-                    variant="soft"
-                    color="primary"
-                    class="rounded-xl px-6 font-semibold"
-                    @click="void (isChaptersExpanded = !isChaptersExpanded)"
-                  >
-                    {{ isChaptersExpanded ? 'Daha Az Göster' : `Tümünü Göster (${sortedChapters.length - chapterLimit} bölüm daha)` }}
-                  </UButton>
                 </div>
               </div>
 
@@ -1392,79 +1403,98 @@ onUnmounted(() => {
                   {{ chapterSearchQuery ? 'Aramanıza uygun bölüm bulunamadı.' : 'Henüz bu seriye ait bir bölüm yüklenmemiş.' }}
                 </p>
               </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div
-          v-if="serie.anilistRelations && serie.anilistRelations.length"
-          class="mt-12 px-4 md:px-0"
-        >
-          <USeparator
-            position="start"
-            class="font-black text-2xl md:text-3xl mb-6"
+    <div
+      v-if="serie?.anilistRelations && serie?.anilistRelations.length"
+      class="mt-12 px-4 md:px-0"
+    >
+      <USeparator
+        position="start"
+        class="font-black text-2xl md:text-3xl mb-6"
+      >
+        <span class="mr-3 flex items-center gap-2">
+          <UIcon
+            name="i-lucide-link"
+            class="text-primary w-6 h-6"
+          />
+          İlgili Seriler
+        </span>
+      </USeparator>
+
+      <swiper-container
+        :key="'relations-' + String(serie?.id)"
+        :slides-per-view="2"
+        :breakpoints="{
+              480: { slidesPerView: 3, spaceBetween: 12 },
+              640: { slidesPerView: 4, spaceBetween: 16 },
+              768: { slidesPerView: 5, spaceBetween: 16 },
+              1024: { slidesPerView: 6, spaceBetween: 20 },
+              1280: { slidesPerView: 7, spaceBetween: 20 }
+            }"
+            :space-between="10"
+            :mousewheel="true"
+            :free-mode="true"
           >
-            <span class="mr-3 flex items-center gap-2">
-              <UIcon
-                name="i-lucide-link"
-                class="text-primary w-6 h-6"
-              />
-              İlgili Seriler
-            </span>
-          </USeparator>
-
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-            <NuxtLink
-              v-for="relation in serie.anilistRelations"
+            <swiper-slide
+              v-for="relation in serie?.anilistRelations"
               :key="relation.id"
-              :to="`/title/${relation.id}`"
-              class="group flex flex-col gap-2"
             >
-              <div class="aspect-2/3 rounded-xl overflow-hidden bg-muted shadow-sm group-hover:shadow-md transition-shadow">
-                <img
-                  :src="relation.cover || serie.cover"
-                  :alt="relation.title"
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                >
-              </div>
+              <NuxtLink
+                :to="`/title/${relation.id}`"
+                class="group flex flex-col gap-2 h-full"
+              >
+                <div class="aspect-2/3 rounded-xl overflow-hidden bg-muted shadow-sm group-hover:shadow-md transition-shadow">
+                  <img
+                    :src="relation.cover || serie?.cover"
+                    :alt="relation.title"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  >
+                </div>
 
-              <div class="space-y-1 px-0.5">
-                <UBadge
-                  :color="
-                    relation.relationType === 'SEQUEL' ? 'primary'
-                    : relation.relationType === 'PREQUEL' ? 'info'
-                    : relation.relationType === 'ALTERNATIVE' ? 'warning'
-                    : 'neutral'
-                  "
-                  variant="subtle"
-                  size="xs"
-                  class="rounded-md font-semibold text-[10px]"
-                >
-                  {{
-                    relation.relationType === 'SEQUEL' ? 'Devam'
-                    : relation.relationType === 'PREQUEL' ? 'Önceki'
-                    : relation.relationType === 'SIDE_STORY' ? 'Yan Hikaye'
-                    : relation.relationType === 'ALTERNATIVE' ? 'Alternatif'
-                    : relation.relationType === 'PARENT' ? 'Ana Seri'
-                    : relation.relationType === 'ADAPTATION' ? 'Adaptasyon'
-                    : relation.relationType === 'SPIN_OFF' ? 'Spin-off'
-                    : relation.relationType === 'CHARACTER' ? 'Karakter'
-                    : relation.relationType === 'SUMMARY' ? 'Özet'
-                    : relation.relationType === 'SOURCE' ? 'Kaynak'
-                    : 'İlgili'
-                  }}
-                </UBadge>
+                <div class="space-y-1 px-0.5 flex flex-col flex-1">
+                  <div class="self-start">
+                    <UBadge
+                      :color="
+                        relation.relationType === 'SEQUEL' ? 'primary'
+                        : relation.relationType === 'PREQUEL' ? 'info'
+                        : relation.relationType === 'ALTERNATIVE' ? 'warning'
+                        : 'neutral'
+                      "
+                      variant="subtle"
+                      size="xs"
+                      class="rounded-md font-semibold text-[10px]"
+                    >
+                      {{
+                        relation.relationType === 'SEQUEL' ? 'Devam'
+                        : relation.relationType === 'PREQUEL' ? 'Önceki'
+                        : relation.relationType === 'SIDE_STORY' ? 'Yan Hikaye'
+                        : relation.relationType === 'ALTERNATIVE' ? 'Alternatif'
+                        : relation.relationType === 'PARENT' ? 'Ana Seri'
+                        : relation.relationType === 'ADAPTATION' ? 'Adaptasyon'
+                        : relation.relationType === 'SPIN_OFF' ? 'Spin-off'
+                        : relation.relationType === 'CHARACTER' ? 'Karakter'
+                        : relation.relationType === 'SUMMARY' ? 'Özet'
+                        : relation.relationType === 'SOURCE' ? 'Kaynak'
+                        : 'İlgili'
+                      }}
+                    </UBadge>
+                  </div>
 
-                <p class="text-xs font-semibold text-foreground line-clamp-2 leading-tight group-hover:text-primary transition-colors">
-                  {{ relation.title }}
-                </p>
+                  <p class="text-xs font-semibold text-foreground line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                    {{ relation.title }}
+                  </p>
 
-                <p class="text-[10px] text-muted-foreground">
-                  {{ relation.type }}
-                </p>
-              </div>
-            </NuxtLink>
-          </div>
+                  <p class="text-[10px] text-muted-foreground mt-auto">
+                    {{ relation.type }}
+                  </p>
+                </div>
+              </NuxtLink>
+            </swiper-slide>
+          </swiper-container>
         </div>
 
         <USeparator
@@ -1484,8 +1514,6 @@ onUnmounted(() => {
           v-if="recommendations.length"
           :items="recommendations"
         />
-      </div>
-    </UContainer>
 
     <div
       v-if="serie && showAgeGate"
@@ -1550,5 +1578,6 @@ onUnmounted(() => {
         </div>
       </UCard>
     </div>
+   </UContainer>
   </div>
 </template>

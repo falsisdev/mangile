@@ -69,9 +69,15 @@ watch(
 )
 
 useHead({
-  meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
+  meta: [
+    { name: 'viewport', content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0' },
+    { name: 'theme-color', content: '#09090b', media: '(prefers-color-scheme: dark)' },
+    { name: 'theme-color', content: '#ffffff', media: '(prefers-color-scheme: light)' },
+    { name: 'apple-mobile-web-app-capable', content: 'yes' },
+    { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }
+  ],
   link: [{ rel: 'icon', href: '/favicon.ico' }],
-  htmlAttrs: { lang: 'en' }
+  htmlAttrs: { lang: 'tr' }
 })
 
 const title = 'Mangile'
@@ -177,7 +183,7 @@ useSeoMeta({
             />
           </div>
         </header>
-        <div class="flex-1 overflow-y-auto p-6">
+        <div class="flex-1 overflow-y-auto p-3 md:p-6 pb-12 md:pb-6 overscroll-y-none">
           <UMain>
             <NuxtPage />
           </UMain>

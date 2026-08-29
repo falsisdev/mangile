@@ -44,7 +44,17 @@ const { data: titles, status } = await useLazyFetch(
       query: debouncedSearch.value || undefined
     })),
     transform: (data: unknown): SearchItem[] => {
-      const list = Array.isArray(data) ? (data as MangaTitle[]) : []
+      let list: MangaTitle[] = []
+      if (Array.isArray(data)) {
+        list = data as MangaTitle[]
+      } else if (data && typeof data === 'object') {
+        const obj = data as Record<string, unknown>
+        if (Array.isArray(obj.data)) {
+          list = obj.data as MangaTitle[]
+        } else if (Array.isArray(obj.results)) {
+          list = obj.results as MangaTitle[]
+        }
+      }
       return list.map(title => ({
         id: title.mal_id,
         label: title.anilist_title,
