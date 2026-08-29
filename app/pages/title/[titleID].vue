@@ -378,12 +378,27 @@ function getChapterLabel(chapter: ChapterData): string {
   return chapter.title ? `${prefix}: ${chapter.title}` : prefix
 }
 
+function chapterSortValue(chapter: ChapterData) {
+  const vol = chapter.volume_number
+  const volNum
+    = typeof vol === 'string'
+      ? parseFloat(vol.replace(',', '.'))
+      : Number(vol)
+  const chapterNum = getChapterNumber(chapter)
+  return {
+    volume: Number.isNaN(volNum) ? Number.POSITIVE_INFINITY : volNum,
+    chapter: chapterNum
+  }
+}
+
 const allChaptersSortedAsc = computed(() => {
   if (!serie.value?.chapters) return []
 
-  return [...serie.value.chapters].sort(
-    (a, b) => getChapterNumber(a) - getChapterNumber(b)
-  )
+  return [...serie.value.chapters].sort((a, b) => {
+    const aSort = chapterSortValue(a)
+    const bSort = chapterSortValue(b)
+    return aSort.volume - bSort.volume || aSort.chapter - bSort.chapter
+  })
 })
 
 const firstChapter = computed(
@@ -604,24 +619,17 @@ onUnmounted(() => {
         class="space-y-6"
       >
         <div class="block md:hidden space-y-6 -mx-4 -mt-4">
-          <div
-            class="relative bg-background border-b border-border/40 pb-5 overflow-hidden"
-          >
-            <div class="relative h-72 w-full overflow-hidden">
+          <div class="relative bg-background pb-3 overflow-hidden">
+            <div class="relative h-60 w-full overflow-hidden">
               <img
                 :src="serie.banner || serie.anilistBanner || serie.cover || serie.anilistCover"
                 class="w-full h-full object-cover select-none"
                 alt="Banner"
                 :style="{ opacity: bannerOpacity }"
               >
-              <div
-                class="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/60 to-black/50"
-              />
-              <div
-                class="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-transparent"
-              />
+              <div class="absolute inset-0 z-10 bg-gradient-to-t from-background via-background/60 to-black/50" />
+              <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
             </div>
-
             <UButton
               icon="i-lucide-arrow-left"
               variant="ghost"
@@ -631,19 +639,15 @@ onUnmounted(() => {
               aria-label="Geri dön"
               @click="router.back()"
             />
-
-            <div class="px-4 -mt-40 relative z-20 flex gap-4 items-end">
-              <div class="relative w-36 shrink-0">
-                <div
-                  class="aspect-2/3 rounded-2xl overflow-hidden bg-background ring-4 ring-background/50 shadow-2xl"
-                >
+            <div class="px-4 -mt-24 relative z-20 flex gap-4 items-end">
+              <div class="relative w-28 shrink-0">
+                <div class="aspect-2/3 rounded-xl overflow-hidden bg-background ring-2 ring-background/50 shadow-xl">
                   <img
                     :src="serie.cover || serie.anilistCover"
                     class="w-full h-full object-cover"
                     :alt="serie.title"
                   >
                 </div>
-
                 <UBadge
                   v-if="warningTags.length"
                   color="error"
@@ -654,23 +658,18 @@ onUnmounted(() => {
                   18+
                 </UBadge>
               </div>
-
               <div class="min-w-0 flex-1 space-y-2 pb-2">
                 <UBadge
                   color="primary"
                   variant="solid"
-                  size="md"
-                  class="font-bold rounded-lg shadow-lg"
+                  size="sm"
+                  class="font-bold rounded-full shadow"
                 >
-                  {{ serie.type || "Manga" }}
+                  {{ serie.type || 'Manga' }}
                 </UBadge>
-
-                <h1
-                  class="text-2xl font-black text-foreground leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)] line-clamp-4"
-                >
+                <h1 class="text-xl font-extrabold text-foreground leading-tight line-clamp-2 bg-background/85 backdrop-blur rounded-md px-2 py-1">
                   {{ serie.title }}
                 </h1>
-
                 <p
                   v-if="serie.anilistTitle && serie.anilistTitle !== serie.title"
                   class="text-xs font-medium text-foreground/80 truncate"
@@ -679,11 +678,8 @@ onUnmounted(() => {
                 </p>
               </div>
             </div>
-
-            <div class="px-4 pt-4 flex flex-wrap gap-2 items-center">
-              <div
-                class="px-3 py-1 rounded-xl bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow-sm text-xs font-bold flex items-center gap-1.5"
-              >
+            <div class="px-4 pt-3 flex flex-wrap gap-2 items-center">
+              <div class="px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-xs font-bold flex items-center gap-1.5">
                 <UIcon
                   name="i-lucide-star"
                   class="w-4 h-4 text-emerald-500 fill-current"
@@ -691,10 +687,7 @@ onUnmounted(() => {
                 <span>{{ serie.anilistScore ? serie.anilistScore.toFixed(1) : '-' }}</span>
                 <span class="text-[10px] text-muted-foreground font-normal">AniList</span>
               </div>
-
-              <div
-                class="px-3 py-1 rounded-xl bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow-sm text-xs font-bold flex items-center gap-1.5"
-              >
+              <div class="px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-xs font-bold flex items-center gap-1.5">
                 <UIcon
                   name="i-lucide-star"
                   class="w-4 h-4 text-amber-500 fill-current"
@@ -702,38 +695,27 @@ onUnmounted(() => {
                 <span>{{ serie.malScore || '-' }}</span>
                 <span class="text-[10px] text-muted-foreground font-normal">MAL</span>
               </div>
-
-              <div
-                class="px-3 py-1 rounded-xl bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow-sm text-xs font-bold flex items-center gap-1.5"
-              >
+              <div class="px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-xs font-bold flex items-center gap-1.5">
                 <UIcon
                   name="i-lucide-chart-no-axes-column-increasing"
                   class="w-4 h-4 text-primary fill-current"
                 />
-                {{ serie.uploadStatus?.replaceAll("uploading", "Yükleniyor").replaceAll("completed", "Tamamlandı") || "Yükleniyor" }}
+                {{ serie.uploadStatus?.replaceAll('uploading', 'Yükleniyor').replaceAll('completed', 'Tamamlandı').replaceAll('hiatus', 'Beklemede').replaceAll('cancelled', 'İptal Edildi') || 'Yükleniyor' }}
               </div>
-
               <UBadge
                 v-for="tag in serie.tags"
                 :key="tag"
-                :color="
-                  tag === 'Ödüllü'
-                    ? 'warning'
-                    : tag === 'Vahşet' || tag === 'Cinsellik'
-                      ? 'error'
-                      : tag === 'Adaptasyon' ? 'info' : 'neutral'
-                "
+                :color="tag === 'Ödüllü' ? 'warning' : tag === 'Vahşet' || tag === 'Cinsellik' ? 'error' : tag === 'Adaptasyon' ? 'info' : 'neutral'"
                 variant="subtle"
-                size="md"
-                class="rounded-lg px-2"
+                size="sm"
+                class="rounded-full px-2"
               >
                 {{ tag }}
               </UBadge>
             </div>
-
             <div
               v-if="firstChapter || lastChapter"
-              class="px-4 pt-4 grid grid-cols-2 gap-2"
+              class="px-4 pt-3 grid grid-cols-2 gap-2"
             >
               <UButton
                 v-if="firstChapter"
@@ -745,7 +727,6 @@ onUnmounted(() => {
               >
                 Baştan Oku
               </UButton>
-
               <UButton
                 v-if="lastChapter && lastChapter._key !== firstChapter?._key"
                 :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type)}`"

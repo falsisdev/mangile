@@ -68,7 +68,36 @@ const {
   }
 )
 
-const siblingChapters = computed(() => chapterData.value?.chapters ?? [])
+const chapterOrder = (chapter: {
+  volumeNumber?: number
+  chapterNumber?: number
+}) => {
+  const vol = chapter.volumeNumber
+  const ch = chapter.chapterNumber
+  const volNum = vol === undefined || vol === null
+    ? Number.POSITIVE_INFINITY
+    : typeof vol === 'string'
+      ? Number(vol)
+      : vol
+  const chapNum = ch === undefined || ch === null
+    ? Number.POSITIVE_INFINITY
+    : typeof ch === 'string'
+      ? Number(ch)
+      : ch
+  return {
+    volume: Number.isNaN(volNum) ? Number.POSITIVE_INFINITY : volNum,
+    chapter: Number.isNaN(chapNum) ? Number.POSITIVE_INFINITY : chapNum
+  }
+}
+
+const siblingChapters = computed(() => {
+  const list = chapterData.value?.chapters ?? []
+  return [...list].sort((a, b) => {
+    const aOrder = chapterOrder(a)
+    const bOrder = chapterOrder(b)
+    return aOrder.volume - bOrder.volume || aOrder.chapter - bOrder.chapter
+  })
+})
 
 const currentChapterIndex = computed(() =>
   siblingChapters.value.findIndex(
@@ -97,11 +126,13 @@ const getSiblingChapterLabel = (chapter: {
   _id?: string
   title?: string
   chapterNumber?: number
+  volumeNumber?: number
 }): string => {
   const num = chapter.chapterNumber
+  const vol = chapter.volumeNumber
   const t = chapter.title
   if (num !== undefined && num !== null) {
-    return t ? `Bölüm ${num} - ${t}` : `Bölüm ${num}`
+    return t ? `Cilt ${vol} Bölüm ${num} - ${t}` : `Cilt ${vol} Bölüm ${num}`
   }
   return t ?? 'Bilinmeyen bölüm'
 }

@@ -15,7 +15,7 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-      runtimeConfig: {
+  runtimeConfig: {
     public: {
       backend: {
         baseUrl: import.meta.env.NUXT_PUBLIC_BACKEND_BASEURL || import.meta.env.NUXT_BACKENDBASE

@@ -186,7 +186,7 @@ useSeoMeta({
         <div class="flex-1 overflow-y-auto p-3 md:p-6 pb-12 md:pb-6 overscroll-y-none">
           <UMain>
             <NuxtPage
-              :transition="{ name: 'page', mode: 'out-in' }"
+              :transition="{ name: 'page' }"
             />
           </UMain>
         </div>
@@ -195,6 +195,6 @@ useSeoMeta({
   </UApp>
   <NuxtPage
     v-else
-    :transition="{ name: 'page', mode: 'out-in' }"
+    :transition="{ name: 'page' }"
   />
 </template>
