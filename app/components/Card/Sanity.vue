@@ -1,26 +1,27 @@
 <script setup lang="ts">
-interface Title {
+interface SanityCardItem {
   title: string
-  cover: string
-  id: number
-  dateStamp: string,
-  type: string,
-  titleType?: 'manga' | 'lightNovel'
+  cover?: string
+  id: number | string
+  dateStamp?: string
+  type?: 'title' | 'chapter'
+  titleType?: string
 }
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    items?: Title[]
-    variant?: string
+    items?: SanityCardItem[]
+    variant?: 'title' | 'chapter'
   }>(),
   {
-    items: () => []
+    items: () => [],
+    variant: 'title'
   }
 )
 
 const isSidebarOpen = useSidebar()
 
-const swiperBreakpoints = computed(() => {
+const coverBreakpoints = computed(() => {
   const baseBreakpoints = {
     250: { slidesPerView: 1, spaceBetween: 20 },
     320: { slidesPerView: 1.5, spaceBetween: 20 },
@@ -47,36 +48,43 @@ const swiperBreakpoints = computed(() => {
   }
 })
 
-const timeAgo = (dateString: string) => {
-  if (!dateString) return 'bilinmiyor'
-  const date = new Date(dateString)
-  const now = new Date()
-  const seconds = Math.floor((Number(now) - Number(date)) / 1000)
-
-  const intervals = {
-    yıl: 31536000,
-    ay: 2592000,
-    hafta: 604800,
-    gün: 86400,
-    saat: 3600,
-    dakika: 60
+const chapterBreakpoints = computed(() => {
+  const baseBreakpoints = {
+    250: { slidesPerView: 1.05, spaceBetween: 12 },
+    320: { slidesPerView: 1.15, spaceBetween: 12 },
+    420: { slidesPerView: 1.4, spaceBetween: 12 },
+    520: { slidesPerView: 1.75, spaceBetween: 14 },
+    640: { slidesPerView: 2.1, spaceBetween: 14 },
+    768: { slidesPerView: 2.6, spaceBetween: 16 }
   }
 
-  for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-    const interval = Math.floor(seconds / secondsInUnit)
-    if (interval >= 1) {
-      return `${interval} ${unit} önce`
+  if (isSidebarOpen.value) {
+    return {
+      ...baseBreakpoints,
+      1024: { slidesPerView: 3.2, spaceBetween: 16 },
+      1280: { slidesPerView: 4, spaceBetween: 16 },
+      1700: { slidesPerView: 5, spaceBetween: 16 }
+    }
+  } else {
+    return {
+      ...baseBreakpoints,
+      1024: { slidesPerView: 3.75, spaceBetween: 16 },
+      1280: { slidesPerView: 4.5, spaceBetween: 16 },
+      1700: { slidesPerView: 5.5, spaceBetween: 16 }
     }
   }
-  return 'az önce'
-}
+})
+
+const swiperBreakpoints = computed(() =>
+  props.variant === 'chapter' ? chapterBreakpoints.value : coverBreakpoints.value
+)
 </script>
 
 <template>
   <swiper-container
-    :key="String(isSidebarOpen)"
+    :key="`${variant}-${String(isSidebarOpen)}`"
     :loop="false"
-    :slides-per-view="8"
+    :slides-per-view="variant === 'chapter' ? 1.05 : 8"
     :breakpoints="swiperBreakpoints"
     :mousewheel="true"
     :free-mode="true"
@@ -85,37 +93,23 @@ const timeAgo = (dateString: string) => {
       v-for="item of items"
       :key="item.id"
     >
-      <div
-        class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden bg-zinc-900 cursor-pointer shadow-[0px_0px_10px_0px_var(--color-neutral-900)]"
-      >
-        <NuxtLink :to="item.type == 'title' ? `/title/${item.id}` : item.type == 'chapter' ? `/chapter/${item.id}/${item.titleType}` : ''">
-          <img
-            :src="item.cover"
-            class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          >
-
-          <div
-            class="absolute inset-0 bg-linear-to-t from-neutral-950 via-neutral-900/60 to-transparent"
-          />
-
-          <div class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-3">
-            <h3
-              class="text-white font-semibold text-base line-clamp-2 leading-snug tracking-wide"
-            >
-              {{ item.title }}
-            </h3>
-
-            <div class="self-start">
-              <UBadge
-                color="primary"
-                variant="soft"
-              >
-                {{ timeAgo(item.dateStamp) }}
-              </UBadge>
-            </div>
-          </div>
-        </NuxtLink>
-      </div>
+      <CardChapter
+        v-if="variant === 'chapter'"
+        :to="`/chapter/${item.id}/${item.titleType ?? 'manga'}`"
+        :cover="item.cover"
+        :title="item.title"
+        :date-stamp="item.dateStamp"
+        :kind="item.titleType"
+      />
+      <CardCover
+        v-else
+        :to="`/title/${item.id}`"
+        :cover="item.cover"
+        :title="item.title"
+        :badge="formatTimeAgo(item.dateStamp)"
+        badge-icon="i-lucide-clock"
+        accent-badge
+      />
     </swiper-slide>
   </swiper-container>
 </template>

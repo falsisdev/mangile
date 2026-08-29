@@ -80,6 +80,7 @@ const latestChaptersItems = computed(() => {
       <span class="mr-3"> Son Eklenen Bölümler </span>
     </USeparator>
     <CardSanity
+      variant="chapter"
       :items="latestChaptersItems"
     />
     <USeparator

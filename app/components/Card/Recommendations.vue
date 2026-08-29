@@ -58,36 +58,12 @@ const swiperBreakpoints = computed(() => {
       v-for="item in items"
       :key="item.id"
     >
-      <NuxtLink
+      <CardCover
         :to="`/title/${item.id}`"
-        class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden bg-zinc-900 cursor-pointer block shadow-[0px_0px_10px_0px_var(--color-neutral-900)]"
-      >
-        <img
-          :src="item.cover"
-          :alt="item.title"
-          class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        >
-
-        <div
-          class="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-900/60 to-transparent"
-        />
-
-        <div class="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-3">
-          <h3
-            class="text-white font-semibold text-base line-clamp-2 leading-snug tracking-wide"
-          >
-            {{ item.title }}
-          </h3>
-          <div class="self-start">
-            <UBadge
-              color="neutral"
-              variant="soft"
-            >
-              {{ item.type }}
-            </UBadge>
-          </div>
-        </div>
-      </NuxtLink>
+        :cover="item.cover"
+        :title="item.title"
+        :badge="item.type"
+      />
     </swiper-slide>
   </swiper-container>
 </template>
