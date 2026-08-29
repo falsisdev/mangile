@@ -33,20 +33,7 @@ const slides = computed(() => {
   }))
 })
 
-const { data: updatedData } = await useFetch(`${config.public.backend.baseUrl}/api/sanityList?filterType=updatedAt`, { lazy: true, server: false })
-
-const updatedItems = computed(() => {
-  if (!updatedData.value) return []
-
-  return updatedData.value.map(item => ({
-    title: item.title,
-    dateStamp: item._updatedAt,
-    cover: item.coverImage,
-    id: item.myAnimeListId
-  }))
-})
-
-const { data: createdData } = await useFetch(`${config.public.backend.baseUrl}/api/sanityList?filterType=createdAt`, { lazy: true, server: false })
+const { data: createdData } = await useFetch(`${config.public.backend.baseUrl}/api/latestTitles`, { lazy: true, server: false })
 
 const createdItems = computed(() => {
   if (!createdData.value) return []
@@ -55,7 +42,23 @@ const createdItems = computed(() => {
     title: item.title,
     dateStamp: item._createdAt,
     cover: item.coverImage,
-    id: item.myAnimeListId
+    id: item.myAnimeListId,
+    type: 'title'
+  }))
+})
+
+const { data: latestChaptersData } = await useFetch(`${config.public.backend.baseUrl}/api/latestChapters`, { lazy: true, server: false })
+
+const latestChaptersItems = computed(() => {
+  if (!latestChaptersData.value) return []
+
+  return latestChaptersData.value.map(item => ({
+    title: 'Cilt ' + item.volumeNumber + ' Bölüm ' + item.chapterNumber + ': ' + item.title,
+    dateStamp: item._createdAt,
+    cover: item.lightNovel?.coverImage?.url || item.manga?.coverImage?.url,
+    id: item._id,
+    type: 'chapter',
+    titleType: item.lightNovel ? 'novel' : 'manga'
   }))
 })
 </script>
@@ -74,11 +77,10 @@ const createdItems = computed(() => {
       position="start"
       class="font-bold text-3xl mt-5 mb-3"
     >
-      <span class="mr-3"> Son Güncellenen İçerikler </span>
+      <span class="mr-3"> Son Eklenen Bölümler </span>
     </USeparator>
     <CardSanity
-      variant="updated"
-      :items="updatedItems"
+      :items="latestChaptersItems"
     />
     <USeparator
       position="start"
@@ -87,7 +89,6 @@ const createdItems = computed(() => {
       <span class="mr-3"> Son Oluşturulan İçerikler </span>
     </USeparator>
     <CardSanity
-      variant="created"
       :items="createdItems"
     />
   </main>

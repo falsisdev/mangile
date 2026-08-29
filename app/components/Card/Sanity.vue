@@ -3,7 +3,9 @@ interface Title {
   title: string
   cover: string
   id: number
-  dateStamp: string
+  dateStamp: string,
+  type: string,
+  titleType?: 'manga' | 'lightNovel'
 }
 
 withDefaults(
@@ -86,10 +88,9 @@ const timeAgo = (dateString: string) => {
       <div
         class="relative group w-48 max-h-84 min-h-72 h-full rounded-xl overflow-hidden bg-zinc-900 cursor-pointer shadow-[0px_0px_10px_0px_var(--color-neutral-900)]"
       >
-        <NuxtLink :to="`/title/${item.id}`">
+        <NuxtLink :to="item.type == 'title' ? `/title/${item.id}` : item.type == 'chapter' ? `/chapter/${item.id}/${item.titleType}` : ''">
           <img
             :src="item.cover"
-            alt="Manga Cover"
             class="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           >
 
@@ -106,7 +107,7 @@ const timeAgo = (dateString: string) => {
 
             <div class="self-start">
               <UBadge
-                color="neutral"
+                color="primary"
                 variant="soft"
               >
                 {{ timeAgo(item.dateStamp) }}
