@@ -4,7 +4,7 @@ interface SanityCardItem {
   cover?: string
   id: number | string
   dateStamp?: string
-  type?: 'title' | 'chapter'
+  type?: 'title' | 'chapter' | 'tagTitle'
   titleType?: string
 }
 
@@ -106,7 +106,7 @@ const swiperBreakpoints = computed(() =>
         :to="`/title/${item.id}`"
         :cover="item.cover"
         :title="item.title"
-        :badge="formatTimeAgo(item.dateStamp)"
+        :badge="item.type == 'title' ? formatTimeAgo(item.dateStamp) : ''"
         badge-icon="i-lucide-clock"
         accent-badge
       />

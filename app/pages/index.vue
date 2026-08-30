@@ -61,6 +61,29 @@ const latestChaptersItems = computed(() => {
     titleType: item.lightNovel ? 'novel' : 'manga'
   }))
 })
+
+const tags = ['Ödüllü', 'Macera', 'Dram', 'Fantezi']
+
+const titlesByTagData = await Promise.all(
+  tags.map(tag =>
+    useFetch(`${config.public.backend.baseUrl}/api/titlesByTag?tag=${encodeURIComponent(tag)}`, {
+      lazy: true,
+      server: false
+    })
+  )
+)
+
+const titlesByTagItems = computed(() =>
+  titlesByTagData.map(({ data }) =>
+    (data.value || []).map(item => ({
+      title: item.title,
+      dateStamp: item._createdAt,
+      cover: item.coverImage.url,
+      id: item.myAnimeListId,
+      type: 'tagTitle'
+    }))
+  )
+)
 </script>
 
 <template>
@@ -92,5 +115,22 @@ const latestChaptersItems = computed(() => {
     <CardSanity
       :items="createdItems"
     />
+
+        <template
+      v-for="(items, index) in titlesByTagItems"
+      :key="tags[index]"
+    >
+      <USeparator
+        v-if="items.length"
+        position="start"
+        class="font-bold text-3xl mt-5 mb-3"
+      >
+        <span class="mr-3">{{ tags[index] }} Türünde Seriler</span>
+      </USeparator>
+      <CardSanity
+        v-if="items.length"
+        :items="items"
+      />
+    </template>
   </main>
 </template>
