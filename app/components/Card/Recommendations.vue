@@ -51,7 +51,9 @@ const swiperBreakpoints = computed(() => {
     :loop="false"
     :slides-per-view="8"
     :breakpoints="swiperBreakpoints"
-    :mousewheel="true"
+    :mousewheel="{ forceToAxis: true, releaseOnEdges: true }"
+    :mousewheel-force-to-axis="true"
+    :mousewheel-release-on-edges="true"
     :free-mode="true"
   >
     <swiper-slide

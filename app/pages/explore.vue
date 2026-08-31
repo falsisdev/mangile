@@ -87,11 +87,11 @@ const debouncedAllSearch = refDebounced(computed(() => allFilters.value.search),
 
 const hasAllFilters = computed(() => {
   return !!(
-    allFilters.value.search ||
-    allFilters.value.format !== 'ALL' ||
-    allFilters.value.genre !== 'ALL' ||
-    allFilters.value.status !== 'ALL' ||
-    allFilters.value.sort !== 'POPULARITY_DESC'
+    allFilters.value.search
+    || allFilters.value.format !== 'ALL'
+    || allFilters.value.genre !== 'ALL'
+    || allFilters.value.status !== 'ALL'
+    || allFilters.value.sort !== 'POPULARITY_DESC'
   )
 })
 
@@ -177,11 +177,11 @@ const debouncedLocalSearch = refDebounced(computed(() => localFilters.value.sear
 
 const hasLocalFilters = computed(() => {
   return !!(
-    localFilters.value.search ||
-    localFilters.value.type !== 'ALL' ||
-    localFilters.value.tag !== 'ALL' ||
-    localFilters.value.status !== 'ALL' ||
-    localFilters.value.sort !== 'date_desc'
+    localFilters.value.search
+    || localFilters.value.type !== 'ALL'
+    || localFilters.value.tag !== 'ALL'
+    || localFilters.value.status !== 'ALL'
+    || localFilters.value.sort !== 'date_desc'
   )
 })
 
@@ -361,7 +361,10 @@ const localTitles = computed(() => {
       <!-- Filtreleme Paneli - Tüm Seriler -->
       <div class="bg-muted/20 border border-border/50 rounded-2xl p-4 space-y-3">
         <div class="flex items-center gap-2 text-sm font-semibold text-foreground mb-1">
-          <UIcon name="i-lucide-sliders-horizontal" class="w-4 h-4" />
+          <UIcon
+            name="i-lucide-sliders-horizontal"
+            class="w-4 h-4"
+          />
           Filtreleme & Sıralama
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -400,7 +403,10 @@ const localTitles = computed(() => {
             class="w-full"
           />
         </div>
-        <div v-if="hasAllFilters" class="flex justify-end">
+        <div
+          v-if="hasAllFilters"
+          class="flex justify-end"
+        >
           <UButton
             icon="i-lucide-rotate-ccw"
             variant="soft"
@@ -485,7 +491,10 @@ const localTitles = computed(() => {
       <!-- Filtreleme Paneli - Mangile Serileri -->
       <div class="bg-muted/20 border border-border/50 rounded-2xl p-4 space-y-3">
         <div class="flex items-center gap-2 text-sm font-semibold text-foreground mb-1">
-          <UIcon name="i-lucide-sliders-horizontal" class="w-4 h-4" />
+          <UIcon
+            name="i-lucide-sliders-horizontal"
+            class="w-4 h-4"
+          />
           Filtreleme & Sıralama
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -524,7 +533,10 @@ const localTitles = computed(() => {
             class="w-full"
           />
         </div>
-        <div v-if="hasLocalFilters" class="flex justify-end">
+        <div
+          v-if="hasLocalFilters"
+          class="flex justify-end"
+        >
           <UButton
             icon="i-lucide-rotate-ccw"
             variant="soft"

@@ -24,7 +24,7 @@ const slides = computed(() => {
 
   return list.map(item => ({
     title: item.anilist_title,
-    type: item.anilist_type?.replaceAll('MANGA', 'Manga').replaceAll('NOVEL', 'Hafif Roman').replaceAll('ONE_SHOT', 'One-Shot') || '',
+    type: item.mal_type || item.anilist_type?.replaceAll('MANGA', 'Manga').replaceAll('NOVEL', 'Hafif Roman').replaceAll('ONE_SHOT', 'One-Shot') || 'Manga',
     year: item.mal_year,
     score: String(Number(item.anilist_score) / 10),
     description: item.has_local_content ? item.sanity_description : item.anilist_description,
@@ -116,7 +116,7 @@ const titlesByTagItems = computed(() =>
       :items="createdItems"
     />
 
-        <template
+    <template
       v-for="(items, index) in titlesByTagItems"
       :key="tags[index]"
     >

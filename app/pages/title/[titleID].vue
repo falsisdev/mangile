@@ -33,6 +33,7 @@ interface TitleApiResponse {
   description?: string
   uploadStatus?: string
   tags?: string[]
+  format?: string
   notes?: PortableTextBlock[]
   myAnimeListId?: number
   bannerImage?: { url?: string }
@@ -40,12 +41,16 @@ interface TitleApiResponse {
   chapters?: TitleApiResponseChapter[]
   externalMal?: {
     url?: string
+    type?: string
     status?: string
     score?: number
     authors?: Array<{ name?: string }>
   }
   externalAnilist?: {
     id?: number
+    countryOfOrigin?: string
+    format?: string
+    tags?: Array<{ name?: string } | string>
     title?: { romaji?: string, english?: string, native?: string }
     averageScore?: number
     bannerImage?: string
@@ -140,9 +145,13 @@ function mapTitleResponse(title: TitleApiResponse | null): SerieData {
       ?? anilistTitle?.romaji
       ?? anilistTitle?.english
       ?? 'Bilinmeyen',
-    type: title._type
-      ?.replaceAll('manga', 'Manga')
-      .replaceAll('lightNovel', 'Hafif Roman'),
+    type: detectMediaType({
+      _type: title._type,
+      format: title.format,
+      tags: title.tags,
+      externalMal: title.externalMal,
+      externalAnilist: title.externalAnilist
+    }),
     uploadStatus: title.uploadStatus,
     description: title.description || anilist?.description,
     banner: title.bannerImage?.url || anilist?.bannerImage,
@@ -291,7 +300,7 @@ const isNotesLong = computed(() => {
 const isDescriptionExpanded = ref(false)
 const isNotesExpanded = ref(false)
 
-const ageVerified = ref(false)
+const ageVerified = useStorage('mangile-age-verified', false)
 
 const warningTags = computed(() =>
   (serie.value?.tags ?? []).filter(
@@ -719,7 +728,7 @@ onUnmounted(() => {
             >
               <UButton
                 v-if="firstChapter"
-                :to="`/chapter/${firstChapter._key}/${chapterRouteType(serie?.type)}`"
+                :to="`/chapter/${firstChapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
                 color="primary"
                 variant="solid"
                 icon="i-lucide-play"
@@ -729,7 +738,7 @@ onUnmounted(() => {
               </UButton>
               <UButton
                 v-if="lastChapter && lastChapter._key !== firstChapter?._key"
-                :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type)}`"
+                :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
                 color="primary"
                 variant="soft"
                 icon="i-lucide-fast-forward"
@@ -900,7 +909,7 @@ onUnmounted(() => {
                           :ui="{ body: 'p-3' }"
                         >
                           <NuxtLink
-                            :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
+                            :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
                             class="flex items-center justify-between gap-2"
                           >
                             <div class="truncate pr-1 min-w-0 flex-1">
@@ -1253,7 +1262,7 @@ onUnmounted(() => {
             >
               <UButton
                 v-if="firstChapter"
-                :to="`/chapter/${firstChapter._key}/${chapterRouteType(serie?.type)}`"
+                :to="`/chapter/${firstChapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
                 color="primary"
                 variant="solid"
                 size="md"
@@ -1266,7 +1275,7 @@ onUnmounted(() => {
 
               <UButton
                 v-if="lastChapter && lastChapter._key !== firstChapter?._key"
-                :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type)}`"
+                :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
                 color="primary"
                 variant="soft"
                 size="md"
@@ -1418,7 +1427,7 @@ onUnmounted(() => {
                           :ui="{ body: chapterViewMode === 'compact' ? 'p-3' : 'p-4' }"
                         >
                           <NuxtLink
-                            :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type)}`"
+                            :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
                             class="flex items-center justify-between gap-2"
                           >
                             <div class="truncate pr-1 min-w-0 flex-1">
@@ -1503,7 +1512,9 @@ onUnmounted(() => {
             1280: { slidesPerView: 7, spaceBetween: 20 }
           }"
           :space-between="10"
-          :mousewheel="true"
+          :mousewheel="{ forceToAxis: true, releaseOnEdges: true }"
+          :mousewheel-force-to-axis="true"
+          :mousewheel-release-on-edges="true"
           :free-mode="true"
         >
           <swiper-slide
