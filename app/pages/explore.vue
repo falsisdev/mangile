@@ -7,12 +7,30 @@ interface ExploreCard {
   year: number
 }
 
+interface LocalTitleItem {
+  _id: string
+  _type: string
+  title: string
+  myAnimeListId: number
+  coverImage: string
+  uploadStatus?: string
+  tags?: string[]
+}
+
+interface LocalTitlesApiResponse {
+  data: LocalTitleItem[]
+  total: number
+  page: number
+  limit: number
+}
+
 const breadcrumbs = useBreadcrumbs()
 const config = useRuntimeConfig()
 
 breadcrumbs.value = [{ label: 'Ana Sayfa', to: '/' }, { label: 'Keşfet' }]
 
 const page = ref(1)
+const localPage = ref(1)
 const exploreMode = ref<'menu' | 'all' | 'local'>('menu')
 
 const { data: titles } = await useLazyFetch<ExploreCard[]>(
@@ -44,6 +62,28 @@ const { data: titles } = await useLazyFetch<ExploreCard[]>(
     }
   }
 )
+
+const { data: localTitlesData, pending: localPending } = await useLazyFetch<LocalTitlesApiResponse>(
+  `${config.public.backend.baseUrl}/api/localTitles`,
+  {
+    key: 'exploreLocalTitles',
+    query: computed(() => ({
+      page: localPage.value || 1,
+      limit: 24
+    }))
+  }
+)
+
+const localTitles = computed(() => {
+  if (!localTitlesData.value?.data) return []
+  return localTitlesData.value.data.map(item => ({
+    id: item.myAnimeListId,
+    title: item.title,
+    cover: item.coverImage,
+    type: item._type === 'lightNovel' ? 'Hafif Roman' : 'Manga',
+    year: 0
+  }))
+})
 </script>
 
 <template>
@@ -158,7 +198,7 @@ const { data: titles } = await useLazyFetch<ExploreCard[]>(
 
     <div
       v-else-if="exploreMode === 'local'"
-      class="text-center pb-20 relative"
+      class="space-y-6"
     >
       <div class="flex items-center gap-2">
         <UButton
@@ -172,16 +212,60 @@ const { data: titles } = await useLazyFetch<ExploreCard[]>(
           Geri Dön
         </UButton>
       </div>
-      <UIcon
-        name="i-lucide-construction"
-        class="w-16 h-16 text-muted-foreground mb-4 mx-auto"
-      />
-      <h3 class="text-2xl font-bold">
-        Çok Yakında!
-      </h3>
-      <p class="text-muted-foreground mt-2">
-        Bu bölüm henüz yapım aşamasındadır.
-      </p>
+
+      <div
+        v-if="localPending"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3"
+      >
+        <USkeleton
+          v-for="i in 12"
+          :key="i"
+          class="h-64 rounded-2xl"
+        />
+      </div>
+
+      <div
+        v-else-if="localTitles.length"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3"
+      >
+        <CardExplore
+          v-for="item of localTitles"
+          :id="item.id"
+          :key="item.id"
+          :title="item.title"
+          :cover="item.cover"
+          :type="item.type"
+          :year="item.year"
+          class="w-full"
+        />
+      </div>
+
+      <div
+        v-else
+        class="text-center py-16"
+      >
+        <UIcon
+          name="i-lucide-library"
+          class="w-12 h-12 text-muted-foreground mx-auto mb-2"
+        />
+        <p class="text-muted-foreground">
+          Henüz eklenmiş yerel seri bulunamadı.
+        </p>
+      </div>
+
+      <div
+        v-if="localTitlesData?.total && localTitlesData.total > 24"
+        class="flex justify-center w-full pt-8"
+      >
+        <UPagination
+          v-model:page="localPage"
+          active-color="primary"
+          active-variant="soft"
+          :items-per-page="24"
+          :total="localTitlesData.total"
+        />
+      </div>
     </div>
   </div>
 </template>
+
