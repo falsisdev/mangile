@@ -133,7 +133,7 @@ Coming soon.
 - [x] Novel Reader
 - [x] Serie Recommendations
 - [x] Article Pages
-- [ ] Explore Page Filter
+- [x] Explore Page Filter
 - [ ] User authentication
 - [ ] User Profile
 - [ ] List Actions
