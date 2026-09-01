@@ -24,7 +24,7 @@ const slides = computed(() => {
 
   return list.map(item => ({
     title: item.anilist_title,
-    type: item.mal_type || item.anilist_type?.replaceAll('MANGA', 'Manga').replaceAll('NOVEL', 'Hafif Roman').replaceAll('ONE_SHOT', 'One-Shot') || 'Manga',
+    type: item.mal_type?.replaceAll('MANGA', 'Manga').replaceAll('NOVEL', 'Hafif Roman').replaceAll('ONE_SHOT', 'One-Shot') || item.anilist_type?.replaceAll('MANGA', 'Manga').replaceAll('NOVEL', 'Hafif Roman').replaceAll('ONE_SHOT', 'One-Shot') || 'Manga',
     year: item.mal_year,
     score: String(Number(item.anilist_score) / 10),
     description: item.has_local_content ? item.sanity_description : item.anilist_description,
@@ -90,7 +90,7 @@ const titlesByTagItems = computed(() =>
   <main>
     <USkeleton
       v-if="heroPending"
-      class="relative h-[80vh] overflow-hidden rounded-3xl"
+      class="relative h-[320px] xs:h-[360px] sm:h-[420px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl"
     />
     <HeroSlider
       v-else
@@ -98,9 +98,9 @@ const titlesByTagItems = computed(() =>
     />
     <USeparator
       position="start"
-      class="font-bold text-3xl mt-5 mb-3"
+      class="font-black text-lg sm:text-xl md:text-2xl mt-5 mb-2.5 sm:mt-7 sm:mb-3.5"
     >
-      <span class="mr-3"> Son Eklenen Bölümler </span>
+      <span class="mr-2 sm:mr-3"> Son Eklenen Bölümler </span>
     </USeparator>
     <CardSanity
       variant="chapter"
@@ -108,9 +108,9 @@ const titlesByTagItems = computed(() =>
     />
     <USeparator
       position="start"
-      class="font-bold text-3xl mt-5 mb-3"
+      class="font-black text-lg sm:text-xl md:text-2xl mt-5 mb-2.5 sm:mt-7 sm:mb-3.5"
     >
-      <span class="mr-3"> Son Oluşturulan İçerikler </span>
+      <span class="mr-2 sm:mr-3"> Son Oluşturulan İçerikler </span>
     </USeparator>
     <CardSanity
       :items="createdItems"
@@ -123,9 +123,9 @@ const titlesByTagItems = computed(() =>
       <USeparator
         v-if="items.length"
         position="start"
-        class="font-bold text-3xl mt-5 mb-3"
+        class="font-black text-lg sm:text-xl md:text-2xl mt-5 mb-2.5 sm:mt-7 sm:mb-3.5"
       >
-        <span class="mr-3">{{ tags[index] }} Türünde Seriler</span>
+        <span class="mr-2 sm:mr-3">{{ tags[index] }} Türünde Seriler</span>
       </USeparator>
       <CardSanity
         v-if="items.length"

@@ -648,8 +648,8 @@ onUnmounted(() => {
               aria-label="Geri dön"
               @click="router.back()"
             />
-            <div class="px-4 -mt-24 relative z-20 flex gap-4 items-end">
-              <div class="relative w-28 shrink-0">
+            <div class="px-3 sm:px-4 -mt-20 sm:-mt-24 relative z-20 flex gap-3 sm:gap-4 items-end">
+              <div class="relative w-24 sm:w-28 shrink-0">
                 <div class="aspect-2/3 rounded-xl overflow-hidden bg-background ring-2 ring-background/50 shadow-xl">
                   <img
                     :src="serie.cover || serie.anilistCover"
@@ -662,52 +662,52 @@ onUnmounted(() => {
                   color="error"
                   variant="solid"
                   size="xs"
-                  class="absolute -top-2 -right-2 rounded-full font-black shadow-lg px-2 ring-2 ring-background"
+                  class="absolute -top-1.5 -right-1.5 rounded-full font-black shadow-lg px-1.5 py-0.5 text-[9px] ring-2 ring-background"
                 >
                   18+
                 </UBadge>
               </div>
-              <div class="min-w-0 flex-1 space-y-2 pb-2">
+              <div class="min-w-0 flex-1 space-y-1.5 sm:space-y-2 pb-1 sm:pb-2">
                 <UBadge
                   color="primary"
                   variant="solid"
-                  size="sm"
-                  class="font-bold rounded-full shadow"
+                  size="xs"
+                  class="font-bold ml-1 shadow sm:text-xs"
                 >
                   {{ serie.type || 'Manga' }}
                 </UBadge>
-                <h1 class="text-xl font-extrabold text-foreground leading-tight line-clamp-2 bg-background/85 backdrop-blur rounded-md px-2 py-1">
+                <h1 class="text-base sm:text-xl font-extrabold text-foreground leading-tight line-clamp-2 bg-background/85 backdrop-blur rounded-md px-1.5 py-0.5 sm:px-2 sm:py-1">
                   {{ serie.title }}
                 </h1>
                 <p
                   v-if="serie.anilistTitle && serie.anilistTitle !== serie.title"
-                  class="text-xs font-medium text-foreground/80 truncate"
+                  class="text-[11px] ml-2 sm:text-xs font-medium text-foreground/80 truncate"
                 >
                   {{ serie.anilistTitle }}
                 </p>
               </div>
             </div>
-            <div class="px-4 pt-3 flex flex-wrap gap-2 items-center">
-              <div class="px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-xs font-bold flex items-center gap-1.5">
+            <div class="px-3 sm:px-4 pt-2.5 sm:pt-3 flex flex-wrap gap-1.5 sm:gap-2 items-center">
+              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
                 <UIcon
                   name="i-lucide-star"
-                  class="w-4 h-4 text-emerald-500 fill-current"
+                  class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 fill-current"
                 />
                 <span>{{ serie.anilistScore ? serie.anilistScore.toFixed(1) : '-' }}</span>
-                <span class="text-[10px] text-muted-foreground font-normal">AniList</span>
+                <span class="text-[9px] sm:text-[10px] text-muted-foreground font-normal">AniList</span>
               </div>
-              <div class="px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-xs font-bold flex items-center gap-1.5">
+              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
                 <UIcon
                   name="i-lucide-star"
-                  class="w-4 h-4 text-amber-500 fill-current"
+                  class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 fill-current"
                 />
                 <span>{{ serie.malScore || '-' }}</span>
-                <span class="text-[10px] text-muted-foreground font-normal">MAL</span>
+                <span class="text-[9px] sm:text-[10px] text-muted-foreground font-normal">MAL</span>
               </div>
-              <div class="px-2.5 py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-xs font-bold flex items-center gap-1.5">
+              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
                 <UIcon
                   name="i-lucide-chart-no-axes-column-increasing"
-                  class="w-4 h-4 text-primary fill-current"
+                  class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary fill-current"
                 />
                 {{ serie.uploadStatus?.replaceAll('uploading', 'Yükleniyor').replaceAll('completed', 'Tamamlandı').replaceAll('hiatus', 'Beklemede').replaceAll('cancelled', 'İptal Edildi') || 'Yükleniyor' }}
               </div>
@@ -716,21 +716,22 @@ onUnmounted(() => {
                 :key="tag"
                 :color="tag === 'Ödüllü' ? 'warning' : tag === 'Vahşet' || tag === 'Cinsellik' ? 'error' : tag === 'Adaptasyon' ? 'info' : 'neutral'"
                 variant="subtle"
-                size="sm"
-                class="rounded-full px-2"
+                size="xs"
+                class="rounded-full px-2 text-[10px] sm:text-xs"
               >
                 {{ tag }}
               </UBadge>
             </div>
             <div
               v-if="firstChapter || lastChapter"
-              class="px-4 pt-3 grid grid-cols-2 gap-2"
+              class="px-3 sm:px-4 pt-2.5 sm:pt-3 grid grid-cols-2 gap-2"
             >
               <UButton
                 v-if="firstChapter"
                 :to="`/chapter/${firstChapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
                 color="primary"
                 variant="solid"
+                size="sm"
                 icon="i-lucide-play"
                 class="justify-center rounded-xl font-bold"
               >
@@ -741,6 +742,7 @@ onUnmounted(() => {
                 :to="`/chapter/${lastChapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
                 color="primary"
                 variant="soft"
+                size="sm"
                 icon="i-lucide-fast-forward"
                 class="justify-center rounded-xl font-bold"
               >
@@ -1503,19 +1505,22 @@ onUnmounted(() => {
 
         <swiper-container
           :key="'relations-' + String(serie?.id)"
-          :slides-per-view="2"
+          :slides-per-view="2.6"
           :breakpoints="{
-            480: { slidesPerView: 3, spaceBetween: 12 },
-            640: { slidesPerView: 4, spaceBetween: 16 },
-            768: { slidesPerView: 5, spaceBetween: 16 },
-            1024: { slidesPerView: 6, spaceBetween: 20 },
-            1280: { slidesPerView: 7, spaceBetween: 20 }
+            360: { slidesPerView: 2.8, spaceBetween: 10 },
+            420: { slidesPerView: 3.2, spaceBetween: 12 },
+            520: { slidesPerView: 3.8, spaceBetween: 12 },
+            640: { slidesPerView: 4.4, spaceBetween: 14 },
+            768: { slidesPerView: 5.2, spaceBetween: 16 },
+            1024: { slidesPerView: 6.2, spaceBetween: 18 },
+            1280: { slidesPerView: 7.2, spaceBetween: 20 }
           }"
           :space-between="10"
           :mousewheel="{ forceToAxis: true, releaseOnEdges: true }"
           :mousewheel-force-to-axis="true"
           :mousewheel-release-on-edges="true"
           :free-mode="true"
+          :grab-cursor="true"
         >
           <swiper-slide
             v-for="relation in serie?.anilistRelations"

@@ -99,9 +99,9 @@ useSeoMeta({
       <AppSidebar v-model:open="openSidebar" />
       <div class="flex flex-1 flex-col overflow-hidden">
         <header
-          class="h-(--ui-header-height) shrink-0 flex items-center justify-between px-4 border-b border-gray-200 dark:border-gray-800"
+          class="h-12 sm:h-(--ui-header-height) shrink-0 flex items-center justify-between px-3 sm:px-4 border-b border-gray-200 dark:border-gray-800"
         >
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2 sm:gap-4">
             <UButton
               v-if="!$device.isMobile"
               :icon="
@@ -111,6 +111,8 @@ useSeoMeta({
               "
               color="neutral"
               variant="ghost"
+              size="sm"
+              class="hidden md:inline-flex"
               aria-label="Toggle sidebar"
               @click="void (openSidebar = !openSidebar)"
             />
@@ -119,38 +121,40 @@ useSeoMeta({
               icon="i-lucide-panel-left-open"
               color="neutral"
               variant="ghost"
+              size="sm"
               aria-label="Open sidebar"
               @click="void (openSidebar = !openSidebar)"
             />
-            <h1 class="font-semibold text-sm hidden md:block">
+            <h1 class="font-semibold text-xs sm:text-sm hidden md:block">
               <UBreadcrumb :items="breadcrumbs" />
             </h1>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 sm:gap-2">
             <AppSearch />
             <UPopover
               v-model:open="themePanelOpen"
-              :ui="{ content: 'w-72 p-3' }"
+              :ui="{ content: 'w-64 sm:w-72 p-2.5 sm:p-3' }"
             >
               <UButton
                 icon="i-lucide-settings-2"
                 color="neutral"
                 variant="ghost"
+                size="sm"
                 aria-label="Open interface preferences"
               />
 
               <template #content>
-                <div class="space-y-3">
-                  <div class="flex items-center justify-between gap-3">
-                    <p class="text-sm font-medium text-highlighted">
+                <div class="space-y-2.5 sm:space-y-3">
+                  <div class="flex items-center justify-between gap-2">
+                    <p class="text-xs sm:text-sm font-medium text-highlighted">
                       Renk tercihi
                     </p>
-                    <span class="text-[10px] text-muted">{{
+                    <span class="text-[9px] sm:text-[10px] text-muted">{{
                       neutralThemeLabels[neutralThemePreference]
                     }}</span>
                   </div>
 
-                  <div class="grid grid-cols-2 gap-2">
+                  <div class="grid grid-cols-2 gap-1.5 sm:gap-2">
                     <UButton
                       v-for="option in neutralThemeOptions"
                       :key="option"
@@ -161,18 +165,19 @@ useSeoMeta({
                       :variant="
                         isNeutralThemeSelected(option) ? 'solid' : 'soft'
                       "
-                      class="justify-start"
+                      size="xs"
+                      class="justify-start sm:text-xs"
                       @click="void (neutralThemePreference = option)"
                     />
                   </div>
-                  <UText class="text-xs text-muted">
+                  <UText class="text-[11px] sm:text-xs text-muted leading-relaxed">
                     Bu renk tercihi karanlık temada arkaplan renk değişikliğini
                     sağlar. Aydınlık temada belirgin bir değişiklik sağlamaz.
                   </UText>
                 </div>
               </template>
             </UPopover>
-            <UColorModeButton />
+            <UColorModeButton size="sm" />
             <UButton
               to="https://github.com/falsisdev/mangile"
               target="_blank"
@@ -180,6 +185,7 @@ useSeoMeta({
               aria-label="GitHub"
               color="neutral"
               variant="ghost"
+              size="sm"
             />
           </div>
         </header>

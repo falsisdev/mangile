@@ -7,27 +7,19 @@
 
 :root {
   --ui-primary: black;
+  font-size: 14.5px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    font-size: 16px;
+  }
 }
 
 .dark {
   --ui-primary: white;
 }
 
-.swiper-slide-active img{
-    animation: heroZoom 6s linear forwards;
-}
-
-@keyframes heroZoom{
-
-from{
-    transform:scale(1);
-}
-
-to{
-    transform:scale(1.08);
-}
-
-}
 
 /* Sayfa geçiş animasyonu */
 .page-enter-active,

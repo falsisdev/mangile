@@ -272,22 +272,22 @@ const localTitles = computed(() => {
 </script>
 
 <template>
-  <div class="px-4 md:px-8 max-w-7xl mx-auto pb-10">
-    <div class="flex flex-col mb-6 mt-4">
-      <h1 class="text-3xl font-black text-foreground">
+  <div class="px-3 sm:px-4 md:px-8 max-w-7xl mx-auto pb-10">
+    <div class="flex flex-col mb-4 sm:mb-6 mt-3 sm:mt-4">
+      <h1 class="text-2xl sm:text-3xl font-black text-foreground">
         Keşfet
       </h1>
-      <p class="text-sm text-muted-foreground mt-1">
+      <p class="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">
         Mangile'da bulunan serileri ara, filtrele ve keşfet!
       </p>
     </div>
 
     <div
       v-if="exploreMode === 'menu'"
-      class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8"
+      class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-8"
     >
       <div
-        class="bg-muted/30 rounded-3xl p-8 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all group"
+        class="bg-muted/30 rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 cursor-pointer transition-all group"
         style="
         background-image: url('https://cdn.sanity.io/images/1yge7tlr/production/82d9ae08a8b6318090165bad8229d9fb2d072317-700x420.gif');
         background-position: center;
@@ -300,21 +300,21 @@ const localTitles = computed(() => {
         <div class="rounded-full text-primary group-hover:scale-110 transition-transform">
           <UIcon
             name="i-lucide-globe"
-            class="w-10 h-10"
+            class="w-8 h-8 sm:w-10 sm:h-10"
           />
         </div>
         <div class="text-center">
-          <h3 class="text-xl font-bold text-foreground">
+          <h3 class="text-lg sm:text-xl font-bold text-foreground">
             Tüm Serileri Keşfet
           </h3>
-          <p class="text-sm text-muted-foreground mt-2">
+          <p class="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
             Geniş veritabanındaki (AniList) tüm serileri inceleyin
           </p>
         </div>
       </div>
 
       <div
-        class="bg-muted/30 rounded-3xl p-8 flex flex-col items-center justify-center gap-4 cursor-pointer transition-all group"
+        class="bg-muted/30 rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 cursor-pointer transition-all group"
         style="
         background-image: url('https://cdn.sanity.io/images/1yge7tlr/production/23d03703d1751a1e51b27a4c4099e80ad1673545-540x250.gif');
         background-position: center;
@@ -327,14 +327,14 @@ const localTitles = computed(() => {
         <div class="rounded-full text-primary group-hover:scale-110 transition-transform">
           <UIcon
             name="i-lucide-library"
-            class="w-10 h-10"
+            class="w-8 h-8 sm:w-10 sm:h-10"
           />
         </div>
         <div class="text-center">
-          <h3 class="text-xl font-bold text-foreground">
+          <h3 class="text-lg sm:text-xl font-bold text-foreground">
             Mangile Serilerini Keşfet
           </h3>
-          <p class="text-sm text-muted-foreground mt-2">
+          <p class="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
             Mangile sistemine eklenmiş serileri görüntüleyin
           </p>
         </div>
@@ -343,9 +343,9 @@ const localTitles = computed(() => {
 
     <div
       v-else-if="exploreMode === 'all'"
-      class="space-y-6"
+      class="space-y-4 sm:space-y-6"
     >
-      <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <UButton
           icon="i-lucide-arrow-left"
           variant="soft"
@@ -359,19 +359,20 @@ const localTitles = computed(() => {
       </div>
 
       <!-- Filtreleme Paneli - Tüm Seriler -->
-      <div class="bg-muted/20 border border-border/50 rounded-2xl p-4 space-y-3">
-        <div class="flex items-center gap-2 text-sm font-semibold text-foreground mb-1">
+      <div class="bg-muted/20 border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 space-y-2.5 sm:space-y-3">
+        <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground mb-1">
           <UIcon
             name="i-lucide-sliders-horizontal"
-            class="w-4 h-4"
+            class="w-3.5 h-3.5 sm:w-4 sm:h-4"
           />
           Filtreleme & Sıralama
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
           <UInput
             v-model="allFilters.search"
             placeholder="Seri ismi yazın..."
             icon="i-lucide-search"
+            size="sm"
             class="w-full"
           />
           <USelect
@@ -379,6 +380,7 @@ const localTitles = computed(() => {
             :items="allSortItems"
             value-key="value"
             label-key="label"
+            size="sm"
             class="w-full"
           />
           <USelect
@@ -386,6 +388,7 @@ const localTitles = computed(() => {
             :items="allFormatItems"
             value-key="value"
             label-key="label"
+            size="sm"
             class="w-full"
           />
           <USelect
@@ -393,6 +396,7 @@ const localTitles = computed(() => {
             :items="allGenreItems"
             value-key="value"
             label-key="label"
+            size="sm"
             class="w-full"
           />
           <USelect
@@ -400,6 +404,7 @@ const localTitles = computed(() => {
             :items="allStatusItems"
             value-key="value"
             label-key="label"
+            size="sm"
             class="w-full"
           />
         </div>
@@ -473,9 +478,9 @@ const localTitles = computed(() => {
 
     <div
       v-else-if="exploreMode === 'local'"
-      class="space-y-6"
+      class="space-y-4 sm:space-y-6"
     >
-      <div class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <UButton
           icon="i-lucide-arrow-left"
           variant="soft"
@@ -489,19 +494,20 @@ const localTitles = computed(() => {
       </div>
 
       <!-- Filtreleme Paneli - Mangile Serileri -->
-      <div class="bg-muted/20 border border-border/50 rounded-2xl p-4 space-y-3">
-        <div class="flex items-center gap-2 text-sm font-semibold text-foreground mb-1">
+      <div class="bg-muted/20 border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 space-y-2.5 sm:space-y-3">
+        <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground mb-1">
           <UIcon
             name="i-lucide-sliders-horizontal"
-            class="w-4 h-4"
+            class="w-3.5 h-3.5 sm:w-4 sm:h-4"
           />
           Filtreleme & Sıralama
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
           <UInput
             v-model="localFilters.search"
             placeholder="Mangile serisi ara..."
             icon="i-lucide-search"
+            size="sm"
             class="w-full"
           />
           <USelect
@@ -509,6 +515,7 @@ const localTitles = computed(() => {
             :items="localSortItems"
             value-key="value"
             label-key="label"
+            size="sm"
             class="w-full"
           />
           <USelect
@@ -516,6 +523,7 @@ const localTitles = computed(() => {
             :items="localTypeItems"
             value-key="value"
             label-key="label"
+            size="sm"
             class="w-full"
           />
           <USelect
@@ -523,6 +531,7 @@ const localTitles = computed(() => {
             :items="localTagItems"
             value-key="value"
             label-key="label"
+            size="sm"
             class="w-full"
           />
           <USelect
@@ -530,6 +539,7 @@ const localTitles = computed(() => {
             :items="localStatusItems"
             value-key="value"
             label-key="label"
+            size="sm"
             class="w-full"
           />
         </div>

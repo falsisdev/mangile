@@ -139,15 +139,15 @@ const renderedContent = computed(() => {
 
       const style = block.style || 'normal'
       if (style === 'h1')
-        return `<h1 class="text-4xl font-bold mt-10 mb-6">${htmlContent}</h1>`
+        return `<h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mt-8 mb-4">${htmlContent}</h1>`
       if (style === 'h2')
-        return `<h2 class="text-3xl font-bold mt-8 mb-4">${htmlContent}</h2>`
+        return `<h2 class="text-xl sm:text-2xl md:text-3xl font-bold mt-6 mb-3">${htmlContent}</h2>`
       if (style === 'h3')
-        return `<h3 class="text-2xl font-bold mt-6 mb-4">${htmlContent}</h3>`
+        return `<h3 class="text-lg sm:text-xl md:text-2xl font-bold mt-5 mb-3">${htmlContent}</h3>`
       if (style === 'h4')
-        return `<h4 class="text-xl font-bold mt-4 mb-2">${htmlContent}</h4>`
+        return `<h4 class="text-base sm:text-lg md:text-xl font-bold mt-4 mb-2">${htmlContent}</h4>`
 
-      return `<p class="mb-6 leading-relaxed">${htmlContent}</p>`
+      return `<p class="text-sm sm:text-base mb-4 sm:mb-6 leading-relaxed">${htmlContent}</p>`
     })
     .join('')
 })
@@ -158,11 +158,16 @@ useHead(() => ({
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto">
-    <h1 class="font-bold text-3xl md:text-4xl leading-tight">
+  <div class="max-w-4xl mx-auto px-1 sm:px-0">
+    <h1 class="font-black text-2xl sm:text-3xl md:text-4xl leading-tight mb-2">
       {{ article?.title }}
     </h1>
-    {{ article?.description }}
+    <p
+      v-if="article?.description"
+      class="text-xs sm:text-sm text-muted-foreground mb-4"
+    >
+      {{ article?.description }}
+    </p>
 
     <div v-html="renderedContent" />
 
@@ -177,10 +182,10 @@ useHead(() => ({
       <UButton
         v-if="showBackToTop"
         icon="i-lucide-arrow-up"
-        size="xl"
+        size="sm"
         color="primary"
         variant="soft"
-        class="fixed bottom-20 right-20 rounded-lg shadow-xl z-50"
+        class="fixed bottom-6 right-6 sm:bottom-12 sm:right-12 rounded-full shadow-xl z-50"
         aria-label="Başa Dön"
         @click="scrollToTop"
       />

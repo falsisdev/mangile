@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useWindowSize } from '@vueuse/core'
-
 interface Title {
   title: string
   type: string
@@ -10,23 +8,6 @@ interface Title {
   banner: string
   id: number
 }
-
-const isSidebarOpen = useSidebar()
-const { width } = useWindowSize()
-
-const sectionClass = computed(() => {
-  if (width.value >= 1700)
-    return `relative ${isSidebarOpen.value ? 'h-[70vh]' : 'h-[70vh]'} overflow-hidden rounded-3xl`
-  if (width.value >= 1280)
-    return `relative ${isSidebarOpen.value ? 'h-[60vh]' : 'h-[60vh]'} overflow-hidden rounded-3xl`
-  if (width.value >= 1024)
-    return `relative ${isSidebarOpen.value ? 'h-[60vh]' : 'h-[60vh]'} overflow-hidden rounded-3xl`
-  if (width.value >= 768)
-    return 'relative h-[70vh] overflow-hidden rounded-3xl'
-  if (width.value >= 640)
-    return 'relative h-[60vh] overflow-hidden rounded-3xl'
-  return 'relative h-[65vh] overflow-hidden rounded-3xl'
-})
 
 withDefaults(
   defineProps<{
@@ -53,7 +34,7 @@ withDefaults(
       v-for="slide in slides"
       :key="slide.title"
     >
-      <section :class="sectionClass">
+      <section class="relative h-[420px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl">
         <div
           class="absolute inset-0 bg-cover bg-center slide-bg-layer"
           :style="{
@@ -61,74 +42,114 @@ withDefaults(
           }"
         />
         <div
-          class="absolute inset-0 bg-linear-to-r from-black via-black/70 to-transparent z-10"
+          class="absolute inset-0 bg-linear-to-r from-black/95 via-black/70 to-black/20 sm:to-transparent z-10"
         />
         <div
-          class="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent z-10"
+          class="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 sm:via-transparent to-transparent z-10"
         />
 
-        <UContainer class="relative z-20 flex h-full items-center">
-          <div class="max-w-2xl space-y-4 text-white content-layer">
-            <div
-              v-if="width >= 640"
-              class="flex gap-2"
-            >
+        <UContainer class="relative z-20 flex h-full items-center pb-6 sm:pb-0">
+          <div class="max-w-2xl space-y-2.5 sm:space-y-4 text-white content-layer">
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <UBadge
+                v-if="slide.type"
+                color="neutral"
+                variant="soft"
+                size="sm"
+                class="sm:hidden font-medium"
+              >
+                {{ slide.type }}
+              </UBadge>
+              <UBadge
+                v-if="slide.type"
                 color="neutral"
                 variant="soft"
                 size="lg"
+                class="hidden sm:inline-flex"
               >
-                {{
-                  slide.type
-                }}
+                {{ slide.type }}
+              </UBadge>
+
+              <UBadge
+                v-if="slide.year"
+                color="neutral"
+                variant="soft"
+                size="sm"
+                class="sm:hidden font-medium"
+              >
+                {{ slide.year }}
               </UBadge>
               <UBadge
+                v-if="slide.year"
                 color="neutral"
                 variant="soft"
                 size="lg"
+                class="hidden sm:inline-flex"
               >
-                {{
-                  slide.year
-                }}
+                {{ slide.year }}
+              </UBadge>
+
+              <UBadge
+                v-if="slide.score && Number(slide.score) > 0"
+                icon="i-lucide-star"
+                color="warning"
+                variant="soft"
+                size="sm"
+                class="sm:hidden font-bold"
+              >
+                {{ slide.score }}
               </UBadge>
               <UBadge
+                v-if="slide.score && Number(slide.score) > 0"
                 icon="i-lucide-star"
                 color="warning"
                 variant="soft"
                 size="md"
+                class="hidden sm:inline-flex"
               >
                 {{ slide.score }}
               </UBadge>
             </div>
 
-            <h1 class="text-3xl font-black whitespace-nowrap md:text-6xl">
-              {{
-                slide.title.length > 23
-                  ? slide.title.slice(0, 23) + '...'
-                  : slide.title
-              }}
+            <h1 class="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black line-clamp-2 text-white leading-tight tracking-tight drop-shadow-md">
+              {{ slide.title }}
             </h1>
 
-            <p class="max-w-xl text-md md:text-lg text-gray-200">
-              {{
-                slide.description.replaceAll(/<[^>]*>/g, '').length > 400
-                  ? slide.description
-                    .replaceAll(/<[^>]*> /g, '')
-                    .slice(0, 397) + '...'
-                  : slide.description.replaceAll(/ <[^>]*>/g, '')
-              }}
+            <p class="max-w-xl text-sm sm:text-sm md:text-base text-gray-200 line-clamp-4 sm:line-clamp-4 md:line-clamp-6 leading-relaxed drop-shadow-xs">
+              {{ slide.description ? slide.description.replaceAll(/<[^>]*>/g, '') : '' }}
             </p>
 
-            <div class="flex gap-3">
+            <div class="flex items-center gap-2 sm:gap-3 pt-1">
               <UButton
                 :to="'/title/' + slide.id"
-                size="lg"
+                size="sm"
                 icon="i-lucide-info"
-                class="cursor-pointer"
+                class="cursor-pointer sm:hidden"
                 variant="solid"
                 color="neutral"
               >
                 Detaylar
+              </UButton>
+              <UButton
+                :to="'/title/' + slide.id"
+                size="lg"
+                icon="i-lucide-info"
+                class="cursor-pointer hidden sm:inline-flex"
+                variant="solid"
+                color="neutral"
+              >
+                Detaylar
+              </UButton>
+
+              <UButton
+                :to="'/synch?mal_id=' + slide.id"
+                size="sm"
+                color="neutral"
+                variant="subtle"
+                icon="i-lucide-cloud-backup"
+                class="cursor-pointer sm:hidden"
+              >
+                Senkronize Et
               </UButton>
               <UButton
                 :to="'/synch?mal_id=' + slide.id"
@@ -136,7 +157,7 @@ withDefaults(
                 color="neutral"
                 variant="subtle"
                 icon="i-lucide-cloud-backup"
-                class="cursor-pointer"
+                class="cursor-pointer hidden sm:inline-flex"
               >
                 Senkronize Et
               </UButton>
@@ -166,7 +187,6 @@ swiper-container::part(bullet) {
 swiper-container::part(bullet-active) {
   width: 32px;
   border-radius: 999px;
-
   background-color: white;
   opacity: 1;
 }

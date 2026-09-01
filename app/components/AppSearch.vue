@@ -97,6 +97,7 @@ function openSearch() {
     icon="i-lucide-search"
     color="neutral"
     variant="ghost"
+    size="sm"
     aria-label="Ara"
     @click="openSearch"
   />

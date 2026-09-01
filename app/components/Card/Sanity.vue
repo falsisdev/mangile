@@ -23,54 +23,58 @@ const isSidebarOpen = useSidebar()
 
 const coverBreakpoints = computed(() => {
   const baseBreakpoints = {
-    250: { slidesPerView: 1, spaceBetween: 20 },
-    320: { slidesPerView: 1.5, spaceBetween: 20 },
-    420: { slidesPerView: 2, spaceBetween: 20 },
-    520: { slidesPerView: 2.5, spaceBetween: 20 },
-    640: { slidesPerView: 3, spaceBetween: 20 },
-    768: { slidesPerView: 3.75, spaceBetween: 30 }
+    0: { slidesPerView: 2.6, spaceBetween: 10 },
+    360: { slidesPerView: 2.8, spaceBetween: 10 },
+    420: { slidesPerView: 3.2, spaceBetween: 12 },
+    520: { slidesPerView: 3.8, spaceBetween: 12 },
+    640: { slidesPerView: 4.4, spaceBetween: 14 },
+    768: { slidesPerView: 5.2, spaceBetween: 16 }
   }
 
   if (isSidebarOpen.value) {
     return {
       ...baseBreakpoints,
-      1024: { slidesPerView: 3.75, spaceBetween: 30 },
-      1280: { slidesPerView: 5, spaceBetween: 30 },
-      1700: { slidesPerView: 7, spaceBetween: 30 }
+      1024: { slidesPerView: 5.2, spaceBetween: 16 },
+      1280: { slidesPerView: 6.2, spaceBetween: 18 },
+      1536: { slidesPerView: 7.2, spaceBetween: 20 },
+      1920: { slidesPerView: 8.5, spaceBetween: 20 }
     }
   } else {
     return {
       ...baseBreakpoints,
-      1024: { slidesPerView: 4.75, spaceBetween: 30 },
-      1280: { slidesPerView: 6, spaceBetween: 30 },
-      1700: { slidesPerView: 8, spaceBetween: 30 }
+      1024: { slidesPerView: 6.2, spaceBetween: 16 },
+      1280: { slidesPerView: 7.2, spaceBetween: 18 },
+      1536: { slidesPerView: 8.5, spaceBetween: 20 },
+      1920: { slidesPerView: 10, spaceBetween: 20 }
     }
   }
 })
 
 const chapterBreakpoints = computed(() => {
   const baseBreakpoints = {
-    250: { slidesPerView: 1.05, spaceBetween: 12 },
-    320: { slidesPerView: 1.15, spaceBetween: 12 },
+    0: { slidesPerView: 1.15, spaceBetween: 10 },
+    360: { slidesPerView: 1.25, spaceBetween: 10 },
     420: { slidesPerView: 1.4, spaceBetween: 12 },
-    520: { slidesPerView: 1.75, spaceBetween: 14 },
-    640: { slidesPerView: 2.1, spaceBetween: 14 },
+    520: { slidesPerView: 1.7, spaceBetween: 12 },
+    640: { slidesPerView: 2.2, spaceBetween: 14 },
     768: { slidesPerView: 2.6, spaceBetween: 16 }
   }
 
   if (isSidebarOpen.value) {
     return {
       ...baseBreakpoints,
-      1024: { slidesPerView: 3.2, spaceBetween: 16 },
-      1280: { slidesPerView: 4, spaceBetween: 16 },
-      1700: { slidesPerView: 5, spaceBetween: 16 }
+      1024: { slidesPerView: 2.8, spaceBetween: 16 },
+      1280: { slidesPerView: 3.5, spaceBetween: 16 },
+      1536: { slidesPerView: 4.5, spaceBetween: 18 },
+      1920: { slidesPerView: 5.2, spaceBetween: 18 }
     }
   } else {
     return {
       ...baseBreakpoints,
-      1024: { slidesPerView: 3.75, spaceBetween: 16 },
-      1280: { slidesPerView: 4.5, spaceBetween: 16 },
-      1700: { slidesPerView: 5.5, spaceBetween: 16 }
+      1024: { slidesPerView: 3.4, spaceBetween: 16 },
+      1280: { slidesPerView: 4.2, spaceBetween: 16 },
+      1536: { slidesPerView: 5.2, spaceBetween: 18 },
+      1920: { slidesPerView: 6, spaceBetween: 18 }
     }
   }
 })
@@ -84,12 +88,14 @@ const swiperBreakpoints = computed(() =>
   <swiper-container
     :key="`${variant}-${String(isSidebarOpen)}`"
     :loop="false"
-    :slides-per-view="variant === 'chapter' ? 1.05 : 8"
+    :slides-per-view="variant === 'chapter' ? 1.15 : 2.6"
+    :space-between="10"
     :breakpoints="swiperBreakpoints"
     :mousewheel="{ forceToAxis: true, releaseOnEdges: true }"
     :mousewheel-force-to-axis="true"
     :mousewheel-release-on-edges="true"
     :free-mode="true"
+    :grab-cursor="true"
   >
     <swiper-slide
       v-for="item of items"
