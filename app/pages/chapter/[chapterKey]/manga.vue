@@ -70,7 +70,7 @@ const settings = reactive({
     'paged' as ReadingMode
   ),
   readingDirection: useStorage<ReadingDirection>(
-    'manga-reading-direction',
+    'manga-reading-direction-v2',
     'ltr' as ReadingDirection
   ),
   autoScroll: useStorage('manga-auto-scroll', false),
@@ -623,6 +623,9 @@ watch(
 )
 
 onMounted(() => {
+  if (import.meta.client) {
+    localStorage.removeItem('manga-reading-direction')
+  }
   window.addEventListener('keydown', handleKeydown)
   window.addEventListener('mouseup', handleMouseUp)
   resetControlsTimeout()
@@ -1097,21 +1100,21 @@ definePageMeta({
                   <div class="flex items-center gap-1 bg-gray-800/80 p-1 rounded-lg border border-gray-700/60">
                     <UButton
                       size="xs"
-                      :color="settings.readingDirection === 'rtl' ? 'primary' : 'neutral'"
-                      :variant="settings.readingDirection === 'rtl' ? 'solid' : 'ghost'"
-                      class="rounded-md text-[11px]"
-                      @click="void (settings.readingDirection = 'rtl')"
-                    >
-                      Sağdan Sola (RTL)
-                    </UButton>
-                    <UButton
-                      size="xs"
                       :color="settings.readingDirection === 'ltr' ? 'primary' : 'neutral'"
                       :variant="settings.readingDirection === 'ltr' ? 'solid' : 'ghost'"
                       class="rounded-md text-[11px]"
                       @click="void (settings.readingDirection = 'ltr')"
                     >
                       Soldan Sağa (LTR)
+                    </UButton>
+                    <UButton
+                      size="xs"
+                      :color="settings.readingDirection === 'rtl' ? 'primary' : 'neutral'"
+                      :variant="settings.readingDirection === 'rtl' ? 'solid' : 'ghost'"
+                      class="rounded-md text-[11px]"
+                      @click="void (settings.readingDirection = 'rtl')"
+                    >
+                      Sağdan Sola (RTL)
                     </UButton>
                   </div>
                 </div>
