@@ -59,21 +59,47 @@ function toggleSidebar() {
     variant="sidebar"
     collapsible="icon"
     side="left"
+    :ui="{
+      container: 'max-md:w-72 max-md:max-w-[85vw]',
+      inner: 'max-md:bg-sidebar/95 max-md:backdrop-blur-xl max-md:border-r max-md:border-border/60 max-md:shadow-2xl'
+    }"
   >
     <template #header>
       <div class="flex flex-row items-center w-full">
-        <img
-          src="https://cdn.sanity.io/images/1yge7tlr/production/b8497ba054d01f92ecf4f359a835f55e6a321d90-1080x1080.png?fit=max&w=600&h=600"
-          class="size-7 sm:size-8"
+        <NuxtLink
+          to="/"
+          class="flex items-center gap-2.5 min-w-0"
+          @click="closeOnMobile"
         >
+          <img
+            src="https://cdn.sanity.io/images/1yge7tlr/production/b8497ba054d01f92ecf4f359a835f55e6a321d90-1080x1080.png?fit=max&w=600&h=600"
+            class="size-8 rounded-xl shrink-0"
+            alt="Mangile Logo"
+          >
+          <div
+            class="flex items-center gap-1.5 min-w-0"
+            :class="open ? 'flex' : 'flex md:hidden'"
+          >
+            <span class="font-black text-base text-foreground tracking-tight">Mangile</span>
+            <UBadge
+              color="primary"
+              variant="subtle"
+              size="xs"
+              class="rounded-full px-1.5 py-0 text-[9px] font-bold"
+            >
+              v1.0
+            </UBadge>
+          </div>
+        </NuxtLink>
         <span class="grow" />
         <UButton
-          v-if="$device.isMobile && open"
-          icon="i-lucide-panel-left-close"
+          v-if="open"
+          icon="i-lucide-x"
           color="neutral"
           variant="ghost"
           size="sm"
-          aria-label="Toggle sidebar"
+          class="rounded-full md:hidden shrink-0"
+          aria-label="Menüyü Kapat"
           @click="toggleSidebar"
         />
       </div>
@@ -84,59 +110,78 @@ function toggleSidebar() {
         <UNavigationMenu
           :items="mainItems"
           orientation="vertical"
-          :ui="{ link: 'p-1.5 text-xs sm:text-sm overflow-hidden' }"
+          :ui="{ link: 'p-1.5 max-md:p-2 max-md:rounded-xl overflow-hidden' }"
         />
 
         <div
           v-if="open"
-          class="px-2.5 pt-4 pb-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted"
+          class="px-3 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1"
         >
-          Kitaplık
+          <UIcon
+            name="i-lucide-library"
+            class="w-3 h-3 text-primary md:hidden"
+          />
+          <span>Kitaplık</span>
         </div>
 
         <UNavigationMenu
           :items="libraryItems"
           orientation="vertical"
-          :ui="{ link: 'p-1.5 text-xs sm:text-sm overflow-hidden' }"
+          :ui="{ link: 'p-1.5 max-md:p-2 max-md:rounded-xl overflow-hidden' }"
         />
 
         <div
           v-if="open"
-          class="px-2.5 pt-4 pb-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted"
+          class="px-3 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1"
         >
-          Kurumsal
+          <UIcon
+            name="i-lucide-info"
+            class="w-3 h-3 text-primary md:hidden"
+          />
+          <span>Kurumsal</span>
         </div>
 
         <UNavigationMenu
           :items="companyItems"
           orientation="vertical"
-          :ui="{ link: 'p-1.5 text-xs sm:text-sm overflow-hidden' }"
+          :ui="{ link: 'p-1.5 max-md:p-2 max-md:rounded-xl overflow-hidden' }"
         />
 
         <div
           v-if="open"
-          class="px-2.5 pt-4 pb-1.5 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted"
+          class="px-3 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1"
         >
-          Yasal
+          <UIcon
+            name="i-lucide-scale"
+            class="w-3 h-3 text-primary md:hidden"
+          />
+          <span>Yasal</span>
         </div>
 
         <UNavigationMenu
           :items="legalItems"
           orientation="vertical"
-          :ui="{ link: 'p-1.5 text-xs sm:text-sm overflow-hidden' }"
+          :ui="{ link: 'p-1.5 max-md:p-2 max-md:rounded-xl overflow-hidden' }"
         />
       </div>
     </div>
 
     <template #footer>
-      <UButton
-        label="Giriş Yap"
-        icon="i-lucide-log-in"
-        size="sm"
-        block
-        to="/login"
-        @click="closeOnMobile"
-      />
+      <div class="w-full space-y-1">
+        <UButton
+          label="Giriş Yap"
+          icon="i-lucide-log-in"
+          block
+          to="/login"
+          @click="closeOnMobile"
+        />
+        <p
+          v-if="open"
+          class="text-center text-[10px] text-muted-foreground pt-1 md:hidden"
+        >
+          Mangile © 2026
+        </p>
+      </div>
     </template>
   </USidebar>
 </template>

@@ -103,7 +103,6 @@ useSeoMeta({
         >
           <div class="flex items-center gap-2 sm:gap-4">
             <UButton
-              v-if="!$device.isMobile"
               :icon="
                 openSidebar
                   ? 'i-lucide-panel-left-close'
@@ -112,17 +111,8 @@ useSeoMeta({
               color="neutral"
               variant="ghost"
               size="sm"
-              class="hidden md:inline-flex"
-              aria-label="Toggle sidebar"
-              @click="void (openSidebar = !openSidebar)"
-            />
-            <UButton
-              v-else-if="$device.isMobile && !openSidebar"
-              icon="i-lucide-panel-left-open"
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              aria-label="Open sidebar"
+              class="touch-manipulation"
+              aria-label="Menüyü Aç/Kapat"
               @click="void (openSidebar = !openSidebar)"
             />
             <h1 class="font-semibold text-xs sm:text-sm hidden md:block">
