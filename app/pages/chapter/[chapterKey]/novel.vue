@@ -380,56 +380,55 @@ definePageMeta({
 
 <template>
   <div
-    class="min-h-screen dark:bg-linear-to-b dark:from-default dark:via-default dark:to-black transition-colors duration-300"
+    class="min-h-screen dark:bg-linear-to-b dark:from-default dark:via-default dark:to-black transition-colors duration-300 pb-20"
   >
+    <!-- OKUMA İLERLEME ÇUBUĞU -->
+    <div
+      class="fixed top-0 left-0 w-full h-1 bg-linear-to-r from-primary to-primary/60 z-50 pointer-events-none"
+      :style="{ width: readingProgress + '%' }"
+    />
+
+    <!-- ÜST ÇUBUK (Sticky App Bar) -->
     <header
-      class="sticky top-0 z-40 bg-default backdrop-blur-xl border-b border-primary/50 shadow-md"
+      class="sticky top-0 z-40 bg-default/90 backdrop-blur-xl border-b border-border/50 shadow-xs"
     >
-      <UContainer
-        class="h-auto py-3 flex flex-col sm:flex-row items-center justify-between gap-3 max-w-5xl"
-      >
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <UButton
-            :disabled="!hasPreviousChapter"
-            icon="i-lucide-chevron-left"
-            size="sm"
-            color="neutral"
-            variant="soft"
-            @click="goToPreviousChapter"
-          />
+      <div class="px-3 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 max-w-5xl mx-auto">
+        <!-- Sol: Geri butonu ve Başlık Bilgisi -->
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <UButton
             :to="`/title/${chapterData?.lightNovel?.myAnimeListId}`"
-            icon="i-lucide-book-open"
+            icon="i-lucide-arrow-left"
             size="sm"
-            color="primary"
-            variant="soft"
+            color="neutral"
+            variant="ghost"
+            class="rounded-full shrink-0"
+            aria-label="Seriye Dön"
           />
-          <span
-            class="text-xs font-medium text-gray-600 dark:text-gray-400 truncate flex-1 sm:flex-none"
-          >
-            {{ chapterData?.lightNovel?.title }} | {{ chapterData?.title }}
-          </span>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs sm:text-sm font-bold text-foreground truncate leading-tight">
+              {{ chapterData?.lightNovel?.title }}
+            </p>
+            <p class="text-[10px] sm:text-xs text-muted-foreground truncate">
+              {{ chapterData?.title }}
+            </p>
+          </div>
         </div>
 
-        <div
-          class="flex items-center gap-1 w-full sm:w-auto justify-center sm:justify-end"
-        >
-          <UButtonGroup
-            size="xs"
-            orientation="horizontal"
-          >
+        <!-- Sağ: Yazı Boyutu, Tema ve Ayarlar Butonları -->
+        <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <UButtonGroup size="xs">
             <UButton
               icon="i-lucide-a-arrow-down"
               color="neutral"
               variant="ghost"
-              title="Yazıyı Küçült"
+              aria-label="Yazıyı Küçült"
               @click="changeFontSize(-1)"
             />
             <UButton
               icon="i-lucide-a-arrow-up"
               color="neutral"
               variant="ghost"
-              title="Yazıyı Büyüt"
+              aria-label="Yazıyı Büyüt"
               @click="changeFontSize(1)"
             />
           </UButtonGroup>
@@ -437,69 +436,62 @@ definePageMeta({
           <UButton
             :icon="isDark ? 'i-lucide-moon' : 'i-lucide-sun'"
             color="neutral"
-            variant="soft"
+            variant="ghost"
             size="xs"
+            class="rounded-full"
+            aria-label="Tema Değiştir"
             @click="toggleTheme"
           />
 
           <UButton
-            icon="i-lucide-settings"
-            color="neutral"
-            variant="soft"
+            :icon="showSettings ? 'i-lucide-x' : 'i-lucide-settings'"
+            :color="showSettings ? 'primary' : 'neutral'"
+            :variant="showSettings ? 'solid' : 'ghost'"
             size="xs"
+            class="rounded-full"
+            aria-label="Okuma Ayarları"
             @click="void (showSettings = !showSettings)"
           />
-
-          <UButton
-            :disabled="!hasNextChapter"
-            icon="i-lucide-chevron-right"
-            size="sm"
-            color="neutral"
-            variant="soft"
-            @click="goToNextChapter"
-          />
-
-          <USelect
-            v-if="siblingChapterOptions.length"
-            v-model="selectedSiblingChapter"
-            :items="siblingChapterOptions"
-            :placeholder="`Bölüm ${chapterData?.chapterNumber ?? '-'} / ${siblingChapters.length}`"
-            size="xs"
-            class="w-40"
-          />
         </div>
-      </UContainer>
+      </div>
     </header>
 
+    <!-- AYARLAR PANELİ -->
     <Transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0 -translate-x-4"
-      enter-to-class="opacity-100 translate-x-0"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100 translate-x-0"
-      leave-to-class="opacity-0 -translate-x-4"
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 translate-y-4 scale-95"
+      enter-to-class="opacity-100 translate-y-0 scale-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100 translate-y-0 scale-100"
+      leave-to-class="opacity-0 translate-y-4 scale-95"
     >
       <div
         v-if="showSettings"
-        class="fixed top-20 right-4 z-40 w-full sm:w-96 bg-default/90 dark:bg-default/90 backdrop-blur-lg border border-primary/50 rounded-xl shadow-lg p-6 transition-all duration-300"
+        class="fixed bottom-20 sm:bottom-auto sm:top-16 inset-x-3 sm:inset-x-auto sm:right-4 z-50 w-auto sm:w-96 bg-default/95 backdrop-blur-xl border border-border/80 rounded-2xl shadow-2xl p-4 sm:p-5 max-h-[75vh] overflow-y-auto"
       >
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-bold">
+        <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-border/50">
+          <h3 class="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+            <UIcon
+              name="i-lucide-sliders-horizontal"
+              class="w-3.5 h-3.5 text-primary"
+            />
             Okuma Ayarları
           </h3>
           <UButton
             icon="i-lucide-x"
             variant="ghost"
             size="xs"
-            square
+            color="neutral"
+            class="rounded-full"
+            aria-label="Kapat"
             @click="void (showSettings = false)"
           />
         </div>
 
-        <div class="space-y-5">
+        <div class="space-y-4 text-xs sm:text-sm">
           <div>
-            <div class="flex justify-between items-center mb-2">
-              <label class="text-sm font-semibold">Yazı Boyutu: {{ settings.fontSize }}px</label>
+            <div class="flex justify-between items-center mb-1.5">
+              <label class="font-semibold text-foreground">Yazı Boyutu: {{ settings.fontSize }}px</label>
               <UButtonGroup size="xs">
                 <UButton
                   icon="i-lucide-minus"
@@ -521,12 +513,12 @@ definePageMeta({
               min="12"
               max="32"
               step="1"
-              class="w-full accent-primary"
+              class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
             >
           </div>
 
           <div>
-            <label class="text-sm font-semibold block mb-2">Satır Yüksekliği:
+            <label class="font-semibold block mb-1.5 text-foreground">Satır Yüksekliği:
               {{ (settings.lineHeight * 10).toFixed(0) }}%</label>
             <input
               v-model.number="settings.lineHeight"
@@ -534,33 +526,36 @@ definePageMeta({
               min="1.2"
               max="2.5"
               step="0.1"
-              class="w-full accent-primary"
+              class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
             >
           </div>
 
           <div>
-            <label class="text-sm font-semibold block mb-2">Yazı Tipi</label>
+            <label class="font-semibold block mb-1.5 text-foreground">Yazı Tipi</label>
             <UButtonGroup
-              size="sm"
+              size="xs"
               orientation="horizontal"
               class="w-full"
             >
               <UButton
-                :variant="settings.fontFamily === 'sans' ? 'soft' : 'ghost'"
+                :variant="settings.fontFamily === 'sans' ? 'solid' : 'ghost'"
+                :color="settings.fontFamily === 'sans' ? 'primary' : 'neutral'"
                 class="flex-1"
                 @click="void (settings.fontFamily = 'sans')"
               >
                 Düz
               </UButton>
               <UButton
-                :variant="settings.fontFamily === 'serif' ? 'soft' : 'ghost'"
+                :variant="settings.fontFamily === 'serif' ? 'solid' : 'ghost'"
+                :color="settings.fontFamily === 'serif' ? 'primary' : 'neutral'"
                 class="flex-1"
                 @click="void (settings.fontFamily = 'serif')"
               >
                 Serif
               </UButton>
               <UButton
-                :variant="settings.fontFamily === 'mono' ? 'soft' : 'ghost'"
+                :variant="settings.fontFamily === 'mono' ? 'solid' : 'ghost'"
+                :color="settings.fontFamily === 'mono' ? 'primary' : 'neutral'"
                 class="flex-1"
                 @click="void (settings.fontFamily = 'mono')"
               >
@@ -570,30 +565,29 @@ definePageMeta({
           </div>
 
           <div>
-            <label class="text-sm font-semibold block mb-2">Hizalama</label>
+            <label class="font-semibold block mb-1.5 text-foreground">Hizalama</label>
             <UButtonGroup
-              size="sm"
+              size="xs"
               orientation="horizontal"
               class="w-full"
             >
               <UButton
-                :variant="settings.textAlignment === 'left' ? 'soft' : 'ghost'"
+                :variant="settings.textAlignment === 'left' ? 'solid' : 'ghost'"
+                :color="settings.textAlignment === 'left' ? 'primary' : 'neutral'"
                 icon="i-lucide-align-left"
                 class="flex-1"
                 @click="void (settings.textAlignment = 'left')"
               />
               <UButton
-                :variant="
-                  settings.textAlignment === 'justify' ? 'soft' : 'ghost'
-                "
+                :variant="settings.textAlignment === 'justify' ? 'solid' : 'ghost'"
+                :color="settings.textAlignment === 'justify' ? 'primary' : 'neutral'"
                 icon="i-lucide-align-justify"
                 class="flex-1"
                 @click="void (settings.textAlignment = 'justify')"
               />
               <UButton
-                :variant="
-                  settings.textAlignment === 'center' ? 'soft' : 'ghost'
-                "
+                :variant="settings.textAlignment === 'center' ? 'solid' : 'ghost'"
+                :color="settings.textAlignment === 'center' ? 'primary' : 'neutral'"
                 icon="i-lucide-align-center"
                 class="flex-1"
                 @click="void (settings.textAlignment = 'center')"
@@ -602,47 +596,47 @@ definePageMeta({
           </div>
 
           <div>
-            <label class="text-sm font-semibold block mb-2">Parlaklık: {{ settings.brightness }}%</label>
+            <label class="font-semibold block mb-1.5 text-foreground">Parlaklık: {{ settings.brightness }}%</label>
             <input
               v-model.number="settings.brightness"
               type="range"
               min="50"
               max="150"
               step="5"
-              class="w-full accent-primary"
+              class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
             >
           </div>
 
           <div>
-            <label class="text-sm font-semibold block mb-2">Sayfa Genişliği: {{ settings.lineWidth }}%</label>
+            <label class="font-semibold block mb-1.5 text-foreground">Sayfa Genişliği: {{ settings.lineWidth }}%</label>
             <input
               v-model.number="settings.lineWidth"
               type="range"
               min="50"
               max="100"
               step="5"
-              class="w-full accent-primary"
+              class="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider"
             >
           </div>
         </div>
       </div>
     </Transition>
 
-    <UContainer class="max-w-5xl py-10">
+    <UContainer class="max-w-5xl py-6 sm:py-10 px-3 sm:px-6">
       <div
         v-if="pending"
         class="space-y-6"
       >
-        <USkeleton class="h-12 w-2/3 mx-auto mb-12" />
+        <USkeleton class="h-10 w-2/3 mx-auto mb-10" />
         <div class="space-y-4">
-          <USkeleton class="h-6 w-full" />
-          <USkeleton class="h-6 w-full" />
-          <USkeleton class="h-6 w-5/6" />
+          <USkeleton class="h-5 w-full" />
+          <USkeleton class="h-5 w-full" />
+          <USkeleton class="h-5 w-5/6" />
         </div>
-        <USkeleton class="h-80 w-full rounded-2xl my-8" />
+        <USkeleton class="h-64 w-full rounded-2xl my-8" />
         <div class="space-y-4">
-          <USkeleton class="h-6 w-full" />
-          <USkeleton class="h-6 w-4/5" />
+          <USkeleton class="h-5 w-full" />
+          <USkeleton class="h-5 w-4/5" />
         </div>
       </div>
 
@@ -668,7 +662,7 @@ definePageMeta({
 
       <article
         v-else
-        class="transition-all duration-200 text-foreground max-w-none"
+        class="transition-all duration-200 text-foreground max-w-none px-1 sm:px-0"
         :style="{
           fontSize: settings.fontSize + 'px',
           lineHeight: settings.lineHeight,
@@ -686,9 +680,9 @@ definePageMeta({
           textAlign: settings.textAlignment
         }"
       >
-        <div class="mb-10 text-center">
+        <div class="mb-6 sm:mb-10 text-center">
           <h1
-            class="font-black text-4xl md:text-5xl leading-tight text-foreground"
+            class="font-black text-2xl sm:text-3xl md:text-4xl leading-tight text-foreground"
           >
             {{ chapterData.title }}
           </h1>
@@ -697,24 +691,25 @@ definePageMeta({
         <div v-html="renderedContent" />
       </article>
 
+      <!-- Sayfa Sonu Bölüm Geçiş Butonları -->
       <div
         v-if="!pending && chapterData"
-        class="pt-12 mt-12 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4"
+        class="pt-8 sm:pt-12 mt-8 sm:mt-12 mb-16 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4"
       >
         <UButton
           :disabled="!hasPreviousChapter"
           icon="i-lucide-chevron-left"
-          size="lg"
+          size="md"
           color="primary"
           variant="soft"
-          class="w-full sm:w-auto"
+          class="w-full sm:w-auto justify-center rounded-xl"
           @click="goToPreviousChapter"
         >
           Önceki Bölüm
         </UButton>
 
         <span
-          class="text-sm text-gray-500 dark:text-gray-400 font-medium text-center line-clamp-2 px-4 flex-1"
+          class="text-xs sm:text-sm text-muted-foreground font-medium text-center line-clamp-2 px-2 flex-1"
         >
           {{ chapterData.title }}
         </span>
@@ -722,10 +717,10 @@ definePageMeta({
         <UButton
           :disabled="!hasNextChapter"
           trailing-icon="i-lucide-chevron-right"
-          size="lg"
+          size="md"
           color="primary"
-          variant="soft"
-          class="w-full sm:w-auto"
+          variant="solid"
+          class="w-full sm:w-auto justify-center rounded-xl font-bold"
           @click="goToNextChapter"
         >
           Sonraki Bölüm
@@ -733,6 +728,42 @@ definePageMeta({
       </div>
     </UContainer>
 
+    <!-- YÜZEN ALT BÖLÜM GEZİNME ÇUBUĞU (Android Reader Style) -->
+    <div
+      v-if="!pending && chapterData"
+      class="fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-2 bg-default/95 backdrop-blur-xl border border-border/80 shadow-2xl rounded-2xl sm:rounded-full max-w-[calc(100vw-1.5rem)]"
+    >
+      <UButton
+        :disabled="!hasPreviousChapter"
+        icon="i-lucide-chevron-left"
+        size="sm"
+        color="neutral"
+        variant="soft"
+        class="rounded-xl shrink-0"
+        aria-label="Önceki Bölüm"
+        @click="goToPreviousChapter"
+      />
+      <USelect
+        v-if="siblingChapterOptions.length"
+        v-model="selectedSiblingChapter"
+        :items="siblingChapterOptions"
+        :placeholder="`Bölüm ${chapterData?.chapterNumber ?? '-'} / ${siblingChapters.length}`"
+        size="sm"
+        class="w-40 sm:w-56 text-xs"
+      />
+      <UButton
+        :disabled="!hasNextChapter"
+        icon="i-lucide-chevron-right"
+        size="sm"
+        color="neutral"
+        variant="soft"
+        class="rounded-xl shrink-0"
+        aria-label="Sonraki Bölüm"
+        @click="goToNextChapter"
+      />
+    </div>
+
+    <!-- BAŞA DÖN BUTONU -->
     <Transition
       enter-active-class="transition duration-300 ease-out"
       enter-from-class="translate-y-16 opacity-0"
@@ -744,9 +775,11 @@ definePageMeta({
       <UButton
         v-if="showBackToTop"
         icon="i-lucide-arrow-up"
-        size="lg"
+        size="sm"
         color="primary"
-        class="fixed bottom-8 right-8 shadow-xl z-50"
+        variant="soft"
+        class="fixed bottom-18 right-3 sm:bottom-20 sm:right-8 shadow-xl z-30 rounded-full"
+        aria-label="Başa Dön"
         @click="scrollToTop"
       />
     </Transition>

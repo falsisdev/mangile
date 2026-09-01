@@ -848,37 +848,37 @@ definePageMeta({
           <UButton
             :to="`/title/${chapterData?.manga?.myAnimeListId || chapterData?.manga?._id}`"
             variant="ghost"
-            size="lg"
-            icon="i-lucide-x"
+            size="sm"
+            icon="i-lucide-arrow-left"
             square
-            class="touch-manipulation"
+            aria-label="Seriye Dön"
+            class="touch-manipulation text-white hover:bg-white/10"
           />
-          <div class="chapter-info hidden sm:block">
-            <p class="font-bold text-white truncate">
+          <div class="chapter-info min-w-0 flex-1 px-1 sm:px-2">
+            <p class="font-bold text-white text-xs sm:text-sm truncate leading-tight">
               {{ chapterData?.manga?.title }}
             </p>
-            <p class="text-xs text-gray-300">
-              Bölüm
-              {{ chapterData?.chapterNumber ?? '-' }} ·
-              {{ chapterData?.source?.name ?? "Bilinmeyen" }}
+            <p class="text-[10px] sm:text-xs text-gray-300 truncate">
+              Bölüm {{ chapterData?.chapterNumber ?? '-' }} · {{ chapterData?.source?.name ?? "Bilinmeyen" }}
             </p>
           </div>
-          <div class="ml-auto flex items-center gap-2">
-            <span class="text-white font-bold text-sm">{{ currentPage }} / {{ totalPages }}</span>
-            <span class="text-gray-400 text-xs">%{{ readingPercentage }}</span>
+          <div class="ml-auto flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <span class="text-white font-bold text-xs sm:text-sm font-mono">{{ currentPage }} / {{ totalPages }}</span>
+            <span class="text-primary-300 bg-white/10 px-1.5 py-0.5 rounded text-[10px] sm:text-xs font-mono font-semibold">%{{ readingPercentage }}</span>
           </div>
         </div>
 
         <!-- ALT ÇUBUK -->
         <div class="bottom-bar">
-          <div class="flex items-center gap-2 flex-1">
+          <!-- Masaüstü Tek Satır Düzen (sm ve üzeri) -->
+          <div class="hidden sm:flex items-center gap-2 flex-1">
             <UButton
               :disabled="!hasPreviousChapter"
               icon="i-lucide-skip-back"
               size="sm"
               color="neutral"
               variant="soft"
-              class="touch-manipulation"
+              class="touch-manipulation shrink-0"
               title="Önceki Bölüm"
               @click="goToPreviousChapter"
             />
@@ -888,7 +888,7 @@ definePageMeta({
               size="sm"
               color="neutral"
               variant="soft"
-              class="touch-manipulation"
+              class="touch-manipulation shrink-0"
               title="Önceki Sayfa"
               @click="prevPage"
             />
@@ -906,7 +906,7 @@ definePageMeta({
               size="sm"
               color="neutral"
               variant="soft"
-              class="touch-manipulation"
+              class="touch-manipulation shrink-0"
               title="Sonraki Sayfa"
               @click="nextPage"
             />
@@ -916,7 +916,7 @@ definePageMeta({
               size="sm"
               color="neutral"
               variant="soft"
-              class="touch-manipulation"
+              class="touch-manipulation shrink-0"
               title="Sonraki Bölüm"
               @click="goToNextChapter"
             />
@@ -927,7 +927,7 @@ definePageMeta({
               :items="siblingChapterOptions"
               :placeholder="`Bölüm ${chapterData?.chapterNumber ?? '-'} / ${siblingChapters.length}`"
               size="xs"
-              class="w-36 sm:w-40"
+              class="w-36 sm:w-44"
               @update:open="
                 (open) => {
                   isChapterSelectOpen = open
@@ -939,12 +939,100 @@ definePageMeta({
               "
             />
           </div>
+
+          <!-- Mobil 2 Katmanlı Native Android Düzen (< sm) -->
+          <div class="flex sm:hidden flex-col gap-2 w-full">
+            <!-- 1. Satır: Sayfa Kaydırıcı ve Sayfa Butonları -->
+            <div class="flex items-center gap-2 w-full">
+              <UButton
+                :disabled="currentPage <= 1"
+                icon="i-lucide-chevron-left"
+                size="sm"
+                color="neutral"
+                variant="soft"
+                class="touch-manipulation shrink-0"
+                aria-label="Önceki Sayfa"
+                @click="prevPage"
+              />
+              <input
+                :value="currentPage"
+                type="range"
+                :min="1"
+                :max="totalPages"
+                class="flex-1 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider touch-manipulation"
+                @input="handleSliderInput"
+              >
+              <UButton
+                :disabled="currentPage >= totalPages"
+                icon="i-lucide-chevron-right"
+                size="sm"
+                color="neutral"
+                variant="soft"
+                class="touch-manipulation shrink-0"
+                aria-label="Sonraki Sayfa"
+                @click="nextPage"
+              />
+            </div>
+
+            <!-- 2. Satır: Bölüm Atlama, Bölüm Seçimi ve Ayarlar -->
+            <div class="flex items-center gap-1.5 w-full">
+              <UButton
+                :disabled="!hasPreviousChapter"
+                icon="i-lucide-skip-back"
+                size="sm"
+                color="neutral"
+                variant="soft"
+                class="touch-manipulation shrink-0"
+                aria-label="Önceki Bölüm"
+                @click="goToPreviousChapter"
+              />
+              <USelect
+                v-if="siblingChapterOptions.length"
+                v-model="selectedSiblingChapter"
+                :items="siblingChapterOptions"
+                :placeholder="`Bölüm ${chapterData?.chapterNumber ?? '-'} / ${siblingChapters.length}`"
+                size="sm"
+                class="flex-1 min-w-0"
+                @update:open="
+                  (open) => {
+                    isChapterSelectOpen = open
+                    if (open) {
+                      controlsVisible = true
+                      resetControlsTimeout()
+                    }
+                  }
+                "
+              />
+              <UButton
+                :disabled="!hasNextChapter"
+                icon="i-lucide-skip-forward"
+                size="sm"
+                color="neutral"
+                variant="soft"
+                class="touch-manipulation shrink-0"
+                aria-label="Sonraki Bölüm"
+                @click="goToNextChapter"
+              />
+              <UButton
+                :icon="showSettings ? 'i-lucide-x' : 'i-lucide-settings'"
+                size="sm"
+                :color="showSettings ? 'primary' : 'neutral'"
+                :variant="showSettings ? 'solid' : 'soft'"
+                class="touch-manipulation shrink-0"
+                aria-label="Okuma Ayarları"
+                @click="void (showSettings = !showSettings)"
+              />
+            </div>
+          </div>
+
+          <!-- Masaüstü için ayarlar butonu (sm+) -->
           <UButton
+            class="hidden sm:inline-flex touch-manipulation shrink-0"
             :icon="showSettings ? 'i-lucide-x' : 'i-lucide-settings'"
             size="sm"
-            color="neutral"
-            variant="soft"
-            class="touch-manipulation"
+            :color="showSettings ? 'primary' : 'neutral'"
+            :variant="showSettings ? 'solid' : 'soft'"
+            aria-label="Okuma Ayarları"
             @click="void (showSettings = !showSettings)"
           />
         </div>
@@ -952,17 +1040,34 @@ definePageMeta({
         <!-- AYARLAR PANELİ -->
         <Transition
           enter-active-class="transition duration-200 ease-out"
-          enter-from-class="opacity-0 -translate-y-2"
-          enter-to-class="opacity-100 translate-y-0"
+          enter-from-class="opacity-0 translate-y-4 scale-95"
+          enter-to-class="opacity-100 translate-y-0 scale-100"
           leave-active-class="transition duration-150 ease-in"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 -translate-y-2"
+          leave-from-class="opacity-100 translate-y-0 scale-100"
+          leave-to-class="opacity-0 translate-y-4 scale-95"
         >
           <div
             v-if="showSettings"
             class="settings-panel"
           >
-            <div class="space-y-4">
+            <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-white/10">
+              <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+                <UIcon
+                  name="i-lucide-sliders-horizontal"
+                  class="w-3.5 h-3.5 text-primary"
+                />
+                Okuma Ayarları
+              </h3>
+              <UButton
+                icon="i-lucide-x"
+                size="xs"
+                variant="ghost"
+                color="neutral"
+                class="text-gray-400 hover:text-white"
+                @click="void (showSettings = false)"
+              />
+            </div>
+            <div class="space-y-3.5 sm:space-y-4 text-xs sm:text-sm">
               <!-- OKUMA MODU -->
               <div>
                 <div class="flex justify-between items-center mb-2">
@@ -1317,18 +1422,46 @@ definePageMeta({
   z-index: 40;
 }
 
-.top-bar,
-.bottom-bar {
+.top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: env(safe-area-inset-top, 0.75rem) 1rem 0.75rem;
+  padding: max(0.6rem, env(safe-area-inset-top)) 0.75rem 0.6rem;
   pointer-events: auto;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  background: rgba(10, 10, 14, 0.9);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .bottom-bar {
-  padding: 0.75rem 1rem env(safe-area-inset-bottom, 0.75rem);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  padding: 0.6rem 0.75rem max(0.6rem, env(safe-area-inset-bottom));
+  gap: 0.5rem;
+  background: rgba(10, 10, 14, 0.92);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: auto;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+}
+
+@media (min-width: 640px) {
+  .top-bar {
+    padding: max(0.75rem, env(safe-area-inset-top)) 1rem 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .bottom-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem max(0.75rem, env(safe-area-inset-bottom));
+    gap: 0.75rem;
+  }
 }
 
 .chapter-info {
@@ -1338,26 +1471,32 @@ definePageMeta({
 
 .settings-panel {
   position: absolute;
-  bottom: 4.5rem;
+  bottom: 5.5rem;
   right: 1rem;
   left: auto;
   width: 340px;
-  background: var(--color-background) / 92%;
-  border: 1px solid var(--color-primary) / 50%;
-  border-radius: 16px;
+  background: rgba(18, 18, 22, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
   padding: 1.25rem;
   pointer-events: auto;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(24px);
   z-index: 50;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  max-height: 75vh;
+  overflow-y: auto;
 }
 
 @media (max-width: 640px) {
   .settings-panel {
-    width: calc(100vw - 2rem);
-    right: 1rem;
-    left: 1rem;
-    bottom: 5rem;
+    position: fixed;
+    width: calc(100vw - 1.5rem);
+    right: 0.75rem;
+    left: 0.75rem;
+    bottom: 6.5rem;
+    padding: 1rem;
+    border-radius: 16px;
+    max-height: 65vh;
   }
 }
 
