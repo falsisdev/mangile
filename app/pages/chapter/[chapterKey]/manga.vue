@@ -71,7 +71,7 @@ const settings = reactive({
   ),
   readingDirection: useStorage<ReadingDirection>(
     'manga-reading-direction',
-    'rtl' as ReadingDirection
+    'ltr' as ReadingDirection
   ),
   autoScroll: useStorage('manga-auto-scroll', false),
   scrollSpeed: useStorage('manga-scroll-speed', 3),
