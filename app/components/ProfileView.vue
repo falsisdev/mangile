@@ -193,9 +193,9 @@ function handleBack() {
       </div>
     </div>
 
-    <div v-else class="overflow-hidden rounded-2xl bg-card shadow-xl">
+    <div v-else class="overflow-hidden rounded-2xl bg-card">
       <div
-        class="relative h-24 sm:h-44 md:h-48 w-full overflow-hidden bg-muted/40"
+        class="relative h-56 sm:h-44 md:h-48 w-full overflow-hidden bg-muted/40"
       >
         <img
           v-if="!isEditing && user.banner"
