@@ -188,6 +188,7 @@ useSeoMeta({
         </div>
       </div>
     </div>
+    <ProfileModal />
   </UApp>
   <NuxtPage
     v-else

@@ -24,3 +24,5 @@ logs
 !.env.example
 # Antigravity Local Rules & Context
 .agy/
+
+.pnpm-store
