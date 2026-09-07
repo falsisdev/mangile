@@ -211,7 +211,7 @@ function handleBack() {
         />
         <div
           v-else
-          class="size-full bg-gradient-to-tr from-primary/25 via-emerald-500/15 to-sky-500/20 relative"
+          class="size-full bg-linear-to-tr from-primary/25 via-emerald-500/15 to-sky-500/20 relative"
         >
           <div
             class="absolute -top-12 -left-12 size-48 rounded-full bg-primary/20 blur-3xl"
@@ -225,7 +225,7 @@ function handleBack() {
         </div>
 
         <div
-          class="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent"
+          class="absolute inset-0 bg-linear-to-t from-card via-card/20 to-transparent"
         />
 
         <div class="absolute top-3 left-3 z-10 flex items-center gap-2">
@@ -563,7 +563,7 @@ function handleBack() {
                 </span>
                 <div class="flex items-center gap-1">
                   <code
-                    class="px-2 py-0.5 rounded-md bg-background text-[10px] text-muted-foreground font-mono max-w-[140px] sm:max-w-[200px] truncate"
+                    class="px-2 py-0.5 rounded-md bg-background text-[10px] text-muted-foreground font-mono max-w-35 sm:max-w-50 truncate"
                   >
                     {{ user.logtoId }}
                   </code>
