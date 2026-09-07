@@ -1,182 +1,190 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    isModal?: boolean;
+    isModal?: boolean
   }>(),
   {
-    isModal: false,
-  },
-);
+    isModal: false
+  }
+)
 
 const emit = defineEmits<{
-  (e: "close"): void;
-}>();
+  (e: 'close'): void
+}>()
 
-const router = useRouter();
-const { user, isRegistered, fetchSanityUser, setSanityUser } = useAuthUser();
+const router = useRouter()
+const { user, isRegistered, fetchSanityUser, setSanityUser } = useAuthUser()
 
-const isEditing = ref(false);
-const isSaving = ref(false);
-const saveError = ref("");
-const saveSuccess = ref("");
-const copiedId = ref(false);
+const isEditing = ref(false)
+const isSaving = ref(false)
+const saveError = ref('')
+const saveSuccess = ref('')
+const copiedId = ref(false)
 
 const editForm = reactive({
-  name: "",
-  avatar: "",
-  banner: "",
-  bio: "",
-});
+  name: '',
+  avatar: '',
+  banner: '',
+  bio: ''
+})
 
 function initForm() {
-  if (!user.value) return;
-  editForm.name = user.value.name || "";
-  editForm.avatar = user.value.avatar || "";
-  editForm.banner = user.value.banner || "";
-  editForm.bio = user.value.bio || "";
-  saveError.value = "";
-  saveSuccess.value = "";
+  if (!user.value) return
+  editForm.name = user.value.name || ''
+  editForm.avatar = user.value.avatar || ''
+  editForm.banner = user.value.banner || ''
+  editForm.bio = user.value.bio || ''
+  saveError.value = ''
+  saveSuccess.value = ''
 }
 
 watch(
   () => user.value,
   () => {
-    initForm();
+    initForm()
   },
-  { immediate: true },
-);
+  { immediate: true }
+)
 
 function startEditing() {
-  initForm();
-  isEditing.value = true;
+  initForm()
+  isEditing.value = true
 }
 
 function cancelEditing() {
-  initForm();
-  isEditing.value = false;
+  initForm()
+  isEditing.value = false
 }
 
 function generateRandomAvatar() {
-  const seed = Math.random().toString(36).substring(2, 10);
-  editForm.avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`;
+  const seed = Math.random().toString(36).substring(2, 10)
+  editForm.avatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`
 }
 
 async function copyLogtoId() {
-  if (!user.value?.logtoId) return;
+  if (!user.value?.logtoId) return
   try {
-    await navigator.clipboard.writeText(user.value.logtoId);
-    copiedId.value = true;
+    await navigator.clipboard.writeText(user.value.logtoId)
+    copiedId.value = true
     setTimeout(() => {
-      copiedId.value = false;
-    }, 2000);
+      copiedId.value = false
+    }, 2000)
   } catch {
-    copiedId.value = false;
+    copiedId.value = false
   }
 }
 
 async function handleSave() {
-  if (!user.value) return;
-  saveError.value = "";
-  saveSuccess.value = "";
+  if (!user.value) return
+  saveError.value = ''
+  saveSuccess.value = ''
 
   if (!editForm.name.trim()) {
-    saveError.value = "Görünen ad boş bırakılamaz.";
-    return;
+    saveError.value = 'Görünen ad boş bırakılamaz.'
+    return
   }
 
   if (editForm.bio && editForm.bio.length > 200) {
-    saveError.value = "Biyografi en fazla 200 karakter olabilir.";
-    return;
+    saveError.value = 'Biyografi en fazla 200 karakter olabilir.'
+    return
   }
 
-  isSaving.value = true;
+  isSaving.value = true
   try {
-    const res = await $fetch<{ success: boolean; user: SanityUserData }>(
-      "/api/user/update",
+    const res = await $fetch<{ success: boolean, user: SanityUserData }>(
+      '/api/user/update',
       {
-        method: "POST",
+        method: 'POST',
         body: {
           logtoId: user.value.logtoId,
           name: editForm.name.trim(),
           avatar: editForm.avatar.trim() || undefined,
           banner: editForm.banner.trim() || undefined,
-          bio: editForm.bio.trim() || undefined,
-        },
-      },
-    );
+          bio: editForm.bio.trim() || undefined
+        }
+      }
+    )
 
     if (res.user) {
-      setSanityUser(res.user);
-      await fetchSanityUser(true);
-      saveSuccess.value = "Profil başarıyla güncellendi.";
+      setSanityUser(res.user)
+      await fetchSanityUser(true)
+      saveSuccess.value = 'Profil başarıyla güncellendi.'
       setTimeout(() => {
-        isEditing.value = false;
-        saveSuccess.value = "";
-      }, 1000);
+        isEditing.value = false
+        saveSuccess.value = ''
+      }, 1000)
     }
   } catch (err: unknown) {
     const errorObj = err as {
-      data?: { statusMessage?: string };
-      message?: string;
-    };
-    saveError.value =
-      errorObj?.data?.statusMessage ||
-      errorObj?.message ||
-      "Profil güncellenirken bir hata oluştu.";
+      data?: { statusMessage?: string }
+      message?: string
+    }
+    saveError.value
+      = errorObj?.data?.statusMessage
+        || errorObj?.message
+        || 'Profil güncellenirken bir hata oluştu.'
   } finally {
-    isSaving.value = false;
+    isSaving.value = false
   }
 }
 
 const roleConfig = computed(() => {
-  const roles = user.value?.roles || [];
-  if (roles.includes("001")) {
+  const roles = user.value?.roles || []
+  if (roles.includes('001')) {
     return {
-      color: "error" as const,
-      icon: "i-lucide-shield-alert",
-      label: "Yönetici",
-    };
+      color: 'error' as const,
+      icon: 'i-lucide-shield-alert',
+      label: 'Yönetici'
+    }
   }
-  if (roles.includes("002")) {
+  if (roles.includes('002')) {
     return {
-      color: "warning" as const,
-      icon: "i-lucide-shield-check",
-      label: "Moderatör",
-    };
+      color: 'warning' as const,
+      icon: 'i-lucide-shield-check',
+      label: 'Moderatör'
+    }
   }
-  if (roles.includes("003")) {
+  if (roles.includes('003')) {
     return {
-      color: "primary" as const,
-      icon: "i-lucide-languages",
-      label: "Çevirmen",
-    };
+      color: 'primary' as const,
+      icon: 'i-lucide-languages',
+      label: 'Çevirmen'
+    }
   }
   return {
-    color: "neutral" as const,
-    icon: "i-lucide-user",
-    label: user.value?.roleLabel || "Üye",
-  };
-});
+    color: 'neutral' as const,
+    icon: 'i-lucide-user',
+    label: user.value?.roleLabel || 'Üye'
+  }
+})
 
 function handleBack() {
   if (window.history.length > 1) {
-    router.back();
+    router.back()
   } else {
-    router.push("/");
+    router.push('/')
   }
 }
 </script>
 
 <template>
   <div class="w-full text-foreground select-none">
-    <div v-if="!user" class="p-8 sm:p-12 text-center space-y-4">
+    <div
+      v-if="!user"
+      class="p-8 sm:p-12 text-center space-y-4"
+    >
       <div
         class="size-16 rounded-2xl bg-muted flex items-center justify-center mx-auto text-muted-foreground"
       >
-        <UIcon name="i-lucide-user-x" class="size-8" />
+        <UIcon
+          name="i-lucide-user-x"
+          class="size-8"
+        />
       </div>
       <div class="space-y-1">
-        <h2 class="text-lg font-bold">Oturum Bulunamadı</h2>
+        <h2 class="text-lg font-bold">
+          Oturum Bulunamadı
+        </h2>
         <p class="text-sm text-muted">
           Profil bilgilerinizi görüntülemek için lütfen giriş yapın.
         </p>
@@ -193,7 +201,10 @@ function handleBack() {
       </div>
     </div>
 
-    <div v-else class="overflow-hidden rounded-2xl bg-card">
+    <div
+      v-else
+      class="overflow-hidden rounded-2xl bg-card"
+    >
       <div
         class="relative h-56 sm:h-44 md:h-48 w-full overflow-hidden bg-muted/40"
       >
@@ -202,13 +213,13 @@ function handleBack() {
           :src="user.banner"
           alt="Banner"
           class="size-full object-cover"
-        />
+        >
         <img
           v-else-if="isEditing && editForm.banner"
           :src="editForm.banner"
           alt="Banner Önizleme"
           class="size-full object-cover"
-        />
+        >
         <div
           v-else
           class="size-full bg-linear-to-tr from-primary/25 via-emerald-500/15 to-sky-500/20 relative"
@@ -220,7 +231,10 @@ function handleBack() {
             class="absolute -bottom-8 -right-8 size-48 rounded-full bg-teal-500/20 blur-3xl"
           />
           <div class="size-full flex items-center justify-center opacity-15">
-            <UIcon name="i-lucide-sparkles" class="size-24 text-foreground" />
+            <UIcon
+              name="i-lucide-sparkles"
+              class="size-24 text-foreground"
+            />
           </div>
         </div>
 
@@ -278,7 +292,7 @@ function handleBack() {
                     : user.avatar || undefined
                 "
                 :alt="user.name"
-                size="4xl"
+                size="3xl"
                 icon="i-lucide-user"
                 class="border-5 border-bg ring-card bg-muted size-20 sm:size-24 rounded-3xl"
               />
@@ -288,7 +302,10 @@ function handleBack() {
                 class="absolute inset-0 rounded-2xl bg-black/60 backdrop-blur-xs flex flex-col items-center justify-center text-white text-[10px] font-medium opacity-90 hover:opacity-100 transition-opacity"
                 @click="generateRandomAvatar"
               >
-                <UIcon name="i-lucide-dice-5" class="size-5 mb-0.5" />
+                <UIcon
+                  name="i-lucide-dice-5"
+                  class="size-5 mb-0.5"
+                />
                 <span>Rastgele</span>
               </button>
             </div>
@@ -308,7 +325,10 @@ function handleBack() {
                   size="sm"
                   class="rounded-lg px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1 shadow-xs"
                 >
-                  <UIcon :name="roleConfig.icon" class="size-3" />
+                  <UIcon
+                    :name="roleConfig.icon"
+                    class="size-3"
+                  />
                   <span>{{ roleConfig.label }}</span>
                 </UBadge>
                 <UBadge
@@ -317,7 +337,10 @@ function handleBack() {
                   size="sm"
                   class="rounded-lg px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1 shadow-xs"
                 >
-                  <UIcon name="i-lucide-check-circle-2" class="size-3" />
+                  <UIcon
+                    name="i-lucide-check-circle-2"
+                    class="size-3"
+                  />
                   <span>Doğrulanmış</span>
                 </UBadge>
               </div>
@@ -337,7 +360,10 @@ function handleBack() {
             <span
               class="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5"
             >
-              <UIcon name="i-lucide-edit-3" class="size-3.5 text-primary" />
+              <UIcon
+                name="i-lucide-edit-3"
+                class="size-3.5 text-primary"
+              />
               Profili Düzenle
             </span>
             <button
@@ -345,7 +371,10 @@ function handleBack() {
               class="text-[11px] text-primary hover:underline flex items-center gap-1 font-medium"
               @click="generateRandomAvatar"
             >
-              <UIcon name="i-lucide-dice-5" class="size-3" />
+              <UIcon
+                name="i-lucide-dice-5"
+                class="size-3"
+              />
               Yeni Avatar Üret
             </button>
           </div>
@@ -368,9 +397,7 @@ function handleBack() {
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-foreground"
-                >Görünen Ad</label
-              >
+              <label class="text-xs font-semibold text-foreground">Görünen Ad</label>
               <UInput
                 v-model="editForm.name"
                 placeholder="Adınız Soyadınız"
@@ -381,9 +408,7 @@ function handleBack() {
             </div>
 
             <div class="space-y-1">
-              <label class="text-xs font-semibold text-foreground"
-                >Avatar URL</label
-              >
+              <label class="text-xs font-semibold text-foreground">Avatar URL</label>
               <UInput
                 v-model="editForm.avatar"
                 placeholder="https://.../avatar.png"
@@ -394,9 +419,7 @@ function handleBack() {
           </div>
 
           <div class="space-y-1">
-            <label class="text-xs font-semibold text-foreground"
-              >Banner Fotoğrafı URL</label
-            >
+            <label class="text-xs font-semibold text-foreground">Banner Fotoğrafı URL</label>
             <UInput
               v-model="editForm.banner"
               placeholder="https://.../banner.jpg"
@@ -407,9 +430,7 @@ function handleBack() {
 
           <div class="space-y-1">
             <div class="flex items-center justify-between">
-              <label class="text-xs font-semibold text-foreground"
-                >Biyografi</label
-              >
+              <label class="text-xs font-semibold text-foreground">Biyografi</label>
               <span
                 class="text-[10px]"
                 :class="
@@ -452,12 +473,18 @@ function handleBack() {
           </div>
         </div>
 
-        <div v-else class="space-y-5">
+        <div
+          v-else
+          class="space-y-5"
+        >
           <div class="space-y-1.5">
             <h3
               class="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5"
             >
-              <UIcon name="i-lucide-sparkles" class="size-3.5 text-primary" />
+              <UIcon
+                name="i-lucide-sparkles"
+                class="size-3.5 text-primary"
+              />
               Hakkında
             </h3>
             <div
@@ -476,7 +503,10 @@ function handleBack() {
                 class="text-primary hover:underline font-medium text-xs flex items-center gap-1"
                 @click="startEditing"
               >
-                <UIcon name="i-lucide-plus" class="size-3" />
+                <UIcon
+                  name="i-lucide-plus"
+                  class="size-3"
+                />
                 Ekle
               </button>
             </div>
@@ -486,7 +516,10 @@ function handleBack() {
             <h3
               class="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5"
             >
-              <UIcon name="i-lucide-compass" class="size-3.5 text-primary" />
+              <UIcon
+                name="i-lucide-compass"
+                class="size-3.5 text-primary"
+              />
               Hızlı Erişim & İstatistikler
             </h3>
             <div class="grid grid-cols-3 gap-2.5 sm:gap-3">
@@ -498,7 +531,10 @@ function handleBack() {
                 <div
                   class="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
                 >
-                  <UIcon name="i-lucide-library" class="size-4" />
+                  <UIcon
+                    name="i-lucide-library"
+                    class="size-4"
+                  />
                 </div>
                 <span class="text-base font-black text-foreground">
                   {{ user.lists?.length || 0 }}
@@ -514,14 +550,15 @@ function handleBack() {
                 <div
                   class="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
                 >
-                  <UIcon name="i-lucide-history" class="size-4" />
+                  <UIcon
+                    name="i-lucide-history"
+                    class="size-4"
+                  />
                 </div>
                 <span class="text-base font-black text-foreground">
                   Geçmiş
                 </span>
-                <span class="text-[10px] text-muted font-medium"
-                  >Okunanlar</span
-                >
+                <span class="text-[10px] text-muted font-medium">Okunanlar</span>
               </NuxtLink>
 
               <NuxtLink
@@ -532,7 +569,10 @@ function handleBack() {
                 <div
                   class="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
                 >
-                  <UIcon name="i-lucide-cloud-backup" class="size-4" />
+                  <UIcon
+                    name="i-lucide-cloud-backup"
+                    class="size-4"
+                  />
                 </div>
                 <span class="text-base font-black text-foreground">
                   Bulut
@@ -597,7 +637,10 @@ function handleBack() {
                 </UBadge>
               </div>
             </div>
-            <div v-if="!isEditing" class="absolute bottom-5 right-7">
+            <div
+              v-if="!isEditing"
+              class="absolute bottom-5 right-7"
+            >
               <UButton
                 v-if="!isRegistered"
                 to="/new-user"

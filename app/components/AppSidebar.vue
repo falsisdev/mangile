@@ -1,115 +1,115 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from "@nuxt/ui";
+import type { NavigationMenuItem } from '@nuxt/ui'
 
-const open = defineModel<boolean>("open", { default: false });
-const globalSidebarOpen = useSidebar();
-const route = useRoute();
-const { isMobile } = useDevice();
-const { user } = useAuthUser();
-const { openProfile } = useProfileModal();
+const open = defineModel<boolean>('open', { default: false })
+const globalSidebarOpen = useSidebar()
+const route = useRoute()
+const { isMobile } = useDevice()
+const { user } = useAuthUser()
+const { openProfile } = useProfileModal()
 
 watch(
   open,
   (newValue) => {
-    globalSidebarOpen.value = newValue;
+    globalSidebarOpen.value = newValue
   },
-  { immediate: true },
-);
+  { immediate: true }
+)
 
 watch(globalSidebarOpen, (newValue) => {
-  open.value = newValue;
-});
+  open.value = newValue
+})
 
 function closeOnMobile() {
-  const isMobileScreen =
-    isMobile || (import.meta.client && window.innerWidth < 768);
+  const isMobileScreen
+    = isMobile || (import.meta.client && window.innerWidth < 768)
   if (isMobileScreen) {
-    open.value = false;
-    globalSidebarOpen.value = false;
+    open.value = false
+    globalSidebarOpen.value = false
   }
 }
 
 watch(
   () => route.fullPath,
   () => {
-    closeOnMobile();
-  },
-);
+    closeOnMobile()
+  }
+)
 
 const mainItems: NavigationMenuItem[] = [
   {
-    label: "Ana Sayfa",
-    icon: "i-lucide-house",
-    to: "/",
-    onSelect: closeOnMobile,
+    label: 'Ana Sayfa',
+    icon: 'i-lucide-house',
+    to: '/',
+    onSelect: closeOnMobile
   },
   {
-    label: "Keşfet",
-    icon: "i-lucide-compass",
-    to: "/explore",
-    onSelect: closeOnMobile,
-  },
-];
+    label: 'Keşfet',
+    icon: 'i-lucide-compass',
+    to: '/explore',
+    onSelect: closeOnMobile
+  }
+]
 
 const libraryItems: NavigationMenuItem[] = [
   {
-    label: "Senkronizasyon",
-    icon: "i-lucide-cloud-backup",
-    to: "/sync",
-    onSelect: closeOnMobile,
+    label: 'Senkronizasyon',
+    icon: 'i-lucide-cloud-backup',
+    to: '/sync',
+    onSelect: closeOnMobile
   },
   {
-    label: "Listeler",
-    icon: "i-lucide-library",
-    to: "/lists",
-    onSelect: closeOnMobile,
+    label: 'Listeler',
+    icon: 'i-lucide-library',
+    to: '/lists',
+    onSelect: closeOnMobile
   },
   {
-    label: "Okuma Geçmişi",
-    icon: "i-lucide-history",
-    to: "/history",
-    onSelect: closeOnMobile,
-  },
-];
+    label: 'Okuma Geçmişi',
+    icon: 'i-lucide-history',
+    to: '/history',
+    onSelect: closeOnMobile
+  }
+]
 
 const companyItems: NavigationMenuItem[] = [
   {
-    label: "Bilgilendirme",
-    icon: "i-lucide-info",
-    to: "/article/notice",
-    onSelect: closeOnMobile,
+    label: 'Bilgilendirme',
+    icon: 'i-lucide-info',
+    to: '/article/notice',
+    onSelect: closeOnMobile
   },
   {
-    label: "Hakkımızda",
-    icon: "i-lucide-users",
-    to: "/article/about",
-    onSelect: closeOnMobile,
+    label: 'Hakkımızda',
+    icon: 'i-lucide-users',
+    to: '/article/about',
+    onSelect: closeOnMobile
   },
   {
-    label: "İletişim",
-    icon: "i-lucide-phone",
-    to: "/article/contact",
-    onSelect: closeOnMobile,
-  },
-];
+    label: 'İletişim',
+    icon: 'i-lucide-phone',
+    to: '/article/contact',
+    onSelect: closeOnMobile
+  }
+]
 
 const legalItems: NavigationMenuItem[] = [
   {
-    label: "Hizmet Koşulları",
-    icon: "i-lucide-scale",
-    to: "/article/tos",
-    onSelect: closeOnMobile,
+    label: 'Hizmet Koşulları',
+    icon: 'i-lucide-scale',
+    to: '/article/tos',
+    onSelect: closeOnMobile
   },
   {
-    label: "Lisanslandırma",
-    icon: "i-lucide-copyright",
-    to: "/article/licence",
-    onSelect: closeOnMobile,
-  },
-];
+    label: 'Lisanslandırma',
+    icon: 'i-lucide-copyright',
+    to: '/article/licence',
+    onSelect: closeOnMobile
+  }
+]
 
 function toggleSidebar() {
-  open.value = !open.value;
+  open.value = !open.value
 }
 </script>
 
@@ -122,7 +122,7 @@ function toggleSidebar() {
     :ui="{
       container: 'max-md:w-72 max-md:max-w-[85vw]',
       inner:
-        'max-md:bg-sidebar/95 max-md:backdrop-blur-xl max-md:border-r max-md:border-border/60 max-md:shadow-2xl',
+        'max-md:bg-sidebar/95 max-md:backdrop-blur-xl max-md:border-r max-md:border-border/60 max-md:shadow-2xl'
     }"
   >
     <template #header>
@@ -136,14 +136,12 @@ function toggleSidebar() {
             src="https://cdn.sanity.io/images/1yge7tlr/production/b8497ba054d01f92ecf4f359a835f55e6a321d90-1080x1080.png?fit=max&w=600&h=600"
             class="size-8 rounded-xl shrink-0"
             alt="Mangile Logo"
-          />
+          >
           <div
             class="flex items-center gap-1.5 min-w-0"
             :class="open ? 'flex' : 'flex md:hidden'"
           >
-            <span class="font-black text-base text-foreground tracking-tight"
-              >Mangile</span
-            >
+            <span class="font-black text-base text-foreground tracking-tight">Mangile</span>
             <UBadge
               color="primary"
               variant="subtle"
@@ -197,7 +195,10 @@ function toggleSidebar() {
           v-if="open"
           class="px-3 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1"
         >
-          <UIcon name="i-lucide-info" class="w-3 h-3 text-primary md:hidden" />
+          <UIcon
+            name="i-lucide-info"
+            class="w-3 h-3 text-primary md:hidden"
+          />
           <span>Kurumsal</span>
         </div>
 
@@ -211,7 +212,10 @@ function toggleSidebar() {
           v-if="open"
           class="px-3 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1"
         >
-          <UIcon name="i-lucide-scale" class="w-3 h-3 text-primary md:hidden" />
+          <UIcon
+            name="i-lucide-scale"
+            class="w-3 h-3 text-primary md:hidden"
+          />
           <span>Yasal</span>
         </div>
 
@@ -226,7 +230,10 @@ function toggleSidebar() {
     <template #footer>
       <div class="w-full">
         <template v-if="user">
-          <div v-if="!open" class="flex flex-col items-center gap-2 py-1">
+          <div
+            v-if="!open"
+            class="flex flex-col items-center gap-2 py-1"
+          >
             <UTooltip
               :text="`${user.name} (@${user.username || 'üye'})`"
               :content="{ side: 'right' }"
@@ -245,7 +252,10 @@ function toggleSidebar() {
                 />
               </button>
             </UTooltip>
-            <UTooltip text="Çıkış Yap" :content="{ side: 'right' }">
+            <UTooltip
+              text="Çıkış Yap"
+              :content="{ side: 'right' }"
+            >
               <UButton
                 to="/sign-out"
                 :external="true"
@@ -260,7 +270,10 @@ function toggleSidebar() {
             </UTooltip>
           </div>
 
-          <div v-else class="space-y-2">
+          <div
+            v-else
+            class="space-y-2"
+          >
             <button
               type="button"
               class="w-full p-2 rounded-xl bg-muted/40 hover:bg-muted/70 transition-all flex items-center justify-between gap-2 overflow-hidden text-left cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -272,7 +285,7 @@ function toggleSidebar() {
                 :avatar="{
                   src: user.avatar || undefined,
                   loading: 'lazy',
-                  icon: 'i-lucide-user',
+                  icon: 'i-lucide-user'
                 }"
                 class="min-w-0 flex-1 truncate group-hover:opacity-90 transition-opacity"
               />
@@ -314,8 +327,14 @@ function toggleSidebar() {
         </template>
 
         <template v-else>
-          <div v-if="!open" class="flex justify-center py-1">
-            <UTooltip text="Giriş Yap" :content="{ side: 'right' }">
+          <div
+            v-if="!open"
+            class="flex justify-center py-1"
+          >
+            <UTooltip
+              text="Giriş Yap"
+              :content="{ side: 'right' }"
+            >
               <UButton
                 to="/sign-in"
                 :external="true"
@@ -330,7 +349,10 @@ function toggleSidebar() {
             </UTooltip>
           </div>
 
-          <div v-else class="space-y-1">
+          <div
+            v-else
+            class="space-y-1"
+          >
             <UButton
               to="/sign-in"
               :external="true"
