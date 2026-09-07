@@ -134,8 +134,8 @@ Coming soon.
 - [x] Serie Recommendations
 - [x] Article Pages
 - [x] Explore Page Filter
-- [ ] User authentication
-- [ ] User Profile
+- [x] User authentication
+- [x] User Profile
 - [ ] List Actions
 - [ ] Reading history
 - [ ] Sync MAL, AniList & MangaDex
