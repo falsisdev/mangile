@@ -52,14 +52,25 @@ const { data: latestChaptersData } = await useFetch(`${config.public.backend.bas
 const latestChaptersItems = computed(() => {
   if (!latestChaptersData.value) return []
 
-  return latestChaptersData.value.map(item => ({
-    title: 'Cilt ' + item.volumeNumber + ' Bölüm ' + item.chapterNumber + ': ' + item.title,
-    dateStamp: item._createdAt,
-    cover: item.lightNovel?.coverImage?.url || item.manga?.coverImage?.url,
-    id: item._id,
-    type: 'chapter',
-    titleType: item.lightNovel ? 'novel' : 'manga'
-  }))
+  return latestChaptersData.value.map((item) => {
+    const vol = item.volumeNumber
+    const num = item.chapterNumber
+    const t = item.title
+    const label = [
+      vol !== null && vol !== undefined && vol !== '' ? `Cilt ${vol}` : null,
+      num !== null && num !== undefined && num !== '' ? `Bölüm ${num}` : null,
+      t ? `: ${t}` : null
+    ].filter(Boolean).join(' ')
+
+    return {
+      title: label || 'Bilinmeyen Bölüm',
+      dateStamp: item._createdAt,
+      cover: item.lightNovel?.coverImage?.url || item.manga?.coverImage?.url,
+      id: item._id,
+      type: 'chapter',
+      titleType: item.lightNovel ? 'novel' : 'manga'
+    }
+  })
 })
 
 const tags = ['Ödüllü', 'Macera', 'Dram', 'Fantezi']
