@@ -74,6 +74,7 @@ interface TitleApiResponse {
 
 interface SerieData {
   id: number | string
+  sanityId?: string
   title: string
   type?: string
   description?: string
@@ -140,6 +141,7 @@ function mapTitleResponse(title: TitleApiResponse | null): SerieData {
 
   return {
     id: title._id ?? title.myAnimeListId ?? 0,
+    sanityId: title._id,
     title:
       title.title
       ?? anilistTitle?.romaji
@@ -230,8 +232,6 @@ const { data: serie, status } = await useLazyAsyncData<SerieData | null>(
     const id = titleId.value
     if (!id) return null
 
-    // Kartlar mal_id, Sanity kartlari ise dokuman _id ile linkler; bu yuzden
-    // parametrenin sekilline gore dogru sorgu parametresi secilir.
     const endpoint = /^\d+$/.test(id)
       ? `/api/titles?mal_id=${encodeURIComponent(id)}`
       : `/api/titles?id=${encodeURIComponent(id)}`
@@ -245,7 +245,6 @@ const { data: serie, status } = await useLazyAsyncData<SerieData | null>(
   }
 )
 
-// Oneriler seri verisinden reaktif olarak hesaplanir
 const recommendations = computed(() => serie.value?.recommendations ?? [])
 
 const breadcrumbsList = computed(() => [
@@ -279,6 +278,10 @@ const chapterViewMode = useStorage<'grid' | 'list' | 'compact'>('mangile-chapter
 const chapterSortOrder = useStorage<'asc' | 'desc'>('mangile-chapter-sort-order', 'desc')
 const chapterSearchQuery = ref('')
 const openAddToList = ref(false)
+
+function handleOpenAddToList() {
+  openAddToList.value = true
+}
 
 const expandedVolumes = ref<string[]>([])
 function toggleVolume(key: string | number) {
@@ -452,7 +455,6 @@ const sortedChapters = computed(() => {
   })
 })
 
-// Bölümleri cilt numarasına göre grupla (volume_number yoksa "Tek Cilt" grubu)
 interface VolumeChapterGroup {
   volumeKey: string | number
   volumeTitle: string
@@ -492,7 +494,6 @@ const volumeChapterGroups = computed<VolumeChapterGroup[]>(() => {
     groups.get(key)!.push(ch)
   }
 
-  // Cilt numaralarini kucukten buyuge sirala ('single' en sona)
   const sortedKeys = [...groups.keys()].sort((a, b) => {
     if (a === 'single') return 1
     if (b === 'single') return -1
@@ -516,7 +517,6 @@ const volumeChapterGroups = computed<VolumeChapterGroup[]>(() => {
         : `Cilt ${!isNaN(volNum) ? volNum : key}`
 
     const chapters = groups.get(key)!
-    // Cilt icindeki bolumler siralama moduna gore duzenlenir
     const sortedChaps
       = chapterSortOrder.value === 'desc' ? [...chapters].reverse() : chapters
 
@@ -757,7 +757,7 @@ onUnmounted(() => {
                 size="sm"
                 icon="i-lucide-bookmark-plus"
                 class="w-full justify-center rounded-xl font-bold"
-                @click="openAddToList = true"
+                @click="handleOpenAddToList"
               >
                 Listeye Ekle
               </UButton>
@@ -1309,7 +1309,7 @@ onUnmounted(() => {
                 size="md"
                 icon="i-lucide-bookmark-plus"
                 class="rounded-xl font-bold px-4"
-                @click="openAddToList = true"
+                @click="handleOpenAddToList"
               >
                 Listeye Ekle
               </UButton>
@@ -1692,8 +1692,8 @@ onUnmounted(() => {
 
     <AddToListModal
       v-model:open="openAddToList"
-      :title-id="serie?._id"
-      :mal-id="serie?.myAnimeListId"
+      :title-id="serie?.sanityId || (typeof serie?.id === 'string' ? serie?.id : undefined)"
+      :mal-id="serie?.malID"
       :title-name="serie?.title || serie?.anilistTitle"
       :title-type="serie?.type"
     />

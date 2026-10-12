@@ -20,8 +20,6 @@
   --ui-primary: white;
 }
 
-
-/* Sayfa geçiş animasyonu */
 .page-enter-active,
 .page-leave-active {
   transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),

@@ -50,7 +50,7 @@ async function loadLists() {
     const data = await fetchUserLists(user.value.logtoId, user.value.logtoId)
     userLists.value = data || []
     if (userLists.value.length > 0 && !selectedListId.value) {
-      selectedListId.value = userLists.value[0]._id
+      selectedListId.value = userLists.value[0]?._id || ''
     }
   } catch {
     userLists.value = []
@@ -139,6 +139,18 @@ async function handleAdd() {
     submitting.value = false
   }
 }
+
+function closeModal() {
+  isOpen.value = false
+}
+
+function toggleCreatingNew() {
+  isCreatingNew.value = !isCreatingNew.value
+}
+
+function startCreatingNew() {
+  isCreatingNew.value = true
+}
 </script>
 
 <template>
@@ -146,11 +158,9 @@ async function handleAdd() {
     v-model:open="isOpen"
     title="Listeye Ekle"
     description="Seriyi kişisel listelerinize ekleyin"
-    :ui="{
-      content: 'sm:max-w-md p-5 rounded-2xl bg-card shadow-2xl'
-    }"
+    :ui="{ content: 'sm:max-w-md' }"
   >
-    <template #content>
+    <template #body>
       <div v-if="!user" class="py-6 text-center space-y-3">
         <UIcon name="i-lucide-lock" class="size-10 text-muted mx-auto" />
         <h3 class="text-base font-bold text-foreground">Giriş Yapmalısınız</h3>
@@ -189,7 +199,7 @@ async function handleAdd() {
               color="primary"
               size="xs"
               :icon="isCreatingNew ? 'i-lucide-list' : 'i-lucide-plus'"
-              @click="isCreatingNew = !isCreatingNew"
+              @click="toggleCreatingNew"
             >
               {{ isCreatingNew ? 'Mevcut Listeler' : 'Yeni Liste' }}
             </UButton>
@@ -205,7 +215,7 @@ async function handleAdd() {
                 size="xs"
                 color="primary"
                 variant="soft"
-                @click="isCreatingNew = true"
+                @click="startCreatingNew"
               >
                 İlk Listeni Oluştur
               </UButton>
@@ -277,27 +287,29 @@ async function handleAdd() {
             </div>
           </div>
         </div>
-
-        <div class="flex items-center justify-end gap-2 pt-3 border-t border-default/20">
-          <UButton
-            variant="ghost"
-            color="neutral"
-            size="sm"
-            @click="isOpen = false"
-          >
-            İptal
-          </UButton>
-          <UButton
-            color="primary"
-            variant="solid"
-            size="sm"
-            :loading="submitting"
-            :disabled="!isCreatingNew && userLists.length === 0"
-            @click="handleAdd"
-          >
-            Listeye Ekle
-          </UButton>
-        </div>
+      </div>
+    </template>
+    <template #footer>
+      <div class="flex items-center justify-end gap-2 w-full">
+        <UButton
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          @click="closeModal"
+        >
+          İptal
+        </UButton>
+        <UButton
+          v-if="user"
+          color="primary"
+          variant="solid"
+          size="sm"
+          :loading="submitting"
+          :disabled="!isCreatingNew && userLists.length === 0"
+          @click="handleAdd"
+        >
+          Listeye Ekle
+        </UButton>
       </div>
     </template>
   </UModal>

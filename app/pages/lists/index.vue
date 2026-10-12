@@ -182,6 +182,40 @@ async function handleDeleteList() {
   }
 }
 
+function openCreateModal() {
+  createTitle.value = ''
+  createDescription.value = ''
+  createIsPrivate.value = false
+  isCreateModalOpen.value = true
+}
+
+function closeCreateModal() {
+  isCreateModalOpen.value = false
+}
+
+function closeEditModal() {
+  isEditModalOpen.value = false
+}
+
+function closeDeleteModal() {
+  isDeleteModalOpen.value = false
+}
+
+function getListPreviewCovers(l: ListData): string[] {
+  const covers: string[] = []
+  if (l.coverImage?.url) {
+    covers.push(l.coverImage.url)
+  }
+  for (const item of l.items || []) {
+    const url = item.reference?.coverImage?.url
+    if (url && !covers.includes(url)) {
+      covers.push(url)
+      if (covers.length >= 3) break
+    }
+  }
+  return covers
+}
+
 useSeoMeta({
   title: 'Listeler - Mangile',
   description: 'Manga ve hafif roman okuma listeleri ve koleksiyonları.'
@@ -209,7 +243,7 @@ useSeoMeta({
           size="sm"
           icon="i-lucide-plus"
           class="rounded-xl font-bold shrink-0"
-          @click="isCreateModalOpen = true"
+          @click="openCreateModal"
         >
           Yeni Liste
         </UButton>
@@ -277,7 +311,7 @@ useSeoMeta({
           size="sm"
           icon="i-lucide-plus"
           class="rounded-xl font-bold"
-          @click="isCreateModalOpen = true"
+          @click="openCreateModal"
         >
           Yeni Liste Oluştur
         </UButton>
@@ -287,7 +321,7 @@ useSeoMeta({
         <div
           v-for="l in filteredMyLists"
           :key="l._id"
-          class="group relative flex flex-col justify-between p-4 rounded-2xl bg-card border border-default/20 hover:border-primary/50 transition-all hover:shadow-lg"
+          class="group relative flex flex-col justify-between p-4 rounded-2xl bg-elevated/70 border border-default/30 hover:border-primary/50 transition-all hover:shadow-lg"
         >
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
@@ -320,12 +354,25 @@ useSeoMeta({
             </div>
 
             <NuxtLink :to="`/lists/${l._id}`" class="block">
-              <h3 class="font-bold text-base text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                {{ l.title }}
-              </h3>
-              <p class="text-xs text-muted line-clamp-2 mt-1 min-h-[2rem]">
-                {{ l.description || 'Açıklama belirtilmemiş.' }}
-              </p>
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <h3 class="font-bold text-base text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                    {{ l.title }}
+                  </h3>
+                  <p class="text-xs text-muted line-clamp-2 mt-1 min-h-[2rem]">
+                    {{ l.description || 'Açıklama belirtilmemiş.' }}
+                  </p>
+                </div>
+                <div v-if="getListPreviewCovers(l).length > 0" class="flex items-center -space-x-2 shrink-0 pt-0.5">
+                  <img
+                    v-for="(c, cIdx) in getListPreviewCovers(l)"
+                    :key="cIdx"
+                    :src="c"
+                    alt=""
+                    class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
+                  />
+                </div>
+              </div>
             </NuxtLink>
           </div>
 
@@ -359,7 +406,7 @@ useSeoMeta({
           v-for="l in filteredExploreLists"
           :key="l._id"
           :to="`/lists/${l._id}`"
-          class="group flex flex-col justify-between p-4 rounded-2xl bg-card border border-default/20 hover:border-primary/50 transition-all hover:shadow-lg"
+          class="group flex flex-col justify-between p-4 rounded-2xl bg-elevated/70 border border-default/30 hover:border-primary/50 transition-all hover:shadow-lg"
         >
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
@@ -378,12 +425,25 @@ useSeoMeta({
               </UBadge>
             </div>
 
-            <h3 class="font-bold text-base text-foreground group-hover:text-primary transition-colors line-clamp-1">
-              {{ l.title }}
-            </h3>
-            <p class="text-xs text-muted line-clamp-2 mt-1 min-h-[2rem]">
-              {{ l.description || 'Açıklama bulunmuyor.' }}
-            </p>
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <h3 class="font-bold text-base text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                  {{ l.title }}
+                </h3>
+                <p class="text-xs text-muted line-clamp-2 mt-1 min-h-[2rem]">
+                  {{ l.description || 'Açıklama bulunmuyor.' }}
+                </p>
+              </div>
+              <div v-if="getListPreviewCovers(l).length > 0" class="flex items-center -space-x-2 shrink-0 pt-0.5">
+                <img
+                  v-for="(c, cIdx) in getListPreviewCovers(l)"
+                  :key="cIdx"
+                  :src="c"
+                  alt=""
+                  class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
+                />
+              </div>
+            </div>
           </div>
 
           <div class="flex items-center justify-between pt-3 border-t border-default/15 text-[11px] text-muted mt-3">
@@ -401,11 +461,11 @@ useSeoMeta({
       v-model:open="isCreateModalOpen"
       title="Yeni Liste Oluştur"
       description="Koleksiyonunuz için yeni bir liste ekleyin"
-      :ui="{ content: 'sm:max-w-md p-5 rounded-2xl bg-card shadow-2xl' }"
+      :ui="{ content: 'sm:max-w-md' }"
     >
-      <template #content>
+      <template #body>
         <div class="space-y-4">
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Liste Başlığı</label>
             <UInput
               v-model="createTitle"
@@ -414,7 +474,7 @@ useSeoMeta({
               class="w-full"
             />
           </div>
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Açıklama (İsteğe bağlı)</label>
             <UTextarea
               v-model="createDescription"
@@ -431,21 +491,23 @@ useSeoMeta({
               label="Gizli Liste (Yalnızca siz görebilirsiniz)"
             />
           </div>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-default/20">
-            <UButton variant="ghost" color="neutral" size="sm" @click="isCreateModalOpen = false">
-              İptal
-            </UButton>
-            <UButton
-              color="primary"
-              variant="solid"
-              size="sm"
-              :loading="isSubmittingCreate"
-              :disabled="!createTitle.trim()"
-              @click="handleCreateList"
-            >
-              Oluştur
-            </UButton>
-          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex items-center justify-end gap-2 w-full">
+          <UButton variant="ghost" color="neutral" size="sm" @click="closeCreateModal">
+            İptal
+          </UButton>
+          <UButton
+            color="primary"
+            variant="solid"
+            size="sm"
+            :loading="isSubmittingCreate"
+            :disabled="!createTitle.trim()"
+            @click="handleCreateList"
+          >
+            Oluştur
+          </UButton>
         </div>
       </template>
     </UModal>
@@ -454,11 +516,11 @@ useSeoMeta({
       v-model:open="isEditModalOpen"
       title="Listeyi Düzenle"
       description="Liste bilgilerinizi güncelleyin"
-      :ui="{ content: 'sm:max-w-md p-5 rounded-2xl bg-card shadow-2xl' }"
+      :ui="{ content: 'sm:max-w-md' }"
     >
-      <template #content>
+      <template #body>
         <div class="space-y-4">
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Liste Başlığı</label>
             <UInput
               v-model="editTitle"
@@ -466,7 +528,7 @@ useSeoMeta({
               class="w-full"
             />
           </div>
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Açıklama</label>
             <UTextarea
               v-model="editDescription"
@@ -482,21 +544,23 @@ useSeoMeta({
               label="Gizli Liste"
             />
           </div>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-default/20">
-            <UButton variant="ghost" color="neutral" size="sm" @click="isEditModalOpen = false">
-              İptal
-            </UButton>
-            <UButton
-              color="primary"
-              variant="solid"
-              size="sm"
-              :loading="isSubmittingEdit"
-              :disabled="!editTitle.trim()"
-              @click="handleUpdateList"
-            >
-              Kaydet
-            </UButton>
-          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex items-center justify-end gap-2 w-full">
+          <UButton variant="ghost" color="neutral" size="sm" @click="closeEditModal">
+            İptal
+          </UButton>
+          <UButton
+            color="primary"
+            variant="solid"
+            size="sm"
+            :loading="isSubmittingEdit"
+            :disabled="!editTitle.trim()"
+            @click="handleUpdateList"
+          >
+            Kaydet
+          </UButton>
         </div>
       </template>
     </UModal>
@@ -505,27 +569,27 @@ useSeoMeta({
       v-model:open="isDeleteModalOpen"
       title="Listeyi Sil"
       description="Bu işlem geri alınamaz"
-      :ui="{ content: 'sm:max-w-md p-5 rounded-2xl bg-card shadow-2xl' }"
+      :ui="{ content: 'sm:max-w-md' }"
     >
-      <template #content>
-        <div class="space-y-4">
-          <p class="text-xs text-muted">
-            Bu listeyi silmek istediğinizden emin misiniz? Listenin içerisindeki ögeler silinecektir.
-          </p>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-default/20">
-            <UButton variant="ghost" color="neutral" size="sm" @click="isDeleteModalOpen = false">
-              Vazgeç
-            </UButton>
-            <UButton
-              color="error"
-              variant="solid"
-              size="sm"
-              :loading="isSubmittingDelete"
-              @click="handleDeleteList"
-            >
-              Listeyi Sil
-            </UButton>
-          </div>
+      <template #body>
+        <p class="text-sm text-muted">
+          Bu listeyi silmek istediğinizden emin misiniz? Listenin içerisindeki ögeler silinecektir.
+        </p>
+      </template>
+      <template #footer>
+        <div class="flex items-center justify-end gap-2 w-full">
+          <UButton variant="ghost" color="neutral" size="sm" @click="closeDeleteModal">
+            Vazgeç
+          </UButton>
+          <UButton
+            color="error"
+            variant="solid"
+            size="sm"
+            :loading="isSubmittingDelete"
+            @click="handleDeleteList"
+          >
+            Listeyi Sil
+          </UButton>
         </div>
       </template>
     </UModal>

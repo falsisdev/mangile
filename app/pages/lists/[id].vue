@@ -171,6 +171,22 @@ async function handleUpdateItem() {
   }
 }
 
+function openDeleteModal() {
+  isDeleteModalOpen.value = true
+}
+
+function closeDeleteModal() {
+  isDeleteModalOpen.value = false
+}
+
+function closeEditModal() {
+  isEditModalOpen.value = false
+}
+
+function closeEditItemModal() {
+  isEditItemModalOpen.value = false
+}
+
 async function handleRemoveItem(key: string) {
   if (!user.value?.logtoId) return
   try {
@@ -189,9 +205,12 @@ async function moveItem(index: number, direction: 'up' | 'down') {
   const targetIndex = direction === 'up' ? index - 1 : index + 1
   if (targetIndex < 0 || targetIndex >= items.length) return
 
-  const temp = items[index]
-  items[index] = items[targetIndex]
-  items[targetIndex] = temp
+  const current = items[index]
+  const target = items[targetIndex]
+  if (!current || !target) return
+
+  items[index] = target
+  items[targetIndex] = current
 
   items.forEach((it, idx) => {
     it.index = idx + 1
@@ -314,7 +333,7 @@ useSeoMeta({
                 size="sm"
                 icon="i-lucide-trash-2"
                 class="rounded-xl font-bold"
-                @click="isDeleteModalOpen = true"
+                @click="openDeleteModal"
               >
                 Sil
               </UButton>
@@ -486,36 +505,38 @@ useSeoMeta({
       v-model:open="isEditModalOpen"
       title="Listeyi Düzenle"
       description="Liste bilgilerinizi güncelleyin"
-      :ui="{ content: 'sm:max-w-md p-5 rounded-2xl bg-card shadow-2xl' }"
+      :ui="{ content: 'sm:max-w-md' }"
     >
-      <template #content>
+      <template #body>
         <div class="space-y-4">
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Liste Başlığı</label>
             <UInput v-model="editTitle" size="sm" class="w-full" />
           </div>
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Açıklama</label>
             <UTextarea v-model="editDescription" size="sm" :rows="3" class="w-full" />
           </div>
           <div class="pt-1">
             <UCheckbox v-model="editIsPrivate" name="editIsPrivate" label="Gizli Liste" />
           </div>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-default/20">
-            <UButton variant="ghost" color="neutral" size="sm" @click="isEditModalOpen = false">
-              İptal
-            </UButton>
-            <UButton
-              color="primary"
-              variant="solid"
-              size="sm"
-              :loading="isSubmittingEdit"
-              :disabled="!editTitle.trim()"
-              @click="handleUpdateList"
-            >
-              Kaydet
-            </UButton>
-          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex items-center justify-end gap-2 w-full">
+          <UButton variant="ghost" color="neutral" size="sm" @click="closeEditModal">
+            İptal
+          </UButton>
+          <UButton
+            color="primary"
+            variant="solid"
+            size="sm"
+            :loading="isSubmittingEdit"
+            :disabled="!editTitle.trim()"
+            @click="handleUpdateList"
+          >
+            Kaydet
+          </UButton>
         </div>
       </template>
     </UModal>
@@ -524,27 +545,27 @@ useSeoMeta({
       v-model:open="isDeleteModalOpen"
       title="Listeyi Sil"
       description="Bu işlem geri alınamaz"
-      :ui="{ content: 'sm:max-w-md p-5 rounded-2xl bg-card shadow-2xl' }"
+      :ui="{ content: 'sm:max-w-md' }"
     >
-      <template #content>
-        <div class="space-y-4">
-          <p class="text-xs text-muted">
-            "{{ list?.title }}" listesini silmek istediğinizden emin misiniz?
-          </p>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-default/20">
-            <UButton variant="ghost" color="neutral" size="sm" @click="isDeleteModalOpen = false">
-              Vazgeç
-            </UButton>
-            <UButton
-              color="error"
-              variant="solid"
-              size="sm"
-              :loading="isSubmittingDelete"
-              @click="handleDeleteList"
-            >
-              Listeyi Sil
-            </UButton>
-          </div>
+      <template #body>
+        <p class="text-sm text-muted">
+          "{{ list?.title }}" listesini silmek istediğinizden emin misiniz? Listenin içerisindeki kayıtlı ögeler de kaldırılacaktır.
+        </p>
+      </template>
+      <template #footer>
+        <div class="flex items-center justify-end gap-2 w-full">
+          <UButton variant="ghost" color="neutral" size="sm" @click="closeDeleteModal">
+            Vazgeç
+          </UButton>
+          <UButton
+            color="error"
+            variant="solid"
+            size="sm"
+            :loading="isSubmittingDelete"
+            @click="handleDeleteList"
+          >
+            Listeyi Sil
+          </UButton>
         </div>
       </template>
     </UModal>
@@ -553,32 +574,34 @@ useSeoMeta({
       v-model:open="isEditItemModalOpen"
       title="Ögeyi Düzenle"
       description="Sıra numarası veya kişisel notunuzu güncelleyin"
-      :ui="{ content: 'sm:max-w-md p-5 rounded-2xl bg-card shadow-2xl' }"
+      :ui="{ content: 'sm:max-w-md' }"
     >
-      <template #content>
+      <template #body>
         <div class="space-y-4">
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Sıra Numarası</label>
             <UInput v-model.number="editItemIndex" type="number" size="sm" class="w-full" />
           </div>
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Kişisel Not</label>
             <UTextarea v-model="editItemNote" size="sm" :rows="3" placeholder="Bu seri hakkındaki notunuz..." class="w-full" />
           </div>
-          <div class="flex items-center justify-end gap-2 pt-3 border-t border-default/20">
-            <UButton variant="ghost" color="neutral" size="sm" @click="isEditItemModalOpen = false">
-              İptal
-            </UButton>
-            <UButton
-              color="primary"
-              variant="solid"
-              size="sm"
-              :loading="isSubmittingItemEdit"
-              @click="handleUpdateItem"
-            >
-              Kaydet
-            </UButton>
-          </div>
+        </div>
+      </template>
+      <template #footer>
+        <div class="flex items-center justify-end gap-2 w-full">
+          <UButton variant="ghost" color="neutral" size="sm" @click="closeEditItemModal">
+            İptal
+          </UButton>
+          <UButton
+            color="primary"
+            variant="solid"
+            size="sm"
+            :loading="isSubmittingItemEdit"
+            @click="handleUpdateItem"
+          >
+            Kaydet
+          </UButton>
         </div>
       </template>
     </UModal>
