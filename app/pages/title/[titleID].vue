@@ -278,6 +278,7 @@ const chapterRouteType = (type?: string) =>
 const chapterViewMode = useStorage<'grid' | 'list' | 'compact'>('mangile-chapter-view-mode', 'grid')
 const chapterSortOrder = useStorage<'asc' | 'desc'>('mangile-chapter-sort-order', 'desc')
 const chapterSearchQuery = ref('')
+const openAddToList = ref(false)
 
 const expandedVolumes = ref<string[]>([])
 function toggleVolume(key: string | number) {
@@ -747,6 +748,18 @@ onUnmounted(() => {
                 class="justify-center rounded-xl font-bold"
               >
                 Son Bölüm
+              </UButton>
+            </div>
+            <div class="px-3 sm:px-4 pt-2">
+              <UButton
+                color="neutral"
+                variant="soft"
+                size="sm"
+                icon="i-lucide-bookmark-plus"
+                class="w-full justify-center rounded-xl font-bold"
+                @click="openAddToList = true"
+              >
+                Listeye Ekle
               </UButton>
             </div>
           </div>
@@ -1289,6 +1302,19 @@ onUnmounted(() => {
               </UButton>
             </div>
 
+            <div class="pt-2">
+              <UButton
+                color="neutral"
+                variant="soft"
+                size="md"
+                icon="i-lucide-bookmark-plus"
+                class="rounded-xl font-bold px-4"
+                @click="openAddToList = true"
+              >
+                Listeye Ekle
+              </UButton>
+            </div>
+
             <div
               id="chapters-section"
               class="space-y-4 pt-4"
@@ -1663,5 +1689,13 @@ onUnmounted(() => {
         </UCard>
       </div>
     </UContainer>
+
+    <AddToListModal
+      v-model:open="openAddToList"
+      :title-id="serie?._id"
+      :mal-id="serie?.myAnimeListId"
+      :title-name="serie?.title || serie?.anilistTitle"
+      :title-type="serie?.type"
+    />
   </div>
 </template>

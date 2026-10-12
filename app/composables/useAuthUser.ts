@@ -92,7 +92,6 @@ export function useAuthUser() {
     hasChecked.value = true
   }
 
-  // Otomatik yükleme: Eğer logtoUser varsa ve henüz kontrol edilmediyse yükle
   if (import.meta.client && logtoUser?.sub && !hasChecked.value && !isChecking.value) {
     fetchSanityUser()
   }

@@ -141,7 +141,7 @@ Coming soon.
 - [x] Explore Page Filter
 - [x] User authentication
 - [x] User Profile
-- [ ] List Actions
+- [x] List Actions
 - [ ] Reading history
 - [ ] Sync MAL, AniList & MangaDex
 - [ ] Metadata integration
