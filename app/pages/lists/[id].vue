@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useStorage } from '@vueuse/core'
+
 const route = useRoute()
 const router = useRouter()
 const listId = String(route.params.id)
@@ -226,6 +228,8 @@ async function moveItem(index: number, direction: 'up' | 'down') {
   }
 }
 
+const viewMode = useStorage<'list' | 'grid' | 'compact'>('mangile-list-view-mode', 'list')
+
 function getItemTitle(it: ListItem): string {
   if (it.reference?.title) return it.reference.title
   if (it.externalId) return `Harici Seri #${it.externalId}`
@@ -233,9 +237,10 @@ function getItemTitle(it: ListItem): string {
 }
 
 function getItemLink(it: ListItem): string | null {
+  if (it.reference?.myAnimeListId) return `/title/${it.reference.myAnimeListId}`
+  if (it.externalId) return `/title/${it.externalId}`
   if (it.reference?.slug) return `/title/${it.reference.slug}`
   if (it.reference?._id) return `/title/${it.reference._id}`
-  if (it.externalId) return `/title/${it.externalId}`
   return null
 }
 
@@ -367,13 +372,45 @@ useSeoMeta({
 
       <div class="space-y-3">
         <div class="flex items-center justify-between px-1">
-          <h2 class="text-lg font-bold text-foreground flex items-center gap-2">
-            <UIcon name="i-lucide-list-ordered" class="size-5 text-primary" />
-            Liste Sıralaması
-          </h2>
-          <span class="text-xs text-muted font-medium">
-            Toplam {{ list.items?.length || 0 }} Seri
-          </span>
+          <div class="flex items-center gap-3">
+            <h2 class="text-lg font-bold text-foreground flex items-center gap-2">
+              <UIcon name="i-lucide-list-ordered" class="size-5 text-primary" />
+              Liste Sıralaması
+            </h2>
+            <span class="text-xs text-muted font-medium">
+              Toplam {{ list.items?.length || 0 }} Seri
+            </span>
+          </div>
+
+          <div class="flex items-center p-1 rounded-xl bg-muted/20 border border-default/20">
+            <button
+              type="button"
+              class="p-1.5 rounded-lg text-xs transition-all"
+              :class="viewMode === 'list' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+              aria-label="Liste Görünümü"
+              @click="viewMode = 'list'"
+            >
+              <UIcon name="i-lucide-layout-list" class="size-4" />
+            </button>
+            <button
+              type="button"
+              class="p-1.5 rounded-lg text-xs transition-all"
+              :class="viewMode === 'grid' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+              aria-label="Izgara Görünümü"
+              @click="viewMode = 'grid'"
+            >
+              <UIcon name="i-lucide-layout-grid" class="size-4" />
+            </button>
+            <button
+              type="button"
+              class="p-1.5 rounded-lg text-xs transition-all"
+              :class="viewMode === 'compact' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+              aria-label="Kompakt Görünüm"
+              @click="viewMode = 'compact'"
+            >
+              <UIcon name="i-lucide-align-justify" class="size-4" />
+            </button>
+          </div>
         </div>
 
         <div v-if="!list.items || list.items.length === 0" class="text-center py-16 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6">
@@ -385,6 +422,188 @@ useSeoMeta({
           <UButton to="/explore" color="primary" variant="solid" size="sm" class="rounded-xl font-bold">
             Serileri Keşfet
           </UButton>
+        </div>
+
+        <div v-else-if="viewMode === 'grid'" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+          <div
+            v-for="(it, idx) in list.items"
+            :key="it._key"
+            class="group relative flex flex-col rounded-2xl bg-card border border-default/20 hover:border-primary/40 transition-all overflow-hidden shadow-xs"
+          >
+            <div class="relative aspect-[3/4] bg-muted/30 overflow-hidden">
+              <img
+                v-if="getItemCover(it)"
+                :src="getItemCover(it)"
+                :alt="getItemTitle(it)"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div v-else class="w-full h-full flex items-center justify-center text-muted">
+                <UIcon name="i-lucide-book" class="size-8" />
+              </div>
+
+              <div class="absolute top-2 left-2 size-7 rounded-lg bg-background/85 backdrop-blur-md text-foreground font-black text-xs flex items-center justify-center border border-default/20 shadow-xs">
+                #{{ it.index || idx + 1 }}
+              </div>
+
+              <div v-if="it.reference?.format || it.externalType" class="absolute top-2 right-2">
+                <UBadge
+                  color="neutral"
+                  variant="subtle"
+                  size="xs"
+                  class="rounded-md text-[9px] backdrop-blur-md bg-background/85"
+                >
+                  {{ it.reference?.format || (it.externalType === 'lightNovel' ? 'Hafif Roman' : 'Manga') }}
+                </UBadge>
+              </div>
+
+              <div v-if="isOwner" class="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-background/90 to-transparent flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <UButton
+                  variant="ghost"
+                  color="neutral"
+                  size="xs"
+                  icon="i-lucide-chevron-up"
+                  :disabled="idx === 0"
+                  class="bg-background/80"
+                  @click.stop="moveItem(idx, 'up')"
+                />
+                <UButton
+                  variant="ghost"
+                  color="neutral"
+                  size="xs"
+                  icon="i-lucide-chevron-down"
+                  :disabled="idx === list.items.length - 1"
+                  class="bg-background/80"
+                  @click.stop="moveItem(idx, 'down')"
+                />
+                <UButton
+                  variant="ghost"
+                  color="neutral"
+                  size="xs"
+                  icon="i-lucide-pencil"
+                  class="bg-background/80"
+                  @click.stop="openEditItem(it)"
+                />
+                <UButton
+                  variant="ghost"
+                  color="error"
+                  size="xs"
+                  icon="i-lucide-trash-2"
+                  class="bg-background/80"
+                  @click.stop="handleRemoveItem(it._key)"
+                />
+              </div>
+            </div>
+
+            <div class="p-3 flex flex-col justify-between flex-1 gap-2">
+              <div>
+                <component
+                  :is="getItemLink(it) ? 'NuxtLink' : 'span'"
+                  :to="getItemLink(it)"
+                  class="font-bold text-xs sm:text-sm text-foreground hover:text-primary transition-colors line-clamp-2"
+                >
+                  {{ getItemTitle(it) }}
+                </component>
+                <p v-if="it.note" class="text-[11px] text-amber-600 dark:text-amber-400 mt-1 line-clamp-2">
+                  {{ it.note }}
+                </p>
+              </div>
+
+              <div class="pt-1 border-t border-default/15 flex items-center justify-between text-[10px] text-muted">
+                <span v-if="it.addedAt">{{ new Date(it.addedAt).toLocaleDateString('tr-TR') }}</span>
+                <NuxtLink
+                  v-if="getItemLink(it)"
+                  :to="getItemLink(it)!"
+                  class="text-primary hover:underline font-bold"
+                >
+                  Git &rarr;
+                </NuxtLink>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-else-if="viewMode === 'compact'" class="rounded-2xl border border-default/20 bg-card overflow-hidden divide-y divide-default/15">
+          <div
+            v-for="(it, idx) in list.items"
+            :key="it._key"
+            class="group flex items-center justify-between px-3 sm:px-4 py-2.5 hover:bg-muted/15 transition-colors gap-3 text-xs"
+          >
+            <div class="flex items-center gap-3 min-w-0 flex-1">
+              <span class="font-bold text-primary shrink-0 w-6 text-center">#{{ it.index || idx + 1 }}</span>
+              <img
+                v-if="getItemCover(it)"
+                :src="getItemCover(it)"
+                :alt="getItemTitle(it)"
+                class="size-8 rounded-lg object-cover shrink-0"
+              />
+              <component
+                :is="getItemLink(it) ? 'NuxtLink' : 'span'"
+                :to="getItemLink(it)"
+                class="font-bold text-foreground hover:text-primary transition-colors truncate"
+              >
+                {{ getItemTitle(it) }}
+              </component>
+              <UBadge
+                v-if="it.reference?.format || it.externalType"
+                color="neutral"
+                variant="subtle"
+                size="xs"
+                class="rounded text-[9px] shrink-0 hidden sm:inline-flex"
+              >
+                {{ it.reference?.format || (it.externalType === 'lightNovel' ? 'Hafif Roman' : 'Manga') }}
+              </UBadge>
+              <span v-if="it.note" class="text-[11px] text-amber-600 dark:text-amber-400 truncate max-w-xs hidden md:inline">
+                {{ it.note }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-1 shrink-0">
+              <template v-if="isOwner">
+                <UButton
+                  variant="ghost"
+                  color="neutral"
+                  size="xs"
+                  icon="i-lucide-chevron-up"
+                  :disabled="idx === 0"
+                  aria-label="Yukarı Taşı"
+                  @click="moveItem(idx, 'up')"
+                />
+                <UButton
+                  variant="ghost"
+                  color="neutral"
+                  size="xs"
+                  icon="i-lucide-chevron-down"
+                  :disabled="idx === list.items.length - 1"
+                  aria-label="Aşağı Taşı"
+                  @click="moveItem(idx, 'down')"
+                />
+                <UButton
+                  variant="ghost"
+                  color="neutral"
+                  size="xs"
+                  icon="i-lucide-pencil"
+                  aria-label="Düzenle"
+                  @click="openEditItem(it)"
+                />
+                <UButton
+                  variant="ghost"
+                  color="error"
+                  size="xs"
+                  icon="i-lucide-trash-2"
+                  aria-label="Kaldır"
+                  @click="handleRemoveItem(it._key)"
+                />
+              </template>
+              <UButton
+                v-if="getItemLink(it)"
+                :to="getItemLink(it)!"
+                color="primary"
+                variant="ghost"
+                size="xs"
+                icon="i-lucide-external-link"
+              />
+            </div>
+          </div>
         </div>
 
         <div v-else class="space-y-2.5">

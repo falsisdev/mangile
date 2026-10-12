@@ -59,6 +59,19 @@ async function loadLists() {
   }
 }
 
+const selectedList = computed(() => {
+  return userLists.value.find((l) => l._id === selectedListId.value)
+})
+
+const isAlreadyInSelectedList = computed(() => {
+  if (isCreatingNew.value || !selectedList.value?.items) return false
+  return selectedList.value.items.some((it) => {
+    if (props.titleId && it.reference?._id === props.titleId) return true
+    if (props.malId && (it.externalId === props.malId || it.reference?.myAnimeListId === props.malId)) return true
+    return false
+  })
+})
+
 watch(
   () => props.open,
   (val) => {
@@ -235,6 +248,10 @@ function startCreatingNew() {
                 </span>
               </button>
             </div>
+            <div v-if="!isCreatingNew && isAlreadyInSelectedList" class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2">
+              <UIcon name="i-lucide-info" class="size-4 shrink-0" />
+              <span>Bu seri seçili listede zaten bulunuyor.</span>
+            </div>
           </div>
 
           <div v-else class="space-y-3 p-3 rounded-xl bg-muted/15 border border-default/20">
@@ -305,10 +322,10 @@ function startCreatingNew() {
           variant="solid"
           size="sm"
           :loading="submitting"
-          :disabled="!isCreatingNew && userLists.length === 0"
+          :disabled="(!isCreatingNew && userLists.length === 0) || isAlreadyInSelectedList"
           @click="handleAdd"
         >
-          Listeye Ekle
+          {{ isAlreadyInSelectedList ? 'Zaten Listede' : 'Listeye Ekle' }}
         </UButton>
       </div>
     </template>

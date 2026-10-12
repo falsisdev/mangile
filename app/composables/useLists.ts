@@ -143,9 +143,14 @@ export function useLists() {
     })
   }
 
+  async function fetchLikedLists(targetLogtoId: string): Promise<ListData[]> {
+    return await $fetch<ListData[]>(`${apiBase}/api/user/${targetLogtoId}/liked-lists`)
+  }
+
   return {
     fetchPublicLists,
     fetchUserLists,
+    fetchLikedLists,
     fetchList,
     createList,
     updateList,

@@ -1,14 +1,16 @@
 <script setup lang="ts">
 const { user } = useAuthUser()
-const { fetchPublicLists, fetchUserLists, createList, updateList, deleteList } = useLists()
+const { fetchPublicLists, fetchUserLists, fetchLikedLists, createList, updateList, deleteList } = useLists()
 const toast = useToast()
 
-const activeTab = ref<'my' | 'explore'>('my')
+const activeTab = ref<'my' | 'explore' | 'liked'>('my')
 
 const myLists = ref<ListData[]>([])
 const exploreLists = ref<ListData[]>([])
+const likedLists = ref<ListData[]>([])
 const loadingMy = ref(false)
 const loadingExplore = ref(false)
+const loadingLiked = ref(false)
 const searchQuery = ref('')
 
 const isCreateModalOpen = ref(false)
@@ -53,11 +55,25 @@ async function loadExploreLists() {
   }
 }
 
+async function loadLikedLists() {
+  if (!user.value?.logtoId) return
+  loadingLiked.value = true
+  try {
+    const data = await fetchLikedLists(user.value.logtoId)
+    likedLists.value = data || []
+  } catch {
+    likedLists.value = []
+  } finally {
+    loadingLiked.value = false
+  }
+}
+
 watch(
   () => user.value?.logtoId,
   (id) => {
     if (id) {
       loadMyLists()
+      loadLikedLists()
     } else {
       activeTab.value = 'explore'
     }
@@ -72,6 +88,8 @@ watch(
       loadExploreLists()
     } else if (tab === 'my' && user.value?.logtoId && myLists.value.length === 0) {
       loadMyLists()
+    } else if (tab === 'liked' && user.value?.logtoId && likedLists.value.length === 0) {
+      loadLikedLists()
     }
   },
   { immediate: true }
@@ -89,6 +107,14 @@ const filteredExploreLists = computed(() => {
   if (!searchQuery.value.trim()) return exploreLists.value
   const q = searchQuery.value.toLowerCase()
   return exploreLists.value.filter(
+    (l) => l.title?.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q)
+  )
+})
+
+const filteredLikedLists = computed(() => {
+  if (!searchQuery.value.trim()) return likedLists.value
+  const q = searchQuery.value.toLowerCase()
+  return likedLists.value.filter(
     (l) => l.title?.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q)
   )
 })
@@ -256,7 +282,7 @@ useSeoMeta({
           v-if="user"
           type="button"
           class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="activeTab === 'my' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted hover:text-foreground'"
+          :class="activeTab === 'my' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
           @click="activeTab = 'my'"
         >
           Listelerim ({{ myLists.length }})
@@ -264,10 +290,19 @@ useSeoMeta({
         <button
           type="button"
           class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="activeTab === 'explore' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted hover:text-foreground'"
+          :class="activeTab === 'explore' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
           @click="activeTab = 'explore'"
         >
           Keşfet
+        </button>
+        <button
+          v-if="user"
+          type="button"
+          class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all"
+          :class="activeTab === 'liked' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+          @click="activeTab = 'liked'"
+        >
+          Beğendiklerim ({{ likedLists.length }})
         </button>
       </div>
 
@@ -404,6 +439,75 @@ useSeoMeta({
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <NuxtLink
           v-for="l in filteredExploreLists"
+          :key="l._id"
+          :to="`/lists/${l._id}`"
+          class="group flex flex-col justify-between p-4 rounded-2xl bg-elevated/70 border border-default/30 hover:border-primary/50 transition-all hover:shadow-lg"
+        >
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <div class="flex items-center gap-2">
+                <UAvatar
+                  :src="l.user?.avatar"
+                  :alt="l.user?.name || l.user?.username"
+                  size="xs"
+                />
+                <span class="text-xs font-semibold text-muted line-clamp-1">
+                  {{ l.user?.name || l.user?.username || 'Kullanıcı' }}
+                </span>
+              </div>
+              <UBadge color="primary" variant="subtle" size="xs" class="rounded-full text-[10px]">
+                {{ l.items?.length || l.itemsCount || 0 }} Öge
+              </UBadge>
+            </div>
+
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0 flex-1">
+                <h3 class="font-bold text-base text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                  {{ l.title }}
+                </h3>
+                <p class="text-xs text-muted line-clamp-2 mt-1 min-h-[2rem]">
+                  {{ l.description || 'Açıklama bulunmuyor.' }}
+                </p>
+              </div>
+              <div v-if="getListPreviewCovers(l).length > 0" class="flex items-center -space-x-2 shrink-0 pt-0.5">
+                <img
+                  v-for="(c, cIdx) in getListPreviewCovers(l)"
+                  :key="cIdx"
+                  :src="c"
+                  alt=""
+                  class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 border-t border-default/15 text-[11px] text-muted mt-3">
+            <span>{{ l.createdAt ? new Date(l.createdAt).toLocaleDateString('tr-TR') : '' }}</span>
+            <span class="flex items-center gap-1 font-semibold text-foreground">
+              <UIcon name="i-lucide-heart" class="size-3.5 text-red-500 fill-red-500" />
+              {{ l.likesCount || 0 }}
+            </span>
+          </div>
+        </NuxtLink>
+      </div>
+    </div>
+
+    <div v-else-if="activeTab === 'liked'">
+      <div v-if="loadingLiked" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div v-for="i in 3" :key="i" class="h-44 rounded-2xl bg-muted/20 animate-pulse" />
+      </div>
+
+      <div v-else-if="filteredLikedLists.length === 0" class="text-center py-12 space-y-2 bg-muted/10 rounded-2xl border border-default/20 p-6">
+        <UIcon name="i-lucide-heart" class="size-10 text-muted mx-auto" />
+        <h3 class="text-base font-bold text-foreground">Beğenilen Liste Yok</h3>
+        <p class="text-xs text-muted">
+          {{ searchQuery ? 'Aramanıza uygun liste bulunamadı.' : 'Henüz hiçbir listeyi beğenmediniz. Keşfet sekmesinden listeleri inceleyebilirsiniz.' }}
+        </p>
+      </div>
+
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <NuxtLink
+          v-for="l in filteredLikedLists"
           :key="l._id"
           :to="`/lists/${l._id}`"
           class="group flex flex-col justify-between p-4 rounded-2xl bg-elevated/70 border border-default/30 hover:border-primary/50 transition-all hover:shadow-lg"

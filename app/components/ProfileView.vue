@@ -14,6 +14,19 @@ const emit = defineEmits<{
 
 const router = useRouter()
 const { user, isRegistered, fetchSanityUser, setSanityUser } = useAuthUser()
+const { fetchUserLists } = useLists()
+
+const userListsCount = ref<number | null>(null)
+
+async function loadListsCount() {
+  if (!user.value?.logtoId) return
+  try {
+    const lists = await fetchUserLists(user.value.logtoId, user.value.logtoId)
+    userListsCount.value = lists?.length ?? 0
+  } catch {
+    userListsCount.value = user.value?.lists?.length ?? 0
+  }
+}
 
 const isEditing = ref(false)
 const isSaving = ref(false)
@@ -42,6 +55,7 @@ watch(
   () => user.value,
   () => {
     initForm()
+    loadListsCount()
   },
   { immediate: true }
 )
@@ -537,7 +551,7 @@ function handleBack() {
                   />
                 </div>
                 <span class="text-base font-black text-foreground">
-                  {{ user.lists?.length || 0 }}
+                  {{ userListsCount ?? user.lists?.length ?? 0 }}
                 </span>
                 <span class="text-[10px] text-muted font-medium">Listeler</span>
               </NuxtLink>

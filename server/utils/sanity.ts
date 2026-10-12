@@ -70,7 +70,7 @@ export function useSanityApi() {
       "banner": coalesce(banner.asset->url, banner),
       bio,
       roles,
-      lists,
+      "lists": *[_type == "lists" && (user._ref == ^._id || user->logtoId == $id)]{ _id },
       _createdAt,
       _updatedAt
     }`
