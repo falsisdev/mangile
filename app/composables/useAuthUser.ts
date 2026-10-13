@@ -11,6 +11,11 @@ export interface SanityUserData {
   bio?: string
   roles?: string[]
   lists?: unknown[]
+  integrations?: {
+    anilist?: { userId?: number, username?: string, accessToken?: string, connectedAt?: string, lastSyncAt?: string }
+    mal?: { userId?: number, username?: string, accessToken?: string, refreshToken?: string, expiresAt?: string, connectedAt?: string, lastSyncAt?: string }
+    mangadex?: { userId?: string, username?: string, accessToken?: string, refreshToken?: string, expiresAt?: string, connectedAt?: string, lastSyncAt?: string }
+  }
   _createdAt?: string
   _updatedAt?: string
 }
@@ -47,7 +52,8 @@ export function useAuthUser() {
       bio: sanityUser.value?.bio || '',
       roles: sanityUser.value?.roles || ['004'],
       roleLabel,
-      lists: sanityUser.value?.lists || []
+      lists: sanityUser.value?.lists || [],
+      integrations: sanityUser.value?.integrations || {}
     }
   })
 

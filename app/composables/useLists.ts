@@ -94,8 +94,8 @@ export function useLists() {
     })
   }
 
-  async function deleteList(id: string, logtoId: string): Promise<{ success: boolean; message: string }> {
-    return await $fetch<{ success: boolean; message: string }>(`${apiBase}/api/list/${id}`, {
+  async function deleteList(id: string, logtoId: string): Promise<{ success: boolean, message: string }> {
+    return await $fetch<{ success: boolean, message: string }>(`${apiBase}/api/list/${id}`, {
       method: 'DELETE',
       body: { logtoId }
     })

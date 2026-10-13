@@ -283,9 +283,14 @@ const chapterViewMode = useStorage<'grid' | 'list' | 'compact'>('mangile-chapter
 const chapterSortOrder = useStorage<'asc' | 'desc'>('mangile-chapter-sort-order', 'desc')
 const chapterSearchQuery = ref('')
 const openAddToList = ref(false)
+const openTracker = ref(false)
 
 function handleOpenAddToList() {
   openAddToList.value = true
+}
+
+function handleOpenTracker() {
+  openTracker.value = true
 }
 
 const expandedVolumes = ref<string[]>([])
@@ -777,16 +782,26 @@ onUnmounted(() => {
                 Son Bölüm
               </UButton>
             </div>
-            <div class="px-3 sm:px-4 pt-2">
+            <div class="px-3 sm:px-4 pt-2 grid grid-cols-2 gap-2">
               <UButton
                 color="neutral"
                 variant="soft"
                 size="sm"
                 icon="i-lucide-bookmark-plus"
-                class="w-full justify-center rounded-xl font-bold"
+                class="justify-center rounded-xl font-bold"
                 @click="handleOpenAddToList"
               >
                 Listeye Ekle
+              </UButton>
+              <UButton
+                color="neutral"
+                variant="soft"
+                size="sm"
+                icon="i-lucide-activity"
+                class="justify-center rounded-xl font-bold"
+                @click="handleOpenTracker"
+              >
+                Takipçiler
               </UButton>
             </div>
           </div>
@@ -1393,16 +1408,26 @@ onUnmounted(() => {
               </UButton>
             </div>
 
-            <div class="pt-2">
+            <div class="pt-2 flex items-center gap-2">
               <UButton
                 color="neutral"
                 variant="soft"
                 size="md"
                 icon="i-lucide-bookmark-plus"
-                class="rounded-xl font-bold px-4"
+                class="flex-1 justify-center rounded-xl font-bold px-4"
                 @click="handleOpenAddToList"
               >
                 Listeye Ekle
+              </UButton>
+              <UButton
+                color="neutral"
+                variant="soft"
+                size="md"
+                icon="i-lucide-activity"
+                class="flex-1 justify-center rounded-xl font-bold px-4"
+                @click="handleOpenTracker"
+              >
+                Takipçiler
               </UButton>
             </div>
 
@@ -1833,6 +1858,14 @@ onUnmounted(() => {
       :mal-id="serie?.malID"
       :title-name="serie?.title || serie?.anilistTitle"
       :title-type="serie?.type"
+    />
+
+    <TrackerModal
+      v-model:open="openTracker"
+      :series-id="serie?.sanityId || (typeof serie?.id === 'string' ? serie?.id : '')"
+      :series-title="serie?.title || serie?.anilistTitle || ''"
+      :total-chapters="serie?.chapters?.length"
+      :mal-id="serie?.malID"
     />
   </div>
 </template>

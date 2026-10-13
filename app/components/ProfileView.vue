@@ -15,6 +15,12 @@ const emit = defineEmits<{
 const router = useRouter()
 const { user, isRegistered, fetchSanityUser, setSanityUser } = useAuthUser()
 const { fetchUserLists } = useLists()
+const { connectProvider, disconnectProvider } = useTrackers()
+
+async function handleDisconnect(provider: 'mal' | 'anilist' | 'mangadex') {
+  await disconnectProvider(provider)
+  await fetchSanityUser(true)
+}
 
 const userListsCount = ref<number | null>(null)
 
@@ -593,6 +599,135 @@ function handleBack() {
                 </span>
                 <span class="text-[10px] text-muted font-medium">Senkron</span>
               </NuxtLink>
+            </div>
+          </div>
+
+          <!-- Entegrasyonlar (Senkronizasyon) -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <h3
+                class="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5"
+              >
+                <UIcon
+                  name="i-lucide-activity"
+                  class="size-3.5 text-primary"
+                />
+                Entegrasyonlar (Senkronizasyon)
+              </h3>
+              <NuxtLink
+                to="/sync"
+                class="text-[11px] text-primary hover:underline font-semibold"
+                @click="props.isModal ? emit('close') : undefined"
+              >
+                Tümünü Yönet
+              </NuxtLink>
+            </div>
+
+            <div class="space-y-2">
+              <!-- MyAnimeList -->
+              <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="size-7 rounded-lg bg-blue-500/15 text-blue-500 flex items-center justify-center font-black text-xs">
+                    MAL
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-foreground">
+                      MyAnimeList
+                    </div>
+                    <div class="text-[10px] text-muted">
+                      {{ user.integrations?.mal?.accessToken ? 'Bağlandı' : 'Bağlı Değil' }}
+                    </div>
+                  </div>
+                </div>
+                <UButton
+                  v-if="user.integrations?.mal?.accessToken"
+                  label="Bağlantıyı Kes"
+                  size="xs"
+                  color="error"
+                  variant="ghost"
+                  class="rounded-xl font-bold"
+                  @click="handleDisconnect('mal')"
+                />
+                <UButton
+                  v-else
+                  label="Bağlan"
+                  size="xs"
+                  color="primary"
+                  variant="soft"
+                  class="rounded-xl font-bold"
+                  @click="connectProvider('mal')"
+                />
+              </div>
+
+              <!-- AniList -->
+              <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="size-7 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center font-black text-xs">
+                    AL
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-foreground">
+                      AniList
+                    </div>
+                    <div class="text-[10px] text-muted">
+                      {{ user.integrations?.anilist?.accessToken ? 'Bağlandı' : 'Bağlı Değil' }}
+                    </div>
+                  </div>
+                </div>
+                <UButton
+                  v-if="user.integrations?.anilist?.accessToken"
+                  label="Bağlantıyı Kes"
+                  size="xs"
+                  color="error"
+                  variant="ghost"
+                  class="rounded-xl font-bold"
+                  @click="handleDisconnect('anilist')"
+                />
+                <UButton
+                  v-else
+                  label="Bağlan"
+                  size="xs"
+                  color="primary"
+                  variant="soft"
+                  class="rounded-xl font-bold"
+                  @click="connectProvider('anilist')"
+                />
+              </div>
+
+              <!-- MangaDex -->
+              <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <div class="size-7 rounded-lg bg-orange-500/15 text-orange-500 flex items-center justify-center font-black text-xs">
+                    MD
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-foreground">
+                      MangaDex
+                    </div>
+                    <div class="text-[10px] text-muted">
+                      {{ user.integrations?.mangadex?.accessToken ? 'Bağlandı' : 'Bağlı Değil' }}
+                    </div>
+                  </div>
+                </div>
+                <UButton
+                  v-if="user.integrations?.mangadex?.accessToken"
+                  label="Bağlantıyı Kes"
+                  size="xs"
+                  color="error"
+                  variant="ghost"
+                  class="rounded-xl font-bold"
+                  @click="handleDisconnect('mangadex')"
+                />
+                <UButton
+                  v-else
+                  label="Bağlan"
+                  size="xs"
+                  color="primary"
+                  variant="soft"
+                  class="rounded-xl font-bold"
+                  @click="connectProvider('mangadex')"
+                />
+              </div>
             </div>
           </div>
 

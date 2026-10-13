@@ -18,12 +18,12 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   'update:open': [value: boolean]
-  added: []
+  'added': []
 }>()
 
 const isOpen = computed({
   get: () => props.open,
-  set: (val) => emit('update:open', val)
+  set: val => emit('update:open', val)
 })
 
 const { user } = useAuthUser()
@@ -60,7 +60,7 @@ async function loadLists() {
 }
 
 const selectedList = computed(() => {
-  return userLists.value.find((l) => l._id === selectedListId.value)
+  return userLists.value.find(l => l._id === selectedListId.value)
 })
 
 const isAlreadyInSelectedList = computed(() => {
@@ -174,9 +174,17 @@ function startCreatingNew() {
     :ui="{ content: 'sm:max-w-md' }"
   >
     <template #body>
-      <div v-if="!user" class="py-6 text-center space-y-3">
-        <UIcon name="i-lucide-lock" class="size-10 text-muted mx-auto" />
-        <h3 class="text-base font-bold text-foreground">Giriş Yapmalısınız</h3>
+      <div
+        v-if="!user"
+        class="py-6 text-center space-y-3"
+      >
+        <UIcon
+          name="i-lucide-lock"
+          class="size-10 text-muted mx-auto"
+        />
+        <h3 class="text-base font-bold text-foreground">
+          Giriş Yapmalısınız
+        </h3>
         <p class="text-xs text-muted max-w-xs mx-auto">
           Listelere içerik ekleyebilmek ve kişisel koleksiyon oluşturabilmek için lütfen giriş yapın.
         </p>
@@ -191,9 +199,15 @@ function startCreatingNew() {
         </UButton>
       </div>
 
-      <div v-else class="space-y-4">
+      <div
+        v-else
+        class="space-y-4"
+      >
         <div class="flex items-center gap-3 p-3 rounded-xl bg-muted/20 ring-1 ring-default/20">
-          <UIcon name="i-lucide-bookmark" class="size-5 text-primary shrink-0" />
+          <UIcon
+            name="i-lucide-bookmark"
+            class="size-5 text-primary shrink-0"
+          />
           <div class="min-w-0">
             <h4 class="text-sm font-bold truncate text-foreground">
               {{ titleName || 'Seçili Seri' }}
@@ -218,12 +232,26 @@ function startCreatingNew() {
             </UButton>
           </div>
 
-          <div v-if="!isCreatingNew" class="space-y-2">
-            <div v-if="loadingLists" class="py-4 text-center">
-              <UIcon name="i-lucide-loader-2" class="size-5 animate-spin mx-auto text-primary" />
+          <div
+            v-if="!isCreatingNew"
+            class="space-y-2"
+          >
+            <div
+              v-if="loadingLists"
+              class="py-4 text-center"
+            >
+              <UIcon
+                name="i-lucide-loader-2"
+                class="size-5 animate-spin mx-auto text-primary"
+              />
             </div>
-            <div v-else-if="userLists.length === 0" class="text-center py-4 space-y-2">
-              <p class="text-xs text-muted">Henüz hiç listeniz bulunmuyor.</p>
+            <div
+              v-else-if="userLists.length === 0"
+              class="text-center py-4 space-y-2"
+            >
+              <p class="text-xs text-muted">
+                Henüz hiç listeniz bulunmuyor.
+              </p>
               <UButton
                 size="xs"
                 color="primary"
@@ -233,7 +261,10 @@ function startCreatingNew() {
                 İlk Listeni Oluştur
               </UButton>
             </div>
-            <div v-else class="grid grid-cols-1 gap-1.5 max-h-48 overflow-y-auto pr-1">
+            <div
+              v-else
+              class="grid grid-cols-1 gap-1.5 max-h-48 overflow-y-auto pr-1"
+            >
               <button
                 v-for="l in userLists"
                 :key="l._id"
@@ -248,13 +279,22 @@ function startCreatingNew() {
                 </span>
               </button>
             </div>
-            <div v-if="!isCreatingNew && isAlreadyInSelectedList" class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2">
-              <UIcon name="i-lucide-info" class="size-4 shrink-0" />
+            <div
+              v-if="!isCreatingNew && isAlreadyInSelectedList"
+              class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2"
+            >
+              <UIcon
+                name="i-lucide-info"
+                class="size-4 shrink-0"
+              />
               <span>Bu seri seçili listede zaten bulunuyor.</span>
             </div>
           </div>
 
-          <div v-else class="space-y-3 p-3 rounded-xl bg-muted/15 border border-default/20">
+          <div
+            v-else
+            class="space-y-3 p-3 rounded-xl bg-muted/15 border border-default/20"
+          >
             <div class="space-y-1">
               <label class="text-[11px] font-medium text-muted">Liste Başlığı</label>
               <UInput

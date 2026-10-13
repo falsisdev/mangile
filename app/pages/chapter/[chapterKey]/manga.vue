@@ -208,6 +208,7 @@ const readingPercentage = computed(() =>
 )
 
 const { recordProgress } = useReadingHistory()
+const { recordChapterProgress } = useTrackers()
 
 function syncReadingProgress() {
   if (!chapterData.value?.manga) return
@@ -229,6 +230,11 @@ function syncReadingProgress() {
     totalPages: totalPages.value,
     progress: readingPercentage.value
   })
+
+  // Auto-sync progress to trackers (MAL, AniList, MangaDex) if chapter is read
+  if (readingPercentage.value >= 75 || currentPage.value >= totalPages.value) {
+    recordChapterProgress(seriesId, chapterData.value.chapterNumber ?? 0)
+  }
 }
 
 // Initial page jump if query param provided

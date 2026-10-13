@@ -23,15 +23,15 @@ const error = ref<string | null>(null)
 const isLiked = computed(() => {
   if (!user.value?.logtoId || !list.value?.likes) return false
   return list.value.likes.some(
-    (l) => l.logtoId === user.value?.logtoId || l.id === user.value?._id
+    l => l.logtoId === user.value?.logtoId || l.id === user.value?._id
   )
 })
 
 const isOwner = computed(() => {
   if (!user.value?.logtoId || !list.value?.user) return false
   return (
-    list.value.user.logtoId === user.value.logtoId ||
-    list.value.user.id === user.value._id
+    list.value.user.logtoId === user.value.logtoId
+    || list.value.user.id === user.value._id
   )
 })
 
@@ -257,31 +257,61 @@ useSeoMeta({
 <template>
   <div class="max-w-6xl mx-auto space-y-6">
     <div class="flex items-center gap-2 text-xs text-muted">
-      <NuxtLink to="/lists" class="hover:text-primary transition-colors flex items-center gap-1 font-semibold">
-        <UIcon name="i-lucide-arrow-left" class="size-4" />
+      <NuxtLink
+        to="/lists"
+        class="hover:text-primary transition-colors flex items-center gap-1 font-semibold"
+      >
+        <UIcon
+          name="i-lucide-arrow-left"
+          class="size-4"
+        />
         Tüm Listeler
       </NuxtLink>
     </div>
 
-    <div v-if="loading" class="space-y-4">
+    <div
+      v-if="loading"
+      class="space-y-4"
+    >
       <div class="h-40 rounded-3xl bg-muted/20 animate-pulse" />
       <div class="space-y-2">
-        <div v-for="i in 4" :key="i" class="h-20 rounded-2xl bg-muted/15 animate-pulse" />
+        <div
+          v-for="i in 4"
+          :key="i"
+          class="h-20 rounded-2xl bg-muted/15 animate-pulse"
+        />
       </div>
     </div>
 
-    <div v-else-if="error || !list" class="text-center py-16 space-y-3 bg-muted/10 rounded-3xl border border-default/20 p-6">
-      <UIcon name="i-lucide-alert-circle" class="size-12 text-error mx-auto" />
-      <h2 class="text-lg font-bold text-foreground">{{ error || 'Liste bulunamadı' }}</h2>
+    <div
+      v-else-if="error || !list"
+      class="text-center py-16 space-y-3 bg-muted/10 rounded-3xl border border-default/20 p-6"
+    >
+      <UIcon
+        name="i-lucide-alert-circle"
+        class="size-12 text-error mx-auto"
+      />
+      <h2 class="text-lg font-bold text-foreground">
+        {{ error || 'Liste bulunamadı' }}
+      </h2>
       <p class="text-xs text-muted max-w-sm mx-auto">
         Bu liste gizli olabilir veya silinmiş olabilir.
       </p>
-      <UButton to="/lists" color="primary" variant="solid" size="sm" class="rounded-xl font-bold">
+      <UButton
+        to="/lists"
+        color="primary"
+        variant="solid"
+        size="sm"
+        class="rounded-xl font-bold"
+      >
         Listelere Dön
       </UButton>
     </div>
 
-    <div v-else class="space-y-6">
+    <div
+      v-else
+      class="space-y-6"
+    >
       <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-card border border-default/20 shadow-xl space-y-6">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div class="space-y-2 max-w-2xl">
@@ -374,7 +404,10 @@ useSeoMeta({
         <div class="flex items-center justify-between px-1">
           <div class="flex items-center gap-3">
             <h2 class="text-lg font-bold text-foreground flex items-center gap-2">
-              <UIcon name="i-lucide-list-ordered" class="size-5 text-primary" />
+              <UIcon
+                name="i-lucide-list-ordered"
+                class="size-5 text-primary"
+              />
               Liste Sıralaması
             </h2>
             <span class="text-xs text-muted font-medium">
@@ -390,7 +423,10 @@ useSeoMeta({
               aria-label="Liste Görünümü"
               @click="viewMode = 'list'"
             >
-              <UIcon name="i-lucide-layout-list" class="size-4" />
+              <UIcon
+                name="i-lucide-layout-list"
+                class="size-4"
+              />
             </button>
             <button
               type="button"
@@ -399,7 +435,10 @@ useSeoMeta({
               aria-label="Izgara Görünümü"
               @click="viewMode = 'grid'"
             >
-              <UIcon name="i-lucide-layout-grid" class="size-4" />
+              <UIcon
+                name="i-lucide-layout-grid"
+                class="size-4"
+              />
             </button>
             <button
               type="button"
@@ -408,23 +447,43 @@ useSeoMeta({
               aria-label="Kompakt Görünüm"
               @click="viewMode = 'compact'"
             >
-              <UIcon name="i-lucide-align-justify" class="size-4" />
+              <UIcon
+                name="i-lucide-align-justify"
+                class="size-4"
+              />
             </button>
           </div>
         </div>
 
-        <div v-if="!list.items || list.items.length === 0" class="text-center py-16 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6">
-          <UIcon name="i-lucide-bookmark-plus" class="size-10 text-muted mx-auto" />
-          <h3 class="text-base font-bold text-foreground">Bu listede henüz içerik yok</h3>
+        <div
+          v-if="!list.items || list.items.length === 0"
+          class="text-center py-16 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6"
+        >
+          <UIcon
+            name="i-lucide-bookmark-plus"
+            class="size-10 text-muted mx-auto"
+          />
+          <h3 class="text-base font-bold text-foreground">
+            Bu listede henüz içerik yok
+          </h3>
           <p class="text-xs text-muted max-w-sm mx-auto">
             Manga veya hafif roman sayfalarındaki "Listeye Ekle" butonunu kullanarak bu listeye kolayca seriler ekleyebilirsiniz.
           </p>
-          <UButton to="/explore" color="primary" variant="solid" size="sm" class="rounded-xl font-bold">
+          <UButton
+            to="/explore"
+            color="primary"
+            variant="solid"
+            size="sm"
+            class="rounded-xl font-bold"
+          >
             Serileri Keşfet
           </UButton>
         </div>
 
-        <div v-else-if="viewMode === 'grid'" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+        <div
+          v-else-if="viewMode === 'grid'"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
+        >
           <div
             v-for="(it, idx) in list.items"
             :key="it._key"
@@ -436,16 +495,25 @@ useSeoMeta({
                 :src="getItemCover(it)"
                 :alt="getItemTitle(it)"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div v-else class="w-full h-full flex items-center justify-center text-muted">
-                <UIcon name="i-lucide-book" class="size-8" />
+              >
+              <div
+                v-else
+                class="w-full h-full flex items-center justify-center text-muted"
+              >
+                <UIcon
+                  name="i-lucide-book"
+                  class="size-8"
+                />
               </div>
 
               <div class="absolute top-2 left-2 size-7 rounded-lg bg-background/85 backdrop-blur-md text-foreground font-black text-xs flex items-center justify-center border border-default/20 shadow-xs">
                 #{{ it.index || idx + 1 }}
               </div>
 
-              <div v-if="it.reference?.format || it.externalType" class="absolute top-2 right-2">
+              <div
+                v-if="it.reference?.format || it.externalType"
+                class="absolute top-2 right-2"
+              >
                 <UBadge
                   color="neutral"
                   variant="subtle"
@@ -456,7 +524,10 @@ useSeoMeta({
                 </UBadge>
               </div>
 
-              <div v-if="isOwner" class="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-background/90 to-transparent flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div
+                v-if="isOwner"
+                class="absolute inset-x-0 bottom-0 p-1.5 bg-gradient-to-t from-background/90 to-transparent flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
+              >
                 <UButton
                   variant="ghost"
                   color="neutral"
@@ -503,7 +574,10 @@ useSeoMeta({
                 >
                   {{ getItemTitle(it) }}
                 </component>
-                <p v-if="it.note" class="text-[11px] text-amber-600 dark:text-amber-400 mt-1 line-clamp-2">
+                <p
+                  v-if="it.note"
+                  class="text-[11px] text-amber-600 dark:text-amber-400 mt-1 line-clamp-2"
+                >
                   {{ it.note }}
                 </p>
               </div>
@@ -522,7 +596,10 @@ useSeoMeta({
           </div>
         </div>
 
-        <div v-else-if="viewMode === 'compact'" class="rounded-2xl border border-default/20 bg-card overflow-hidden divide-y divide-default/15">
+        <div
+          v-else-if="viewMode === 'compact'"
+          class="rounded-2xl border border-default/20 bg-card overflow-hidden divide-y divide-default/15"
+        >
           <div
             v-for="(it, idx) in list.items"
             :key="it._key"
@@ -535,7 +612,7 @@ useSeoMeta({
                 :src="getItemCover(it)"
                 :alt="getItemTitle(it)"
                 class="size-8 rounded-lg object-cover shrink-0"
-              />
+              >
               <component
                 :is="getItemLink(it) ? 'NuxtLink' : 'span'"
                 :to="getItemLink(it)"
@@ -552,7 +629,10 @@ useSeoMeta({
               >
                 {{ it.reference?.format || (it.externalType === 'lightNovel' ? 'Hafif Roman' : 'Manga') }}
               </UBadge>
-              <span v-if="it.note" class="text-[11px] text-amber-600 dark:text-amber-400 truncate max-w-xs hidden md:inline">
+              <span
+                v-if="it.note"
+                class="text-[11px] text-amber-600 dark:text-amber-400 truncate max-w-xs hidden md:inline"
+              >
                 {{ it.note }}
               </span>
             </div>
@@ -606,7 +686,10 @@ useSeoMeta({
           </div>
         </div>
 
-        <div v-else class="space-y-2.5">
+        <div
+          v-else
+          class="space-y-2.5"
+        >
           <div
             v-for="(it, idx) in list.items"
             :key="it._key"
@@ -623,9 +706,15 @@ useSeoMeta({
                   :src="getItemCover(it)"
                   :alt="getItemTitle(it)"
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                />
-                <div v-else class="w-full h-full flex items-center justify-center text-muted">
-                  <UIcon name="i-lucide-book" class="size-6" />
+                >
+                <div
+                  v-else
+                  class="w-full h-full flex items-center justify-center text-muted"
+                >
+                  <UIcon
+                    name="i-lucide-book"
+                    class="size-6"
+                  />
                 </div>
               </div>
 
@@ -649,8 +738,14 @@ useSeoMeta({
                   </UBadge>
                 </div>
 
-                <div v-if="it.note" class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg w-fit max-w-full">
-                  <UIcon name="i-lucide-sticky-note" class="size-3.5 shrink-0" />
+                <div
+                  v-if="it.note"
+                  class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg w-fit max-w-full"
+                >
+                  <UIcon
+                    name="i-lucide-sticky-note"
+                    class="size-3.5 shrink-0"
+                  />
                   <span class="truncate">{{ it.note }}</span>
                 </div>
 
@@ -730,20 +825,38 @@ useSeoMeta({
         <div class="space-y-4">
           <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Liste Başlığı</label>
-            <UInput v-model="editTitle" size="sm" class="w-full" />
+            <UInput
+              v-model="editTitle"
+              size="sm"
+              class="w-full"
+            />
           </div>
           <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Açıklama</label>
-            <UTextarea v-model="editDescription" size="sm" :rows="3" class="w-full" />
+            <UTextarea
+              v-model="editDescription"
+              size="sm"
+              :rows="3"
+              class="w-full"
+            />
           </div>
           <div class="pt-1">
-            <UCheckbox v-model="editIsPrivate" name="editIsPrivate" label="Gizli Liste" />
+            <UCheckbox
+              v-model="editIsPrivate"
+              name="editIsPrivate"
+              label="Gizli Liste"
+            />
           </div>
         </div>
       </template>
       <template #footer>
         <div class="flex items-center justify-end gap-2 w-full">
-          <UButton variant="ghost" color="neutral" size="sm" @click="closeEditModal">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            @click="closeEditModal"
+          >
             İptal
           </UButton>
           <UButton
@@ -773,7 +886,12 @@ useSeoMeta({
       </template>
       <template #footer>
         <div class="flex items-center justify-end gap-2 w-full">
-          <UButton variant="ghost" color="neutral" size="sm" @click="closeDeleteModal">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            @click="closeDeleteModal"
+          >
             Vazgeç
           </UButton>
           <UButton
@@ -799,17 +917,33 @@ useSeoMeta({
         <div class="space-y-4">
           <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Sıra Numarası</label>
-            <UInput v-model.number="editItemIndex" type="number" size="sm" class="w-full" />
+            <UInput
+              v-model.number="editItemIndex"
+              type="number"
+              size="sm"
+              class="w-full"
+            />
           </div>
           <div class="space-y-1.5">
             <label class="text-xs font-bold text-foreground">Kişisel Not</label>
-            <UTextarea v-model="editItemNote" size="sm" :rows="3" placeholder="Bu seri hakkındaki notunuz..." class="w-full" />
+            <UTextarea
+              v-model="editItemNote"
+              size="sm"
+              :rows="3"
+              placeholder="Bu seri hakkındaki notunuz..."
+              class="w-full"
+            />
           </div>
         </div>
       </template>
       <template #footer>
         <div class="flex items-center justify-end gap-2 w-full">
-          <UButton variant="ghost" color="neutral" size="sm" @click="closeEditItemModal">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            @click="closeEditItemModal"
+          >
             İptal
           </UButton>
           <UButton

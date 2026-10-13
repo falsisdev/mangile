@@ -99,7 +99,7 @@ const filteredMyLists = computed(() => {
   if (!searchQuery.value.trim()) return myLists.value
   const q = searchQuery.value.toLowerCase()
   return myLists.value.filter(
-    (l) => l.title?.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q)
+    l => l.title?.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q)
   )
 })
 
@@ -107,7 +107,7 @@ const filteredExploreLists = computed(() => {
   if (!searchQuery.value.trim()) return exploreLists.value
   const q = searchQuery.value.toLowerCase()
   return exploreLists.value.filter(
-    (l) => l.title?.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q)
+    l => l.title?.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q)
   )
 })
 
@@ -115,7 +115,7 @@ const filteredLikedLists = computed(() => {
   if (!searchQuery.value.trim()) return likedLists.value
   const q = searchQuery.value.toLowerCase()
   return likedLists.value.filter(
-    (l) => l.title?.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q)
+    l => l.title?.toLowerCase().includes(q) || l.description?.toLowerCase().includes(q)
   )
 })
 
@@ -165,7 +165,7 @@ async function handleUpdateList() {
       isPrivate: editIsPrivate.value,
       logtoId: user.value.logtoId
     })
-    const idx = myLists.value.findIndex((l) => l._id === editingListId.value)
+    const idx = myLists.value.findIndex(l => l._id === editingListId.value)
     if (idx !== -1) {
       myLists.value[idx] = updated
     }
@@ -193,7 +193,7 @@ async function handleDeleteList() {
   isSubmittingDelete.value = true
   try {
     await deleteList(deletingListId.value, user.value.logtoId)
-    myLists.value = myLists.value.filter((l) => l._id !== deletingListId.value)
+    myLists.value = myLists.value.filter(l => l._id !== deletingListId.value)
     isDeleteModalOpen.value = false
     toast.add({
       title: 'Silindi',
@@ -253,7 +253,10 @@ useSeoMeta({
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border/40 pb-5">
       <div>
         <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-foreground flex items-center gap-2">
-          <UIcon name="i-lucide-library" class="size-7 text-primary" />
+          <UIcon
+            name="i-lucide-library"
+            class="size-7 text-primary"
+          />
           Listeler
         </h1>
         <p class="text-xs sm:text-sm text-muted mt-1">
@@ -318,24 +321,53 @@ useSeoMeta({
     </div>
 
     <div v-if="activeTab === 'my'">
-      <div v-if="!user" class="text-center py-12 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6">
-        <UIcon name="i-lucide-user-x" class="size-10 text-muted mx-auto" />
-        <h3 class="text-base font-bold text-foreground">Giriş Yapılmadı</h3>
+      <div
+        v-if="!user"
+        class="text-center py-12 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6"
+      >
+        <UIcon
+          name="i-lucide-user-x"
+          class="size-10 text-muted mx-auto"
+        />
+        <h3 class="text-base font-bold text-foreground">
+          Giriş Yapılmadı
+        </h3>
         <p class="text-xs text-muted max-w-sm mx-auto">
           Kendi özel listelerinizi oluşturmak, düzenlemek ve takip etmek için lütfen giriş yapın.
         </p>
-        <UButton to="/sign-in" color="primary" variant="solid" size="sm" class="rounded-xl font-bold">
+        <UButton
+          to="/sign-in"
+          color="primary"
+          variant="solid"
+          size="sm"
+          class="rounded-xl font-bold"
+        >
           Giriş Yap
         </UButton>
       </div>
 
-      <div v-else-if="loadingMy" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div v-for="i in 3" :key="i" class="h-44 rounded-2xl bg-muted/20 animate-pulse" />
+      <div
+        v-else-if="loadingMy"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
+        <div
+          v-for="i in 3"
+          :key="i"
+          class="h-44 rounded-2xl bg-muted/20 animate-pulse"
+        />
       </div>
 
-      <div v-else-if="filteredMyLists.length === 0" class="text-center py-12 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6">
-        <UIcon name="i-lucide-library" class="size-10 text-muted mx-auto" />
-        <h3 class="text-base font-bold text-foreground">Henüz Liste Yok</h3>
+      <div
+        v-else-if="filteredMyLists.length === 0"
+        class="text-center py-12 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6"
+      >
+        <UIcon
+          name="i-lucide-library"
+          class="size-10 text-muted mx-auto"
+        />
+        <h3 class="text-base font-bold text-foreground">
+          Henüz Liste Yok
+        </h3>
         <p class="text-xs text-muted max-w-sm mx-auto">
           {{ searchQuery ? 'Aramanıza uygun liste bulunamadı.' : 'Favori serilerinizi gruplamak için ilk listenizi hemen oluşturun.' }}
         </p>
@@ -352,7 +384,10 @@ useSeoMeta({
         </UButton>
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-else
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
         <div
           v-for="l in filteredMyLists"
           :key="l._id"
@@ -388,7 +423,10 @@ useSeoMeta({
               </div>
             </div>
 
-            <NuxtLink :to="`/lists/${l._id}`" class="block">
+            <NuxtLink
+              :to="`/lists/${l._id}`"
+              class="block"
+            >
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0 flex-1">
                   <h3 class="font-bold text-base text-foreground group-hover:text-primary transition-colors line-clamp-1">
@@ -398,14 +436,17 @@ useSeoMeta({
                     {{ l.description || 'Açıklama belirtilmemiş.' }}
                   </p>
                 </div>
-                <div v-if="getListPreviewCovers(l).length > 0" class="flex items-center -space-x-2 shrink-0 pt-0.5">
+                <div
+                  v-if="getListPreviewCovers(l).length > 0"
+                  class="flex items-center -space-x-2 shrink-0 pt-0.5"
+                >
                   <img
                     v-for="(c, cIdx) in getListPreviewCovers(l)"
                     :key="cIdx"
                     :src="c"
                     alt=""
                     class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
-                  />
+                  >
                 </div>
               </div>
             </NuxtLink>
@@ -413,11 +454,17 @@ useSeoMeta({
 
           <div class="flex items-center justify-between pt-3 border-t border-default/15 text-[11px] text-muted mt-3">
             <span class="flex items-center gap-1 font-semibold text-foreground">
-              <UIcon name="i-lucide-book-open" class="size-3.5 text-primary" />
+              <UIcon
+                name="i-lucide-book-open"
+                class="size-3.5 text-primary"
+              />
               {{ l.items?.length || l.itemsCount || 0 }} Seri
             </span>
             <span class="flex items-center gap-1">
-              <UIcon name="i-lucide-heart" class="size-3.5 text-red-500 fill-red-500" />
+              <UIcon
+                name="i-lucide-heart"
+                class="size-3.5 text-red-500 fill-red-500"
+              />
               {{ l.likesCount || 0 }}
             </span>
           </div>
@@ -426,17 +473,37 @@ useSeoMeta({
     </div>
 
     <div v-else-if="activeTab === 'explore'">
-      <div v-if="loadingExplore" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div v-for="i in 6" :key="i" class="h-44 rounded-2xl bg-muted/20 animate-pulse" />
+      <div
+        v-if="loadingExplore"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
+        <div
+          v-for="i in 6"
+          :key="i"
+          class="h-44 rounded-2xl bg-muted/20 animate-pulse"
+        />
       </div>
 
-      <div v-else-if="filteredExploreLists.length === 0" class="text-center py-12 space-y-2 bg-muted/10 rounded-2xl border border-default/20 p-6">
-        <UIcon name="i-lucide-compass" class="size-10 text-muted mx-auto" />
-        <h3 class="text-base font-bold text-foreground">Açık Liste Bulunamadı</h3>
-        <p class="text-xs text-muted">Henüz paylaşılan herkese açık bir liste yok.</p>
+      <div
+        v-else-if="filteredExploreLists.length === 0"
+        class="text-center py-12 space-y-2 bg-muted/10 rounded-2xl border border-default/20 p-6"
+      >
+        <UIcon
+          name="i-lucide-compass"
+          class="size-10 text-muted mx-auto"
+        />
+        <h3 class="text-base font-bold text-foreground">
+          Açık Liste Bulunamadı
+        </h3>
+        <p class="text-xs text-muted">
+          Henüz paylaşılan herkese açık bir liste yok.
+        </p>
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-else
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
         <NuxtLink
           v-for="l in filteredExploreLists"
           :key="l._id"
@@ -455,7 +522,12 @@ useSeoMeta({
                   {{ l.user?.name || l.user?.username || 'Kullanıcı' }}
                 </span>
               </div>
-              <UBadge color="primary" variant="subtle" size="xs" class="rounded-full text-[10px]">
+              <UBadge
+                color="primary"
+                variant="subtle"
+                size="xs"
+                class="rounded-full text-[10px]"
+              >
                 {{ l.items?.length || l.itemsCount || 0 }} Öge
               </UBadge>
             </div>
@@ -469,14 +541,17 @@ useSeoMeta({
                   {{ l.description || 'Açıklama bulunmuyor.' }}
                 </p>
               </div>
-              <div v-if="getListPreviewCovers(l).length > 0" class="flex items-center -space-x-2 shrink-0 pt-0.5">
+              <div
+                v-if="getListPreviewCovers(l).length > 0"
+                class="flex items-center -space-x-2 shrink-0 pt-0.5"
+              >
                 <img
                   v-for="(c, cIdx) in getListPreviewCovers(l)"
                   :key="cIdx"
                   :src="c"
                   alt=""
                   class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
-                />
+                >
               </div>
             </div>
           </div>
@@ -484,7 +559,10 @@ useSeoMeta({
           <div class="flex items-center justify-between pt-3 border-t border-default/15 text-[11px] text-muted mt-3">
             <span>{{ l.createdAt ? new Date(l.createdAt).toLocaleDateString('tr-TR') : '' }}</span>
             <span class="flex items-center gap-1 font-semibold text-foreground">
-              <UIcon name="i-lucide-heart" class="size-3.5 text-red-500 fill-red-500" />
+              <UIcon
+                name="i-lucide-heart"
+                class="size-3.5 text-red-500 fill-red-500"
+              />
               {{ l.likesCount || 0 }}
             </span>
           </div>
@@ -493,19 +571,37 @@ useSeoMeta({
     </div>
 
     <div v-else-if="activeTab === 'liked'">
-      <div v-if="loadingLiked" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div v-for="i in 3" :key="i" class="h-44 rounded-2xl bg-muted/20 animate-pulse" />
+      <div
+        v-if="loadingLiked"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
+        <div
+          v-for="i in 3"
+          :key="i"
+          class="h-44 rounded-2xl bg-muted/20 animate-pulse"
+        />
       </div>
 
-      <div v-else-if="filteredLikedLists.length === 0" class="text-center py-12 space-y-2 bg-muted/10 rounded-2xl border border-default/20 p-6">
-        <UIcon name="i-lucide-heart" class="size-10 text-muted mx-auto" />
-        <h3 class="text-base font-bold text-foreground">Beğenilen Liste Yok</h3>
+      <div
+        v-else-if="filteredLikedLists.length === 0"
+        class="text-center py-12 space-y-2 bg-muted/10 rounded-2xl border border-default/20 p-6"
+      >
+        <UIcon
+          name="i-lucide-heart"
+          class="size-10 text-muted mx-auto"
+        />
+        <h3 class="text-base font-bold text-foreground">
+          Beğenilen Liste Yok
+        </h3>
         <p class="text-xs text-muted">
           {{ searchQuery ? 'Aramanıza uygun liste bulunamadı.' : 'Henüz hiçbir listeyi beğenmediniz. Keşfet sekmesinden listeleri inceleyebilirsiniz.' }}
         </p>
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-else
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      >
         <NuxtLink
           v-for="l in filteredLikedLists"
           :key="l._id"
@@ -524,7 +620,12 @@ useSeoMeta({
                   {{ l.user?.name || l.user?.username || 'Kullanıcı' }}
                 </span>
               </div>
-              <UBadge color="primary" variant="subtle" size="xs" class="rounded-full text-[10px]">
+              <UBadge
+                color="primary"
+                variant="subtle"
+                size="xs"
+                class="rounded-full text-[10px]"
+              >
                 {{ l.items?.length || l.itemsCount || 0 }} Öge
               </UBadge>
             </div>
@@ -538,14 +639,17 @@ useSeoMeta({
                   {{ l.description || 'Açıklama bulunmuyor.' }}
                 </p>
               </div>
-              <div v-if="getListPreviewCovers(l).length > 0" class="flex items-center -space-x-2 shrink-0 pt-0.5">
+              <div
+                v-if="getListPreviewCovers(l).length > 0"
+                class="flex items-center -space-x-2 shrink-0 pt-0.5"
+              >
                 <img
                   v-for="(c, cIdx) in getListPreviewCovers(l)"
                   :key="cIdx"
                   :src="c"
                   alt=""
                   class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
-                />
+                >
               </div>
             </div>
           </div>
@@ -553,7 +657,10 @@ useSeoMeta({
           <div class="flex items-center justify-between pt-3 border-t border-default/15 text-[11px] text-muted mt-3">
             <span>{{ l.createdAt ? new Date(l.createdAt).toLocaleDateString('tr-TR') : '' }}</span>
             <span class="flex items-center gap-1 font-semibold text-foreground">
-              <UIcon name="i-lucide-heart" class="size-3.5 text-red-500 fill-red-500" />
+              <UIcon
+                name="i-lucide-heart"
+                class="size-3.5 text-red-500 fill-red-500"
+              />
               {{ l.likesCount || 0 }}
             </span>
           </div>
@@ -599,7 +706,12 @@ useSeoMeta({
       </template>
       <template #footer>
         <div class="flex items-center justify-end gap-2 w-full">
-          <UButton variant="ghost" color="neutral" size="sm" @click="closeCreateModal">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            @click="closeCreateModal"
+          >
             İptal
           </UButton>
           <UButton
@@ -652,7 +764,12 @@ useSeoMeta({
       </template>
       <template #footer>
         <div class="flex items-center justify-end gap-2 w-full">
-          <UButton variant="ghost" color="neutral" size="sm" @click="closeEditModal">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            @click="closeEditModal"
+          >
             İptal
           </UButton>
           <UButton
@@ -682,7 +799,12 @@ useSeoMeta({
       </template>
       <template #footer>
         <div class="flex items-center justify-end gap-2 w-full">
-          <UButton variant="ghost" color="neutral" size="sm" @click="closeDeleteModal">
+          <UButton
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            @click="closeDeleteModal"
+          >
             Vazgeç
           </UButton>
           <UButton
