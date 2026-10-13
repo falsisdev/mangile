@@ -311,14 +311,14 @@ export function useTrackers() {
     }
   }
 
-  async function connectMangaDex(username: string, password: string): Promise<boolean> {
+  async function connectMangaDex(username: string, password: string): Promise<{ success: boolean, error?: string }> {
     if (!user.value?.logtoId) {
       toast.add({
         title: 'Giriş Gerekli',
         description: 'Hesabınızı bağlamak için lütfen önce giriş yapın.',
         color: 'warning'
       })
-      return false
+      return { success: false, error: 'Giriş yapılmalıdır.' }
     }
 
     try {
@@ -341,17 +341,18 @@ export function useTrackers() {
           description: `MangaDex hesabı (${res.username || username}) başarıyla bağlandı.`,
           color: 'success'
         })
-        return true
+        return { success: true }
       }
-      return false
+      return { success: false, error: 'Bilinmeyen bir hata oluştu.' }
     } catch (e: unknown) {
       const err = e as { data?: { message?: string } }
+      const msg = err?.data?.message || 'MangaDex hesabı doğrulanamadı. Lütfen bilgilerinizi kontrol edin.'
       toast.add({
         title: 'Bağlantı Hatası',
-        description: err?.data?.message || 'MangaDex hesabı doğrulanamadı. Lütfen bilgilerinizi kontrol edin.',
+        description: msg,
         color: 'error'
       })
-      return false
+      return { success: false, error: msg }
     }
   }
 

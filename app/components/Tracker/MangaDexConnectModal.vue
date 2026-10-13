@@ -23,12 +23,14 @@ async function handleConnect() {
   errorMessage.value = ''
 
   try {
-    const success = await connectMangaDex(username.value.trim(), password.value)
-    if (success) {
+    const res = await connectMangaDex(username.value.trim(), password.value)
+    if (res.success) {
       username.value = ''
       password.value = ''
       open.value = false
       emit('connected')
+    } else {
+      errorMessage.value = res.error || 'MangaDex hesabı doğrulanamadı.'
     }
   } catch (err: unknown) {
     const errorObj = err as { message?: string }
