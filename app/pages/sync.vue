@@ -27,6 +27,11 @@ const activeSeriesModal = ref<{
   mangadexId?: string
 } | null>(null)
 const trackerModalOpen = ref(false)
+const mangaDexModalOpen = ref(false)
+
+function onMangaDexConnected() {
+  fetchSanityUser(true)
+}
 
 async function loadTrackers() {
   if (!user.value?.logtoId) return
@@ -186,9 +191,11 @@ async function handleRemoveAll(seriesId: string) {
             <div class="p-4 rounded-2xl bg-muted/20 border border-default/20 flex flex-col justify-between gap-4">
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
-                  <div class="size-10 rounded-xl bg-blue-500/15 text-blue-500 flex items-center justify-center font-black text-sm">
-                    MAL
-                  </div>
+                  <TrackerBrandIcon
+                    provider="mal"
+                    class="size-6"
+                    :show-background="true"
+                  />
                   <div>
                     <h3 class="font-bold text-sm text-foreground">
                       MyAnimeList
@@ -208,26 +215,34 @@ async function handleRemoveAll(seriesId: string) {
                 </UBadge>
               </div>
 
-              <div class="flex items-center justify-end">
-                <UButton
-                  v-if="user.integrations?.mal?.accessToken"
-                  label="Bağlantıyı Kes"
-                  size="xs"
-                  color="error"
-                  variant="soft"
-                  class="rounded-xl font-bold"
-                  @click="handleDisconnect('mal')"
-                />
-                <UButton
-                  v-else
-                  label="Hesabı Bağla"
-                  icon="i-lucide-link"
-                  size="xs"
-                  color="primary"
-                  variant="solid"
-                  class="rounded-xl font-bold"
-                  @click="connectProvider('mal')"
-                />
+              <div class="space-y-2">
+                <p
+                  v-if="!user.integrations?.mal?.accessToken"
+                  class="text-[10px] text-muted/80 leading-snug"
+                >
+                  *Google ile giriş yapıyorsanız önce myanimelist.net üzerinde oturum açmış olun.
+                </p>
+                <div class="flex items-center justify-end">
+                  <UButton
+                    v-if="user.integrations?.mal?.accessToken"
+                    label="Bağlantıyı Kes"
+                    size="xs"
+                    color="error"
+                    variant="soft"
+                    class="rounded-xl font-bold"
+                    @click="handleDisconnect('mal')"
+                  />
+                  <UButton
+                    v-else
+                    label="Hesabı Bağla"
+                    icon="i-lucide-link"
+                    size="xs"
+                    color="primary"
+                    variant="solid"
+                    class="rounded-xl font-bold"
+                    @click="connectProvider('mal')"
+                  />
+                </div>
               </div>
             </div>
 
@@ -235,9 +250,11 @@ async function handleRemoveAll(seriesId: string) {
             <div class="p-4 rounded-2xl bg-muted/20 border border-default/20 flex flex-col justify-between gap-4">
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
-                  <div class="size-10 rounded-xl bg-sky-500/15 text-sky-400 flex items-center justify-center font-black text-sm">
-                    AL
-                  </div>
+                  <TrackerBrandIcon
+                    provider="anilist"
+                    class="size-6"
+                    :show-background="true"
+                  />
                   <div>
                     <h3 class="font-bold text-sm text-foreground">
                       AniList
@@ -284,9 +301,11 @@ async function handleRemoveAll(seriesId: string) {
             <div class="p-4 rounded-2xl bg-muted/20 border border-default/20 flex flex-col justify-between gap-4">
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
-                  <div class="size-10 rounded-xl bg-orange-500/15 text-orange-500 flex items-center justify-center font-black text-sm">
-                    MD
-                  </div>
+                  <TrackerBrandIcon
+                    provider="mangadex"
+                    class="size-6"
+                    :show-background="true"
+                  />
                   <div>
                     <h3 class="font-bold text-sm text-foreground">
                       MangaDex
@@ -302,7 +321,7 @@ async function handleRemoveAll(seriesId: string) {
                   variant="subtle"
                   class="rounded"
                 >
-                  {{ user.integrations?.mangadex?.accessToken ? 'Bağlı' : 'Bağlı Değil' }}
+                  {{ user.integrations?.mangadex?.accessToken ? (user.integrations.mangadex.username ? `@${user.integrations.mangadex.username}` : 'Bağlı') : 'Bağlı Değil' }}
                 </UBadge>
               </div>
 
@@ -324,7 +343,7 @@ async function handleRemoveAll(seriesId: string) {
                   color="primary"
                   variant="solid"
                   class="rounded-xl font-bold"
-                  @click="connectProvider('mangadex')"
+                  @click="void (mangaDexModalOpen = true)"
                 />
               </div>
             </div>
@@ -490,6 +509,12 @@ async function handleRemoveAll(seriesId: string) {
       :mal-id="activeSeriesModal.malId"
       :anilist-id="activeSeriesModal.anilistId"
       :mangadex-id="activeSeriesModal.mangadexId"
+    />
+
+    <!-- MangaDex Bağlantı Modalı -->
+    <TrackerMangaDexConnectModal
+      v-model:open="mangaDexModalOpen"
+      @connected="onMangaDexConnected"
     />
   </div>
 </template>

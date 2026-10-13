@@ -42,6 +42,7 @@ const {
 
 const searchModalOpen = ref(false)
 const searchModalProvider = ref<TrackerProvider>('mangadex')
+const mangaDexModalOpen = ref(false)
 const savingProvider = ref<Record<string, boolean>>({})
 
 // Form state for each provider
@@ -248,9 +249,11 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
             <div class="p-3.5 rounded-2xl bg-muted/20 border border-default/20 space-y-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                  <div class="size-7 rounded-lg bg-blue-500/15 text-blue-500 flex items-center justify-center font-black text-xs">
-                    MAL
-                  </div>
+                  <TrackerBrandIcon
+                    provider="mal"
+                    class="size-5"
+                    :show-background="true"
+                  />
                   <div>
                     <div class="text-sm font-bold text-foreground flex items-center gap-1.5">
                       MyAnimeList
@@ -384,9 +387,11 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
             <div class="p-3.5 rounded-2xl bg-muted/20 border border-default/20 space-y-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                  <div class="size-7 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center font-black text-xs">
-                    AL
-                  </div>
+                  <TrackerBrandIcon
+                    provider="anilist"
+                    class="size-5"
+                    :show-background="true"
+                  />
                   <div>
                     <div class="text-sm font-bold text-foreground flex items-center gap-1.5">
                       AniList
@@ -520,9 +525,11 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
             <div class="p-3.5 rounded-2xl bg-muted/20 border border-default/20 space-y-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                  <div class="size-7 rounded-lg bg-orange-500/15 text-orange-500 flex items-center justify-center font-black text-xs">
-                    MD
-                  </div>
+                  <TrackerBrandIcon
+                    provider="mangadex"
+                    class="size-5"
+                    :show-background="true"
+                  />
                   <div>
                     <div class="text-sm font-bold text-foreground flex items-center gap-1.5">
                       MangaDex
@@ -548,7 +555,7 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
                     color="neutral"
                     variant="soft"
                     class="rounded-xl"
-                    @click="connectProvider('mangadex')"
+                    @click="void (mangaDexModalOpen = true)"
                   />
                   <UButton
                     v-if="!seriesTrackers.mangadex.matchedId"
@@ -636,5 +643,11 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
     :series-id="props.seriesId"
     :initial-title="props.seriesTitle"
     @matched="loadStatus"
+  />
+
+  <!-- MangaDex Bağlantı Modalı -->
+  <TrackerMangaDexConnectModal
+    v-model:open="mangaDexModalOpen"
+    @connected="loadStatus"
   />
 </template>

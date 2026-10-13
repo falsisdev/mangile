@@ -109,19 +109,11 @@ async function handleSelect(result: TrackerSearchResult) {
         <template #header>
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <div
-                class="size-8 rounded-xl flex items-center justify-center font-bold text-xs"
-                :class="{
-                  'bg-blue-500/10 text-blue-500': props.provider === 'mal',
-                  'bg-sky-500/10 text-sky-400': props.provider === 'anilist',
-                  'bg-orange-500/10 text-orange-500': props.provider === 'mangadex'
-                }"
-              >
-                <UIcon
-                  name="i-lucide-search"
-                  class="size-4"
-                />
-              </div>
+              <TrackerBrandIcon
+                :provider="props.provider"
+                class="size-5"
+                :show-background="true"
+              />
               <div>
                 <h3 class="text-base font-bold text-foreground">
                   {{ providerTitle }} ile Eşleştir

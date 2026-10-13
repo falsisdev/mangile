@@ -17,9 +17,15 @@ const { user, isRegistered, fetchSanityUser, setSanityUser } = useAuthUser()
 const { fetchUserLists } = useLists()
 const { connectProvider, disconnectProvider } = useTrackers()
 
+const mangaDexModalOpen = ref(false)
+
 async function handleDisconnect(provider: 'mal' | 'anilist' | 'mangadex') {
   await disconnectProvider(provider)
   await fetchSanityUser(true)
+}
+
+function onMangaDexConnected() {
+  fetchSanityUser(true)
 }
 
 const userListsCount = ref<number | null>(null)
@@ -627,9 +633,11 @@ function handleBack() {
               <!-- MyAnimeList -->
               <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                  <div class="size-7 rounded-lg bg-blue-500/15 text-blue-500 flex items-center justify-center font-black text-xs">
-                    MAL
-                  </div>
+                  <TrackerBrandIcon
+                    provider="mal"
+                    class="size-5"
+                    :show-background="true"
+                  />
                   <div>
                     <div class="text-xs font-bold text-foreground">
                       MyAnimeList
@@ -662,9 +670,11 @@ function handleBack() {
               <!-- AniList -->
               <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                  <div class="size-7 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center font-black text-xs">
-                    AL
-                  </div>
+                  <TrackerBrandIcon
+                    provider="anilist"
+                    class="size-5"
+                    :show-background="true"
+                  />
                   <div>
                     <div class="text-xs font-bold text-foreground">
                       AniList
@@ -697,15 +707,17 @@ function handleBack() {
               <!-- MangaDex -->
               <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
-                  <div class="size-7 rounded-lg bg-orange-500/15 text-orange-500 flex items-center justify-center font-black text-xs">
-                    MD
-                  </div>
+                  <TrackerBrandIcon
+                    provider="mangadex"
+                    class="size-5"
+                    :show-background="true"
+                  />
                   <div>
                     <div class="text-xs font-bold text-foreground">
                       MangaDex
                     </div>
                     <div class="text-[10px] text-muted">
-                      {{ user.integrations?.mangadex?.accessToken ? 'Bağlandı' : 'Bağlı Değil' }}
+                      {{ user.integrations?.mangadex?.accessToken ? (user.integrations.mangadex.username ? `@${user.integrations.mangadex.username}` : 'Bağlandı') : 'Bağlı Değil' }}
                     </div>
                   </div>
                 </div>
@@ -725,7 +737,7 @@ function handleBack() {
                   color="primary"
                   variant="soft"
                   class="rounded-xl font-bold"
-                  @click="connectProvider('mangadex')"
+                  @click="void (mangaDexModalOpen = true)"
                 />
               </div>
             </div>
@@ -813,5 +825,10 @@ function handleBack() {
         </div>
       </div>
     </div>
+
+    <TrackerMangaDexConnectModal
+      v-model:open="mangaDexModalOpen"
+      @connected="onMangaDexConnected"
+    />
   </div>
 </template>

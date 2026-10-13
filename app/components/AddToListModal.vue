@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = withDefaults(
   defineProps<{
-    open: boolean
+    open?: boolean
     titleId?: string
     malId?: number
     titleName?: string

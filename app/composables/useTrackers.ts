@@ -311,6 +311,50 @@ export function useTrackers() {
     }
   }
 
+  async function connectMangaDex(username: string, password: string): Promise<boolean> {
+    if (!user.value?.logtoId) {
+      toast.add({
+        title: 'Giriş Gerekli',
+        description: 'Hesabınızı bağlamak için lütfen önce giriş yapın.',
+        color: 'warning'
+      })
+      return false
+    }
+
+    try {
+      const res = await $fetch<{ success: boolean, username?: string }>(
+        `${apiBase}/api/user/${user.value.logtoId}/integrations/mangadex`,
+        {
+          method: 'POST',
+          headers: {
+            'X-Logto-Id': user.value.logtoId
+          },
+          body: {
+            username,
+            password
+          }
+        }
+      )
+      if (res?.success) {
+        toast.add({
+          title: 'Bağlandı',
+          description: `MangaDex hesabı (${res.username || username}) başarıyla bağlandı.`,
+          color: 'success'
+        })
+        return true
+      }
+      return false
+    } catch (e: unknown) {
+      const err = e as { data?: { message?: string } }
+      toast.add({
+        title: 'Bağlantı Hatası',
+        description: err?.data?.message || 'MangaDex hesabı doğrulanamadı. Lütfen bilgilerinizi kontrol edin.',
+        color: 'error'
+      })
+      return false
+    }
+  }
+
   return {
     cachedStatus,
     loadingSeries,
@@ -321,6 +365,7 @@ export function useTrackers() {
     updateTrackerStatus,
     recordChapterProgress,
     connectProvider,
+    connectMangaDex,
     disconnectProvider
   }
 }
