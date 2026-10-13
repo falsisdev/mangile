@@ -27,6 +27,7 @@ interface ChapterResponse {
     title?: string
     tags?: string[]
     format?: string
+    coverImage?: { url?: string }
   }
   chapters?: {
     _id: string
@@ -176,6 +177,60 @@ const readingPercentage = computed(() =>
   totalPages.value > 0
     ? Math.round((currentPage.value / totalPages.value) * 100)
     : 0
+)
+
+const { recordProgress } = useReadingHistory()
+
+function syncReadingProgress() {
+  if (!chapterData.value?.manga) return
+  const manga = chapterData.value.manga
+  const seriesId = manga._id || (manga.myAnimeListId ? String(manga.myAnimeListId) : '')
+  if (!seriesId) return
+
+  recordProgress({
+    seriesId,
+    seriesTitle: manga.title || chapterData.value.title || 'Manga',
+    seriesType: 'manga',
+    seriesFormat: manga.format,
+    coverUrl: manga.coverImage?.url || chapterData.value.source?.logo?.url,
+    chapterId: chapterKey.value,
+    chapterNumber: chapterData.value.chapterNumber ?? 0,
+    volumeNumber: chapterData.value.volumeNumber,
+    chapterTitle: chapterData.value.title,
+    currentPage: currentPage.value,
+    totalPages: totalPages.value,
+    progress: readingPercentage.value
+  })
+}
+
+// Initial page jump if query param provided
+watch(
+  chapterData,
+  (newData) => {
+    if (!newData) return
+    if (route.query.page) {
+      const p = Number(route.query.page)
+      if (p && p >= 1 && p <= (newData.pages?.length || 999)) {
+        currentPage.value = p
+        nextTick(() => {
+          if (['webtoon', 'continuous'].includes(settings.readingMode)) {
+            scrollToPage(p)
+          }
+        })
+      }
+    }
+    syncReadingProgress()
+  },
+  { immediate: true }
+)
+
+watch(
+  currentPage,
+  () => {
+    if (chapterData.value?.manga) {
+      syncReadingProgress()
+    }
+  }
 )
 
 const chapterOrder = (chapter: {

@@ -42,8 +42,11 @@ interface ChapterResponse {
     logo?: { url?: string }
   }
   lightNovel?: {
+    _id?: string
+    _type?: string
     myAnimeListId?: number
     title?: string
+    coverImage?: { url?: string }
   }
   chapters?: {
     _id: string
@@ -204,6 +207,56 @@ const toggleTheme = () => {
   isDark.value = !isDark.value
 }
 
+const { recordProgress } = useReadingHistory()
+
+function syncReadingProgress() {
+  if (!chapterData.value?.lightNovel) return
+  const ln = chapterData.value.lightNovel
+  const seriesId = ln._id || (ln.myAnimeListId ? String(ln.myAnimeListId) : '')
+  if (!seriesId) return
+
+  recordProgress({
+    seriesId,
+    seriesTitle: ln.title || chapterData.value.title || 'Hafif Roman',
+    seriesType: 'lightNovel',
+    seriesFormat: 'light_novel',
+    coverUrl: ln.coverImage?.url || chapterData.value.source?.logo?.url,
+    chapterId: chapterKey.value,
+    chapterNumber: chapterData.value.chapterNumber ?? 0,
+    volumeNumber: chapterData.value.volumeNumber,
+    chapterTitle: chapterData.value.title,
+    progress: Math.min(100, Math.max(0, Math.round(readingProgress.value)))
+  })
+}
+
+// Initial scroll jump if query param provided
+watch(
+  chapterData,
+  (newData) => {
+    if (!newData) return
+    if (route.query.progress) {
+      const prog = Number(route.query.progress)
+      if (prog && prog > 0) {
+        nextTick(() => {
+          setTimeout(() => {
+            const height
+              = document.documentElement.scrollHeight
+                - document.documentElement.clientHeight
+            if (height > 0) {
+              window.scrollTo({
+                top: (prog / 100) * height,
+                behavior: 'smooth'
+              })
+            }
+          }, 300)
+        })
+      }
+    }
+    syncReadingProgress()
+  },
+  { immediate: true }
+)
+
 const handleScroll = () => {
   showBackToTop.value = window.scrollY > 300
   const winScroll
@@ -212,6 +265,7 @@ const handleScroll = () => {
     = document.documentElement.scrollHeight
       - document.documentElement.clientHeight
   readingProgress.value = (winScroll / height) * 100
+  syncReadingProgress()
 }
 
 const scrollToTop = () => {

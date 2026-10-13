@@ -142,7 +142,7 @@ Coming soon.
 - [x] User authentication
 - [x] User Profile
 - [x] List Actions
-- [ ] Reading history
+- [x] Reading history
 - [ ] Sync MAL, AniList & MangaDex
 - [ ] Metadata integration
 - [ ] PWA support
