@@ -71,6 +71,7 @@ export function useSanityApi() {
       bio,
       roles,
       "lists": *[_type == "lists" && (user._ref == ^._id || user->logtoId == $id)]{ _id },
+      integrations,
       _createdAt,
       _updatedAt
     }`

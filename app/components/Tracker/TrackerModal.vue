@@ -178,6 +178,12 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
   const next = Math.max(0, current + delta)
   formState[provider].chapter = next
 }
+
+function handleScoreStep(provider: TrackerProvider, delta: number) {
+  const current = formState[provider].score || 0
+  const next = Math.max(0, Math.round((current + delta) * 10) / 10)
+  formState[provider].score = next
+}
 </script>
 
 <template>
@@ -642,19 +648,43 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
                 </div>
 
                 <div class="space-y-1">
-                  <label class="text-[11px] font-semibold text-muted">Puan</label>
-                  <select
-                    v-model.number="formState.anilist.score"
-                    class="w-full text-xs rounded-xl bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
-                  >
-                    <option
-                      v-for="opt in scoreOptions"
-                      :key="opt.value"
-                      :value="opt.value"
+                  <div class="flex items-center justify-between">
+                    <label class="text-[11px] font-semibold text-muted">Puan</label>
+                    <span
+                      v-if="formState.anilist.score > 0"
+                      class="text-[10px] text-primary font-bold"
                     >
-                      {{ opt.label }}
-                    </option>
-                  </select>
+                      {{ formState.anilist.score }} / {{ formState.anilist.score > 10 ? '100' : '10' }}
+                    </span>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <UButton
+                      icon="i-lucide-minus"
+                      size="xs"
+                      color="neutral"
+                      variant="soft"
+                      class="rounded-lg"
+                      :disabled="formState.anilist.score <= 0"
+                      @click="handleScoreStep('anilist', -0.5)"
+                    />
+                    <input
+                      v-model.number="formState.anilist.score"
+                      type="number"
+                      step="0.1"
+                      min="0"
+                      max="100"
+                      class="w-full text-xs text-center font-bold rounded-xl bg-background border border-default/30 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                    >
+                    <UButton
+                      icon="i-lucide-plus"
+                      size="xs"
+                      color="neutral"
+                      variant="soft"
+                      class="rounded-lg"
+                      :disabled="formState.anilist.score >= 100"
+                      @click="handleScoreStep('anilist', 0.5)"
+                    />
+                  </div>
                 </div>
 
                 <div class="sm:col-span-3 flex items-center justify-end pt-1">
