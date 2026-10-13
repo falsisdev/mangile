@@ -87,6 +87,19 @@ const seriesTrackers = ref<Record<TrackerProvider, TrackerStatus>>({
 
 async function loadStatus() {
   if (!user.value?.logtoId || !props.seriesId) return
+  if (props.malId && !seriesTrackers.value.mal.matchedId) {
+    seriesTrackers.value.mal.matchedId = String(props.malId)
+  }
+  if (props.anilistId && !seriesTrackers.value.anilist.matchedId) {
+    seriesTrackers.value.anilist.matchedId = String(props.anilistId)
+  }
+  if (props.mangadexId && !seriesTrackers.value.mangadex.matchedId) {
+    seriesTrackers.value.mangadex.matchedId = String(props.mangadexId)
+  }
+  seriesTrackers.value.mal.isConnected = Boolean(user.value?.integrations?.mal?.accessToken)
+  seriesTrackers.value.anilist.isConnected = Boolean(user.value?.integrations?.anilist?.accessToken)
+  seriesTrackers.value.mangadex.isConnected = Boolean(user.value?.integrations?.mangadex?.accessToken)
+
   const data = await fetchSeriesStatus(props.seriesId, true)
   if (data?.trackers) {
     if (data.trackers.mal) {
@@ -118,6 +131,21 @@ watch(
     }
   }
 )
+
+function isProviderConnected(provider: TrackerProvider): boolean {
+  return Boolean(
+    seriesTrackers.value[provider]?.isConnected
+    || user.value?.integrations?.[provider]?.accessToken
+  )
+}
+
+function handleConnect(provider: TrackerProvider) {
+  if (provider === 'mangadex') {
+    mangaDexModalOpen.value = true
+  } else {
+    connectProvider(provider)
+  }
+}
 
 function openSearch(provider: TrackerProvider) {
   searchModalProvider.value = provider
@@ -256,15 +284,33 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
                   />
                   <div>
                     <div class="text-sm font-bold text-foreground flex items-center gap-1.5">
-                      MyAnimeList
+                      <span>MyAnimeList</span>
                       <UBadge
-                        v-if="seriesTrackers.mal.matchedId"
+                        v-if="isProviderConnected('mal') && seriesTrackers.mal.matchedId"
                         size="xs"
                         variant="subtle"
                         color="success"
+                        class="rounded font-semibold"
+                      >
+                        Senkronize
+                      </UBadge>
+                      <UBadge
+                        v-else-if="!isProviderConnected('mal') && seriesTrackers.mal.matchedId"
+                        size="xs"
+                        variant="subtle"
+                        color="warning"
+                        class="rounded font-semibold"
+                      >
+                        Hesap Bağlanmadı
+                      </UBadge>
+                      <UBadge
+                        v-else-if="isProviderConnected('mal') && !seriesTrackers.mal.matchedId"
+                        size="xs"
+                        variant="subtle"
+                        color="neutral"
                         class="rounded"
                       >
-                        Eşleşti
+                        Eşleşmedi
                       </UBadge>
                     </div>
                   </div>
@@ -272,41 +318,84 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
 
                 <div class="flex items-center gap-2">
                   <UButton
-                    v-if="!seriesTrackers.mal.isConnected"
-                    label="Bağla"
+                    v-if="!isProviderConnected('mal')"
+                    label="Hesabı Bağla"
                     icon="i-lucide-link"
-                    size="xs"
-                    color="neutral"
-                    variant="soft"
-                    class="rounded-xl"
-                    @click="connectProvider('mal')"
-                  />
-                  <UButton
-                    v-if="!seriesTrackers.mal.matchedId"
-                    label="Eşleştir"
-                    icon="i-lucide-search"
                     size="xs"
                     color="primary"
                     variant="soft"
                     class="rounded-xl font-bold"
-                    @click="openSearch('mal')"
+                    @click="handleConnect('mal')"
                   />
-                  <UButton
-                    v-else
-                    label="Kaldır"
-                    icon="i-lucide-unlink"
-                    size="xs"
-                    color="error"
-                    variant="ghost"
-                    class="rounded-xl"
-                    @click="handleUnbind('mal')"
-                  />
+                  <template v-else>
+                    <UButton
+                      v-if="!seriesTrackers.mal.matchedId"
+                      label="Eşleştir"
+                      icon="i-lucide-search"
+                      size="xs"
+                      color="primary"
+                      variant="soft"
+                      class="rounded-xl font-bold"
+                      @click="openSearch('mal')"
+                    />
+                    <UButton
+                      v-else
+                      label="Kaldır"
+                      icon="i-lucide-unlink"
+                      size="xs"
+                      color="error"
+                      variant="ghost"
+                      class="rounded-xl"
+                      @click="handleUnbind('mal')"
+                    />
+                  </template>
                 </div>
               </div>
 
-              <!-- MAL Eşleşmişse Detay Formu -->
+              <!-- Durum 1: Hesap bağlı değil AMA seri eşleşmiş -->
               <div
-                v-if="seriesTrackers.mal.matchedId"
+                v-if="!isProviderConnected('mal') && seriesTrackers.mal.matchedId"
+                class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
+              >
+                <UIcon
+                  name="i-lucide-alert-circle"
+                  class="size-4 text-amber-500 shrink-0 mt-0.5"
+                />
+                <div class="flex-1 space-y-1">
+                  <p class="text-foreground leading-relaxed">
+                    Bu seri sistemde MyAnimeList ile otomatik eşleşti (ID: <span class="font-mono font-bold">{{ seriesTrackers.mal.matchedId }}</span>). Okuma ilerlemenizi senkronize etmek için önce MyAnimeList hesabınızı bağlayın.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Durum 2: Hesap bağlı değil VE seri eşleşmemiş -->
+              <div
+                v-else-if="!isProviderConnected('mal') && !seriesTrackers.mal.matchedId"
+                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+              >
+                <span>İlerlemenizi senkronize etmek için MyAnimeList hesabınızı bağlayın.</span>
+              </div>
+
+              <!-- Durum 3: Hesap bağlı AMA seri eşleşmemiş -->
+              <div
+                v-else-if="isProviderConnected('mal') && !seriesTrackers.mal.matchedId"
+                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+              >
+                <span>Bu seri henüz MyAnimeList ile eşleştirilmedi.</span>
+                <UButton
+                  label="Ara ve Eşleştir"
+                  icon="i-lucide-search"
+                  size="xs"
+                  color="primary"
+                  variant="soft"
+                  class="rounded-lg font-bold"
+                  @click="openSearch('mal')"
+                />
+              </div>
+
+              <!-- Durum 4: Hem hesap bağlı HEM seri eşleşmiş -> Canlı İlerleme Formu -->
+              <div
+                v-else-if="isProviderConnected('mal') && seriesTrackers.mal.matchedId"
                 class="pt-1 grid grid-cols-1 sm:grid-cols-3 gap-2.5"
               >
                 <div class="space-y-1">
@@ -394,15 +483,33 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
                   />
                   <div>
                     <div class="text-sm font-bold text-foreground flex items-center gap-1.5">
-                      AniList
+                      <span>AniList</span>
                       <UBadge
-                        v-if="seriesTrackers.anilist.matchedId"
+                        v-if="isProviderConnected('anilist') && seriesTrackers.anilist.matchedId"
                         size="xs"
                         variant="subtle"
                         color="success"
+                        class="rounded font-semibold"
+                      >
+                        Senkronize
+                      </UBadge>
+                      <UBadge
+                        v-else-if="!isProviderConnected('anilist') && seriesTrackers.anilist.matchedId"
+                        size="xs"
+                        variant="subtle"
+                        color="warning"
+                        class="rounded font-semibold"
+                      >
+                        Hesap Bağlanmadı
+                      </UBadge>
+                      <UBadge
+                        v-else-if="isProviderConnected('anilist') && !seriesTrackers.anilist.matchedId"
+                        size="xs"
+                        variant="subtle"
+                        color="neutral"
                         class="rounded"
                       >
-                        Eşleşti
+                        Eşleşmedi
                       </UBadge>
                     </div>
                   </div>
@@ -410,41 +517,84 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
 
                 <div class="flex items-center gap-2">
                   <UButton
-                    v-if="!seriesTrackers.anilist.isConnected"
-                    label="Bağla"
+                    v-if="!isProviderConnected('anilist')"
+                    label="Hesabı Bağla"
                     icon="i-lucide-link"
-                    size="xs"
-                    color="neutral"
-                    variant="soft"
-                    class="rounded-xl"
-                    @click="connectProvider('anilist')"
-                  />
-                  <UButton
-                    v-if="!seriesTrackers.anilist.matchedId"
-                    label="Eşleştir"
-                    icon="i-lucide-search"
                     size="xs"
                     color="primary"
                     variant="soft"
                     class="rounded-xl font-bold"
-                    @click="openSearch('anilist')"
+                    @click="handleConnect('anilist')"
                   />
-                  <UButton
-                    v-else
-                    label="Kaldır"
-                    icon="i-lucide-unlink"
-                    size="xs"
-                    color="error"
-                    variant="ghost"
-                    class="rounded-xl"
-                    @click="handleUnbind('anilist')"
-                  />
+                  <template v-else>
+                    <UButton
+                      v-if="!seriesTrackers.anilist.matchedId"
+                      label="Eşleştir"
+                      icon="i-lucide-search"
+                      size="xs"
+                      color="primary"
+                      variant="soft"
+                      class="rounded-xl font-bold"
+                      @click="openSearch('anilist')"
+                    />
+                    <UButton
+                      v-else
+                      label="Kaldır"
+                      icon="i-lucide-unlink"
+                      size="xs"
+                      color="error"
+                      variant="ghost"
+                      class="rounded-xl"
+                      @click="handleUnbind('anilist')"
+                    />
+                  </template>
                 </div>
               </div>
 
-              <!-- AniList Eşleşmişse Detay Formu -->
+              <!-- Durum 1: Hesap bağlı değil AMA seri eşleşmiş -->
               <div
-                v-if="seriesTrackers.anilist.matchedId"
+                v-if="!isProviderConnected('anilist') && seriesTrackers.anilist.matchedId"
+                class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
+              >
+                <UIcon
+                  name="i-lucide-alert-circle"
+                  class="size-4 text-amber-500 shrink-0 mt-0.5"
+                />
+                <div class="flex-1 space-y-1">
+                  <p class="text-foreground leading-relaxed">
+                    Bu seri sistemde AniList ile otomatik eşleşti (ID: <span class="font-mono font-bold">{{ seriesTrackers.anilist.matchedId }}</span>). Okuma ilerlemenizi senkronize etmek için önce AniList hesabınızı bağlayın.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Durum 2: Hesap bağlı değil VE seri eşleşmemiş -->
+              <div
+                v-else-if="!isProviderConnected('anilist') && !seriesTrackers.anilist.matchedId"
+                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+              >
+                <span>İlerlemenizi senkronize etmek için AniList hesabınızı bağlayın.</span>
+              </div>
+
+              <!-- Durum 3: Hesap bağlı AMA seri eşleşmemiş -->
+              <div
+                v-else-if="isProviderConnected('anilist') && !seriesTrackers.anilist.matchedId"
+                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+              >
+                <span>Bu seri henüz AniList ile eşleştirilmedi.</span>
+                <UButton
+                  label="Ara ve Eşleştir"
+                  icon="i-lucide-search"
+                  size="xs"
+                  color="primary"
+                  variant="soft"
+                  class="rounded-lg font-bold"
+                  @click="openSearch('anilist')"
+                />
+              </div>
+
+              <!-- Durum 4: Hem hesap bağlı HEM seri eşleşmiş -> Canlı İlerleme Formu -->
+              <div
+                v-else-if="isProviderConnected('anilist') && seriesTrackers.anilist.matchedId"
                 class="pt-1 grid grid-cols-1 sm:grid-cols-3 gap-2.5"
               >
                 <div class="space-y-1">
@@ -532,15 +682,33 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
                   />
                   <div>
                     <div class="text-sm font-bold text-foreground flex items-center gap-1.5">
-                      MangaDex
+                      <span>MangaDex</span>
                       <UBadge
-                        v-if="seriesTrackers.mangadex.matchedId"
+                        v-if="isProviderConnected('mangadex') && seriesTrackers.mangadex.matchedId"
                         size="xs"
                         variant="subtle"
                         color="success"
+                        class="rounded font-semibold"
+                      >
+                        Senkronize
+                      </UBadge>
+                      <UBadge
+                        v-else-if="!isProviderConnected('mangadex') && seriesTrackers.mangadex.matchedId"
+                        size="xs"
+                        variant="subtle"
+                        color="warning"
+                        class="rounded font-semibold"
+                      >
+                        Hesap Bağlanmadı
+                      </UBadge>
+                      <UBadge
+                        v-else-if="isProviderConnected('mangadex') && !seriesTrackers.mangadex.matchedId"
+                        size="xs"
+                        variant="subtle"
+                        color="neutral"
                         class="rounded"
                       >
-                        Eşleşti
+                        Eşleşmedi
                       </UBadge>
                     </div>
                   </div>
@@ -548,41 +716,84 @@ function handleChapterStep(provider: TrackerProvider, delta: number) {
 
                 <div class="flex items-center gap-2">
                   <UButton
-                    v-if="!seriesTrackers.mangadex.isConnected"
-                    label="Bağla"
+                    v-if="!isProviderConnected('mangadex')"
+                    label="Hesabı Bağla"
                     icon="i-lucide-link"
-                    size="xs"
-                    color="neutral"
-                    variant="soft"
-                    class="rounded-xl"
-                    @click="void (mangaDexModalOpen = true)"
-                  />
-                  <UButton
-                    v-if="!seriesTrackers.mangadex.matchedId"
-                    label="Eşleştir"
-                    icon="i-lucide-search"
                     size="xs"
                     color="primary"
                     variant="soft"
                     class="rounded-xl font-bold"
-                    @click="openSearch('mangadex')"
+                    @click="handleConnect('mangadex')"
                   />
-                  <UButton
-                    v-else
-                    label="Kaldır"
-                    icon="i-lucide-unlink"
-                    size="xs"
-                    color="error"
-                    variant="ghost"
-                    class="rounded-xl"
-                    @click="handleUnbind('mangadex')"
-                  />
+                  <template v-else>
+                    <UButton
+                      v-if="!seriesTrackers.mangadex.matchedId"
+                      label="Eşleştir"
+                      icon="i-lucide-search"
+                      size="xs"
+                      color="primary"
+                      variant="soft"
+                      class="rounded-xl font-bold"
+                      @click="openSearch('mangadex')"
+                    />
+                    <UButton
+                      v-else
+                      label="Kaldır"
+                      icon="i-lucide-unlink"
+                      size="xs"
+                      color="error"
+                      variant="ghost"
+                      class="rounded-xl"
+                      @click="handleUnbind('mangadex')"
+                    />
+                  </template>
                 </div>
               </div>
 
-              <!-- MangaDex Eşleşmişse Detay Formu -->
+              <!-- Durum 1: Hesap bağlı değil AMA seri eşleşmiş -->
               <div
-                v-if="seriesTrackers.mangadex.matchedId"
+                v-if="!isProviderConnected('mangadex') && seriesTrackers.mangadex.matchedId"
+                class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
+              >
+                <UIcon
+                  name="i-lucide-alert-circle"
+                  class="size-4 text-amber-500 shrink-0 mt-0.5"
+                />
+                <div class="flex-1 space-y-1">
+                  <p class="text-foreground leading-relaxed">
+                    Bu seri sistemde MangaDex ile otomatik eşleşti (ID: <span class="font-mono font-bold">{{ seriesTrackers.mangadex.matchedId }}</span>). Okuma ilerlemenizi senkronize etmek için önce MangaDex hesabınızı bağlayın.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Durum 2: Hesap bağlı değil VE seri eşleşmemiş -->
+              <div
+                v-else-if="!isProviderConnected('mangadex') && !seriesTrackers.mangadex.matchedId"
+                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+              >
+                <span>İlerlemenizi senkronize etmek için MangaDex hesabınızı bağlayın.</span>
+              </div>
+
+              <!-- Durum 3: Hesap bağlı AMA seri eşleşmemiş -->
+              <div
+                v-else-if="isProviderConnected('mangadex') && !seriesTrackers.mangadex.matchedId"
+                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+              >
+                <span>Bu seri henüz MangaDex ile eşleştirilmedi.</span>
+                <UButton
+                  label="Ara ve Eşleştir"
+                  icon="i-lucide-search"
+                  size="xs"
+                  color="primary"
+                  variant="soft"
+                  class="rounded-lg font-bold"
+                  @click="openSearch('mangadex')"
+                />
+              </div>
+
+              <!-- Durum 4: Hem hesap bağlı HEM seri eşleşmiş -> Canlı İlerleme Formu -->
+              <div
+                v-else-if="isProviderConnected('mangadex') && seriesTrackers.mangadex.matchedId"
                 class="pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5"
               >
                 <div class="space-y-1">
