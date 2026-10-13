@@ -41,11 +41,20 @@ interface ChapterResponse {
     name?: string
     logo?: { url?: string }
   }
+  manga?: {
+    _id?: string
+    _type?: string
+    myAnimeListId?: number
+    title?: string
+    isCopyrighted?: boolean
+    coverImage?: { url?: string }
+  }
   lightNovel?: {
     _id?: string
     _type?: string
     myAnimeListId?: number
     title?: string
+    isCopyrighted?: boolean
     coverImage?: { url?: string }
   }
   chapters?: {
@@ -56,6 +65,16 @@ interface ChapterResponse {
   }[]
 }
 
+const { user } = useAuthUser()
+
+const requestHeaders = computed<Record<string, string>>(() => {
+  const headers: Record<string, string> = {}
+  if (user.value?.logtoId) {
+    headers['X-Logto-Id'] = user.value.logtoId
+  }
+  return headers
+})
+
 const {
   data: chapterData,
   pending
@@ -65,11 +84,17 @@ const {
   {
     lazy: true,
     server: false,
+    headers: requestHeaders,
     watch: [chapterKey],
     retry: 3,
     retryDelay: 1000
   }
 )
+
+const isCopyrightLocked = computed(() => {
+  const isCopy = !!(chapterData.value?.lightNovel?.isCopyrighted || chapterData.value?.manga?.isCopyrighted)
+  return isCopy && !user.value
+})
 
 const chapterOrder = (chapter: {
   volumeNumber?: number
@@ -333,7 +358,7 @@ const toImageFigure = (src: string, alt = '', className = '') => {
 }
 
 const renderedContent = computed(() => {
-  if (!chapterData.value?.content) return ''
+  if (isCopyrightLocked.value || !chapterData.value?.content) return ''
 
   return chapterData.value.content
     .map((block) => {
@@ -694,6 +719,65 @@ definePageMeta({
         </div>
       </div>
 
+      <!-- Telifli ve Giriş Yapılmamış Kilit Ekranı -->
+      <div
+        v-else-if="chapterData && isCopyrightLocked"
+        class="min-h-[60vh] flex items-center justify-center p-4"
+      >
+        <div class="max-w-md w-full bg-elevated/70 border border-default rounded-3xl p-6 sm:p-8 text-center space-y-6 shadow-xl backdrop-blur-md">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center ring-8 ring-amber-500/5">
+            <UIcon
+              name="i-lucide-lock"
+              class="w-8 h-8"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <UBadge
+              color="warning"
+              variant="subtle"
+              size="sm"
+              class="rounded-full px-3 py-1 font-semibold"
+            >
+              Telif Korumalı İçerik
+            </UBadge>
+            <h2 class="text-xl sm:text-2xl font-black text-foreground">
+              {{ chapterData.lightNovel?.title || chapterData.manga?.title || 'Bu Seri' }}
+            </h2>
+            <p class="text-sm font-semibold text-muted-foreground">
+              Bölüm {{ chapterData.chapterNumber ?? chapterData.title ?? '' }}
+            </p>
+            <p class="text-xs text-muted-foreground leading-relaxed pt-1">
+              Bu serinin bölümleri ve içeriği telif hakları nedeniyle yalnızca giriş yapmış kullanıcılara açıktır. Okumaya devam etmek için lütfen giriş yapınız.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <UButton
+              to="/sign-in"
+              :external="true"
+              color="primary"
+              variant="solid"
+              size="md"
+              icon="i-lucide-log-in"
+              class="flex-1 justify-center rounded-xl font-bold py-2.5"
+            >
+              Giriş Yap
+            </UButton>
+            <UButton
+              :to="chapterData.lightNovel?._id ? `/title/${chapterData.lightNovel._id}` : (chapterData.lightNovel?.myAnimeListId ? `/title/${chapterData.lightNovel.myAnimeListId}` : '/')"
+              color="neutral"
+              variant="soft"
+              size="md"
+              icon="i-lucide-arrow-left"
+              class="flex-1 justify-center rounded-xl font-bold py-2.5"
+            >
+              Seriye Dön
+            </UButton>
+          </div>
+        </div>
+      </div>
+
       <div
         v-else-if="!chapterData"
         class="min-h-[60vh] flex items-center justify-center"
@@ -747,7 +831,7 @@ definePageMeta({
 
       <!-- Sayfa Sonu Bölüm Geçiş Butonları -->
       <div
-        v-if="!pending && chapterData"
+        v-if="!pending && chapterData && !isCopyrightLocked"
         class="pt-8 sm:pt-12 mt-8 sm:mt-12 mb-16 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4"
       >
         <UButton
@@ -784,7 +868,7 @@ definePageMeta({
 
     <!-- YÜZEN ALT BÖLÜM GEZİNME ÇUBUĞU (Android Reader Style) -->
     <div
-      v-if="!pending && chapterData"
+      v-if="!pending && chapterData && !isCopyrightLocked"
       class="fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-2 bg-default/95 backdrop-blur-xl border border-border/80 shadow-2xl rounded-2xl sm:rounded-full max-w-[calc(100vw-1.5rem)]"
     >
       <UButton

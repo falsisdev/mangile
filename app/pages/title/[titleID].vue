@@ -34,6 +34,7 @@ interface TitleApiResponse {
   uploadStatus?: string
   tags?: string[]
   format?: string
+  isCopyrighted?: boolean
   notes?: PortableTextBlock[]
   myAnimeListId?: number
   bannerImage?: { url?: string }
@@ -78,6 +79,7 @@ interface SerieData {
   title: string
   type?: string
   description?: string
+  isCopyrighted?: boolean
   banner?: string
   cover?: string
   tags?: string[]
@@ -118,6 +120,7 @@ const breadcrumbs = useBreadcrumbs()
 const config = useRuntimeConfig()
 const route = useRoute()
 const router = useRouter()
+const { user } = useAuthUser()
 const titleId = computed(() => {
   const value = route.params.titleID
   return Array.isArray(value) ? (value[0] ?? '') : (value ?? '')
@@ -129,6 +132,7 @@ function mapTitleResponse(title: TitleApiResponse | null): SerieData {
     return {
       id: 0,
       title: 'Bilinmeyen',
+      isCopyrighted: false,
       tags: [],
       chapters: [],
       recommendations: []
@@ -142,6 +146,7 @@ function mapTitleResponse(title: TitleApiResponse | null): SerieData {
   return {
     id: title._id ?? title.myAnimeListId ?? 0,
     sanityId: title._id,
+    isCopyrighted: !!title.isCopyrighted,
     title:
       title.title
       ?? anilistTitle?.romaji
@@ -404,8 +409,14 @@ function chapterSortValue(chapter: ChapterData) {
   }
 }
 
+const isContentLocked = computed(() => {
+  return !!serie.value?.isCopyrighted && !user.value
+})
+
+const totalChaptersCount = computed(() => serie.value?.chapters?.length || 0)
+
 const allChaptersSortedAsc = computed(() => {
-  if (!serie.value?.chapters) return []
+  if (!serie.value?.chapters || isContentLocked.value) return []
 
   return [...serie.value.chapters].sort((a, b) => {
     const aSort = chapterSortValue(a)
@@ -724,7 +735,23 @@ onUnmounted(() => {
               </UBadge>
             </div>
             <div
-              v-if="firstChapter || lastChapter"
+              v-if="isContentLocked"
+              class="px-3 sm:px-4 pt-2.5 sm:pt-3"
+            >
+              <UButton
+                to="/sign-in"
+                :external="true"
+                color="primary"
+                variant="solid"
+                size="sm"
+                icon="i-lucide-lock"
+                class="w-full justify-center rounded-xl font-bold"
+              >
+                Okumak İçin Giriş Yap
+              </UButton>
+            </div>
+            <div
+              v-else-if="firstChapter || lastChapter"
               class="px-3 sm:px-4 pt-2.5 sm:pt-3 grid grid-cols-2 gap-2"
             >
               <UButton
@@ -862,11 +889,26 @@ onUnmounted(() => {
                     size="md"
                     class="rounded-lg font-bold px-2.5 py-0.5"
                   >
-                    {{ serie.chapters?.length || 0 }} Bölüm
+                    {{ totalChaptersCount }} Bölüm
+                  </UBadge>
+
+                  <UBadge
+                    v-if="serie?.isCopyrighted"
+                    color="warning"
+                    variant="subtle"
+                    size="md"
+                    class="rounded-lg font-bold gap-1 px-2 py-0.5"
+                  >
+                    <UIcon
+                      name="i-lucide-lock"
+                      class="w-3.5 h-3.5"
+                    />
+                    Telifli
                   </UBadge>
                 </div>
 
                 <UButton
+                  v-if="!isContentLocked"
                   color="neutral"
                   variant="ghost"
                   size="xs"
@@ -878,108 +920,140 @@ onUnmounted(() => {
                 </UButton>
               </div>
 
-              <UInput
-                v-model="chapterSearchQuery"
-                icon="i-lucide-search"
-                placeholder="Bölüm ara..."
-                size="xs"
-                color="neutral"
-                variant="outline"
-                class="w-full rounded-lg"
-                clearable
-              />
-
+              <!-- Telifli ve Giriş Yapılmamış Kilit Ekranı -->
               <div
-                v-if="sortedChapters.length"
-                class="space-y-3 pt-1"
+                v-if="isContentLocked"
+                class="flex flex-col items-center justify-center py-10 px-4 text-center rounded-2xl border border-dashed border-border/80 bg-muted/20 my-2"
               >
-                <div
-                  v-for="group in volumeChapterGroups"
-                  :key="group.volumeKey"
-                  class="mb-4 last:mb-0"
+                <div class="p-3 rounded-2xl bg-amber-500/10 text-amber-500 mb-3 ring-8 ring-amber-500/5">
+                  <UIcon
+                    name="i-lucide-lock"
+                    class="w-7 h-7"
+                  />
+                </div>
+                <h4 class="text-base font-bold text-foreground">
+                  Telif Korumalı İçerik
+                </h4>
+                <p class="text-xs text-muted-foreground max-w-sm mt-1.5 mb-4 leading-relaxed">
+                  Bu serinin bölümlerini ve içeriğini görüntülemek için giriş yapmanız gerekmektedir.
+                </p>
+                <UButton
+                  to="/sign-in"
+                  :external="true"
+                  icon="i-lucide-log-in"
+                  color="primary"
+                  variant="solid"
+                  size="sm"
+                  class="rounded-xl font-bold px-4"
                 >
-                  <h4
-                    class="font-semibold text-sm text-foreground mb-2 px-1 flex items-center justify-between cursor-pointer select-none"
-                    @click="toggleVolume(group.volumeKey)"
-                  >
-                    <span>{{ group.volumeTitle }}</span>
-                    <UIcon
-                      :name="expandedVolumes.includes(String(group.volumeKey)) ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-                      class="w-4 h-4 text-muted-foreground"
-                    />
-                  </h4>
+                  Giriş Yap
+                </UButton>
+              </div>
 
+              <template v-else>
+                <UInput
+                  v-model="chapterSearchQuery"
+                  icon="i-lucide-search"
+                  placeholder="Bölüm ara..."
+                  size="xs"
+                  color="neutral"
+                  variant="outline"
+                  class="w-full rounded-lg"
+                  clearable
+                />
+
+                <div
+                  v-if="sortedChapters.length"
+                  class="space-y-3 pt-1"
+                >
                   <div
-                    class="grid transition-[grid-template-rows] duration-500 ease-in-out"
-                    :class="expandedVolumes.includes(String(group.volumeKey)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+                    v-for="group in volumeChapterGroups"
+                    :key="group.volumeKey"
+                    class="mb-4 last:mb-0"
                   >
-                    <div
-                      class="overflow-hidden min-h-0"
+                    <h4
+                      class="font-semibold text-sm text-foreground mb-2 px-1 flex items-center justify-between cursor-pointer select-none"
+                      @click="toggleVolume(group.volumeKey)"
                     >
-                      <div class="flex flex-col gap-2">
-                        <UCard
-                          v-for="chapter in group.chapters"
-                          :key="chapter.id"
-                          class="shrink-0 transition-all hover:border-primary/40 cursor-pointer rounded-xl mx-1 mt-0.5"
-                          :ui="{ body: 'p-3' }"
-                        >
-                          <NuxtLink
-                            :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
-                            class="flex items-center justify-between gap-2"
+                      <span>{{ group.volumeTitle }}</span>
+                      <UIcon
+                        :name="expandedVolumes.includes(String(group.volumeKey)) ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+                        class="w-4 h-4 text-muted-foreground"
+                      />
+                    </h4>
+
+                    <div
+                      class="grid transition-[grid-template-rows] duration-500 ease-in-out"
+                      :class="expandedVolumes.includes(String(group.volumeKey)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+                    >
+                      <div
+                        class="overflow-hidden min-h-0"
+                      >
+                        <div class="flex flex-col gap-2">
+                          <UCard
+                            v-for="chapter in group.chapters"
+                            :key="chapter.id"
+                            class="shrink-0 transition-all hover:border-primary/40 cursor-pointer rounded-xl mx-1 mt-0.5"
+                            :ui="{ body: 'p-3' }"
                           >
-                            <div class="truncate pr-1 min-w-0 flex-1">
-                              <p class="font-bold text-xs text-foreground truncate">
-                                {{ getChapterLabel(chapter) }}
-                              </p>
+                            <NuxtLink
+                              :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
+                              class="flex items-center justify-between gap-2"
+                            >
+                              <div class="truncate pr-1 min-w-0 flex-1">
+                                <p class="font-bold text-xs text-foreground truncate">
+                                  {{ getChapterLabel(chapter) }}
+                                </p>
 
-                              <p
-                                class="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1 truncate"
-                              >
+                                <p
+                                  class="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1 truncate"
+                                >
+                                  <UIcon
+                                    name="i-lucide-languages"
+                                    class="w-3 h-3 text-muted-foreground/70 shrink-0"
+                                  />
+                                  <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
+                                </p>
+                              </div>
+
+                              <div class="flex items-center gap-2 shrink-0">
+                                <UBadge
+                                  v-if="chapter.chapter_number"
+                                  color="primary"
+                                  variant="soft"
+                                  size="xs"
+                                  class="rounded-md text-[10px] font-semibold"
+                                >
+                                  {{ chapter.chapter_number }}
+                                </UBadge>
+
                                 <UIcon
-                                  name="i-lucide-languages"
-                                  class="w-3 h-3 text-muted-foreground/70 shrink-0"
+                                  name="i-lucide-chevron-right"
+                                  class="w-4 h-4 text-muted-foreground"
                                 />
-                                <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
-                              </p>
-                            </div>
-
-                            <div class="flex items-center gap-2 shrink-0">
-                              <UBadge
-                                v-if="chapter.chapter_number"
-                                color="primary"
-                                variant="soft"
-                                size="xs"
-                                class="rounded-md text-[10px] font-semibold"
-                              >
-                                {{ chapter.chapter_number }}
-                              </UBadge>
-
-                              <UIcon
-                                name="i-lucide-chevron-right"
-                                class="w-4 h-4 text-muted-foreground"
-                              />
-                            </div>
-                          </NuxtLink>
-                        </UCard>
+                              </div>
+                            </NuxtLink>
+                          </UCard>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div
-                v-else
-                class="text-center py-8 rounded-xl bg-muted/20 border border-dashed border-default"
-              >
-                <UIcon
-                  name="i-lucide-folder-open"
-                  class="w-6 h-6 text-muted-foreground mb-1 mx-auto"
-                />
+                <div
+                  v-else
+                  class="text-center py-8 rounded-xl bg-muted/20 border border-dashed border-default"
+                >
+                  <UIcon
+                    name="i-lucide-folder-open"
+                    class="w-6 h-6 text-muted-foreground mb-1 mx-auto"
+                  />
 
-                <p class="text-xs font-medium text-muted-foreground">
-                  {{ chapterSearchQuery ? 'Aramanıza uygun bölüm bulunamadı.' : 'Henüz bu seriye ait bir bölüm yüklenmemiş.' }}
-                </p>
-              </div>
+                  <p class="text-xs font-medium text-muted-foreground">
+                    {{ chapterSearchQuery ? 'Aramanıza uygun bölüm bulunamadı.' : 'Henüz bu seriye ait bir bölüm yüklenmemiş.' }}
+                  </p>
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -1272,7 +1346,24 @@ onUnmounted(() => {
             </div>
 
             <div
-              v-if="serie.chapters && serie.chapters.length"
+              v-if="isContentLocked"
+              class="pt-1"
+            >
+              <UButton
+                to="/sign-in"
+                :external="true"
+                color="primary"
+                variant="solid"
+                size="md"
+                icon="i-lucide-lock"
+                class="w-full justify-center rounded-xl font-bold py-3 shadow-md hover:scale-[1.005] active:scale-[0.98] transition-all"
+              >
+                Bölümleri Okumak İçin Giriş Yap
+              </UButton>
+            </div>
+
+            <div
+              v-else-if="serie.chapters && serie.chapters.length"
               class="flex flex-col sm:flex-row items-center gap-3 pt-1"
             >
               <UButton
@@ -1335,12 +1426,26 @@ onUnmounted(() => {
                     size="md"
                     class="rounded-md font-bold"
                   >
-                    {{ serie.chapters?.length || 0 }} Bölüm
+                    {{ totalChaptersCount }} Bölüm
+                  </UBadge>
+
+                  <UBadge
+                    v-if="serie?.isCopyrighted"
+                    color="warning"
+                    variant="subtle"
+                    size="md"
+                    class="rounded-md font-bold gap-1"
+                  >
+                    <UIcon
+                      name="i-lucide-lock"
+                      class="w-3.5 h-3.5"
+                    />
+                    Telifli
                   </UBadge>
                 </h3>
 
                 <div
-                  v-if="serie.chapters && serie.chapters.length"
+                  v-if="!isContentLocked && serie.chapters && serie.chapters.length"
                   class="flex flex-wrap items-center gap-2"
                 >
                   <UInput
@@ -1396,117 +1501,149 @@ onUnmounted(() => {
                 </div>
               </div>
 
+              <!-- Telifli ve Giriş Yapılmamış Kilit Ekranı (Mobile/Tab) -->
               <div
-                v-if="volumeChapterGroups.length"
-                class="space-y-6"
+                v-if="isContentLocked"
+                class="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl border border-dashed border-border/80 bg-muted/20 my-2"
               >
-                <div
-                  v-for="group in volumeChapterGroups"
-                  :key="group.volumeKey"
-                  class="space-y-3"
+                <div class="p-3.5 rounded-2xl bg-amber-500/10 text-amber-500 mb-3 ring-8 ring-amber-500/5">
+                  <UIcon
+                    name="i-lucide-lock"
+                    class="w-8 h-8"
+                  />
+                </div>
+                <h4 class="text-base font-bold text-foreground">
+                  Telif Korumalı İçerik
+                </h4>
+                <p class="text-xs text-muted-foreground max-w-sm mt-1.5 mb-5 leading-relaxed">
+                  Bu serinin bölümlerini ve içeriğini görüntülemek için giriş yapmanız gerekmektedir.
+                </p>
+                <UButton
+                  to="/sign-in"
+                  :external="true"
+                  icon="i-lucide-log-in"
+                  color="primary"
+                  variant="solid"
+                  size="sm"
+                  class="rounded-xl font-bold px-5"
                 >
-                  <h4
-                    class="text-sm font-bold text-foreground flex items-center justify-between border-b border-border/30 pb-2 cursor-pointer select-none"
-                    @click="toggleVolume(group.volumeKey)"
-                  >
-                    <div class="flex items-center gap-2">
-                      <UIcon
-                        name="i-lucide-book"
-                        class="w-4 h-4 text-primary"
-                      />
-                      {{ group.volumeTitle }}
+                  Giriş Yap
+                </UButton>
+              </div>
 
-                      <UBadge
-                        color="neutral"
-                        variant="soft"
-                        size="xs"
-                        class="rounded-md font-semibold ml-1"
-                      >
-                        {{ group.chapters.length }} Bölüm
-                      </UBadge>
-                    </div>
-                    <UIcon
-                      :name="expandedVolumes.includes(String(group.volumeKey)) ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-                      class="w-5 h-5 text-muted-foreground"
-                    />
-                  </h4>
-
+              <template v-else>
+                <div
+                  v-if="volumeChapterGroups.length"
+                  class="space-y-6"
+                >
                   <div
-                    class="grid transition-[grid-template-rows] duration-500 ease-in-out"
-                    :class="expandedVolumes.includes(String(group.volumeKey)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
+                    v-for="group in volumeChapterGroups"
+                    :key="group.volumeKey"
+                    class="space-y-3"
                   >
+                    <h4
+                      class="text-sm font-bold text-foreground flex items-center justify-between border-b border-border/30 pb-2 cursor-pointer select-none"
+                      @click="toggleVolume(group.volumeKey)"
+                    >
+                      <div class="flex items-center gap-2">
+                        <UIcon
+                          name="i-lucide-book"
+                          class="w-4 h-4 text-primary"
+                        />
+                        {{ group.volumeTitle }}
+
+                        <UBadge
+                          color="neutral"
+                          variant="soft"
+                          size="xs"
+                          class="rounded-md font-semibold ml-1"
+                        >
+                          {{ group.chapters.length }} Bölüm
+                        </UBadge>
+                      </div>
+                      <UIcon
+                        :name="expandedVolumes.includes(String(group.volumeKey)) ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+                        class="w-5 h-5 text-muted-foreground"
+                      />
+                    </h4>
+
                     <div
-                      class="overflow-hidden min-h-0"
+                      class="grid transition-[grid-template-rows] duration-500 ease-in-out"
+                      :class="expandedVolumes.includes(String(group.volumeKey)) ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'"
                     >
                       <div
-                        :class="[
-                          {
-                            'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3': chapterViewMode === 'grid',
-                            'flex flex-col gap-2': chapterViewMode === 'list',
-                            'flex flex-wrap gap-2': chapterViewMode === 'compact'
-                          }
-                        ]"
+                        class="overflow-hidden min-h-0"
                       >
-                        <UCard
-                          v-for="chapter in group.chapters"
-                          :key="chapter.id"
-                          class="transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer group rounded-2xl mx-0.5 mt-0.5"
-                          :class="{ 'flex-auto min-w-[120px]': chapterViewMode === 'compact' }"
-                          :ui="{ body: chapterViewMode === 'compact' ? 'p-3' : 'p-4' }"
+                        <div
+                          :class="[
+                            {
+                              'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3': chapterViewMode === 'grid',
+                              'flex flex-col gap-2': chapterViewMode === 'list',
+                              'flex flex-wrap gap-2': chapterViewMode === 'compact'
+                            }
+                          ]"
                         >
-                          <NuxtLink
-                            :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
-                            class="flex items-center justify-between gap-2"
+                          <UCard
+                            v-for="chapter in group.chapters"
+                            :key="chapter.id"
+                            class="transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer group rounded-2xl mx-0.5 mt-0.5"
+                            :class="{ 'flex-auto min-w-[120px]': chapterViewMode === 'compact' }"
+                            :ui="{ body: chapterViewMode === 'compact' ? 'p-3' : 'p-4' }"
                           >
-                            <div class="truncate pr-1 min-w-0 flex-1">
-                              <p
-                                class="font-bold text-sm group-hover:text-primary transition-colors truncate"
-                              >
-                                {{ getChapterLabel(chapter) }}
-                              </p>
+                            <NuxtLink
+                              :to="`/chapter/${chapter._key}/${chapterRouteType(serie?.type).replaceAll('manhwa', 'manga')}`"
+                              class="flex items-center justify-between gap-2"
+                            >
+                              <div class="truncate pr-1 min-w-0 flex-1">
+                                <p
+                                  class="font-bold text-sm group-hover:text-primary transition-colors truncate"
+                                >
+                                  {{ getChapterLabel(chapter) }}
+                                </p>
 
-                              <p
+                                <p
+                                  v-if="chapterViewMode !== 'compact'"
+                                  class="text-xs text-muted-foreground mt-1 flex items-center gap-1 truncate"
+                                >
+                                  <UIcon
+                                    name="i-lucide-languages"
+                                    class="w-3 h-3 text-muted-foreground/70 shrink-0"
+                                  />
+                                  <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
+                                </p>
+                              </div>
+
+                              <UButton
                                 v-if="chapterViewMode !== 'compact'"
-                                class="text-xs text-muted-foreground mt-1 flex items-center gap-1 truncate"
-                              >
-                                <UIcon
-                                  name="i-lucide-languages"
-                                  class="w-3 h-3 text-muted-foreground/70 shrink-0"
-                                />
-                                <span class="truncate">{{ chapter.source?.name || "Bilinmeyen Çevirmen" }}</span>
-                              </p>
-                            </div>
-
-                            <UButton
-                              v-if="chapterViewMode !== 'compact'"
-                              size="xs"
-                              color="primary"
-                              variant="ghost"
-                              icon="i-lucide-chevron-right"
-                              square
-                              class="group-hover:translate-x-0.5 transition-transform shrink-0"
-                            />
-                          </NuxtLink>
-                        </UCard>
+                                size="xs"
+                                color="primary"
+                                variant="ghost"
+                                icon="i-lucide-chevron-right"
+                                square
+                                class="group-hover:translate-x-0.5 transition-transform shrink-0"
+                              />
+                            </NuxtLink>
+                          </UCard>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div
-                v-else
-                class="text-center py-12 rounded-2xl bg-muted/30 border border-dashed border-default"
-              >
-                <UIcon
-                  name="i-lucide-folder-open"
-                  class="w-8 h-8 text-muted-foreground mb-2 mx-auto"
-                />
+                <div
+                  v-else
+                  class="text-center py-12 rounded-2xl bg-muted/30 border border-dashed border-default"
+                >
+                  <UIcon
+                    name="i-lucide-folder-open"
+                    class="w-8 h-8 text-muted-foreground mb-2 mx-auto"
+                  />
 
-                <p class="text-sm font-medium text-muted-foreground">
-                  {{ chapterSearchQuery ? 'Aramanıza uygun bölüm bulunamadı.' : 'Henüz bu seriye ait bir bölüm yüklenmemiş.' }}
-                </p>
-              </div>
+                  <p class="text-sm font-medium text-muted-foreground">
+                    {{ chapterSearchQuery ? 'Aramanıza uygun bölüm bulunamadı.' : 'Henüz bu seriye ait bir bölüm yüklenmemiş.' }}
+                  </p>
+                </div>
+              </template>
             </div>
           </div>
         </div>
