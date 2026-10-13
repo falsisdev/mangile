@@ -108,10 +108,19 @@ const titlesByTagItems = computed(() =>
 
 <template>
   <main>
+    <USkeleton
+      v-if="heroPending"
+      class="relative h-[320px] xs:h-[360px] sm:h-[420px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl"
+    />
+    <HeroSlider
+      v-else
+      :slides="slides"
+    />
+
     <!-- Kaldığın Yerden Devam Et / Yerel Kayıtlardan Devam Et Section -->
     <section
       v-if="continueReadingItems.length > 0"
-      class="mb-6 sm:mb-8"
+      class="mt-5 sm:mt-7 mb-2 sm:mb-4"
     >
       <div class="flex items-center justify-between gap-3 mb-2.5 sm:mb-3">
         <div class="flex items-center gap-2 flex-wrap">
@@ -153,14 +162,6 @@ const titlesByTagItems = computed(() =>
       <CardContinueReading :items="continueReadingItems" />
     </section>
 
-    <USkeleton
-      v-if="heroPending"
-      class="relative h-[320px] xs:h-[360px] sm:h-[420px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl"
-    />
-    <HeroSlider
-      v-else
-      :slides="slides"
-    />
     <USeparator
       position="start"
       class="font-black text-lg sm:text-xl md:text-2xl mt-5 mb-2.5 sm:mt-7 sm:mb-3.5"
