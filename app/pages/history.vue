@@ -275,7 +275,7 @@ useSeoMeta({
             class="size-3.5"
           />
           <span>Tarayıcı Geçmişi</span>
-          <span class="text-[10px] opacity-80">({{ localHistory.length }})</span>
+          <span class="text-[10px] opacity-80">({{ localHistory.length }}/5)</span>
         </button>
 
         <button
@@ -306,6 +306,34 @@ useSeoMeta({
           class="w-full"
         />
       </div>
+    </div>
+
+    <!-- Local Tab 5-Limit Banner -->
+    <div
+      v-if="activeTab === 'local'"
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 rounded-xl bg-primary/5 border border-primary/20 text-xs"
+    >
+      <div class="flex items-center gap-2 text-muted">
+        <UIcon
+          name="i-lucide-info"
+          class="size-4 text-primary shrink-0"
+        />
+        <span>
+          Tarayıcı geçmişi <strong>en fazla 5 kayıt</strong> ile sınırlıdır.
+        </span>
+      </div>
+      <NuxtLink
+        v-if="!user"
+        to="/sign-in"
+        :external="true"
+        class="font-bold text-primary hover:underline flex items-center gap-1 shrink-0"
+      >
+        Giriş Yaparak 100 Seriye Yükselt
+        <UIcon
+          name="i-lucide-arrow-right"
+          class="size-3"
+        />
+      </NuxtLink>
     </div>
 
     <!-- Content Sections -->

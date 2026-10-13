@@ -23,7 +23,8 @@ interface CloudHistoryResponse {
   items?: ReadingHistoryItem[]
 }
 
-const MAX_HISTORY_ITEMS = 100
+export const MAX_LOCAL_HISTORY_ITEMS = 5
+export const MAX_CLOUD_HISTORY_ITEMS = 100
 
 export function useReadingHistory() {
   const config = useRuntimeConfig()
@@ -105,22 +106,22 @@ export function useReadingHistory() {
       readAt: data.readAt || new Date().toISOString()
     }
 
-    // 1. Update Local History (Instant, optimistic)
+    // 1. Update Local History (Instant, optimistic, limited to 5)
     const currentLocal = Array.isArray(localHistory.value) ? [...localHistory.value] : []
     const filteredLocal = currentLocal.filter(h => h.seriesId !== item.seriesId)
     filteredLocal.unshift(item)
-    if (filteredLocal.length > MAX_HISTORY_ITEMS) {
-      filteredLocal.length = MAX_HISTORY_ITEMS
+    if (filteredLocal.length > MAX_LOCAL_HISTORY_ITEMS) {
+      filteredLocal.length = MAX_LOCAL_HISTORY_ITEMS
     }
     localHistory.value = filteredLocal
 
-    // 2. Update Cloud History if logged in
+    // 2. Update Cloud History if logged in (limited to 100)
     if (user.value?.logtoId) {
       const currentCloud = Array.isArray(cloudHistory.value) ? [...cloudHistory.value] : []
       const filteredCloud = currentCloud.filter(h => h.seriesId !== item.seriesId)
       filteredCloud.unshift(item)
-      if (filteredCloud.length > MAX_HISTORY_ITEMS) {
-        filteredCloud.length = MAX_HISTORY_ITEMS
+      if (filteredCloud.length > MAX_CLOUD_HISTORY_ITEMS) {
+        filteredCloud.length = MAX_CLOUD_HISTORY_ITEMS
       }
       cloudHistory.value = filteredCloud
 
@@ -230,8 +231,8 @@ export function useReadingHistory() {
 
     const merged = Array.from(seriesMap.values())
     merged.sort((a, b) => (b.readAt > a.readAt ? 1 : -1))
-    if (merged.length > MAX_HISTORY_ITEMS) {
-      merged.length = MAX_HISTORY_ITEMS
+    if (merged.length > MAX_LOCAL_HISTORY_ITEMS) {
+      merged.length = MAX_LOCAL_HISTORY_ITEMS
     }
 
     localHistory.value = merged

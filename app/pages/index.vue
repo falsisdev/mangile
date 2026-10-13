@@ -1,6 +1,15 @@
 <script setup>
 const breadcrumbs = useBreadcrumbs()
 const config = useRuntimeConfig()
+const { user } = useAuthUser()
+const { localHistory, cloudHistory } = useReadingHistory()
+
+const continueReadingItems = computed(() => {
+  if (user.value) {
+    return cloudHistory.value.length > 0 ? cloudHistory.value : localHistory.value
+  }
+  return localHistory.value.slice(0, 5)
+})
 
 breadcrumbs.value = [
   { label: 'Ana Sayfa' }
@@ -99,6 +108,51 @@ const titlesByTagItems = computed(() =>
 
 <template>
   <main>
+    <!-- Kaldığın Yerden Devam Et / Yerel Kayıtlardan Devam Et Section -->
+    <section
+      v-if="continueReadingItems.length > 0"
+      class="mb-6 sm:mb-8"
+    >
+      <div class="flex items-center justify-between gap-3 mb-2.5 sm:mb-3">
+        <div class="flex items-center gap-2 flex-wrap">
+          <UIcon
+            name="i-lucide-history"
+            class="size-5 sm:size-6 text-primary shrink-0"
+          />
+          <h2 class="font-black text-lg sm:text-xl md:text-2xl text-foreground">
+            {{ user ? 'Kaldığın Yerden Devam Et' : 'Yerel Kayıtlardan Devam Et' }}
+          </h2>
+          <span
+            v-if="!user"
+            class="text-[11px] text-muted flex items-center gap-1.5"
+          >
+            <span>•</span>
+            <span>Tarayıcı geçmişi (En fazla 5 kayıt)</span>
+            <NuxtLink
+              to="/sign-in"
+              :external="true"
+              class="text-primary font-bold hover:underline hidden sm:inline"
+            >
+              (Giriş Yaparak Yükselt)
+            </NuxtLink>
+          </span>
+        </div>
+
+        <NuxtLink
+          to="/history"
+          class="text-xs font-bold text-primary hover:underline flex items-center gap-1 shrink-0"
+        >
+          <span>Tümünü Gör</span>
+          <UIcon
+            name="i-lucide-arrow-right"
+            class="size-3"
+          />
+        </NuxtLink>
+      </div>
+
+      <CardContinueReading :items="continueReadingItems" />
+    </section>
+
     <USkeleton
       v-if="heroPending"
       class="relative h-[320px] xs:h-[360px] sm:h-[420px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl"
