@@ -1,12 +1,8 @@
-<div align="center">
-
 # Mangile
 
 A modern, distraction-free manga, manhwa, and light novel reading platform.
 
 [![falsisdev/mangile's GitHubCard](https://githubcard.com/falsisdev/mangile.svg?d=cLY5IR-12Zba)](https://githubcard.com/falsisdev/mangile.svg?d=cLY5IR-12Zba)
-
-</div>
 
 ---
 
