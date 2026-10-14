@@ -2,7 +2,9 @@
 
 # Mangile
 
-A modern open-source manga, manhwa and light novel reading platform built with performance, scalability and user experience in mind.
+A modern, distraction-free manga, manhwa, and light novel reading platform.
+
+[![falsisdev/mangile's GitHubCard](https://githubcard.com/falsisdev/mangile.svg?d=cLY5IR-12Zba)](https://githubcard.com/falsisdev/mangile.svg?d=cLY5IR-12Zba)
 
 </div>
 
@@ -10,190 +12,74 @@ A modern open-source manga, manhwa and light novel reading platform built with p
 
 ## 📖 About
 
-Mangile is a modern web platform for reading manga, manhwa, manhua and light novels.
-
-The project focuses on delivering a clean reading experience while providing rich metadata, user libraries, authentication, bookmarks, favorites and scalable content management in Turkish Language.
-
-Unlike traditional readers, Mangile is designed with a modern architecture that separates the frontend, backend and content services, making it easier to maintain and extend.
+Mangile is a contemporary web reading platform tailored for manga, manhwa, manhua, and light novel enthusiasts. Designed with simplicity, speed, and elegance in mind, it provides a clean, ad-free environment equipped with rich metadata, personal libraries, and seamless third-party synchronization.
 
 ---
 
-## ✨ Features
+## 🌟 Why Mangile?
 
-- 📚 Manga, Manhwa and Light Novel support
-- 📖 Advanced reader experience
-- 🔖 Personal Lists
-- 🔄 Sync with Anilist & MAL
-- 👤 User authentication
-- 🔍 Powerful search
-- 🏷 Rich metadata
-- 📱 Fully responsive UI
-- ⚡ Fast page loading
-- 🌙 Switch Mode
-- 🔄 Scalable backend architecture
-- 🌍 Multi-language ready
+- **Zero Distractions:** Clean layout without intrusive advertisements, pop-ups, or clutter.
+- **All-in-One Reader:** Seamlessly switch between vertical Webtoon scrolling, classic paged manga reading, and customizable typography for Light Novels.
+- **Unified Tracking:** Keep your reading progress in sync across MyAnimeList, AniList, and MangaDex effortlessly.
+- **Rich Exploration:** Discover new series through tag-based filters, community lists, and editorial articles.
+- **Deep Personalization:** Multiple neutral color themes, dark/light modes, and custom typography settings.
 
 ---
 
-## 🛠 Tech Stack
+## ✨ Key Features
 
-### Frontend
-
-- Nuxt 4
-- TypeScript
-- Tailwind CSS
-- Nuxt UI
-
-### Backend
-
-- Go
-- REST API
-
-### Authentication
-
-- Logto
-
-### Content
-
-- Sanity CMS
-- AniList
-- MyAnimeList
-- MangaDex
+- 📚 **Comprehensive Media Support:** Manga, Manhwa, Manhua, and Light Novels in one platform.
+- 📖 **Versatile Reading Experience:**
+  - **Webtoon Mode:** Smooth, continuous vertical scrolling.
+  - **Paged Mode:** Traditional horizontal page-by-page reader.
+  - **Novel Reader:** Custom font family, font size, line height, and margin adjustments.
+- 🔄 **3-Way Cloud Synchronization:** Connect and auto-sync read chapters with MyAnimeList, AniList, and MangaDex.
+- 🔖 **Personal Library & History:**
+  - Create custom reading lists (Reading, Completed, Plan to Read, Favorites).
+  - Automatically track reading progress and resume right where you left off.
+- 🔍 **Advanced Search & Discovery:** Multi-filter explorer with genres, formats, release status, and popularity sorting.
+- 🎨 **Appearance Controls:** Choose from custom neutral accents (Mist, Slate, Stone, Olive, Taupe) with full dark and light mode support.
 
 ---
 
-## 🚀 Getting Started
+## ❓ Frequently Asked Questions (FAQ)
 
-### Clone the repository
+<details>
+<summary><strong>Is Mangile free to use?</strong></summary>
+<br />
+Yes. Mangile is completely free to use with no hidden paywalls or intrusive advertisements.
+</details>
 
-```bash
-git clone https://github.com/falsisdev/mangile.git
+<details>
+<summary><strong>How does cloud tracking (MAL, AniList & MangaDex) work?</strong></summary>
+<br />
+You can link your accounts from the Cloud Sync page. Once connected, reading progress is updated automatically as you finish chapters, or you can manually map individual series.
+</details>
 
-cd mangile
-```
+<details>
+<summary><strong>Which content formats are supported?</strong></summary>
+<br />
+Mangile supports image-based comics (Manga, Manhwa, Manhua) and text-based Light Novels formatted via rich typography.
+</details>
 
-### Install dependencies
+<details>
+<summary><strong>How can I report a broken chapter or suggest a feature?</strong></summary>
+<br />
+You can report any bugs, broken images, or submit feature requests through GitHub Issues.
+</details>
 
-```bash
-pnpm install
-```
+## 💬 Feedback & Support
 
-### Configure environment variables
+Mangile is an independently maintained project. While **external code contributions and pull requests are currently closed**, we warmly welcome user feedback, bug reports, and feature suggestions!
 
-Create a `.env` file.
-
-Example:
-
-```env
-NUXT_BACKENDBASE=
-NUXT_SANITY_PROJECT_ID=
-NUXT_SANITY_DATASET=
-
-NUXT_LOGTO_ENDPOINT=
-NUXT_LOGTO_APP_ID=
-NUXT_LOGTO_APP_SECRET=
-NUXT_LOGTO_COOKIE_ENCRYPTION_KEY=
-```
-
----
-
-### Start development server
-
-```bash
-pnpm dev
-```
-
-The application will be available at:
-
-```
-http://localhost:3000
-```
+- 🐛 **Found a bug or broken chapter?** [Open an Issue](https://github.com/falsisdev/mangile/issues)
+- 💡 **Have an idea or feature request?** Share it via [GitHub Issues](https://github.com/falsisdev/mangile/issues)
 
 ---
 
-## 🎯 Project Goals
+## 📄 License & Credits
 
-Mangile aims to provide:
-
-- A beautiful reading experience
-- Modern UI/UX
-- High performance
-- Clean architecture
-- Easy deployment
-- Extensible codebase
-- Open-source community contributions
-
----
-
-## 📸 Screenshots
-
-Coming soon.
-
----
-
-## 🗺 Roadmap
-
-- [x] Searching
-- [x] Manga Reader
-- [x] Novel Reader
-- [x] Serie Recommendations
-- [x] Article Pages
-- [x] Explore Page Filter
-- [x] User authentication
-- [x] User Profile
-- [x] List Actions
-- [x] Reading history
-- [x] Sync MAL, AniList & MangaDex
-- [ ] PWA support
-- [ ] Reading statistics
-- [ ] Metadata integration
-- [ ] Mobile application
-- [ ] Offline reading
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome.
-
-1. Fork the repository.
-2. Create a new branch.
-
-```bash
-git checkout -b feature/my-feature
-```
-
-3. Commit your changes.
-
-```bash
-git commit -m "feat: add amazing feature"
-```
-
-4. Push your branch.
-
-```bash
-git push origin feature/my-feature
-```
-
-5. Open a Pull Request.
-
----
-
-## 📄 License
-
-This project is licensed under the Apache License.
-
----
-
-## 👨‍💻 Author
-
-Developed by **Falsis**
-
-GitHub
-
-https://github.com/falsisdev
-
----
+Developed with ❤️ by **[Falsis](https://github.com/falsisdev)**. Licensed under the Apache License 2.0.
 
 <div align="center">
 
