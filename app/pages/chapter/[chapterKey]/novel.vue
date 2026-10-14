@@ -85,7 +85,7 @@ const {
     lazy: true,
     server: false,
     headers: requestHeaders,
-    watch: [chapterKey],
+    watch: [chapterKey, user],
     retry: 3,
     retryDelay: 1000
   }
@@ -119,6 +119,7 @@ const chapterOrder = (chapter: {
 }
 
 const siblingChapters = computed(() => {
+  if (isCopyrightLocked.value) return []
   const list = chapterData.value?.chapters ?? []
   return [...list].sort((a, b) => {
     const aOrder = chapterOrder(a)
@@ -463,19 +464,21 @@ definePageMeta({
   >
     <!-- OKUMA İLERLEME ÇUBUĞU -->
     <div
+      v-if="!isCopyrightLocked"
       class="fixed top-0 left-0 w-full h-1 bg-linear-to-r from-primary to-primary/60 z-50 pointer-events-none"
       :style="{ width: readingProgress + '%' }"
     />
 
     <!-- ÜST ÇUBUK (Sticky App Bar) -->
     <header
+      v-if="!isCopyrightLocked"
       class="sticky top-0 z-40 bg-default/90 backdrop-blur-xl border-b border-border/50 shadow-xs"
     >
       <div class="px-3 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 max-w-5xl mx-auto">
         <!-- Sol: Geri butonu ve Başlık Bilgisi -->
         <div class="flex items-center gap-2 min-w-0 flex-1">
           <UButton
-            :to="`/title/${chapterData?.lightNovel?.myAnimeListId}`"
+            :to="chapterData?.lightNovel?._id ? `/title/${chapterData.lightNovel._id}` : (chapterData?.lightNovel?.myAnimeListId ? `/title/${chapterData.lightNovel.myAnimeListId}` : (chapterData?.manga?._id ? `/title/${chapterData.manga._id}` : (chapterData?.manga?.myAnimeListId ? `/title/${chapterData.manga.myAnimeListId}` : '/')))"
             icon="i-lucide-arrow-left"
             size="sm"
             color="neutral"
@@ -722,7 +725,7 @@ definePageMeta({
       <!-- Telifli ve Giriş Yapılmamış Kilit Ekranı -->
       <div
         v-else-if="chapterData && isCopyrightLocked"
-        class="min-h-[60vh] flex items-center justify-center p-4"
+        class="min-h-[80vh] flex items-center justify-center p-4"
       >
         <div class="max-w-md w-full bg-elevated/70 border border-default rounded-3xl p-6 sm:p-8 text-center space-y-6 shadow-xl backdrop-blur-md">
           <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center ring-8 ring-amber-500/5">
@@ -765,7 +768,7 @@ definePageMeta({
               Giriş Yap
             </UButton>
             <UButton
-              :to="chapterData.lightNovel?._id ? `/title/${chapterData.lightNovel._id}` : (chapterData.lightNovel?.myAnimeListId ? `/title/${chapterData.lightNovel.myAnimeListId}` : '/')"
+              :to="chapterData.lightNovel?._id ? `/title/${chapterData.lightNovel._id}` : (chapterData.lightNovel?.myAnimeListId ? `/title/${chapterData.lightNovel.myAnimeListId}` : (chapterData.manga?._id ? `/title/${chapterData.manga._id}` : (chapterData.manga?.myAnimeListId ? `/title/${chapterData.manga.myAnimeListId}` : '/')))"
               color="neutral"
               variant="soft"
               size="md"

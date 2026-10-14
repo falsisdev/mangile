@@ -70,7 +70,7 @@ const {
     lazy: true,
     server: false,
     headers: requestHeaders,
-    watch: [chapterKey],
+    watch: [chapterKey, user],
     retry: 3,
     retryDelay: 1000
   }
@@ -290,6 +290,7 @@ const chapterOrder = (chapter: {
 }
 
 const siblingChapters = computed(() => {
+  if (isCopyrightLocked.value) return []
   const list = chapterData.value?.chapters ?? []
   return [...list].sort((a, b) => {
     const aOrder = chapterOrder(a)
@@ -792,7 +793,7 @@ definePageMeta({
           Giriş Yap
         </UButton>
         <UButton
-          :to="chapterData.manga?._id ? `/title/${chapterData.manga._id}` : (chapterData.manga?.myAnimeListId ? `/title/${chapterData.manga.myAnimeListId}` : '/')"
+          :to="chapterData.manga?._id ? `/title/${chapterData.manga._id}` : (chapterData.manga?.myAnimeListId ? `/title/${chapterData.manga.myAnimeListId}` : (chapterData.lightNovel?._id ? `/title/${chapterData.lightNovel._id}` : (chapterData.lightNovel?.myAnimeListId ? `/title/${chapterData.lightNovel.myAnimeListId}` : '/')))"
           color="neutral"
           variant="soft"
           size="md"
