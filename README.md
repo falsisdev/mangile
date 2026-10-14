@@ -143,12 +143,10 @@ Coming soon.
 - [x] User Profile
 - [x] List Actions
 - [x] Reading history
-- [ ] Sync MAL, AniList & MangaDex
-- [ ] Metadata integration
+- [x] Sync MAL, AniList & MangaDex
 - [ ] PWA support
 - [ ] Reading statistics
-- [ ] Community reviews
-- [ ] AI Recommendation system
+- [ ] Metadata integration
 - [ ] Mobile application
 - [ ] Offline reading
 
