@@ -71,6 +71,15 @@ export default defineNuxtConfig({
     }
   },
 
+  icon: {
+    serverBundle: {
+      collections: ['lucide']
+    },
+    clientBundle: {
+      scan: true
+    }
+  },
+
   logto: {
     fetchUserInfo: true,
     postCallbackRedirectUri: '/new-user',

@@ -1,6 +1,6 @@
 [build]
   command = "pnpm run build"
-  publish = ".output/public"
+  publish = "dist"
   SECRETS_SCAN_OMIT_KEYS = [
     "ANILIST_CLIENT_ID",
     "ANILIST_CLIENT_SECRET",
