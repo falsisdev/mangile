@@ -171,7 +171,7 @@ function startCreatingNew() {
     v-model:open="isOpen"
     title="Listeye Ekle"
     description="Seriyi kişisel listelerinize ekleyin"
-    :ui="{ content: 'sm:max-w-md' }"
+    :ui="{ content: 'sm:max-w-md max-h-[90dvh] overflow-y-auto' }"
   >
     <template #body>
       <div

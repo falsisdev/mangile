@@ -102,14 +102,17 @@ function openSearch() {
     @click="openSearch"
   />
 
-  <UModal v-model:open="isOpen">
+  <UModal
+    v-model:open="isOpen"
+    :ui="{ content: 'sm:max-w-lg max-h-[85dvh] overflow-hidden' }"
+  >
     <template #content>
       <UCommandPalette
         v-model:search-term="searchTerm"
         :loading="status === 'pending'"
         :groups="groups"
         placeholder="İçerikleri ara..."
-        class="h-80"
+        class="h-80 sm:h-96"
         @update:model-value="onSelect"
       />
     </template>

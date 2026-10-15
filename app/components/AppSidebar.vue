@@ -126,7 +126,7 @@ function toggleSidebar() {
     }"
   >
     <template #header>
-      <div class="flex flex-row items-center w-full">
+      <div class="flex flex-row items-center w-full pt-[env(safe-area-inset-top)] md:pt-0">
         <NuxtLink
           to="/"
           class="flex items-center gap-2.5 min-w-0"
@@ -228,7 +228,7 @@ function toggleSidebar() {
     </div>
 
     <template #footer>
-      <div class="w-full">
+      <div class="w-full pb-[env(safe-area-inset-bottom)] md:pb-0">
         <template v-if="user">
           <div
             v-if="!open"

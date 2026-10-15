@@ -10,7 +10,7 @@ const { isOpen, closeProfile } = useProfileModal()
     :close="false"
     :ui="{
       content:
-        'sm:max-w-xl p-0 overflow-hidden rounded-2xl bg-card shadow-2xl bg-default'
+        'sm:max-w-xl p-0 overflow-hidden rounded-2xl bg-card shadow-2xl bg-default max-h-[90dvh] overflow-y-auto'
     }"
   >
     <template #content>

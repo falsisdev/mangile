@@ -189,7 +189,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
 <template>
   <UModal v-model:open="isOpen">
     <template #content>
-      <UCard class="w-full max-w-2xl overflow-hidden rounded-2xl">
+      <UCard class="w-full max-w-2xl overflow-hidden rounded-2xl max-h-[90dvh] overflow-y-auto">
         <template #header>
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">

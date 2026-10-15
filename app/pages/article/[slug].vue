@@ -169,7 +169,10 @@ useHead(() => ({
       {{ article?.description }}
     </p>
 
-    <div v-html="renderedContent" />
+    <div
+      class="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-foreground break-words"
+      v-html="renderedContent"
+    />
 
     <Transition
       enter-active-class="transition duration-300 ease-out"
@@ -185,7 +188,7 @@ useHead(() => ({
         size="sm"
         color="primary"
         variant="soft"
-        class="fixed bottom-6 right-6 sm:bottom-12 sm:right-12 rounded-full shadow-xl z-50"
+        class="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-4 sm:bottom-12 sm:right-12 rounded-full shadow-xl z-50 touch-manipulation active:scale-95"
         aria-label="Başa Dön"
         @click="scrollToTop"
       />

@@ -34,7 +34,7 @@ withDefaults(
       v-for="slide in slides"
       :key="slide.title"
     >
-      <section class="relative h-[420px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl">
+      <section class="relative h-[340px] xs:h-[380px] sm:h-[440px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl">
         <div
           class="absolute inset-0 bg-cover bg-center slide-bg-layer"
           :style="{
@@ -124,7 +124,7 @@ withDefaults(
                 :to="'/title/' + slide.id"
                 size="sm"
                 icon="i-lucide-info"
-                class="cursor-pointer sm:hidden"
+                class="cursor-pointer sm:hidden touch-manipulation active:scale-95 transition-transform"
                 variant="solid"
                 color="neutral"
               >
@@ -134,7 +134,7 @@ withDefaults(
                 :to="'/title/' + slide.id"
                 size="lg"
                 icon="i-lucide-info"
-                class="cursor-pointer hidden sm:inline-flex"
+                class="cursor-pointer hidden sm:inline-flex touch-manipulation active:scale-95 transition-transform"
                 variant="solid"
                 color="neutral"
               >
@@ -142,22 +142,22 @@ withDefaults(
               </UButton>
 
               <UButton
-                :to="'/synch?mal_id=' + slide.id"
+                :to="'/sync?mal_id=' + slide.id"
                 size="sm"
                 color="neutral"
                 variant="subtle"
                 icon="i-lucide-cloud-backup"
-                class="cursor-pointer sm:hidden"
+                class="cursor-pointer sm:hidden touch-manipulation active:scale-95 transition-transform"
               >
                 Senkronize Et
               </UButton>
               <UButton
-                :to="'/synch?mal_id=' + slide.id"
+                :to="'/sync?mal_id=' + slide.id"
                 size="lg"
                 color="neutral"
                 variant="subtle"
                 icon="i-lucide-cloud-backup"
-                class="cursor-pointer hidden sm:inline-flex"
+                class="cursor-pointer hidden sm:inline-flex touch-manipulation active:scale-95 transition-transform"
               >
                 Senkronize Et
               </UButton>

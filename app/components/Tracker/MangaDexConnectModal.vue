@@ -45,7 +45,7 @@ async function handleConnect() {
   <UModal
     v-model:open="open"
     :ui="{
-      content: 'sm:max-w-md bg-neutral-900 border border-neutral-800'
+      content: 'sm:max-w-md bg-neutral-900 border border-neutral-800 max-h-[90dvh] overflow-y-auto'
     }"
   >
     <template #content>

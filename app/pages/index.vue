@@ -110,7 +110,7 @@ const titlesByTagItems = computed(() =>
   <main>
     <USkeleton
       v-if="heroPending"
-      class="relative h-[320px] xs:h-[360px] sm:h-[420px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl"
+      class="relative h-[340px] xs:h-[380px] sm:h-[440px] md:h-[500px] lg:h-[560px] xl:h-[620px] overflow-hidden rounded-2xl md:rounded-3xl"
     />
     <HeroSlider
       v-else

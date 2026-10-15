@@ -23,8 +23,8 @@ const isSidebarOpen = useSidebar()
 
 const coverBreakpoints = computed(() => {
   const baseBreakpoints = {
-    0: { slidesPerView: 2.6, spaceBetween: 10 },
-    360: { slidesPerView: 2.8, spaceBetween: 10 },
+    0: { slidesPerView: 2.3, spaceBetween: 10 },
+    360: { slidesPerView: 2.6, spaceBetween: 10 },
     420: { slidesPerView: 3.2, spaceBetween: 12 },
     520: { slidesPerView: 3.8, spaceBetween: 12 },
     640: { slidesPerView: 4.4, spaceBetween: 14 },
@@ -88,7 +88,7 @@ const swiperBreakpoints = computed(() =>
   <swiper-container
     :key="`${variant}-${String(isSidebarOpen)}`"
     :loop="false"
-    :slides-per-view="variant === 'chapter' ? 1.15 : 2.6"
+    :slides-per-view="variant === 'chapter' ? 1.15 : 2.3"
     :space-between="10"
     :breakpoints="swiperBreakpoints"
     :mousewheel="{ forceToAxis: true, releaseOnEdges: true }"

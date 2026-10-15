@@ -757,7 +757,8 @@ onUnmounted(() => {
             </div>
             <div
               v-else-if="firstChapter || lastChapter"
-              class="px-3 sm:px-4 pt-2.5 sm:pt-3 grid grid-cols-2 gap-2"
+              class="px-3 sm:px-4 pt-2.5 sm:pt-3 grid gap-2"
+              :class="firstChapter && lastChapter && lastChapter._key !== firstChapter._key ? 'grid-cols-2' : 'grid-cols-1'"
             >
               <UButton
                 v-if="firstChapter"
@@ -766,7 +767,7 @@ onUnmounted(() => {
                 variant="solid"
                 size="sm"
                 icon="i-lucide-play"
-                class="justify-center rounded-xl font-bold"
+                class="justify-center rounded-xl font-bold touch-manipulation active:scale-[0.98] transition-transform"
               >
                 Baştan Oku
               </UButton>
@@ -777,7 +778,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="sm"
                 icon="i-lucide-fast-forward"
-                class="justify-center rounded-xl font-bold"
+                class="justify-center rounded-xl font-bold touch-manipulation active:scale-[0.98] transition-transform"
               >
                 Son Bölüm
               </UButton>
@@ -788,7 +789,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="sm"
                 icon="i-lucide-bookmark-plus"
-                class="justify-center rounded-xl font-bold"
+                class="justify-center rounded-xl font-bold touch-manipulation active:scale-[0.98] transition-transform"
                 @click="handleOpenAddToList"
               >
                 Listeye Ekle
@@ -798,7 +799,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="sm"
                 icon="i-lucide-activity"
-                class="justify-center rounded-xl font-bold"
+                class="justify-center rounded-xl font-bold touch-manipulation active:scale-[0.98] transition-transform"
                 @click="handleOpenTracker"
               >
                 Takipçiler

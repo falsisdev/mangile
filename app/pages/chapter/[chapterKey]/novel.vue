@@ -472,7 +472,7 @@ definePageMeta({
     <!-- ÜST ÇUBUK (Sticky App Bar) -->
     <header
       v-if="!isCopyrightLocked"
-      class="sticky top-0 z-40 bg-default/90 backdrop-blur-xl border-b border-border/50 shadow-xs"
+      class="sticky top-0 z-40 bg-default/90 backdrop-blur-xl border-b border-border/50 shadow-xs pt-[env(safe-area-inset-top)]"
     >
       <div class="px-3 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 max-w-5xl mx-auto">
         <!-- Sol: Geri butonu ve Başlık Bilgisi -->

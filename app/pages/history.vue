@@ -216,7 +216,7 @@ useSeoMeta({
       </div>
 
       <!-- Quick Action Buttons -->
-      <div class="flex items-center gap-2 w-full sm:w-auto">
+      <div class="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
         <!-- Local Tab Transfer Action -->
         <UButton
           v-if="activeTab === 'local' && user"
