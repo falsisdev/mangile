@@ -81,7 +81,10 @@ useHead({
     { name: 'mobile-web-app-capable', content: 'yes' },
     { name: 'format-detection', content: 'telephone=no' }
   ],
-  link: [{ rel: 'icon', href: '/favicon.ico' }],
+  link: [
+    { rel: 'icon', href: '/favicon.ico' },
+    { rel: 'apple-touch-icon', href: '/apple-touch-icon-180x180.png' }
+  ],
   htmlAttrs: { lang: 'tr' }
 })
 
@@ -99,6 +102,7 @@ useSeoMeta({
 </script>
 
 <template>
+  <VitePwaManifest />
   <UApp v-if="route.meta.isLayouted !== false">
     <div class="flex h-[100dvh] w-screen overflow-hidden bg-background">
       <AppSidebar v-model:open="openSidebar" />
@@ -226,4 +230,6 @@ useSeoMeta({
     v-else
     :transition="{ name: 'page' }"
   />
+  <PwaUpdatePrompt />
+  <PwaInstallBanner />
 </template>

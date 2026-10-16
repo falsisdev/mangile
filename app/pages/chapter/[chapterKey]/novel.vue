@@ -91,6 +91,59 @@ const {
   }
 )
 
+const {
+  isChapterDownloaded,
+  isDownloading,
+  downloadProgress,
+  downloadChapter,
+  removeChapter,
+  getOfflineChapter
+} = useOfflineReader()
+
+watch(
+  [chapterData, pending],
+  ([data, isPending]) => {
+    if (!isPending && !data) {
+      const cached = getOfflineChapter<ChapterResponse>(chapterKey.value)
+      if (cached) {
+        chapterData.value = cached
+      }
+    }
+  },
+  { immediate: true }
+)
+
+const isDownloaded = computed(() => isChapterDownloaded(chapterKey.value))
+const isDownloadingThis = computed(() => !!isDownloading.value[chapterKey.value])
+const progressPercentage = computed(() => downloadProgress.value[chapterKey.value] || 0)
+
+const downloadButtonLabel = computed(() => {
+  if (isDownloadingThis.value) {
+    return `%${progressPercentage.value}`
+  }
+  return 'İndir'
+})
+
+async function onDownloadOffline() {
+  if (!chapterData.value) return
+  await downloadChapter({
+    chapterKey: chapterKey.value,
+    title: chapterData.value.title,
+    chapterNumber: chapterData.value.chapterNumber,
+    volumeNumber: chapterData.value.volumeNumber,
+    mangaTitle: chapterData.value.lightNovel?.title || chapterData.value.manga?.title || 'Roman',
+    mangaId: chapterData.value.lightNovel?._id || chapterData.value.manga?._id,
+    coverImage: chapterData.value.lightNovel?.coverImage?.url || chapterData.value.manga?.coverImage?.url,
+    format: 'novel',
+    pages: [],
+    chapterData: chapterData.value as unknown as Record<string, unknown>
+  })
+}
+
+async function onRemoveOffline() {
+  await removeChapter(chapterKey.value)
+}
+
 const isCopyrightLocked = computed(() => {
   const isCopy = !!(chapterData.value?.lightNovel?.isCopyrighted || chapterData.value?.manga?.isCopyrighted)
   return isCopy && !user.value
@@ -496,8 +549,30 @@ definePageMeta({
           </div>
         </div>
 
-        <!-- Sağ: Yazı Boyutu, Tema ve Ayarlar Butonları -->
+        <!-- Sağ: İndirme, Yazı Boyutu, Tema ve Ayarlar Butonları -->
         <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <UButton
+            v-if="isDownloaded"
+            icon="i-lucide-check-circle"
+            size="xs"
+            color="success"
+            variant="subtle"
+            label="İndirildi"
+            class="font-medium"
+            @click="onRemoveOffline"
+          />
+          <UButton
+            v-else
+            :loading="isDownloadingThis"
+            :icon="isDownloadingThis ? undefined : 'i-lucide-download'"
+            size="xs"
+            color="neutral"
+            variant="subtle"
+            :label="downloadButtonLabel"
+            class="font-medium"
+            @click="onDownloadOffline"
+          />
+
           <UButtonGroup size="xs">
             <UButton
               icon="i-lucide-a-arrow-down"

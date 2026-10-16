@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.16.0",
+    "@vite-pwa/nuxt": "^1.1.1",
     "eslint": "^10.6.0",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.5"

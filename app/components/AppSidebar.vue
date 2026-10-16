@@ -7,6 +7,7 @@ const route = useRoute()
 const { isMobile } = useDevice()
 const { user } = useAuthUser()
 const { openProfile } = useProfileModal()
+const { canInstall, promptInstall } = usePwaInstall()
 
 watch(
   open,
@@ -68,6 +69,12 @@ const libraryItems: NavigationMenuItem[] = [
     label: 'Okuma Geçmişi',
     icon: 'i-lucide-history',
     to: '/history',
+    onSelect: closeOnMobile
+  },
+  {
+    label: 'İndirilenler',
+    icon: 'i-lucide-download',
+    to: '/offline',
     onSelect: closeOnMobile
   }
 ]
@@ -229,6 +236,43 @@ function toggleSidebar() {
 
     <template #footer>
       <div class="w-full pb-[env(safe-area-inset-bottom)] md:pb-0">
+        <!-- PWA Install Button when installable -->
+        <div
+          v-if="canInstall"
+          class="pb-2"
+        >
+          <UButton
+            v-if="open"
+            size="xs"
+            color="primary"
+            variant="soft"
+            icon="i-lucide-download"
+            label="Uygulamayı Yükle"
+            block
+            class="font-medium"
+            @click="void promptInstall()"
+          />
+          <div
+            v-else
+            class="flex justify-center"
+          >
+            <UTooltip
+              text="Uygulamayı Yükle"
+              :content="{ side: 'right' }"
+            >
+              <UButton
+                size="sm"
+                color="primary"
+                variant="soft"
+                icon="i-lucide-download"
+                class="rounded-lg shrink-0"
+                aria-label="Uygulamayı Yükle"
+                @click="void promptInstall()"
+              />
+            </UTooltip>
+          </div>
+        </div>
+
         <template v-if="user">
           <div
             v-if="!open"
