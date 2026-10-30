@@ -247,11 +247,11 @@ async function onSubmit() {
       <!-- 4. Kayıt Formu Durumu -->
       <UCard
         v-else
-        class="border border-border/60 shadow-2xl backdrop-blur-md bg-card/80 overflow-hidden"
+        class="overflow-hidden"
       >
         <template #header>
           <div class="space-y-1 text-center sm:text-left">
-            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary mb-2">
+            <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-(--os-badge-radius) text-xs font-semibold bg-primary/10 text-primary mb-2">
               <UIcon
                 name="i-lucide-sparkles"
                 class="w-3.5 h-3.5"
@@ -272,7 +272,7 @@ async function onSubmit() {
           @submit.prevent="onSubmit"
         >
           <!-- Canlı Önizleme Kartı -->
-          <div class="relative rounded-xl border border-border/60 p-4 bg-muted/20 flex items-center gap-4">
+          <div class="relative os-panel p-4 flex items-center gap-4">
             <UAvatar
               :src="form.avatar || undefined"
               :alt="form.name || 'Önizleme'"

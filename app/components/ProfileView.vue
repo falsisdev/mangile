@@ -197,42 +197,61 @@ function handleBack() {
   <div class="w-full text-foreground select-none">
     <div
       v-if="!user"
-      class="p-8 sm:p-12 text-center space-y-4"
+      class="p-6 sm:p-10 space-y-6"
+      :class="props.isModal ? '' : 'os-card'"
     >
-      <div
-        class="size-16 rounded-2xl bg-muted flex items-center justify-center mx-auto text-muted-foreground"
-      >
-        <UIcon
-          name="i-lucide-user-x"
-          class="size-8"
-        />
+      <div class="text-center space-y-4">
+        <div
+          class="size-16 rounded-(--os-card-radius) bg-muted flex items-center justify-center mx-auto text-muted-foreground"
+        >
+          <UIcon
+            name="i-lucide-user-x"
+            class="size-8"
+          />
+        </div>
+        <div class="space-y-1">
+          <h2 class="text-lg font-bold">
+            Oturum Bulunamadı
+          </h2>
+          <p class="text-sm text-muted">
+            Profil bilgilerinizi görüntülemek için lütfen giriş yapın.
+          </p>
+        </div>
+        <div class="pt-2">
+          <UButton
+            to="/sign-in"
+            :external="true"
+            label="Giriş Yap"
+            icon="i-lucide-log-in"
+            color="primary"
+            size="md"
+          />
+        </div>
       </div>
-      <div class="space-y-1">
-        <h2 class="text-lg font-bold">
-          Oturum Bulunamadı
-        </h2>
-        <p class="text-sm text-muted">
-          Profil bilgilerinizi görüntülemek için lütfen giriş yapın.
-        </p>
-      </div>
-      <div class="pt-2">
-        <UButton
-          to="/sign-in"
-          :external="true"
-          label="Giriş Yap"
-          icon="i-lucide-log-in"
-          color="primary"
-          size="md"
-        />
+
+      <div class="space-y-2 pt-2 border-t border-default/20">
+        <h3
+          class="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5"
+        >
+          <UIcon
+            name="i-lucide-palette"
+            class="size-3.5 text-primary"
+          />
+          Arayüz & Tema Tercihleri
+        </h3>
+        <div class="p-3.5 os-panel">
+          <AppThemePopover mode="inline" />
+        </div>
       </div>
     </div>
 
     <div
       v-else
-      class="overflow-hidden rounded-2xl bg-card"
+      class="overflow-hidden"
+      :class="props.isModal ? '' : 'os-card'"
     >
       <div
-        class="relative h-56 sm:h-44 md:h-48 w-full overflow-hidden bg-muted/40"
+        class="relative h-52 sm:h-44 md:h-48 w-full overflow-hidden bg-muted/40"
       >
         <img
           v-if="!isEditing && user.banner"
@@ -265,7 +284,7 @@ function handleBack() {
         </div>
 
         <div
-          class="absolute inset-0 bg-linear-to-t from-card via-card/20 to-transparent"
+          class="absolute inset-0 bg-linear-to-t from-(--os-card-bg) via-(--os-card-bg)/30 to-transparent"
         />
 
         <div class="absolute top-3 left-3 z-10 flex items-center gap-2">
@@ -275,7 +294,7 @@ function handleBack() {
             variant="soft"
             color="neutral"
             size="sm"
-            class="rounded-full backdrop-blur-md bg-background/70 hover:bg-background shadow-sm"
+            class="rounded-(--os-btn-radius) backdrop-blur-md bg-background/70 hover:bg-background shadow-sm"
             aria-label="Geri Dön"
             @click="handleBack"
           />
@@ -289,7 +308,7 @@ function handleBack() {
             size="xs"
             variant="soft"
             color="neutral"
-            class="rounded-full backdrop-blur-md bg-background/80 shadow-sm"
+            class="rounded-(--os-btn-radius) backdrop-blur-md bg-background/80 shadow-sm"
             @click="startEditing"
           />
           <UButton
@@ -298,7 +317,7 @@ function handleBack() {
             variant="soft"
             color="neutral"
             size="sm"
-            class="rounded-full backdrop-blur-md bg-background/70 hover:bg-background shadow-sm"
+            class="rounded-(--os-btn-radius) backdrop-blur-md bg-background/70 hover:bg-background shadow-sm"
             aria-label="Kapat"
             @click="emit('close')"
           />
@@ -307,7 +326,7 @@ function handleBack() {
 
       <div class="relative px-4 sm:px-6 pb-6 pt-0 space-y-6">
         <div
-          class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-15 sm:-mt-17"
+          class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-14 sm:-mt-16"
         >
           <div class="flex items-end gap-3.5">
             <div class="relative group">
@@ -320,12 +339,12 @@ function handleBack() {
                 :alt="user.name"
                 size="3xl"
                 icon="i-lucide-user"
-                class="border-5 border-bg ring-card bg-muted size-20 sm:size-24 rounded-3xl"
+                class="border-4 border-background ring-card bg-muted size-20 sm:size-24 rounded-(--os-card-radius)"
               />
               <button
                 v-if="isEditing"
                 type="button"
-                class="absolute inset-0 rounded-2xl bg-black/60 backdrop-blur-xs flex flex-col items-center justify-center text-white text-[10px] font-medium opacity-90 hover:opacity-100 transition-opacity"
+                class="absolute inset-0 rounded-(--os-card-radius) bg-black/60 backdrop-blur-xs flex flex-col items-center justify-center text-white text-[10px] font-medium opacity-90 hover:opacity-100 transition-opacity"
                 @click="generateRandomAvatar"
               >
                 <UIcon
@@ -336,9 +355,7 @@ function handleBack() {
               </button>
             </div>
 
-            <div
-              class="space-y-1 pb-1 bg-default -ml-4 rounded-tr-xl px-3 pt-2"
-            >
+            <div class="space-y-1 pb-1">
               <div class="flex items-center gap-2 flex-wrap">
                 <h1
                   class="text-xl sm:text-2xl font-black tracking-tight text-foreground"
@@ -349,7 +366,7 @@ function handleBack() {
                   :color="roleConfig.color"
                   variant="solid"
                   size="sm"
-                  class="rounded-lg px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1 shadow-xs"
+                  class="rounded-(--os-badge-radius) px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1 shadow-xs"
                 >
                   <UIcon
                     :name="roleConfig.icon"
@@ -361,7 +378,7 @@ function handleBack() {
                   color="success"
                   variant="solid"
                   size="sm"
-                  class="rounded-lg px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1 shadow-xs"
+                  class="rounded-(--os-badge-radius) px-2 py-0.5 text-[10px] font-bold inline-flex items-center gap-1 shadow-xs"
                 >
                   <UIcon
                     name="i-lucide-check-circle-2"
@@ -372,7 +389,6 @@ function handleBack() {
               </div>
               <div class="flex items-center gap-2 text-xs text-muted">
                 <span>@{{ user.username || "üye" }}</span>
-                <span class="size-1 rounded-full bg-muted-foreground/4" />
               </div>
             </div>
           </div>
@@ -380,7 +396,7 @@ function handleBack() {
 
         <div
           v-if="isEditing"
-          class="p-4 sm:p-5 rounded-2xl bg-muted/30 space-y-4"
+          class="p-4 sm:p-5 os-panel space-y-4"
         >
           <div class="flex items-center justify-between pb-2">
             <span
@@ -483,7 +499,6 @@ function handleBack() {
               variant="ghost"
               color="neutral"
               size="sm"
-              class="rounded-xl"
               :disabled="isSaving"
               @click="cancelEditing"
             />
@@ -492,7 +507,6 @@ function handleBack() {
               icon="i-lucide-check"
               color="primary"
               size="sm"
-              class="rounded-xl"
               :loading="isSaving"
               @click="handleSave"
             />
@@ -515,13 +529,13 @@ function handleBack() {
             </h3>
             <div
               v-if="user.bio"
-              class="p-3.5 rounded-2xl bg-muted/25 text-sm text-foreground/90 leading-relaxed font-normal"
+              class="p-3.5 os-panel text-sm text-foreground/90 leading-relaxed font-normal"
             >
               {{ user.bio }}
             </div>
             <div
               v-else
-              class="p-3.5 rounded-2xl bg-muted/15 text-xs text-muted flex items-center justify-between"
+              class="p-3.5 os-panel text-xs text-muted flex items-center justify-between"
             >
               <span>Henüz bir biyografi eklenmemiş.</span>
               <button
@@ -551,11 +565,11 @@ function handleBack() {
             <div class="grid grid-cols-3 gap-2.5 sm:gap-3">
               <NuxtLink
                 to="/lists"
-                class="group p-3 rounded-2xl bg-muted/25 hover:bg-muted/45 transition-all flex flex-col items-center justify-center text-center gap-1"
+                class="group p-3 os-card-interactive flex flex-col items-center justify-center text-center gap-1"
                 @click="props.isModal ? emit('close') : undefined"
               >
                 <div
-                  class="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
+                  class="size-8 rounded-(--os-inner-radius) bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
                 >
                   <UIcon
                     name="i-lucide-library"
@@ -570,11 +584,11 @@ function handleBack() {
 
               <NuxtLink
                 to="/history"
-                class="group p-3 rounded-2xl bg-muted/25 hover:bg-muted/45 transition-all flex flex-col items-center justify-center text-center gap-1"
+                class="group p-3 os-card-interactive flex flex-col items-center justify-center text-center gap-1"
                 @click="props.isModal ? emit('close') : undefined"
               >
                 <div
-                  class="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
+                  class="size-8 rounded-(--os-inner-radius) bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
                 >
                   <UIcon
                     name="i-lucide-history"
@@ -589,11 +603,11 @@ function handleBack() {
 
               <NuxtLink
                 to="/sync"
-                class="group p-3 rounded-2xl bg-muted/25 hover:bg-muted/45 transition-all flex flex-col items-center justify-center text-center gap-1"
+                class="group p-3 os-card-interactive flex flex-col items-center justify-center text-center gap-1"
                 @click="props.isModal ? emit('close') : undefined"
               >
                 <div
-                  class="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
+                  class="size-8 rounded-(--os-inner-radius) bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform"
                 >
                   <UIcon
                     name="i-lucide-cloud-backup"
@@ -605,6 +619,22 @@ function handleBack() {
                 </span>
                 <span class="text-[10px] text-muted font-medium">Senkron</span>
               </NuxtLink>
+            </div>
+          </div>
+
+          <!-- Arayüz & Tema Tercihleri -->
+          <div class="space-y-2">
+            <h3
+              class="text-xs font-bold uppercase tracking-wider text-muted flex items-center gap-1.5"
+            >
+              <UIcon
+                name="i-lucide-palette"
+                class="size-3.5 text-primary"
+              />
+              Arayüz & Tema Tercihleri
+            </h3>
+            <div class="p-3.5 os-panel">
+              <AppThemePopover mode="inline" />
             </div>
           </div>
 
@@ -631,7 +661,7 @@ function handleBack() {
 
             <div class="space-y-2">
               <!-- MyAnimeList -->
-              <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
+              <div class="p-3 os-panel flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <TrackerBrandIcon
                     provider="mal"
@@ -653,7 +683,7 @@ function handleBack() {
                   size="xs"
                   color="error"
                   variant="ghost"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="handleDisconnect('mal')"
                 />
                 <UButton
@@ -662,13 +692,13 @@ function handleBack() {
                   size="xs"
                   color="primary"
                   variant="soft"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="connectProvider('mal')"
                 />
               </div>
 
               <!-- AniList -->
-              <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
+              <div class="p-3 os-panel flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <TrackerBrandIcon
                     provider="anilist"
@@ -690,7 +720,7 @@ function handleBack() {
                   size="xs"
                   color="error"
                   variant="ghost"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="handleDisconnect('anilist')"
                 />
                 <UButton
@@ -699,13 +729,13 @@ function handleBack() {
                   size="xs"
                   color="primary"
                   variant="soft"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="connectProvider('anilist')"
                 />
               </div>
 
               <!-- MangaDex -->
-              <div class="p-3 rounded-2xl bg-muted/20 border border-default/20 flex items-center justify-between">
+              <div class="p-3 os-panel flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <TrackerBrandIcon
                     provider="mangadex"
@@ -727,7 +757,7 @@ function handleBack() {
                   size="xs"
                   color="error"
                   variant="ghost"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="handleDisconnect('mangadex')"
                 />
                 <UButton
@@ -736,7 +766,7 @@ function handleBack() {
                   size="xs"
                   color="primary"
                   variant="soft"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="void (mangaDexModalOpen = true)"
                 />
               </div>
@@ -753,7 +783,7 @@ function handleBack() {
               />
               Hesap & Güvenlik
             </h3>
-            <div class="p-3.5 rounded-2xl bg-muted/20 space-y-2.5 mb-10">
+            <div class="p-3.5 os-panel space-y-2.5">
               <div class="flex items-center justify-between gap-2 text-xs">
                 <span class="text-muted flex items-center gap-1.5">
                   <UIcon
@@ -792,7 +822,6 @@ function handleBack() {
                   :color="isRegistered ? 'success' : 'warning'"
                   variant="subtle"
                   size="xs"
-                  class="rounded-md"
                 >
                   {{ isRegistered ? "Aktif Profil" : "Kayıt Bekleniyor" }}
                 </UBadge>
@@ -800,7 +829,7 @@ function handleBack() {
             </div>
             <div
               v-if="!isEditing"
-              class="absolute bottom-5 right-7"
+              class="flex items-center justify-end gap-2 pt-2"
             >
               <UButton
                 v-if="!isRegistered"

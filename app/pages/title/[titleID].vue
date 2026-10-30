@@ -615,13 +615,13 @@ onUnmounted(() => {
         v-if="status === 'pending'"
         class="space-y-8"
       >
-        <USkeleton class="h-64 md:h-96 w-full rounded-3xl" />
+        <USkeleton class="h-64 md:h-96 w-full rounded-(--os-hero-radius)" />
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div class="space-y-4">
             <USkeleton
-              class="h-72 w-full rounded-2xl mx-auto max-w-[240px] md:max-w-none"
+              class="h-72 w-full rounded-(--os-card-radius) mx-auto max-w-[240px] md:max-w-none"
             />
-            <USkeleton class="h-10 w-full rounded-xl" />
+            <USkeleton class="h-10 w-full rounded-(--os-btn-radius)" />
           </div>
 
           <div class="md:col-span-3 space-y-4">
@@ -661,13 +661,13 @@ onUnmounted(() => {
               variant="ghost"
               size="lg"
               square
-              class="absolute top-3 left-3 z-30 rounded-full bg-black/40 text-white backdrop-blur-md ring-1 ring-white/20 hover:bg-black/55"
+              class="absolute top-3 left-3 z-30 rounded-(--os-btn-radius) bg-black/40 text-white backdrop-blur-md ring-1 ring-white/20 hover:bg-black/55"
               aria-label="Geri dön"
               @click="router.back()"
             />
             <div class="px-3 sm:px-4 -mt-20 sm:-mt-24 relative z-20 flex gap-3 sm:gap-4 items-end">
               <div class="relative w-24 sm:w-28 shrink-0">
-                <div class="aspect-2/3 rounded-xl overflow-hidden bg-background ring-2 ring-background/50 shadow-xl">
+                <div class="aspect-2/3 os-cover-card ring-2 ring-background/50 shadow-xl">
                   <img
                     :src="serie.cover || serie.anilistCover"
                     class="w-full h-full object-cover"
@@ -693,7 +693,7 @@ onUnmounted(() => {
                 >
                   {{ serie.type || 'Manga' }}
                 </UBadge>
-                <h1 class="text-base sm:text-xl font-extrabold text-foreground leading-tight line-clamp-2 bg-background/85 backdrop-blur rounded-md px-1.5 py-0.5 sm:px-2 sm:py-1">
+                <h1 class="text-base sm:text-xl font-extrabold text-foreground leading-tight line-clamp-2 bg-background/85 backdrop-blur rounded-(--os-inner-radius) px-1.5 py-0.5 sm:px-2 sm:py-1">
                   {{ serie.title }}
                 </h1>
                 <p
@@ -705,7 +705,7 @@ onUnmounted(() => {
               </div>
             </div>
             <div class="px-3 sm:px-4 pt-2.5 sm:pt-3 flex flex-wrap gap-1.5 sm:gap-2 items-center">
-              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
+              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-(--os-badge-radius) os-panel text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
                 <UIcon
                   name="i-lucide-star"
                   class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-500 fill-current"
@@ -713,7 +713,7 @@ onUnmounted(() => {
                 <span>{{ serie.anilistScore ? serie.anilistScore.toFixed(1) : '-' }}</span>
                 <span class="text-[9px] sm:text-[10px] text-muted-foreground font-normal">AniList</span>
               </div>
-              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
+              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-(--os-badge-radius) os-panel text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
                 <UIcon
                   name="i-lucide-star"
                   class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-500 fill-current"
@@ -721,7 +721,7 @@ onUnmounted(() => {
                 <span>{{ serie.malScore || '-' }}</span>
                 <span class="text-[9px] sm:text-[10px] text-muted-foreground font-normal">MAL</span>
               </div>
-              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-default/30 shadow text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
+              <div class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-(--os-badge-radius) os-panel text-[11px] sm:text-xs font-bold flex items-center gap-1 sm:gap-1.5">
                 <UIcon
                   name="i-lucide-chart-no-axes-column-increasing"
                   class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary fill-current"
@@ -734,7 +734,7 @@ onUnmounted(() => {
                 :color="tag === 'Ödüllü' ? 'warning' : tag === 'Vahşet' || tag === 'Cinsellik' ? 'error' : tag === 'Adaptasyon' ? 'info' : 'neutral'"
                 variant="subtle"
                 size="xs"
-                class="rounded-full px-2 text-[10px] sm:text-xs"
+                class="px-2 text-[10px] sm:text-xs"
               >
                 {{ tag }}
               </UBadge>
@@ -750,7 +750,7 @@ onUnmounted(() => {
                 variant="solid"
                 size="sm"
                 icon="i-lucide-lock"
-                class="w-full justify-center rounded-xl font-bold"
+                class="w-full justify-center font-bold"
               >
                 Okumak İçin Giriş Yap
               </UButton>
@@ -767,7 +767,7 @@ onUnmounted(() => {
                 variant="solid"
                 size="sm"
                 icon="i-lucide-play"
-                class="justify-center rounded-xl font-bold touch-manipulation active:scale-[0.98] transition-transform"
+                class="justify-center font-bold touch-manipulation active:scale-[0.98] transition-transform"
               >
                 Baştan Oku
               </UButton>
@@ -778,7 +778,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="sm"
                 icon="i-lucide-fast-forward"
-                class="justify-center rounded-xl font-bold touch-manipulation active:scale-[0.98] transition-transform"
+                class="justify-center font-bold touch-manipulation active:scale-[0.98] transition-transform"
               >
                 Son Bölüm
               </UButton>
@@ -789,7 +789,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="sm"
                 icon="i-lucide-bookmark-plus"
-                class="justify-center rounded-xl font-bold touch-manipulation active:scale-[0.98] transition-transform"
+                class="justify-center font-bold touch-manipulation active:scale-[0.98] transition-transform"
                 @click="handleOpenAddToList"
               >
                 Listeye Ekle
@@ -799,7 +799,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="sm"
                 icon="i-lucide-activity"
-                class="justify-center rounded-xl font-bold touch-manipulation active:scale-[0.98] transition-transform"
+                class="justify-center font-bold touch-manipulation active:scale-[0.98] transition-transform"
                 @click="handleOpenTracker"
               >
                 Takipçiler
@@ -809,7 +809,7 @@ onUnmounted(() => {
 
           <div class="px-4 space-y-5">
             <div
-              class="space-y-2 bg-muted/20 p-4 rounded-2xl ring-1 ring-default/20"
+              class="space-y-2 os-panel p-4"
             >
               <h3
                 class="text-sm font-bold text-foreground flex items-center gap-2"
@@ -851,7 +851,7 @@ onUnmounted(() => {
 
             <div
               v-if="serie.notes && serie.notes.length"
-              class="space-y-2 bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl"
+              class="space-y-2 bg-amber-500/10 border border-amber-500/20 p-4 rounded-(--os-card-radius)"
             >
               <h3 class="text-sm font-bold text-amber-500 flex items-center gap-2">
                 <UIcon
@@ -903,7 +903,7 @@ onUnmounted(() => {
                     color="neutral"
                     variant="soft"
                     size="md"
-                    class="rounded-lg font-bold px-2.5 py-0.5"
+                    class="font-bold px-2.5 py-0.5"
                   >
                     {{ totalChaptersCount }} Bölüm
                   </UBadge>
@@ -913,7 +913,7 @@ onUnmounted(() => {
                     color="warning"
                     variant="subtle"
                     size="md"
-                    class="rounded-lg font-bold gap-1 px-2 py-0.5"
+                    class="font-bold gap-1 px-2 py-0.5"
                   >
                     <UIcon
                       name="i-lucide-lock"
@@ -929,7 +929,7 @@ onUnmounted(() => {
                   variant="ghost"
                   size="xs"
                   :icon="chapterSortOrder === 'asc' ? 'i-lucide-arrow-up-narrow-wide' : 'i-lucide-arrow-down-wide-narrow'"
-                  class="rounded-lg font-semibold"
+                  class="font-semibold"
                   @click="void (chapterSortOrder = chapterSortOrder === 'asc' ? 'desc' : 'asc')"
                 >
                   {{ chapterSortOrder === 'asc' ? 'Eski' : 'Yeni' }}
@@ -939,9 +939,9 @@ onUnmounted(() => {
               <!-- Telifli ve Giriş Yapılmamış Kilit Ekranı -->
               <div
                 v-if="isContentLocked"
-                class="flex flex-col items-center justify-center py-10 px-4 text-center rounded-2xl border border-dashed border-border/80 bg-muted/20 my-2"
+                class="flex flex-col items-center justify-center py-10 px-4 text-center rounded-(--os-card-radius) border border-dashed border-border/80 bg-muted/20 my-2"
               >
-                <div class="p-3 rounded-2xl bg-amber-500/10 text-amber-500 mb-3 ring-8 ring-amber-500/5">
+                <div class="p-3 rounded-(--os-card-radius) bg-amber-500/10 text-amber-500 mb-3 ring-8 ring-amber-500/5">
                   <UIcon
                     name="i-lucide-lock"
                     class="w-7 h-7"
@@ -960,7 +960,7 @@ onUnmounted(() => {
                   color="primary"
                   variant="solid"
                   size="sm"
-                  class="rounded-xl font-bold px-4"
+                  class="font-bold px-4"
                 >
                   Giriş Yap
                 </UButton>
@@ -974,7 +974,7 @@ onUnmounted(() => {
                   size="xs"
                   color="neutral"
                   variant="outline"
-                  class="w-full rounded-lg"
+                  class="w-full"
                   clearable
                 />
 
@@ -1009,7 +1009,7 @@ onUnmounted(() => {
                           <UCard
                             v-for="chapter in group.chapters"
                             :key="chapter.id"
-                            class="shrink-0 transition-all hover:border-primary/40 cursor-pointer rounded-xl mx-1 mt-0.5"
+                            class="shrink-0 transition-all hover:border-primary/40 cursor-pointer mx-1 mt-0.5"
                             :ui="{ body: 'p-3' }"
                           >
                             <NuxtLink
@@ -1038,7 +1038,7 @@ onUnmounted(() => {
                                   color="primary"
                                   variant="soft"
                                   size="xs"
-                                  class="rounded-md text-[10px] font-semibold"
+                                  class="text-[10px] font-semibold"
                                 >
                                   {{ chapter.chapter_number }}
                                 </UBadge>
@@ -1058,7 +1058,7 @@ onUnmounted(() => {
 
                 <div
                   v-else
-                  class="text-center py-8 rounded-xl bg-muted/20 border border-dashed border-default"
+                  class="text-center py-8 rounded-(--os-card-radius) bg-muted/20 border border-dashed border-default"
                 >
                   <UIcon
                     name="i-lucide-folder-open"
@@ -1075,7 +1075,7 @@ onUnmounted(() => {
         </div>
 
         <div
-          class="hidden md:block relative h-64 md:h-96 w-full overflow-hidden rounded-3xl transition-opacity duration-150 ease-out"
+          class="hidden md:block relative h-64 md:h-96 w-full overflow-hidden rounded-(--os-hero-radius) transition-opacity duration-150 ease-out"
           :style="{ opacity: bannerOpacity }"
         >
           <div
@@ -1097,7 +1097,7 @@ onUnmounted(() => {
         >
           <div class="flex flex-col items-center md:items-stretch space-y-4">
             <div
-              class="w-48 md:w-full aspect-2/3 rounded-2xl overflow-hidden bg-muted shadow-[0px_0px_30px_0px_var(--color-neutral-700)]"
+              class="w-48 md:w-full aspect-2/3 os-cover-card shadow-2xl"
             >
               <img
                 :src="serie.cover || serie.anilistCover"
@@ -1115,14 +1115,14 @@ onUnmounted(() => {
                 variant="subtle"
                 block
                 icon="i-lucide-external-link"
-                class="rounded-xl font-medium"
+                class="font-medium"
               >
                 MyAnimeList'te Gör
               </UButton>
 
               <div class="grid grid-cols-2 gap-2 text-center pt-1">
                 <div
-                  class="p-2.5 rounded-xl bg-muted/40 ring-1 ring-default/30 backdrop-blur-xs"
+                  class="p-2.5 os-panel"
                 >
                   <span
                     class="text-[11px] text-muted-foreground block font-medium mb-0.5"
@@ -1142,7 +1142,7 @@ onUnmounted(() => {
                 </div>
 
                 <div
-                  class="p-2.5 rounded-xl bg-muted/40 ring-1 ring-default/30 backdrop-blur-xs"
+                  class="p-2.5 os-panel"
                 >
                   <span
                     class="text-[11px] text-muted-foreground block font-medium mb-0.5"
@@ -1163,7 +1163,7 @@ onUnmounted(() => {
               </div>
 
               <div
-                class="p-3 rounded-xl bg-muted/40 ring-1 ring-default/30 text-xs font-medium flex items-center justify-between"
+                class="p-3 os-panel text-xs font-medium flex items-center justify-between"
               >
                 <span class="text-muted-foreground"> Sitedeki Durum: </span>
 
@@ -1179,7 +1179,7 @@ onUnmounted(() => {
               </div>
 
               <div
-                class="text-xs space-y-1.5 pt-2 text-muted-foreground bg-muted/20 p-3 rounded-xl ring-1 ring-default/20"
+                class="text-xs space-y-1.5 pt-2 text-muted-foreground os-panel p-3"
               >
                 <p
                   v-if="serie.malStatus"
@@ -1225,7 +1225,7 @@ onUnmounted(() => {
                   color="primary"
                   variant="solid"
                   size="md"
-                  class="rounded-lg font-bold"
+                  class="font-bold"
                 >
                   {{ serie.type || "Manga" }}
                 </UBadge>
@@ -1258,7 +1258,6 @@ onUnmounted(() => {
                 "
                 variant="subtle"
                 size="md"
-                class="rounded-lg"
               >
                 {{ tag }}
               </UBadge>
@@ -1278,7 +1277,7 @@ onUnmounted(() => {
               <div class="relative">
                 <div
                   ref="descriptionDesktopEl"
-                  class="p-4 rounded-2xl bg-muted/40 ring-1 ring-default/30 leading-relaxed text-sm text-muted-foreground transition-[max-height] duration-500 ease-in-out overflow-hidden"
+                  class="p-4 os-panel leading-relaxed text-sm text-muted-foreground transition-[max-height] duration-500 ease-in-out overflow-hidden"
                   :class="isDescriptionExpanded ? 'max-h-[1000px]' : 'max-h-36'"
                 >
                   {{
@@ -1290,7 +1289,7 @@ onUnmounted(() => {
 
                 <div
                   v-if="!isDescriptionExpanded && isDescriptionLong"
-                  class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none rounded-b-2xl transition-opacity duration-300"
+                  class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none rounded-b-(--os-card-radius) transition-opacity duration-300"
                   :class="isDescriptionExpanded ? 'opacity-0' : 'opacity-100'"
                 />
               </div>
@@ -1328,7 +1327,7 @@ onUnmounted(() => {
 
               <div class="relative">
                 <div
-                  class="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-sm prose dark:prose-invert prose-amber max-w-none transition-[max-height] duration-500 ease-in-out overflow-hidden"
+                  class="p-4 bg-amber-500/10 border border-amber-500/20 rounded-(--os-card-radius) text-sm prose dark:prose-invert prose-amber max-w-none transition-[max-height] duration-500 ease-in-out overflow-hidden"
                   :class="isNotesExpanded ? 'max-h-[1000px]' : 'max-h-24'"
                 >
                   <PortableText
@@ -1339,7 +1338,7 @@ onUnmounted(() => {
 
                 <div
                   v-if="!isNotesExpanded && isNotesLong"
-                  class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none rounded-b-2xl transition-opacity duration-300"
+                  class="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none rounded-b-(--os-card-radius) transition-opacity duration-300"
                   :class="isNotesExpanded ? 'opacity-0' : 'opacity-100'"
                 />
               </div>
@@ -1372,7 +1371,7 @@ onUnmounted(() => {
                 variant="solid"
                 size="md"
                 icon="i-lucide-lock"
-                class="w-full justify-center rounded-xl font-bold py-3 shadow-md hover:scale-[1.005] active:scale-[0.98] transition-all"
+                class="w-full justify-center font-bold py-3 shadow-md hover:scale-[1.005] active:scale-[0.98] transition-all"
               >
                 Bölümleri Okumak İçin Giriş Yap
               </UButton>
@@ -1389,7 +1388,7 @@ onUnmounted(() => {
                 variant="solid"
                 size="md"
                 icon="i-lucide-play"
-                class="w-full sm:w-1/2 justify-center rounded-xl font-bold py-3 shadow-md hover:scale-[1.005] active:scale-[0.98] transition-all"
+                class="w-full sm:w-1/2 justify-center font-bold py-3 shadow-md hover:scale-[1.005] active:scale-[0.98] transition-all"
               >
                 İlk Bölüm
                 {{ getChapterDisplayValue(firstChapter) ? `(${getChapterDisplayValue(firstChapter)})` : '' }}
@@ -1402,7 +1401,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="md"
                 icon="i-lucide-fast-forward"
-                class="w-full sm:w-1/2 justify-center rounded-xl font-bold py-3 hover:scale-[1.005] active:scale-[0.98] transition-all"
+                class="w-full sm:w-1/2 justify-center font-bold py-3 hover:scale-[1.005] active:scale-[0.98] transition-all"
               >
                 Son Bölüm
                 {{ getChapterDisplayValue(lastChapter) ? `(${getChapterDisplayValue(lastChapter)})` : '' }}
@@ -1415,7 +1414,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="md"
                 icon="i-lucide-bookmark-plus"
-                class="flex-1 justify-center rounded-xl font-bold px-4"
+                class="flex-1 justify-center font-bold px-4"
                 @click="handleOpenAddToList"
               >
                 Listeye Ekle
@@ -1425,7 +1424,7 @@ onUnmounted(() => {
                 variant="soft"
                 size="md"
                 icon="i-lucide-activity"
-                class="flex-1 justify-center rounded-xl font-bold px-4"
+                class="flex-1 justify-center font-bold px-4"
                 @click="handleOpenTracker"
               >
                 Takipçiler
@@ -1450,7 +1449,7 @@ onUnmounted(() => {
                     color="neutral"
                     variant="soft"
                     size="md"
-                    class="rounded-md font-bold"
+                    class="font-bold"
                   >
                     {{ totalChaptersCount }} Bölüm
                   </UBadge>
@@ -1460,7 +1459,7 @@ onUnmounted(() => {
                     color="warning"
                     variant="subtle"
                     size="md"
-                    class="rounded-md font-bold gap-1"
+                    class="font-bold gap-1"
                   >
                     <UIcon
                       name="i-lucide-lock"
@@ -1481,7 +1480,7 @@ onUnmounted(() => {
                     size="sm"
                     color="neutral"
                     variant="outline"
-                    class="w-full sm:w-48 rounded-xl"
+                    class="w-full sm:w-48"
                     clearable
                   />
 
@@ -1490,39 +1489,51 @@ onUnmounted(() => {
                     variant="outline"
                     size="sm"
                     :icon="chapterSortOrder === 'asc' ? 'i-lucide-arrow-up-narrow-wide' : 'i-lucide-arrow-down-wide-narrow'"
-                    class="rounded-xl font-medium"
+                    class="font-medium"
                     @click="void (chapterSortOrder = chapterSortOrder === 'asc' ? 'desc' : 'asc')"
                   >
                     {{ chapterSortOrder === 'asc' ? 'Önce En Eski' : 'Önce En Yeni' }}
                   </UButton>
 
                   <div
-                    class="flex items-center gap-0.5 p-1 bg-muted/60 rounded-xl ring-1 ring-default/20"
+                    class="os-segmented flex items-center gap-0.5"
                   >
-                    <UButton
-                      icon="i-lucide-layout-grid"
-                      :variant="chapterViewMode === 'grid' ? 'solid' : 'ghost'"
-                      color="primary"
-                      size="xs"
-                      class="rounded-lg"
+                    <button
+                      type="button"
+                      class="os-segmented-btn p-1.5 flex items-center justify-center"
+                      :class="{ 'is-active': chapterViewMode === 'grid' }"
+                      aria-label="Izgara görünümü"
                       @click="void (chapterViewMode = 'grid')"
-                    />
-                    <UButton
-                      icon="i-lucide-layout-list"
-                      :variant="chapterViewMode === 'list' ? 'solid' : 'ghost'"
-                      color="primary"
-                      size="xs"
-                      class="rounded-lg"
+                    >
+                      <UIcon
+                        name="i-lucide-layout-grid"
+                        class="size-4"
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      class="os-segmented-btn p-1.5 flex items-center justify-center"
+                      :class="{ 'is-active': chapterViewMode === 'list' }"
+                      aria-label="Liste görünümü"
                       @click="void (chapterViewMode = 'list')"
-                    />
-                    <UButton
-                      icon="i-lucide-layout-template"
-                      :variant="chapterViewMode === 'compact' ? 'solid' : 'ghost'"
-                      color="primary"
-                      size="xs"
-                      class="rounded-lg"
+                    >
+                      <UIcon
+                        name="i-lucide-layout-list"
+                        class="size-4"
+                      />
+                    </button>
+                    <button
+                      type="button"
+                      class="os-segmented-btn p-1.5 flex items-center justify-center"
+                      :class="{ 'is-active': chapterViewMode === 'compact' }"
+                      aria-label="Kompakt görünüm"
                       @click="void (chapterViewMode = 'compact')"
-                    />
+                    >
+                      <UIcon
+                        name="i-lucide-layout-template"
+                        class="size-4"
+                      />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1530,9 +1541,9 @@ onUnmounted(() => {
               <!-- Telifli ve Giriş Yapılmamış Kilit Ekranı (Mobile/Tab) -->
               <div
                 v-if="isContentLocked"
-                class="flex flex-col items-center justify-center py-12 px-4 text-center rounded-2xl border border-dashed border-border/80 bg-muted/20 my-2"
+                class="flex flex-col items-center justify-center py-12 px-4 text-center rounded-(--os-card-radius) border border-dashed border-border/80 bg-muted/20 my-2"
               >
-                <div class="p-3.5 rounded-2xl bg-amber-500/10 text-amber-500 mb-3 ring-8 ring-amber-500/5">
+                <div class="p-3.5 rounded-(--os-card-radius) bg-amber-500/10 text-amber-500 mb-3 ring-8 ring-amber-500/5">
                   <UIcon
                     name="i-lucide-lock"
                     class="w-8 h-8"
@@ -1551,7 +1562,7 @@ onUnmounted(() => {
                   color="primary"
                   variant="solid"
                   size="sm"
-                  class="rounded-xl font-bold px-5"
+                  class="font-bold px-5"
                 >
                   Giriş Yap
                 </UButton>
@@ -1582,7 +1593,7 @@ onUnmounted(() => {
                           color="neutral"
                           variant="soft"
                           size="xs"
-                          class="rounded-md font-semibold ml-1"
+                          class="font-semibold ml-1"
                         >
                           {{ group.chapters.length }} Bölüm
                         </UBadge>
@@ -1612,7 +1623,7 @@ onUnmounted(() => {
                           <UCard
                             v-for="chapter in group.chapters"
                             :key="chapter.id"
-                            class="transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer group rounded-2xl mx-0.5 mt-0.5"
+                            class="transition-all hover:-translate-y-0.5 hover:shadow-md hover:border-primary/40 cursor-pointer group mx-0.5 mt-0.5"
                             :class="{ 'flex-auto min-w-[120px]': chapterViewMode === 'compact' }"
                             :ui="{ body: chapterViewMode === 'compact' ? 'p-3' : 'p-4' }"
                           >
@@ -1658,7 +1669,7 @@ onUnmounted(() => {
 
                 <div
                   v-else
-                  class="text-center py-12 rounded-2xl bg-muted/30 border border-dashed border-default"
+                  class="text-center py-12 rounded-(--os-card-radius) bg-muted/30 border border-dashed border-default"
                 >
                   <UIcon
                     name="i-lucide-folder-open"
@@ -1719,7 +1730,7 @@ onUnmounted(() => {
               :to="`/title/${relation.id}`"
               class="group flex flex-col gap-2 h-full"
             >
-              <div class="aspect-2/3 rounded-xl overflow-hidden bg-muted shadow-sm group-hover:shadow-md transition-shadow">
+              <div class="aspect-2/3 os-cover-card">
                 <img
                   :src="relation.cover || serie?.cover"
                   :alt="relation.title"

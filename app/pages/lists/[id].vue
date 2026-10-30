@@ -273,19 +273,19 @@ useSeoMeta({
       v-if="loading"
       class="space-y-4"
     >
-      <div class="h-40 rounded-3xl bg-muted/20 animate-pulse" />
+      <div class="h-40 rounded-(--os-hero-radius) bg-muted/20 animate-pulse" />
       <div class="space-y-2">
         <div
           v-for="i in 4"
           :key="i"
-          class="h-20 rounded-2xl bg-muted/15 animate-pulse"
+          class="h-20 rounded-(--os-card-radius) bg-muted/15 animate-pulse"
         />
       </div>
     </div>
 
     <div
       v-else-if="error || !list"
-      class="text-center py-16 space-y-3 bg-muted/10 rounded-3xl border border-default/20 p-6"
+      class="text-center py-16 space-y-3 os-panel p-6"
     >
       <UIcon
         name="i-lucide-alert-circle"
@@ -302,7 +302,7 @@ useSeoMeta({
         color="primary"
         variant="solid"
         size="sm"
-        class="rounded-xl font-bold"
+        class="font-bold"
       >
         Listelere Dön
       </UButton>
@@ -312,7 +312,7 @@ useSeoMeta({
       v-else
       class="space-y-6"
     >
-      <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 bg-card border border-default/20 shadow-xl space-y-6">
+      <div class="relative overflow-hidden rounded-(--os-hero-radius) p-6 sm:p-8 os-card space-y-6">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div class="space-y-2 max-w-2xl">
             <div class="flex flex-wrap items-center gap-2">
@@ -320,7 +320,6 @@ useSeoMeta({
                 :color="list.isPrivate ? 'neutral' : 'success'"
                 variant="subtle"
                 size="sm"
-                class="rounded-full"
               >
                 {{ list.isPrivate ? 'Gizli Liste' : 'Herkese Açık' }}
               </UBadge>
@@ -344,7 +343,7 @@ useSeoMeta({
               :variant="isLiked ? 'solid' : 'soft'"
               size="sm"
               icon="i-lucide-heart"
-              class="rounded-xl font-bold"
+              class="font-bold"
               :loading="isLiking"
               @click="handleToggleLike"
             >
@@ -357,7 +356,7 @@ useSeoMeta({
                 variant="soft"
                 size="sm"
                 icon="i-lucide-pencil"
-                class="rounded-xl font-bold"
+                class="font-bold"
                 @click="openEditList"
               >
                 Düzenle
@@ -367,7 +366,7 @@ useSeoMeta({
                 variant="ghost"
                 size="sm"
                 icon="i-lucide-trash-2"
-                class="rounded-xl font-bold"
+                class="font-bold"
                 @click="openDeleteModal"
               >
                 Sil
@@ -415,11 +414,11 @@ useSeoMeta({
             </span>
           </div>
 
-          <div class="flex items-center p-1 rounded-xl bg-muted/20 border border-default/20">
+          <div class="os-segmented flex items-center gap-0.5">
             <button
               type="button"
-              class="p-1.5 rounded-lg text-xs transition-all"
-              :class="viewMode === 'list' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+              class="os-segmented-btn p-1.5 text-xs flex items-center justify-center"
+              :class="{ 'is-active': viewMode === 'list' }"
               aria-label="Liste Görünümü"
               @click="viewMode = 'list'"
             >
@@ -430,8 +429,8 @@ useSeoMeta({
             </button>
             <button
               type="button"
-              class="p-1.5 rounded-lg text-xs transition-all"
-              :class="viewMode === 'grid' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+              class="os-segmented-btn p-1.5 text-xs flex items-center justify-center"
+              :class="{ 'is-active': viewMode === 'grid' }"
               aria-label="Izgara Görünümü"
               @click="viewMode = 'grid'"
             >
@@ -442,8 +441,8 @@ useSeoMeta({
             </button>
             <button
               type="button"
-              class="p-1.5 rounded-lg text-xs transition-all"
-              :class="viewMode === 'compact' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+              class="os-segmented-btn p-1.5 text-xs flex items-center justify-center"
+              :class="{ 'is-active': viewMode === 'compact' }"
               aria-label="Kompakt Görünüm"
               @click="viewMode = 'compact'"
             >
@@ -457,7 +456,7 @@ useSeoMeta({
 
         <div
           v-if="!list.items || list.items.length === 0"
-          class="text-center py-16 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6"
+          class="text-center py-16 space-y-3 os-panel p-6"
         >
           <UIcon
             name="i-lucide-bookmark-plus"
@@ -474,7 +473,7 @@ useSeoMeta({
             color="primary"
             variant="solid"
             size="sm"
-            class="rounded-xl font-bold"
+            class="font-bold"
           >
             Serileri Keşfet
           </UButton>
@@ -487,7 +486,7 @@ useSeoMeta({
           <div
             v-for="(it, idx) in list.items"
             :key="it._key"
-            class="group relative flex flex-col rounded-2xl bg-card border border-default/20 hover:border-primary/40 transition-all overflow-hidden shadow-xs"
+            class="group relative flex flex-col os-card-interactive overflow-hidden"
           >
             <div class="relative aspect-[3/4] bg-muted/30 overflow-hidden">
               <img
@@ -506,7 +505,7 @@ useSeoMeta({
                 />
               </div>
 
-              <div class="absolute top-2 left-2 size-7 rounded-lg bg-background/85 backdrop-blur-md text-foreground font-black text-xs flex items-center justify-center border border-default/20 shadow-xs">
+              <div class="absolute top-2 left-2 size-7 rounded-(--os-badge-radius) bg-background/85 backdrop-blur-md text-foreground font-black text-xs flex items-center justify-center border border-default/20 shadow-xs">
                 #{{ it.index || idx + 1 }}
               </div>
 
@@ -518,7 +517,7 @@ useSeoMeta({
                   color="neutral"
                   variant="subtle"
                   size="xs"
-                  class="rounded-md text-[9px] backdrop-blur-md bg-background/85"
+                  class="text-[9px] backdrop-blur-md bg-background/85"
                 >
                   {{ it.reference?.format || (it.externalType === 'lightNovel' ? 'Hafif Roman' : 'Manga') }}
                 </UBadge>
@@ -598,7 +597,7 @@ useSeoMeta({
 
         <div
           v-else-if="viewMode === 'compact'"
-          class="rounded-2xl border border-default/20 bg-card overflow-hidden divide-y divide-default/15"
+          class="os-card overflow-hidden divide-y divide-default/15"
         >
           <div
             v-for="(it, idx) in list.items"
@@ -611,7 +610,7 @@ useSeoMeta({
                 v-if="getItemCover(it)"
                 :src="getItemCover(it)"
                 :alt="getItemTitle(it)"
-                class="size-8 rounded-lg object-cover shrink-0"
+                class="size-8 os-inner-media object-cover shrink-0"
               >
               <component
                 :is="getItemLink(it) ? 'NuxtLink' : 'span'"
@@ -625,7 +624,7 @@ useSeoMeta({
                 color="neutral"
                 variant="subtle"
                 size="xs"
-                class="rounded text-[9px] shrink-0 hidden sm:inline-flex"
+                class="text-[9px] shrink-0 hidden sm:inline-flex"
               >
                 {{ it.reference?.format || (it.externalType === 'lightNovel' ? 'Hafif Roman' : 'Manga') }}
               </UBadge>
@@ -693,14 +692,14 @@ useSeoMeta({
           <div
             v-for="(it, idx) in list.items"
             :key="it._key"
-            class="group relative flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-card border border-default/20 hover:border-primary/40 transition-all gap-4 shadow-sm"
+            class="group relative flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 sm:p-4 os-card-interactive gap-4"
           >
             <div class="flex items-start sm:items-center gap-3.5 min-w-0 flex-1">
-              <div class="size-8 rounded-xl bg-primary/10 text-primary font-black text-xs flex items-center justify-center shrink-0 border border-primary/20">
+              <div class="size-8 rounded-(--os-inner-radius) bg-primary/10 text-primary font-black text-xs flex items-center justify-center shrink-0 border border-primary/20">
                 #{{ it.index || idx + 1 }}
               </div>
 
-              <div class="size-14 sm:size-16 rounded-xl overflow-hidden bg-muted/30 shrink-0 border border-default/20 relative">
+              <div class="size-14 sm:size-16 os-inner-media bg-muted/30 shrink-0 border border-default/20 relative">
                 <img
                   v-if="getItemCover(it)"
                   :src="getItemCover(it)"
@@ -732,7 +731,7 @@ useSeoMeta({
                     color="neutral"
                     variant="subtle"
                     size="xs"
-                    class="rounded-md text-[10px]"
+                    class="text-[10px]"
                   >
                     {{ it.reference?.format || (it.externalType === 'lightNovel' ? 'Hafif Roman' : 'Manga') }}
                   </UBadge>
@@ -740,7 +739,7 @@ useSeoMeta({
 
                 <div
                   v-if="it.note"
-                  class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-lg w-fit max-w-full"
+                  class="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-(--os-inner-radius) w-fit max-w-full"
                 >
                   <UIcon
                     name="i-lucide-sticky-note"

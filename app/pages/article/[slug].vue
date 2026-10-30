@@ -188,7 +188,7 @@ useHead(() => ({
         size="sm"
         color="primary"
         variant="soft"
-        class="fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom))] right-4 sm:bottom-12 sm:right-12 rounded-full shadow-xl z-50 touch-manipulation active:scale-95"
+        class="fixed bottom-[calc(var(--os-bottom-nav-clearance,1rem)+0.75rem)] right-4 sm:bottom-12 sm:right-12 rounded-(--os-btn-radius) shadow-xl z-50 touch-manipulation active:scale-95"
         aria-label="Başa Dön"
         @click="scrollToTop"
       />

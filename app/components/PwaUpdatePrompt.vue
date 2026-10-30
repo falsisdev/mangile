@@ -29,11 +29,11 @@ function onDismiss() {
   >
     <div
       v-if="needRefresh"
-      class="fixed bottom-20 md:bottom-6 right-3 md:right-6 z-50 max-w-sm w-[calc(100vw-1.5rem)] sm:w-auto p-3.5 rounded-2xl bg-neutral-900/95 text-white border border-neutral-700/60 shadow-2xl backdrop-blur-xl flex items-center gap-3 select-none"
+      class="os-floating-toast fixed bottom-[calc(var(--os-bottom-nav-clearance)+0.25rem)] md:bottom-6 right-3 md:right-6 z-50 max-w-sm w-[calc(100vw-1.5rem)] sm:w-auto p-3.5 flex items-center gap-3 select-none"
       role="alert"
       aria-live="polite"
     >
-      <div class="size-9 rounded-xl bg-primary/20 text-primary flex items-center justify-center shrink-0">
+      <div class="size-9 rounded-xl bg-primary/15 text-primary flex items-center justify-center shrink-0">
         <UIcon
           name="i-lucide-sparkles"
           class="size-5 text-primary"
@@ -41,10 +41,10 @@ function onDismiss() {
       </div>
 
       <div class="flex-1 min-w-0 pr-1">
-        <p class="text-xs font-semibold text-white leading-tight">
+        <p class="text-xs font-bold text-highlighted leading-tight">
           Yeni sürüm hazır
         </p>
-        <p class="text-[11px] text-neutral-300 mt-0.5 line-clamp-1">
+        <p class="text-[11px] text-muted mt-0.5 line-clamp-1">
           Son güncellemeleri almak için yenileyin
         </p>
       </div>
@@ -55,7 +55,7 @@ function onDismiss() {
           color="primary"
           variant="solid"
           label="Yenile"
-          class="font-medium"
+          class="font-semibold"
           @click="onRefresh"
         />
         <UButton

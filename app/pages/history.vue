@@ -224,7 +224,7 @@ useSeoMeta({
           variant="soft"
           size="sm"
           icon="i-lucide-cloud-upload"
-          class="rounded-xl font-bold shrink-0 text-xs"
+          class="font-bold shrink-0 text-xs"
           :disabled="localHistory.length === 0"
           @click="openSyncModal('local-to-cloud')"
         >
@@ -238,7 +238,7 @@ useSeoMeta({
           variant="soft"
           size="sm"
           icon="i-lucide-download"
-          class="rounded-xl font-bold shrink-0 text-xs"
+          class="font-bold shrink-0 text-xs"
           :disabled="cloudHistory.length === 0"
           @click="openSyncModal('cloud-to-local')"
         >
@@ -252,7 +252,7 @@ useSeoMeta({
           variant="soft"
           size="sm"
           icon="i-lucide-trash-2"
-          class="rounded-xl font-bold shrink-0 text-xs"
+          class="font-bold shrink-0 text-xs"
           @click="openClearModal"
         >
           Geçmişi Temizle
@@ -263,11 +263,11 @@ useSeoMeta({
     <!-- Navigation & Search Filter -->
     <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
       <!-- Tabs -->
-      <div class="flex items-center p-1 rounded-xl bg-muted/20 border border-default/20 w-full sm:w-auto">
+      <div class="os-segmented flex items-center w-full sm:w-auto">
         <button
           type="button"
-          class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5"
-          :class="activeTab === 'local' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+          class="os-segmented-btn flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold flex items-center justify-center gap-1.5"
+          :class="{ 'is-active': activeTab === 'local' }"
           @click="activeTab = 'local'"
         >
           <UIcon
@@ -280,8 +280,8 @@ useSeoMeta({
 
         <button
           type="button"
-          class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5"
-          :class="activeTab === 'cloud' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+          class="os-segmented-btn flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold flex items-center justify-center gap-1.5"
+          :class="{ 'is-active': activeTab === 'cloud' }"
           @click="activeTab = 'cloud'"
         >
           <UIcon
@@ -311,7 +311,7 @@ useSeoMeta({
     <!-- Local Tab 5-Limit Banner -->
     <div
       v-if="activeTab === 'local'"
-      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 rounded-xl bg-primary/5 border border-primary/20 text-xs"
+      class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 os-panel text-xs"
     >
       <div class="flex items-center gap-2 text-muted">
         <UIcon
@@ -341,9 +341,9 @@ useSeoMeta({
     <!-- Cloud Tab: Not Logged In State -->
     <div
       v-if="activeTab === 'cloud' && !user"
-      class="text-center py-16 space-y-4 bg-muted/10 rounded-2xl border border-default/20 p-6"
+      class="text-center py-16 space-y-4 os-panel p-6"
     >
-      <div class="size-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto">
+      <div class="size-14 rounded-(--os-card-radius) bg-primary/10 text-primary flex items-center justify-center mx-auto">
         <UIcon
           name="i-lucide-cloud-off"
           class="size-7"
@@ -365,7 +365,7 @@ useSeoMeta({
           variant="solid"
           size="sm"
           icon="i-lucide-log-in"
-          class="rounded-xl font-bold"
+          class="font-bold"
         >
           Giriş Yap
         </UButton>
@@ -380,14 +380,14 @@ useSeoMeta({
       <div
         v-for="i in 6"
         :key="i"
-        class="h-36 rounded-2xl bg-muted/20 animate-pulse border border-default/10"
+        class="h-36 rounded-(--os-card-radius) bg-muted/20 animate-pulse border border-default/10"
       />
     </div>
 
     <!-- Empty State -->
     <div
       v-else-if="filteredList.length === 0"
-      class="text-center py-16 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6"
+      class="text-center py-16 space-y-3 os-panel p-6"
     >
       <UIcon
         name="i-lucide-book-open"
@@ -415,7 +415,7 @@ useSeoMeta({
           variant="solid"
           size="sm"
           icon="i-lucide-compass"
-          class="rounded-xl font-bold"
+          class="font-bold"
         >
           Serileri Keşfet
         </UButton>
@@ -430,12 +430,12 @@ useSeoMeta({
       <div
         v-for="item in filteredList"
         :key="item.seriesId"
-        class="group relative overflow-hidden rounded-2xl bg-card border border-border/40 hover:border-primary/50 transition-all p-3.5 flex gap-3.5 hover:shadow-md"
+        class="group relative overflow-hidden os-card-interactive p-3.5 flex gap-3.5"
       >
         <!-- Cover Thumbnail -->
         <NuxtLink
           :to="getResumeLink(item)"
-          class="relative shrink-0 w-20 sm:w-22 h-28 sm:h-30 rounded-xl overflow-hidden bg-muted/40 block"
+          class="relative shrink-0 w-20 sm:w-22 h-28 sm:h-30 os-inner-media bg-muted/40 block"
         >
           <img
             v-if="item.coverUrl"
@@ -456,7 +456,7 @@ useSeoMeta({
 
           <!-- Format Badge on Image -->
           <span
-            class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-black/70 text-white backdrop-blur-xs"
+            class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-(--os-badge-radius) text-[9px] font-bold bg-black/70 text-white backdrop-blur-xs"
           >
             {{ formatBadgeLabel(item) }}
           </span>

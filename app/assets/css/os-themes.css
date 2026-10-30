@@ -1,0 +1,740 @@
+/* ==========================================================================
+   MANGILE OS-ADAPTIVE DESIGN TOKEN ENGINE
+   4 Target Kits:
+   1. ios27     -> Apple iOS & iPadOS 27 (Liquid Glass - Touch)
+   2. macos27   -> Apple macOS 27 (Liquid Glass - Desktop)
+   3. fluent2   -> Microsoft Fluent 2 Web (Mica & Acrylic)
+   4. material3 -> Google Material Design 3 (Tonal Surface Containers)
+   ========================================================================== */
+
+:root {
+  --os-glass-surface-mix: 57%;
+  --os-glass-card-mix: 68%;
+  --os-glass-blur-px: 25px;
+  --os-glass-saturate: 177%;
+}
+
+:root,
+html[data-os-theme="material3"] {
+  --os-font-sans: 'Roboto', 'Google Sans Text', 'Noto Sans', 'Ubuntu', 'Cantarell', system-ui, -apple-system, sans-serif;
+  --ui-radius: 0.5rem;
+  --os-btn-radius: 9999px;
+  --os-badge-radius: 9999px;
+  --os-input-radius: 0.75rem;
+  --os-card-radius: 1.25rem;
+  --os-card-inner-radius: 0.875rem;
+  --os-panel-radius: 1.25rem;
+  --os-modal-radius: 1.75rem;
+  --os-popover-radius: 1.125rem;
+  --os-hero-radius: 1.75rem;
+  --os-segmented-radius: 9999px;
+  --os-segmented-item-radius: 9999px;
+  --os-ease: cubic-bezier(0.2, 0, 0, 1);
+  --os-ease-spring: cubic-bezier(0.2, 0, 0, 1);
+  --os-press-scale: 0.98;
+  --os-card-hover-translate: -3px;
+  --os-bottom-nav-clearance: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  --os-heading-tracking: -0.015em;
+  --os-body-tracking: 0em;
+
+  /* Material 3 Light Tonal Surfaces (Driven by --ui-color-neutral-*) */
+  --os-canvas-bg: var(--ui-color-neutral-50);
+  --os-surface-low: color-mix(in oklch, var(--ui-color-neutral-100) 75%, var(--ui-color-neutral-50));
+  --os-surface-default: var(--ui-color-neutral-100);
+  --os-surface-high: var(--ui-color-neutral-200);
+  --os-surface-highest: var(--ui-color-neutral-300);
+  --os-card-bg: color-mix(in oklch, var(--ui-color-neutral-100) 80%, var(--ui-color-neutral-50));
+  --os-card-hover-bg: color-mix(in oklch, var(--ui-color-neutral-200) 75%, var(--ui-color-neutral-100));
+  --os-card-border: color-mix(in oklch, var(--ui-color-neutral-300) 65%, transparent);
+  --os-card-hover-border: color-mix(in oklch, var(--ui-primary) 42%, transparent);
+  --os-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --os-card-hover-shadow: 0 8px 20px -4px rgba(17, 19, 24, 0.1);
+  --os-chrome-bg: color-mix(in oklch, var(--ui-color-neutral-100) 96%, transparent);
+  --os-chrome-border: color-mix(in oklch, var(--ui-color-neutral-300) 65%, transparent);
+  --os-chrome-blur: none;
+  --os-chrome-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --os-sidebar-bg: color-mix(in oklch, var(--ui-color-neutral-100) 85%, var(--ui-color-neutral-50));
+  --os-modal-bg: var(--ui-color-neutral-100);
+  --os-modal-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.22);
+  --os-specular-inset: none;
+}
+
+.dark:root,
+html.dark[data-os-theme="material3"] {
+  --os-canvas-bg: var(--ui-color-neutral-950);
+  --os-surface-low: color-mix(in oklch, var(--ui-color-neutral-900) 80%, var(--ui-color-neutral-950));
+  --os-surface-default: var(--ui-color-neutral-900);
+  --os-surface-high: var(--ui-color-neutral-800);
+  --os-surface-highest: var(--ui-color-neutral-700);
+  --os-card-bg: color-mix(in oklch, var(--ui-color-neutral-900) 82%, var(--ui-color-neutral-950));
+  --os-card-hover-bg: color-mix(in oklch, var(--ui-color-neutral-800) 85%, var(--ui-color-neutral-900));
+  --os-card-border: color-mix(in oklch, var(--ui-color-neutral-700) 45%, transparent);
+  --os-card-hover-border: color-mix(in oklch, var(--ui-primary) 45%, transparent);
+  --os-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --os-card-hover-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.45);
+  --os-chrome-bg: color-mix(in oklch, var(--ui-color-neutral-900) 96%, transparent);
+  --os-chrome-border: color-mix(in oklch, var(--ui-color-neutral-800) 80%, transparent);
+  --os-chrome-blur: none;
+  --os-chrome-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --os-sidebar-bg: color-mix(in oklch, var(--ui-color-neutral-900) 78%, var(--ui-color-neutral-950));
+  --os-modal-bg: var(--ui-color-neutral-900);
+  --os-modal-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.65);
+  --os-specular-inset: none;
+}
+
+/* ==========================================================================
+   1. iOS & iPadOS 27 — Liquid Glass (Touch)
+   ========================================================================== */
+html[data-os-theme="ios27"] {
+  --os-font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+  --ui-radius: 0.625rem;
+  --os-btn-radius: 9999px;
+  --os-badge-radius: 9999px;
+  --os-input-radius: 0.875rem;
+  --os-card-radius: 1.375rem;
+  --os-card-inner-radius: 0.9375rem;
+  --os-panel-radius: 1.375rem;
+  --os-modal-radius: 2.125rem;
+  --os-popover-radius: 1.375rem;
+  --os-hero-radius: 1.75rem;
+  --os-segmented-radius: 9999px;
+  --os-segmented-item-radius: 9999px;
+  --os-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --os-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --os-press-scale: 0.96;
+  --os-card-hover-translate: -4px;
+  --os-bottom-nav-clearance: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  --os-heading-tracking: -0.024em;
+  --os-body-tracking: -0.008em;
+
+  /* iOS 27 Light Liquid Glass (Driven by --ui-color-neutral-* + --os-glass-*) */
+  --os-canvas-bg: var(--ui-color-neutral-100);
+  --os-surface-low: color-mix(in oklch, var(--ui-color-neutral-50) var(--os-glass-card-mix, 68%), transparent);
+  --os-surface-default: color-mix(in oklch, #ffffff var(--os-glass-card-mix, 68%), var(--ui-color-neutral-100));
+  --os-surface-high: #ffffff;
+  --os-surface-highest: var(--ui-color-neutral-200);
+  --os-card-bg: color-mix(in oklch, #ffffff var(--os-glass-card-mix, 68%), var(--ui-color-neutral-50));
+  --os-card-hover-bg: #ffffff;
+  --os-card-border: color-mix(in oklch, var(--ui-color-neutral-300) 60%, rgba(255, 255, 255, 0.8));
+  --os-card-hover-border: color-mix(in oklch, var(--ui-primary) 35%, transparent);
+  --os-card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.9);
+  --os-card-hover-shadow: 0 14px 32px -6px rgba(0, 0, 0, 0.11), inset 0 0.5px 0 0 #ffffff;
+  --os-chrome-bg: color-mix(in oklch, var(--ui-color-neutral-50) var(--os-glass-surface-mix, 57%), transparent);
+  --os-chrome-border: rgba(255, 255, 255, 0.72);
+  --os-chrome-blur: blur(var(--os-glass-blur-px, 25px)) saturate(var(--os-glass-saturate, 177%));
+  --os-chrome-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.08), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.92);
+  --os-sidebar-bg: color-mix(in oklch, var(--ui-color-neutral-50) var(--os-glass-surface-mix, 57%), transparent);
+  --os-modal-bg: color-mix(in oklch, var(--ui-color-neutral-50) var(--os-glass-card-mix, 68%), transparent);
+  --os-modal-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.2), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.9);
+  --os-specular-inset: inset 0 0.5px 0 0 rgba(255, 255, 255, 0.85);
+}
+
+html.dark[data-os-theme="ios27"] {
+  --os-canvas-bg: var(--ui-color-neutral-950);
+  --os-surface-low: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-card-mix, 68%), transparent);
+  --os-surface-default: color-mix(in oklch, var(--ui-color-neutral-800) var(--os-glass-card-mix, 68%), transparent);
+  --os-surface-high: color-mix(in oklch, var(--ui-color-neutral-700) 85%, transparent);
+  --os-surface-highest: var(--ui-color-neutral-700);
+  --os-card-bg: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-card-mix, 68%), transparent);
+  --os-card-hover-bg: color-mix(in oklch, var(--ui-color-neutral-800) 88%, transparent);
+  --os-card-border: rgba(255, 255, 255, 0.12);
+  --os-card-hover-border: rgba(255, 255, 255, 0.32);
+  --os-card-shadow: 0 6px 24px -4px rgba(0, 0, 0, 0.5), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.16);
+  --os-card-hover-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.68), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.28);
+  --os-chrome-bg: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-surface-mix, 57%), transparent);
+  --os-chrome-border: rgba(255, 255, 255, 0.16);
+  --os-chrome-blur: blur(var(--os-glass-blur-px, 25px)) saturate(var(--os-glass-saturate, 177%));
+  --os-chrome-shadow: 0 10px 36px -4px rgba(0, 0, 0, 0.55), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.22);
+  --os-sidebar-bg: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-surface-mix, 57%), transparent);
+  --os-modal-bg: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-card-mix, 68%), transparent);
+  --os-modal-shadow: 0 28px 64px -8px rgba(0, 0, 0, 0.72), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.22);
+  --os-specular-inset: inset 0 0.5px 0 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   2. macOS 27 — Liquid Glass (Desktop Vibrancy)
+   ========================================================================== */
+html[data-os-theme="macos27"] {
+  --os-font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
+  --ui-radius: 0.5rem;
+  --os-btn-radius: 0.625rem;
+  --os-badge-radius: 9999px;
+  --os-input-radius: 0.5625rem;
+  --os-card-radius: 1.0625rem;
+  --os-card-inner-radius: 0.75rem;
+  --os-panel-radius: 1.0625rem;
+  --os-modal-radius: 1.375rem;
+  --os-popover-radius: 0.9375rem;
+  --os-hero-radius: 1.375rem;
+  --os-segmented-radius: 0.625rem;
+  --os-segmented-item-radius: 0.4375rem;
+  --os-ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --os-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --os-press-scale: 0.982;
+  --os-card-hover-translate: -3px;
+  --os-bottom-nav-clearance: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  --os-heading-tracking: -0.02em;
+  --os-body-tracking: -0.006em;
+
+  /* macOS 27 Light Desktop Vibrancy (Driven by --ui-color-neutral-* + --os-glass-*) */
+  --os-canvas-bg: var(--ui-color-neutral-100);
+  --os-surface-low: color-mix(in oklch, var(--ui-color-neutral-50) var(--os-glass-card-mix, 68%), transparent);
+  --os-surface-default: color-mix(in oklch, #ffffff var(--os-glass-card-mix, 68%), var(--ui-color-neutral-100));
+  --os-surface-high: #ffffff;
+  --os-surface-highest: var(--ui-color-neutral-200);
+  --os-card-bg: color-mix(in oklch, #ffffff var(--os-glass-card-mix, 68%), var(--ui-color-neutral-50));
+  --os-card-hover-bg: #ffffff;
+  --os-card-border: color-mix(in oklch, var(--ui-color-neutral-300) 55%, rgba(0, 0, 0, 0.06));
+  --os-card-hover-border: color-mix(in oklch, var(--ui-primary) 35%, transparent);
+  --os-card-shadow: 0 2px 10px rgba(0, 0, 0, 0.04), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.9);
+  --os-card-hover-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.1), inset 0 0.5px 0 0 #ffffff;
+  --os-chrome-bg: color-mix(in oklch, var(--ui-color-neutral-50) var(--os-glass-surface-mix, 57%), transparent);
+  --os-chrome-border: rgba(0, 0, 0, 0.08);
+  --os-chrome-blur: blur(var(--os-glass-blur-px, 25px)) saturate(var(--os-glass-saturate, 177%));
+  --os-chrome-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.88);
+  --os-sidebar-bg: color-mix(in oklch, var(--ui-color-neutral-50) var(--os-glass-surface-mix, 57%), transparent);
+  --os-modal-bg: color-mix(in oklch, var(--ui-color-neutral-50) var(--os-glass-card-mix, 68%), transparent);
+  --os-modal-shadow: 0 24px 56px -8px rgba(0, 0, 0, 0.22), 0 0 0 0.5px rgba(0, 0, 0, 0.12), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.9);
+  --os-specular-inset: inset 0 0.5px 0 0 rgba(255, 255, 255, 0.82);
+}
+
+html.dark[data-os-theme="macos27"] {
+  --os-canvas-bg: var(--ui-color-neutral-950);
+  --os-surface-low: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-card-mix, 68%), transparent);
+  --os-surface-default: color-mix(in oklch, var(--ui-color-neutral-800) var(--os-glass-card-mix, 68%), transparent);
+  --os-surface-high: color-mix(in oklch, var(--ui-color-neutral-700) 88%, transparent);
+  --os-surface-highest: var(--ui-color-neutral-700);
+  --os-card-bg: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-card-mix, 68%), transparent);
+  --os-card-hover-bg: color-mix(in oklch, var(--ui-color-neutral-800) 90%, transparent);
+  --os-card-border: rgba(255, 255, 255, 0.1);
+  --os-card-hover-border: rgba(255, 255, 255, 0.28);
+  --os-card-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.12);
+  --os-card-hover-shadow: 0 14px 32px -6px rgba(0, 0, 0, 0.55), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.22);
+  --os-chrome-bg: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-surface-mix, 57%), transparent);
+  --os-chrome-border: rgba(255, 255, 255, 0.12);
+  --os-chrome-blur: blur(var(--os-glass-blur-px, 25px)) saturate(var(--os-glass-saturate, 177%));
+  --os-chrome-shadow: 0 8px 28px rgba(0, 0, 0, 0.45), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.16);
+  --os-sidebar-bg: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-surface-mix, 57%), transparent);
+  --os-modal-bg: color-mix(in oklch, var(--ui-color-neutral-900) var(--os-glass-card-mix, 68%), transparent);
+  --os-modal-shadow: 0 28px 64px -8px rgba(0, 0, 0, 0.7), 0 0 0 0.5px rgba(255, 255, 255, 0.14), inset 0 0.5px 0 0 rgba(255, 255, 255, 0.2);
+  --os-specular-inset: inset 0 0.5px 0 0 rgba(255, 255, 255, 0.16);
+}
+
+/* ==========================================================================
+   3. Microsoft Fluent 2 Web (Windows 11 — Mica & Acrylic)
+   ========================================================================== */
+html[data-os-theme="fluent2"] {
+  --os-font-sans: 'Segoe UI Variable Text', 'Segoe UI Variable Display', 'Segoe UI', -apple-system, system-ui, sans-serif;
+  --ui-radius: 0.25rem;
+  --os-btn-radius: 0.375rem;
+  --os-badge-radius: 0.3125rem;
+  --os-input-radius: 0.375rem;
+  --os-card-radius: 0.5rem;
+  --os-card-inner-radius: 0.375rem;
+  --os-panel-radius: 0.5rem;
+  --os-modal-radius: 0.625rem;
+  --os-popover-radius: 0.5rem;
+  --os-hero-radius: 0.625rem;
+  --os-segmented-radius: 0.375rem;
+  --os-segmented-item-radius: 0.25rem;
+  --os-ease: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --os-ease-spring: cubic-bezier(0.1, 0.9, 0.2, 1);
+  --os-press-scale: 0.99;
+  --os-card-hover-translate: -1px;
+  --os-bottom-nav-clearance: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+  --os-heading-tracking: -0.01em;
+  --os-body-tracking: 0em;
+
+  /* Fluent 2 Light Mica & Layer Tokens (Driven by --ui-color-neutral-*) */
+  --os-canvas-bg: var(--ui-color-neutral-100);
+  --os-surface-low: var(--ui-color-neutral-50);
+  --os-surface-default: #ffffff;
+  --os-surface-high: #ffffff;
+  --os-surface-highest: var(--ui-color-neutral-200);
+  --os-card-bg: color-mix(in oklch, #ffffff 70%, var(--ui-color-neutral-50));
+  --os-card-hover-bg: #ffffff;
+  --os-card-border: color-mix(in oklch, var(--ui-color-neutral-300) 65%, transparent);
+  --os-card-hover-border: color-mix(in oklch, var(--ui-color-neutral-400) 75%, transparent);
+  --os-card-shadow: 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0, 0, 0, 0.08);
+  --os-card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.08), 0 0 2px rgba(0, 0, 0, 0.12);
+  --os-chrome-bg: color-mix(in oklch, var(--ui-color-neutral-100) 88%, transparent);
+  --os-chrome-border: color-mix(in oklch, var(--ui-color-neutral-300) 65%, transparent);
+  --os-chrome-blur: blur(18px) saturate(125%);
+  --os-chrome-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --os-sidebar-bg: color-mix(in oklch, var(--ui-color-neutral-100) 80%, var(--ui-color-neutral-50));
+  --os-modal-bg: color-mix(in oklch, var(--ui-color-neutral-50) 94%, transparent);
+  --os-modal-shadow: 0 14px 28px rgba(0, 0, 0, 0.18), 0 0 2px rgba(0, 0, 0, 0.12);
+  --os-specular-inset: none;
+}
+
+html.dark[data-os-theme="fluent2"] {
+  --os-canvas-bg: var(--ui-color-neutral-950);
+  --os-surface-low: color-mix(in oklch, var(--ui-color-neutral-900) 75%, var(--ui-color-neutral-950));
+  --os-surface-default: var(--ui-color-neutral-900);
+  --os-surface-high: var(--ui-color-neutral-800);
+  --os-surface-highest: var(--ui-color-neutral-700);
+  --os-card-bg: color-mix(in oklch, var(--ui-color-neutral-900) 85%, var(--ui-color-neutral-800));
+  --os-card-hover-bg: var(--ui-color-neutral-800);
+  --os-card-border: rgba(255, 255, 255, 0.08);
+  --os-card-hover-border: rgba(255, 255, 255, 0.18);
+  --os-card-shadow: 0 2px 4px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --os-card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  --os-chrome-bg: color-mix(in oklch, var(--ui-color-neutral-900) 88%, transparent);
+  --os-chrome-border: rgba(255, 255, 255, 0.08);
+  --os-chrome-blur: blur(18px) saturate(125%);
+  --os-chrome-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --os-sidebar-bg: color-mix(in oklch, var(--ui-color-neutral-900) 72%, var(--ui-color-neutral-950));
+  --os-modal-bg: color-mix(in oklch, var(--ui-color-neutral-900) 94%, transparent);
+  --os-modal-shadow: 0 16px 32px rgba(0, 0, 0, 0.55), 0 0 2px rgba(255, 255, 255, 0.12);
+  --os-specular-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ==========================================================================
+   ACCENT & NEUTRAL BRIDGE TO NUXT UI v4 (--ui-*)
+   ========================================================================== */
+
+/* Drive Nuxt UI semantic surfaces from OS tokens (which derive from --ui-color-neutral-*) */
+html,
+html.dark {
+  --ui-bg: var(--os-canvas-bg);
+  --ui-bg-muted: var(--os-surface-low);
+  --ui-bg-elevated: var(--os-surface-default);
+  --ui-bg-accented: var(--os-surface-high);
+  --ui-border: var(--os-card-border);
+  --ui-border-muted: var(--os-card-border);
+}
+
+/* Adaptive Monochrome Default for iOS/iPadOS 27, macOS 27, Fluent 2, and explicit Monochrome option */
+html[data-accent="monochrome"]:not(.dark),
+html[data-accent="os-default"][data-os-theme="ios27"]:not(.dark),
+html[data-accent="os-default"][data-os-theme="macos27"]:not(.dark),
+html[data-accent="os-default"][data-os-theme="fluent2"]:not(.dark) {
+  --ui-primary: #09090b !important;
+  --ui-text-inverted: #ffffff !important;
+  --ui-color-primary-50: var(--ui-color-neutral-50) !important;
+  --ui-color-primary-100: var(--ui-color-neutral-100) !important;
+  --ui-color-primary-200: var(--ui-color-neutral-200) !important;
+  --ui-color-primary-300: var(--ui-color-neutral-300) !important;
+  --ui-color-primary-400: var(--ui-color-neutral-700) !important;
+  --ui-color-primary-500: #09090b !important;
+  --ui-color-primary-600: #09090b !important;
+  --ui-color-primary-700: var(--ui-color-neutral-800) !important;
+  --ui-color-primary-800: var(--ui-color-neutral-900) !important;
+  --ui-color-primary-900: var(--ui-color-neutral-950) !important;
+  --ui-color-primary-950: #09090b !important;
+}
+
+html.dark[data-accent="monochrome"],
+html.dark[data-accent="os-default"][data-os-theme="ios27"],
+html.dark[data-accent="os-default"][data-os-theme="macos27"],
+html.dark[data-accent="os-default"][data-os-theme="fluent2"] {
+  --ui-primary: #ffffff !important;
+  --ui-text-inverted: #09090b !important;
+  --ui-color-primary-50: var(--ui-color-neutral-950) !important;
+  --ui-color-primary-100: var(--ui-color-neutral-900) !important;
+  --ui-color-primary-200: var(--ui-color-neutral-800) !important;
+  --ui-color-primary-300: #e4e4e7 !important;
+  --ui-color-primary-400: #ffffff !important;
+  --ui-color-primary-500: #ffffff !important;
+  --ui-color-primary-600: #f4f4f5 !important;
+  --ui-color-primary-700: var(--ui-color-neutral-300) !important;
+  --ui-color-primary-800: var(--ui-color-neutral-800) !important;
+  --ui-color-primary-900: var(--ui-color-neutral-900) !important;
+  --ui-color-primary-950: var(--ui-color-neutral-950) !important;
+}
+
+/* Material 3 Native Default Accent (Indigo) */
+html[data-accent="os-default"][data-os-theme="material3"]:not(.dark) {
+  --ui-primary: #4f5bd5;
+}
+
+html.dark[data-accent="os-default"][data-os-theme="material3"] {
+  --ui-primary: #8ea8ff;
+}
+
+/* ==========================================================================
+   SEMANTIC OS SURFACE & COMPONENT UTILITIES
+   ========================================================================== */
+
+/* App Canvas Background */
+.os-app-canvas {
+  background-color: var(--os-canvas-bg);
+  color: var(--ui-text);
+  font-family: var(--os-font-sans);
+  letter-spacing: var(--os-body-tracking);
+  transition: background-color 0.2s var(--os-ease);
+}
+
+/* Header & Floating Chrome Bars (Singleton GPU Layers Only) */
+.os-glass-bar {
+  background-color: var(--os-chrome-bg);
+  border-color: var(--os-chrome-border);
+  box-shadow: var(--os-chrome-shadow);
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+}
+
+/* Apple 27 Floating Island Top Bar (Matches Floating Island Sidebar) */
+html[data-os-theme="ios27"] .os-header-bar,
+html[data-os-theme="macos27"] .os-header-bar {
+  margin: 0.5rem 0.5rem 0 0.5rem;
+  border: 1px solid var(--os-chrome-border);
+  border-radius: 1.125rem;
+}
+
+/* Header Right Action Cluster */
+.os-header-pill-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+html[data-os-theme="ios27"] .os-header-pill-cluster,
+html[data-os-theme="macos27"] .os-header-pill-cluster {
+  padding: 0.1875rem;
+  border-radius: 9999px;
+  background-color: color-mix(in oklch, var(--os-surface-default) 70%, transparent);
+  border: 1px solid var(--os-card-border);
+  box-shadow: var(--os-specular-inset);
+}
+
+/* Cards & Panels (Zero backdrop-filter on repeating cards for 120fps scroll) */
+.os-panel {
+  background-color: var(--os-card-bg);
+  border: 1px solid var(--os-card-border);
+  border-radius: var(--os-panel-radius);
+  box-shadow: var(--os-card-shadow);
+}
+
+.os-card {
+  background-color: var(--os-card-bg);
+  border: 1px solid var(--os-card-border);
+  border-radius: var(--os-card-radius);
+  box-shadow: var(--os-card-shadow);
+  transition:
+    transform 0.24s var(--os-ease),
+    background-color 0.2s var(--os-ease),
+    border-color 0.2s var(--os-ease),
+    box-shadow 0.24s var(--os-ease);
+}
+
+.os-card-interactive {
+  background-color: var(--os-card-bg);
+  border: 1px solid var(--os-card-border);
+  border-radius: var(--os-card-radius);
+  box-shadow: var(--os-card-shadow);
+  transition:
+    transform 0.26s var(--os-ease),
+    background-color 0.2s var(--os-ease),
+    border-color 0.2s var(--os-ease),
+    box-shadow 0.26s var(--os-ease);
+}
+
+@media (hover: hover) {
+  .os-card-interactive:hover {
+    background-color: var(--os-card-hover-bg);
+    border-color: var(--os-card-hover-border);
+    box-shadow: var(--os-card-hover-shadow);
+    transform: translateY(var(--os-card-hover-translate));
+  }
+}
+
+.os-card-interactive:active {
+  transform: scale(var(--os-press-scale));
+  transition-duration: 0.1s;
+}
+
+/* Vertical 2:3 Cover Card */
+.os-cover-card {
+  border-radius: var(--os-card-radius);
+  border: 1px solid var(--os-card-border);
+  background-color: var(--os-card-bg);
+  box-shadow: var(--os-card-shadow);
+  transition:
+    transform 0.28s var(--os-ease-spring),
+    border-color 0.22s var(--os-ease),
+    box-shadow 0.28s var(--os-ease);
+}
+
+@media (hover: hover) {
+  .os-cover-card:hover {
+    border-color: var(--os-card-hover-border);
+    box-shadow: var(--os-card-hover-shadow);
+    transform: translateY(var(--os-card-hover-translate));
+  }
+}
+
+.os-cover-card:active {
+  transform: scale(var(--os-press-scale));
+  transition-duration: 0.1s;
+}
+
+.os-inner-media {
+  border-radius: var(--os-card-inner-radius);
+}
+
+/* Modals, Sheets & Popovers */
+.os-modal-surface {
+  background-color: var(--os-modal-bg) !important;
+  border: 1px solid var(--os-chrome-border) !important;
+  border-radius: var(--os-modal-radius) !important;
+  box-shadow: var(--os-modal-shadow) !important;
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+}
+
+.os-popover-surface {
+  background-color: var(--os-modal-bg) !important;
+  border: 1px solid var(--os-chrome-border) !important;
+  border-radius: var(--os-popover-radius) !important;
+  box-shadow: var(--os-modal-shadow) !important;
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+}
+
+/* Segmented Controls (Tabs / Mode Switchers) */
+.os-segmented {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem;
+  gap: 0.25rem;
+  border-radius: var(--os-segmented-radius);
+  background-color: color-mix(in oklch, var(--os-surface-low) 90%, transparent);
+  border: 1px solid var(--os-card-border);
+  box-shadow: var(--os-specular-inset);
+}
+
+.os-segmented-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--os-segmented-item-radius);
+  color: var(--ui-text-muted);
+  transition: all 0.2s var(--os-ease);
+  cursor: pointer;
+}
+
+.os-segmented-btn:hover:not([data-active="true"]) {
+  color: var(--ui-text-highlighted);
+}
+
+.os-segmented-btn[data-active="true"] {
+  background-color: var(--ui-primary);
+  color: var(--ui-text-inverted);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--ui-primary) 25%, transparent);
+}
+
+html[data-os-theme="ios27"] .os-segmented-btn[data-active="true"],
+html[data-os-theme="macos27"] .os-segmented-btn[data-active="true"] {
+  background-color: var(--os-surface-high);
+  color: var(--ui-text-highlighted);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14), var(--os-specular-inset);
+}
+
+html[data-os-theme="fluent2"] .os-segmented-btn[data-active="true"] {
+  background-color: var(--os-surface-high);
+  color: var(--ui-text-highlighted);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}
+
+html[data-os-theme="fluent2"] .os-segmented-btn[data-active="true"]::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 25%;
+  right: 25%;
+  height: 2.5px;
+  border-radius: 9999px;
+  background-color: var(--ui-primary);
+}
+
+/* ==========================================================================
+   SIGNATURE NAVIGATION SHELLS PER OS
+   ========================================================================== */
+
+/* 1. Desktop / Tablet Sidebar Signatures */
+html[data-os-theme="ios27"] .os-sidebar-root,
+html[data-os-theme="macos27"] .os-sidebar-root {
+  --sidebar-width-icon: 4.5rem;
+}
+
+html[data-os-theme="ios27"] .os-sidebar-container,
+html[data-os-theme="macos27"] .os-sidebar-container {
+  padding: 0.5rem 0 0.5rem 0.5rem;
+  border-right-color: transparent !important;
+}
+
+html[data-os-theme="ios27"] .os-sidebar-inner,
+html[data-os-theme="macos27"] .os-sidebar-inner {
+  background-color: var(--os-sidebar-bg);
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+  border: 1px solid var(--os-chrome-border);
+  border-radius: 1.125rem;
+  box-shadow: var(--os-chrome-shadow);
+}
+
+html[data-os-theme="fluent2"] .os-sidebar-inner {
+  background-color: var(--os-sidebar-bg);
+  border-right: 1px solid var(--os-chrome-border);
+}
+
+html[data-os-theme="material3"] .os-sidebar-inner {
+  background-color: var(--os-sidebar-bg);
+  border-right: 1px solid var(--os-chrome-border);
+}
+
+/* Sidebar Navigation Links (Strictly Scoped to .os-nav-link so Header Logo is Never Affected) */
+.os-nav-link {
+  position: relative;
+  border-radius: var(--os-btn-radius);
+  color: var(--ui-text-muted);
+  transition: background-color 0.15s var(--os-ease), color 0.15s var(--os-ease);
+}
+
+.os-nav-link:hover:not([data-active="true"]) {
+  background-color: color-mix(in oklch, var(--os-surface-high) 55%, transparent);
+  color: var(--ui-text-highlighted);
+}
+
+/* Apple 27 Liquid Glass Sidebar Items */
+html[data-os-theme="ios27"] .os-nav-link,
+html[data-os-theme="macos27"] .os-nav-link {
+  border-radius: 0.6875rem;
+}
+
+html[data-os-theme="ios27"] .os-nav-link[data-active="true"],
+html[data-os-theme="macos27"] .os-nav-link[data-active="true"] {
+  background-color: color-mix(in oklch, var(--ui-primary) 14%, var(--os-surface-high));
+  color: var(--ui-text-highlighted);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08), var(--os-specular-inset);
+}
+
+/* Fluent 2 Sidebar Items + Signature 3px Vertical Left Pill on ::after */
+html[data-os-theme="fluent2"] .os-nav-link {
+  border-radius: 0.375rem;
+}
+
+html[data-os-theme="fluent2"] .os-nav-link[data-active="true"] {
+  background-color: color-mix(in oklch, var(--os-surface-high) 85%, transparent);
+  color: var(--ui-text-highlighted);
+  font-weight: 600;
+}
+
+html[data-os-theme="fluent2"] .os-nav-link[data-active="true"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  border-radius: 9999px;
+  background-color: var(--ui-primary);
+}
+
+/* Material 3 Full Stadium Pill Sidebar Items */
+html[data-os-theme="material3"] .os-nav-link {
+  border-radius: 9999px;
+}
+
+html[data-os-theme="material3"] .os-nav-link[data-active="true"] {
+  background-color: color-mix(in oklch, var(--ui-primary) 16%, transparent);
+  color: var(--ui-primary);
+  font-weight: 700;
+}
+
+/* 2. Mobile Bottom Navigation Bar Signatures */
+.os-bottom-nav {
+  background-color: var(--os-chrome-bg);
+  border-top: 1px solid var(--os-chrome-border);
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+  box-shadow: var(--os-chrome-shadow);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: all 0.25s var(--os-ease);
+}
+
+/* iOS 27 & Material 3 Detached Floating Capsule Bottom Bar */
+html[data-os-theme="ios27"] .os-bottom-nav,
+html[data-os-theme="material3"] .os-bottom-nav {
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  padding-bottom: 0;
+  border-radius: 9999px;
+  border: 1px solid var(--os-chrome-border);
+  box-shadow: 0 12px 36px -4px rgba(0, 0, 0, 0.22), var(--os-specular-inset);
+}
+
+/* Fluent 2 Input Bottom Underline Accent Signature */
+html[data-os-theme="fluent2"] input:not([type="range"]):not([type="checkbox"]),
+html[data-os-theme="fluent2"] textarea,
+html[data-os-theme="fluent2"] button[role="combobox"] {
+  border-bottom: 1.5px solid rgba(130, 130, 130, 0.45) !important;
+  transition: border-bottom-color 0.15s var(--os-ease), box-shadow 0.15s var(--os-ease);
+}
+
+html[data-os-theme="fluent2"] input:not([type="range"]):not([type="checkbox"]):focus,
+html[data-os-theme="fluent2"] textarea:focus,
+html[data-os-theme="fluent2"] button[role="combobox"]:focus {
+  border-bottom-color: var(--ui-primary) !important;
+  box-shadow: inset 0 -1px 0 0 var(--ui-primary) !important;
+}
+
+/* Reader HUD & Floating Banners */
+.os-reader-hud {
+  background-color: var(--os-chrome-bg);
+  border: 1px solid var(--os-chrome-border);
+  box-shadow: var(--os-chrome-shadow);
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+}
+
+.os-floating-toast {
+  background-color: var(--os-modal-bg);
+  border: 1px solid var(--os-chrome-border);
+  border-radius: var(--os-card-radius);
+  box-shadow: var(--os-modal-shadow);
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+}
+
+/* Typography Headings */
+h1, h2, h3, .os-heading {
+  letter-spacing: var(--os-heading-tracking);
+}
+
+/* ==========================================================================
+   ACCESSIBILITY & LOW-END GPU GUARDRAILS
+   ========================================================================== */
+@media (prefers-reduced-transparency: reduce) {
+  .os-glass-bar,
+  .os-modal-surface,
+  .os-popover-surface,
+  .os-bottom-nav,
+  .os-reader-hud,
+  .os-floating-toast,
+  html[data-os-theme="ios27"] .os-sidebar-inner,
+  html[data-os-theme="macos27"] .os-sidebar-inner {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: var(--ui-bg-elevated) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .os-card,
+  .os-card-interactive,
+  .os-cover-card,
+  .os-segmented-btn {
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+  }
+}

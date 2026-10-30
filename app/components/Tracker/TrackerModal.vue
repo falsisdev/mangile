@@ -189,11 +189,11 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
 <template>
   <UModal v-model:open="isOpen">
     <template #content>
-      <UCard class="w-full max-w-2xl overflow-hidden rounded-2xl max-h-[90dvh] overflow-y-auto">
+      <UCard class="w-full max-w-2xl overflow-hidden max-h-[90dvh] overflow-y-auto">
         <template #header>
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <div class="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+              <div class="size-8 rounded-(--os-inner-radius) bg-primary/10 text-primary flex items-center justify-center font-bold">
                 <UIcon
                   name="i-lucide-activity"
                   class="size-4"
@@ -213,7 +213,6 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               variant="ghost"
               icon="i-lucide-x"
               size="sm"
-              class="rounded-xl"
               @click="void (isOpen = false)"
             />
           </div>
@@ -224,7 +223,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
           v-if="!user || !isRegistered"
           class="py-8 px-2 text-center space-y-4"
         >
-          <div class="size-16 rounded-2xl bg-amber-500/10 text-amber-500 mx-auto flex items-center justify-center">
+          <div class="size-16 rounded-(--os-card-radius) bg-amber-500/10 text-amber-500 mx-auto flex items-center justify-center">
             <UIcon
               name="i-lucide-lock"
               class="size-8"
@@ -246,7 +245,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               label="Giriş Yap"
               icon="i-lucide-log-in"
               color="primary"
-              class="rounded-xl font-bold"
+              class="font-bold"
             />
             <UButton
               v-else-if="!isRegistered"
@@ -254,7 +253,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               label="Kaydı Tamamla"
               icon="i-lucide-sparkles"
               color="warning"
-              class="rounded-xl font-bold"
+              class="font-bold"
             />
           </div>
         </div>
@@ -280,7 +279,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
             class="space-y-3"
           >
             <!-- 2.1 MyAnimeList Kartı -->
-            <div class="p-3.5 rounded-2xl bg-muted/20 border border-default/20 space-y-3">
+            <div class="p-3.5 os-panel space-y-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <TrackerBrandIcon
@@ -296,7 +295,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="success"
-                        class="rounded font-semibold"
+                        class="font-semibold"
                       >
                         Senkronize
                       </UBadge>
@@ -305,7 +304,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="warning"
-                        class="rounded font-semibold"
+                        class="font-semibold"
                       >
                         Hesap Bağlanmadı
                       </UBadge>
@@ -314,7 +313,6 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="neutral"
-                        class="rounded"
                       >
                         Eşleşmedi
                       </UBadge>
@@ -330,7 +328,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                     size="xs"
                     color="primary"
                     variant="soft"
-                    class="rounded-xl font-bold"
+                    class="font-bold"
                     @click="handleConnect('mal')"
                   />
                   <template v-else>
@@ -341,7 +339,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="primary"
                       variant="soft"
-                      class="rounded-xl font-bold"
+                      class="font-bold"
                       @click="openSearch('mal')"
                     />
                     <UButton
@@ -351,7 +349,6 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="error"
                       variant="ghost"
-                      class="rounded-xl"
                       @click="handleUnbind('mal')"
                     />
                   </template>
@@ -361,7 +358,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 1: Hesap bağlı değil AMA seri eşleşmiş -->
               <div
                 v-if="!isProviderConnected('mal') && seriesTrackers.mal.matchedId"
-                class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
+                class="p-2.5 rounded-(--os-inner-radius) bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
               >
                 <UIcon
                   name="i-lucide-alert-circle"
@@ -377,7 +374,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 2: Hesap bağlı değil VE seri eşleşmemiş -->
               <div
                 v-else-if="!isProviderConnected('mal') && !seriesTrackers.mal.matchedId"
-                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+                class="p-2.5 rounded-(--os-inner-radius) bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
               >
                 <span>İlerlemenizi senkronize etmek için MyAnimeList hesabınızı bağlayın.</span>
               </div>
@@ -385,7 +382,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 3: Hesap bağlı AMA seri eşleşmemiş -->
               <div
                 v-else-if="isProviderConnected('mal') && !seriesTrackers.mal.matchedId"
-                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+                class="p-2.5 rounded-(--os-inner-radius) bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
               >
                 <span>Bu seri henüz MyAnimeList ile eşleştirilmedi.</span>
                 <UButton
@@ -394,7 +391,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                   size="xs"
                   color="primary"
                   variant="soft"
-                  class="rounded-lg font-bold"
+                  class="font-bold"
                   @click="openSearch('mal')"
                 />
               </div>
@@ -408,7 +405,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                   <label class="text-[11px] font-semibold text-muted">Durum</label>
                   <select
                     v-model="formState.mal.status"
-                    class="w-full text-xs rounded-xl bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="w-full text-xs rounded-(--os-input-radius) bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                   >
                     <option
                       v-for="opt in statusOptions"
@@ -428,21 +425,19 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="neutral"
                       variant="soft"
-                      class="rounded-lg"
                       @click="handleChapterStep('mal', -1)"
                     />
                     <input
                       v-model.number="formState.mal.chapter"
                       type="number"
                       min="0"
-                      class="w-full text-xs text-center font-bold rounded-xl bg-background border border-default/30 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                      class="w-full text-xs text-center font-bold rounded-(--os-input-radius) bg-background border border-default/30 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     <UButton
                       icon="i-lucide-plus"
                       size="xs"
                       color="neutral"
                       variant="soft"
-                      class="rounded-lg"
                       @click="handleChapterStep('mal', 1)"
                     />
                   </div>
@@ -452,7 +447,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                   <label class="text-[11px] font-semibold text-muted">Puan</label>
                   <select
                     v-model.number="formState.mal.score"
-                    class="w-full text-xs rounded-xl bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="w-full text-xs rounded-(--os-input-radius) bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                   >
                     <option
                       v-for="opt in scoreOptions"
@@ -470,7 +465,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                     icon="i-lucide-check"
                     color="primary"
                     size="xs"
-                    class="rounded-xl font-bold"
+                    class="font-bold"
                     :loading="savingProvider.mal"
                     @click="handleSaveStatus('mal')"
                   />
@@ -479,7 +474,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
             </div>
 
             <!-- 2.2 AniList Kartı -->
-            <div class="p-3.5 rounded-2xl bg-muted/20 border border-default/20 space-y-3">
+            <div class="p-3.5 os-panel space-y-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <TrackerBrandIcon
@@ -495,7 +490,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="success"
-                        class="rounded font-semibold"
+                        class="font-semibold"
                       >
                         Senkronize
                       </UBadge>
@@ -504,7 +499,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="warning"
-                        class="rounded font-semibold"
+                        class="font-semibold"
                       >
                         Hesap Bağlanmadı
                       </UBadge>
@@ -513,7 +508,6 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="neutral"
-                        class="rounded"
                       >
                         Eşleşmedi
                       </UBadge>
@@ -529,7 +523,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                     size="xs"
                     color="primary"
                     variant="soft"
-                    class="rounded-xl font-bold"
+                    class="font-bold"
                     @click="handleConnect('anilist')"
                   />
                   <template v-else>
@@ -540,7 +534,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="primary"
                       variant="soft"
-                      class="rounded-xl font-bold"
+                      class="font-bold"
                       @click="openSearch('anilist')"
                     />
                     <UButton
@@ -550,7 +544,6 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="error"
                       variant="ghost"
-                      class="rounded-xl"
                       @click="handleUnbind('anilist')"
                     />
                   </template>
@@ -560,7 +553,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 1: Hesap bağlı değil AMA seri eşleşmiş -->
               <div
                 v-if="!isProviderConnected('anilist') && seriesTrackers.anilist.matchedId"
-                class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
+                class="p-2.5 rounded-(--os-inner-radius) bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
               >
                 <UIcon
                   name="i-lucide-alert-circle"
@@ -576,7 +569,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 2: Hesap bağlı değil VE seri eşleşmemiş -->
               <div
                 v-else-if="!isProviderConnected('anilist') && !seriesTrackers.anilist.matchedId"
-                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+                class="p-2.5 rounded-(--os-inner-radius) bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
               >
                 <span>İlerlemenizi senkronize etmek için AniList hesabınızı bağlayın.</span>
               </div>
@@ -584,7 +577,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 3: Hesap bağlı AMA seri eşleşmemiş -->
               <div
                 v-else-if="isProviderConnected('anilist') && !seriesTrackers.anilist.matchedId"
-                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+                class="p-2.5 rounded-(--os-inner-radius) bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
               >
                 <span>Bu seri henüz AniList ile eşleştirilmedi.</span>
                 <UButton
@@ -593,7 +586,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                   size="xs"
                   color="primary"
                   variant="soft"
-                  class="rounded-lg font-bold"
+                  class="font-bold"
                   @click="openSearch('anilist')"
                 />
               </div>
@@ -607,7 +600,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                   <label class="text-[11px] font-semibold text-muted">Durum</label>
                   <select
                     v-model="formState.anilist.status"
-                    class="w-full text-xs rounded-xl bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="w-full text-xs rounded-(--os-input-radius) bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                   >
                     <option
                       v-for="opt in statusOptions"
@@ -627,21 +620,19 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="neutral"
                       variant="soft"
-                      class="rounded-lg"
                       @click="handleChapterStep('anilist', -1)"
                     />
                     <input
                       v-model.number="formState.anilist.chapter"
                       type="number"
                       min="0"
-                      class="w-full text-xs text-center font-bold rounded-xl bg-background border border-default/30 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                      class="w-full text-xs text-center font-bold rounded-(--os-input-radius) bg-background border border-default/30 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     <UButton
                       icon="i-lucide-plus"
                       size="xs"
                       color="neutral"
                       variant="soft"
-                      class="rounded-lg"
                       @click="handleChapterStep('anilist', 1)"
                     />
                   </div>
@@ -663,7 +654,6 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="neutral"
                       variant="soft"
-                      class="rounded-lg"
                       :disabled="formState.anilist.score <= 0"
                       @click="handleScoreStep('anilist', -0.5)"
                     />
@@ -673,14 +663,13 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       step="0.1"
                       min="0"
                       max="100"
-                      class="w-full text-xs text-center font-bold rounded-xl bg-background border border-default/30 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                      class="w-full text-xs text-center font-bold rounded-(--os-input-radius) bg-background border border-default/30 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     <UButton
                       icon="i-lucide-plus"
                       size="xs"
                       color="neutral"
                       variant="soft"
-                      class="rounded-lg"
                       :disabled="formState.anilist.score >= 100"
                       @click="handleScoreStep('anilist', 0.5)"
                     />
@@ -693,7 +682,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                     icon="i-lucide-check"
                     color="primary"
                     size="xs"
-                    class="rounded-xl font-bold"
+                    class="font-bold"
                     :loading="savingProvider.anilist"
                     @click="handleSaveStatus('anilist')"
                   />
@@ -702,7 +691,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
             </div>
 
             <!-- 2.3 MangaDex Kartı -->
-            <div class="p-3.5 rounded-2xl bg-muted/20 border border-default/20 space-y-3">
+            <div class="p-3.5 os-panel space-y-3">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                   <TrackerBrandIcon
@@ -718,7 +707,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="success"
-                        class="rounded font-semibold"
+                        class="font-semibold"
                       >
                         Senkronize
                       </UBadge>
@@ -727,7 +716,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="warning"
-                        class="rounded font-semibold"
+                        class="font-semibold"
                       >
                         Hesap Bağlanmadı
                       </UBadge>
@@ -736,7 +725,6 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                         size="xs"
                         variant="subtle"
                         color="neutral"
-                        class="rounded"
                       >
                         Eşleşmedi
                       </UBadge>
@@ -752,7 +740,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                     size="xs"
                     color="primary"
                     variant="soft"
-                    class="rounded-xl font-bold"
+                    class="font-bold"
                     @click="handleConnect('mangadex')"
                   />
                   <template v-else>
@@ -763,7 +751,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="primary"
                       variant="soft"
-                      class="rounded-xl font-bold"
+                      class="font-bold"
                       @click="openSearch('mangadex')"
                     />
                     <UButton
@@ -773,7 +761,6 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                       size="xs"
                       color="error"
                       variant="ghost"
-                      class="rounded-xl"
                       @click="handleUnbind('mangadex')"
                     />
                   </template>
@@ -783,7 +770,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 1: Hesap bağlı değil AMA seri eşleşmiş -->
               <div
                 v-if="!isProviderConnected('mangadex') && seriesTrackers.mangadex.matchedId"
-                class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
+                class="p-2.5 rounded-(--os-inner-radius) bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5 text-xs"
               >
                 <UIcon
                   name="i-lucide-alert-circle"
@@ -799,7 +786,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 2: Hesap bağlı değil VE seri eşleşmemiş -->
               <div
                 v-else-if="!isProviderConnected('mangadex') && !seriesTrackers.mangadex.matchedId"
-                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+                class="p-2.5 rounded-(--os-inner-radius) bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
               >
                 <span>İlerlemenizi senkronize etmek için MangaDex hesabınızı bağlayın.</span>
               </div>
@@ -807,7 +794,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
               <!-- Durum 3: Hesap bağlı AMA seri eşleşmemiş -->
               <div
                 v-else-if="isProviderConnected('mangadex') && !seriesTrackers.mangadex.matchedId"
-                class="p-2.5 rounded-xl bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
+                class="p-2.5 rounded-(--os-inner-radius) bg-muted/30 border border-default/20 text-xs text-muted flex items-center justify-between"
               >
                 <span>Bu seri henüz MangaDex ile eşleştirilmedi.</span>
                 <UButton
@@ -816,7 +803,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                   size="xs"
                   color="primary"
                   variant="soft"
-                  class="rounded-lg font-bold"
+                  class="font-bold"
                   @click="openSearch('mangadex')"
                 />
               </div>
@@ -830,7 +817,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                   <label class="text-[11px] font-semibold text-muted">Durum</label>
                   <select
                     v-model="formState.mangadex.status"
-                    class="w-full text-xs rounded-xl bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="w-full text-xs rounded-(--os-input-radius) bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                   >
                     <option
                       v-for="opt in statusOptions"
@@ -846,7 +833,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                   <label class="text-[11px] font-semibold text-muted">Puan (1-10)</label>
                   <select
                     v-model.number="formState.mangadex.score"
-                    class="w-full text-xs rounded-xl bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="w-full text-xs rounded-(--os-input-radius) bg-background border border-default/30 px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary"
                   >
                     <option
                       v-for="opt in scoreOptions"
@@ -864,7 +851,7 @@ function handleScoreStep(provider: TrackerProvider, delta: number) {
                     icon="i-lucide-check"
                     color="primary"
                     size="xs"
-                    class="rounded-xl font-bold"
+                    class="font-bold"
                     :loading="savingProvider.mangadex"
                     @click="handleSaveStatus('mangadex')"
                   />

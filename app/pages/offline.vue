@@ -112,9 +112,9 @@ const totalStorageFormatted = computed(() => {
     <!-- Empty state -->
     <div
       v-if="manifest.length === 0"
-      class="py-16 px-4 text-center rounded-3xl border border-dashed border-border/80 bg-muted/10 space-y-4"
+      class="py-16 px-4 text-center rounded-(--os-hero-radius) border border-dashed border-border/80 os-panel space-y-4"
     >
-      <div class="size-14 mx-auto rounded-2xl bg-muted/20 text-muted flex items-center justify-center">
+      <div class="size-14 mx-auto rounded-(--os-card-radius) bg-muted/20 text-muted flex items-center justify-center">
         <UIcon
           name="i-lucide-cloud-download"
           class="size-7"
@@ -145,19 +145,19 @@ const totalStorageFormatted = computed(() => {
       <div
         v-for="chapter in manifest"
         :key="chapter.chapterKey"
-        class="group p-3.5 rounded-2xl border border-border/60 bg-card hover:border-primary/40 hover:shadow-lg transition-all flex flex-col justify-between gap-3"
+        class="group p-3.5 os-card-interactive flex flex-col justify-between gap-3"
       >
         <div class="flex items-start gap-3">
           <img
             v-if="chapter.coverImage"
             :src="chapter.coverImage"
             :alt="chapter.mangaTitle"
-            class="size-16 rounded-xl object-cover bg-muted/40 shrink-0 border border-border/40"
+            class="size-16 os-inner-media object-cover bg-muted/40 shrink-0 border border-border/40"
             loading="lazy"
           >
           <div
             v-else
-            class="size-16 rounded-xl bg-muted/30 flex items-center justify-center shrink-0 border border-border/40"
+            class="size-16 os-inner-media bg-muted/30 flex items-center justify-center shrink-0 border border-border/40"
           >
             <UIcon
               name="i-lucide-book-open"

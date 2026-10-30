@@ -32,25 +32,25 @@ async function onInstallClick() {
     >
       <aside
         v-if="showBanner"
-        class="fixed bottom-16 md:bottom-6 left-3 sm:left-6 z-40 max-w-sm w-[calc(100vw-1.5rem)] sm:w-80 p-3 rounded-2xl bg-neutral-900/95 dark:bg-neutral-900/95 text-white border border-neutral-700/60 shadow-2xl backdrop-blur-xl flex items-center gap-3 select-none"
+        class="os-floating-toast fixed bottom-[calc(var(--os-bottom-nav-clearance)+0.25rem)] md:bottom-6 left-3 sm:left-6 z-40 max-w-sm w-[calc(100vw-1.5rem)] sm:w-80 p-3 flex items-center gap-3 select-none"
         aria-label="Uygulama Yükleme Bildirimi"
       >
         <img
           src="/pwa-192x192.png"
           alt="Mangile"
-          class="size-10 rounded-xl shadow-md shrink-0"
+          class="size-10 rounded-xl shadow-xs shrink-0"
         >
 
         <div class="flex-1 min-w-0">
-          <p class="text-xs font-semibold text-white tracking-tight truncate">
+          <p class="text-xs font-bold text-highlighted tracking-tight truncate">
             Mangile Uygulaması
           </p>
-          <p class="text-[11px] text-neutral-300 line-clamp-1">
+          <p class="text-[11px] text-muted line-clamp-1">
             Daha hızlı ve çevrimdışı okuma
           </p>
         </div>
 
-        <div class="flex items-center gap-1.5 shrink-0">
+        <div class="flex items-center gap-1 shrink-0">
           <UButton
             size="xs"
             color="primary"
@@ -79,16 +79,16 @@ async function onInstallClick() {
       description="Mangile'ı iPhone veya iPad'inize yükleyin"
     >
       <template #body>
-        <div class="space-y-4 py-2">
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-neutral-100 dark:bg-neutral-800/60">
-            <div class="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
+        <div class="space-y-3 py-1">
+          <div class="os-panel flex items-start gap-3 p-3">
+            <div class="size-8 rounded-lg bg-primary/12 text-primary flex items-center justify-center shrink-0 mt-0.5">
               <UIcon
                 name="i-lucide-share"
-                class="size-5"
+                class="size-4"
               />
             </div>
             <div class="text-xs space-y-0.5">
-              <p class="font-semibold text-foreground">
+              <p class="font-bold text-highlighted">
                 1. Paylaş Simgesine Dokunun
               </p>
               <p class="text-muted">
@@ -97,15 +97,15 @@ async function onInstallClick() {
             </div>
           </div>
 
-          <div class="flex items-start gap-3 p-3 rounded-xl bg-neutral-100 dark:bg-neutral-800/60">
-            <div class="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
+          <div class="os-panel flex items-start gap-3 p-3">
+            <div class="size-8 rounded-lg bg-primary/12 text-primary flex items-center justify-center shrink-0 mt-0.5">
               <UIcon
                 name="i-lucide-plus-square"
-                class="size-5"
+                class="size-4"
               />
             </div>
             <div class="text-xs space-y-0.5">
-              <p class="font-semibold text-foreground">
+              <p class="font-bold text-highlighted">
                 2. 'Ana Ekrana Ekle'yi Seçin
               </p>
               <p class="text-muted">

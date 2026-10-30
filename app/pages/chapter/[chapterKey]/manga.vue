@@ -805,8 +805,8 @@ definePageMeta({
     v-if="chapterData && !pending && isCopyrightLocked"
     class="min-h-screen bg-background flex items-center justify-center p-4"
   >
-    <div class="max-w-md w-full bg-elevated/70 border border-default rounded-3xl p-6 sm:p-8 text-center space-y-6 shadow-xl backdrop-blur-md">
-      <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center ring-8 ring-amber-500/5">
+    <div class="os-card max-w-md w-full p-6 sm:p-8 text-center space-y-6">
+      <div class="w-16 h-16 mx-auto rounded-(--os-card-inner-radius) bg-amber-500/10 text-amber-500 flex items-center justify-center ring-8 ring-amber-500/5">
         <UIcon
           name="i-lucide-lock"
           class="w-8 h-8"
@@ -818,7 +818,7 @@ definePageMeta({
           color="warning"
           variant="subtle"
           size="sm"
-          class="rounded-full px-3 py-1 font-semibold"
+          class="rounded-(--os-badge-radius) px-3 py-1 font-semibold"
         >
           Telif Korumalı İçerik
         </UBadge>
@@ -841,7 +841,7 @@ definePageMeta({
           variant="solid"
           size="md"
           icon="i-lucide-log-in"
-          class="flex-1 justify-center rounded-xl font-bold py-2.5"
+          class="flex-1 justify-center rounded-(--os-btn-radius) font-bold py-2.5"
         >
           Giriş Yap
         </UButton>
@@ -851,7 +851,7 @@ definePageMeta({
           variant="soft"
           size="md"
           icon="i-lucide-arrow-left"
-          class="flex-1 justify-center rounded-xl font-bold py-2.5"
+          class="flex-1 justify-center rounded-(--os-btn-radius) font-bold py-2.5"
         >
           Seriye Dön
         </UButton>
@@ -1002,14 +1002,14 @@ definePageMeta({
     >
       <div
         v-if="zoomLevel > 1 || (controlsVisible && !showSettings)"
-        class="fixed bottom-20 left-1/2 -translate-x-1/2 z-45 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/75 backdrop-blur-md border border-white/15 shadow-xl text-white pointer-events-auto"
+        class="os-reader-hud fixed bottom-20 left-1/2 -translate-x-1/2 z-45 flex items-center gap-1.5 px-3 py-1.5 rounded-(--os-btn-radius) text-foreground pointer-events-auto"
       >
         <UButton
           icon="i-lucide-minus"
           size="xs"
           color="neutral"
           variant="ghost"
-          class="rounded-full"
+          class="rounded-(--os-btn-radius)"
           :disabled="zoomLevel <= 1"
           @click.stop="zoomOut"
         />
@@ -1021,7 +1021,7 @@ definePageMeta({
           size="xs"
           color="neutral"
           variant="ghost"
-          class="rounded-full"
+          class="rounded-(--os-btn-radius)"
           :disabled="zoomLevel >= 3.5"
           @click.stop="zoomIn"
         />
@@ -1031,7 +1031,7 @@ definePageMeta({
           size="xs"
           color="primary"
           variant="soft"
-          class="rounded-full ml-0.5 text-[11px]"
+          class="rounded-(--os-btn-radius) ml-0.5 text-[11px]"
           title="Yakınlaştırmayı Sıfırla"
           @click.stop="resetZoom"
         >
@@ -1654,10 +1654,11 @@ definePageMeta({
   padding: max(0.6rem, env(safe-area-inset-top)) 0.75rem 0.6rem;
   pointer-events: auto;
   gap: 0.5rem;
-  background: rgba(10, 10, 14, 0.9);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  background: rgba(12, 12, 16, 0.88);
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), var(--os-specular-inset);
 }
 
 .bottom-bar {
@@ -1667,11 +1668,12 @@ definePageMeta({
   width: 100%;
   padding: 0.6rem 0.75rem max(0.6rem, env(safe-area-inset-bottom));
   gap: 0.5rem;
-  background: rgba(10, 10, 14, 0.92);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(12, 12, 16, 0.9);
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   pointer-events: auto;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4), var(--os-specular-inset);
 }
 
 @media (min-width: 640px) {
@@ -1700,14 +1702,15 @@ definePageMeta({
   right: 1rem;
   left: auto;
   width: 340px;
-  background: rgba(18, 18, 22, 0.96);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 18px;
+  background: rgba(18, 18, 24, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--os-popover-radius);
   padding: 1.25rem;
   pointer-events: auto;
-  backdrop-filter: blur(24px);
+  backdrop-filter: var(--os-chrome-blur);
+  -webkit-backdrop-filter: var(--os-chrome-blur);
   z-index: 50;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), var(--os-specular-inset);
   max-height: 75vh;
   overflow-y: auto;
 }
@@ -1720,7 +1723,7 @@ definePageMeta({
     left: 0.75rem;
     bottom: 6.5rem;
     padding: 1rem;
-    border-radius: 16px;
+    border-radius: var(--os-popover-radius);
     max-height: 65vh;
   }
 }

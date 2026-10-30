@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+interface SidebarNavItem {
+  label: string
+  icon: string
+  to: string
+}
+
+interface SidebarSection {
+  id: string
+  title?: string
+  icon?: string
+  items: SidebarNavItem[]
+}
 
 const open = defineModel<boolean>('open', { default: false })
 const globalSidebarOpen = useSidebar()
@@ -8,6 +19,7 @@ const { isMobile } = useDevice()
 const { user } = useAuthUser()
 const { openProfile } = useProfileModal()
 const { canInstall, promptInstall } = usePwaInstall()
+const { resolvedOsLabel } = useOsTheme()
 
 watch(
   open,
@@ -37,83 +49,96 @@ watch(
   }
 )
 
-const mainItems: NavigationMenuItem[] = [
+const navSections: SidebarSection[] = [
   {
-    label: 'Ana Sayfa',
-    icon: 'i-lucide-house',
-    to: '/',
-    onSelect: closeOnMobile
+    id: 'main',
+    items: [
+      {
+        label: 'Ana Sayfa',
+        icon: 'i-lucide-house',
+        to: '/'
+      },
+      {
+        label: 'Keşfet',
+        icon: 'i-lucide-compass',
+        to: '/explore'
+      }
+    ]
   },
   {
-    label: 'Keşfet',
-    icon: 'i-lucide-compass',
-    to: '/explore',
-    onSelect: closeOnMobile
-  }
-]
-
-const libraryItems: NavigationMenuItem[] = [
-  {
-    label: 'Senkronizasyon',
-    icon: 'i-lucide-cloud-backup',
-    to: '/sync',
-    onSelect: closeOnMobile
-  },
-  {
-    label: 'Listeler',
+    id: 'library',
+    title: 'Kitaplık',
     icon: 'i-lucide-library',
-    to: '/lists',
-    onSelect: closeOnMobile
+    items: [
+      {
+        label: 'Senkronizasyon',
+        icon: 'i-lucide-cloud-backup',
+        to: '/sync'
+      },
+      {
+        label: 'Listeler',
+        icon: 'i-lucide-library',
+        to: '/lists'
+      },
+      {
+        label: 'Okuma Geçmişi',
+        icon: 'i-lucide-history',
+        to: '/history'
+      },
+      {
+        label: 'İndirilenler',
+        icon: 'i-lucide-download',
+        to: '/offline'
+      }
+    ]
   },
   {
-    label: 'Okuma Geçmişi',
-    icon: 'i-lucide-history',
-    to: '/history',
-    onSelect: closeOnMobile
-  },
-  {
-    label: 'İndirilenler',
-    icon: 'i-lucide-download',
-    to: '/offline',
-    onSelect: closeOnMobile
-  }
-]
-
-const companyItems: NavigationMenuItem[] = [
-  {
-    label: 'Bilgilendirme',
+    id: 'company',
+    title: 'Kurumsal',
     icon: 'i-lucide-info',
-    to: '/article/notice',
-    onSelect: closeOnMobile
+    items: [
+      {
+        label: 'Bilgilendirme',
+        icon: 'i-lucide-info',
+        to: '/article/notice'
+      },
+      {
+        label: 'Hakkımızda',
+        icon: 'i-lucide-users',
+        to: '/article/about'
+      },
+      {
+        label: 'İletişim',
+        icon: 'i-lucide-phone',
+        to: '/article/contact'
+      }
+    ]
   },
   {
-    label: 'Hakkımızda',
-    icon: 'i-lucide-users',
-    to: '/article/about',
-    onSelect: closeOnMobile
-  },
-  {
-    label: 'İletişim',
-    icon: 'i-lucide-phone',
-    to: '/article/contact',
-    onSelect: closeOnMobile
+    id: 'legal',
+    title: 'Yasal',
+    icon: 'i-lucide-scale',
+    items: [
+      {
+        label: 'Hizmet Koşulları',
+        icon: 'i-lucide-scale',
+        to: '/article/tos'
+      },
+      {
+        label: 'Lisanslandırma',
+        icon: 'i-lucide-copyright',
+        to: '/article/licence'
+      }
+    ]
   }
 ]
 
-const legalItems: NavigationMenuItem[] = [
-  {
-    label: 'Hizmet Koşulları',
-    icon: 'i-lucide-scale',
-    to: '/article/tos',
-    onSelect: closeOnMobile
-  },
-  {
-    label: 'Lisanslandırma',
-    icon: 'i-lucide-copyright',
-    to: '/article/licence',
-    onSelect: closeOnMobile
+function isItemActive(to: string): boolean {
+  if (to === '/') {
+    return route.path === '/'
   }
-]
+  return route.path === to || route.path.startsWith(`${to}/`)
+}
 
 function toggleSidebar() {
   open.value = !open.value
@@ -127,16 +152,27 @@ function toggleSidebar() {
     collapsible="icon"
     side="left"
     :ui="{
-      container: 'max-md:w-72 max-md:max-w-[85vw]',
+      root: 'os-sidebar-root',
+      container: 'os-sidebar-container max-md:w-72 max-md:max-w-[85vw] max-md:p-0',
       inner:
-        'max-md:bg-sidebar/95 max-md:backdrop-blur-xl max-md:border-r max-md:border-border/60 max-md:shadow-2xl'
+        'os-sidebar-inner max-md:shadow-2xl transition-colors duration-200 divide-y-0',
+      header:
+        'px-3 py-3 group-data-[state=collapsed]/sidebar:px-2 group-data-[state=collapsed]/sidebar:justify-center',
+      body:
+        'px-2.5 py-2 group-data-[state=collapsed]/sidebar:px-2 group-data-[state=collapsed]/sidebar:py-2',
+      footer:
+        'px-2.5 py-3 group-data-[state=collapsed]/sidebar:px-2'
     }"
   >
     <template #header>
-      <div class="flex flex-row items-center w-full pt-[env(safe-area-inset-top)] md:pt-0">
+      <div
+        class="flex flex-row items-center w-full pt-[env(safe-area-inset-top)] md:pt-0"
+        :class="open ? 'justify-between' : 'justify-center'"
+      >
         <NuxtLink
           to="/"
-          class="flex items-center gap-2.5 min-w-0"
+          class="flex items-center gap-2.5 min-w-0 focus:outline-none"
+          :class="open ? '' : 'justify-center mx-auto'"
           @click="closeOnMobile"
         >
           <img
@@ -146,27 +182,26 @@ function toggleSidebar() {
           >
           <div
             class="flex items-center gap-1.5 min-w-0"
-            :class="open ? 'flex' : 'flex md:hidden'"
+            :class="open ? 'flex' : 'flex lg:hidden'"
           >
-            <span class="font-black text-base text-foreground tracking-tight">Mangile</span>
+            <span class="font-black text-base text-highlighted tracking-tight">Mangile</span>
             <UBadge
               color="primary"
               variant="subtle"
               size="xs"
-              class="rounded-full px-1.5 py-0 text-[9px] font-bold"
+              class="px-1.5 py-0 text-[9px] font-bold"
             >
-              v1.0
+              v2.0
             </UBadge>
           </div>
         </NuxtLink>
-        <span class="grow" />
         <UButton
           v-if="open"
           icon="i-lucide-x"
           color="neutral"
           variant="ghost"
           size="sm"
-          class="rounded-full md:hidden shrink-0"
+          class="md:hidden shrink-0"
           aria-label="Menüyü Kapat"
           @click="toggleSidebar"
         />
@@ -174,64 +209,63 @@ function toggleSidebar() {
     </template>
 
     <div class="flex h-full flex-col">
-      <div class="flex-1 overflow-y-auto">
-        <UNavigationMenu
-          :items="mainItems"
-          orientation="vertical"
-          :ui="{ link: 'p-1.5 max-md:p-2 max-md:rounded-xl overflow-hidden' }"
-        />
-
+      <nav
+        class="flex-1 overflow-y-auto space-y-3"
+        aria-label="Ana Navigasyon"
+      >
         <div
-          v-if="open"
-          class="px-3 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1"
+          v-for="section in navSections"
+          :key="section.id"
+          class="space-y-0.5"
         >
-          <UIcon
-            name="i-lucide-library"
-            class="w-3 h-3 text-primary md:hidden"
-          />
-          <span>Kitaplık</span>
+          <div
+            v-if="section.title && open"
+            class="px-2.5 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted flex items-center gap-1.5 select-none"
+          >
+            <UIcon
+              v-if="section.icon"
+              :name="section.icon"
+              class="w-3 h-3 text-primary md:hidden"
+            />
+            <span>{{ section.title }}</span>
+          </div>
+
+          <div
+            v-for="item in section.items"
+            :key="item.to"
+          >
+            <UTooltip
+              :disabled="open"
+              :text="item.label"
+              :content="{ side: 'right' }"
+            >
+              <NuxtLink
+                :to="item.to"
+                :data-active="isItemActive(item.to) ? 'true' : undefined"
+                :aria-current="isItemActive(item.to) ? 'page' : undefined"
+                class="os-nav-link flex items-center overflow-hidden font-medium focus:outline-none"
+                :class="
+                  open
+                    ? 'w-full gap-2.5 px-2.5 py-2 text-sm'
+                    : 'w-full gap-2.5 px-2.5 py-2 text-sm lg:mx-auto lg:size-10 lg:justify-center lg:p-0'
+                "
+                @click="closeOnMobile"
+              >
+                <UIcon
+                  :name="item.icon"
+                  class="size-5 shrink-0"
+                />
+                <span
+                  class="truncate"
+                  :class="open ? 'inline' : 'inline lg:hidden'"
+                >
+                  {{ item.label }}
+                </span>
+              </NuxtLink>
+            </UTooltip>
+          </div>
         </div>
-
-        <UNavigationMenu
-          :items="libraryItems"
-          orientation="vertical"
-          :ui="{ link: 'p-1.5 max-md:p-2 max-md:rounded-xl overflow-hidden' }"
-        />
-
-        <div
-          v-if="open"
-          class="px-3 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1"
-        >
-          <UIcon
-            name="i-lucide-info"
-            class="w-3 h-3 text-primary md:hidden"
-          />
-          <span>Kurumsal</span>
-        </div>
-
-        <UNavigationMenu
-          :items="companyItems"
-          orientation="vertical"
-          :ui="{ link: 'p-1.5 max-md:p-2 max-md:rounded-xl overflow-hidden' }"
-        />
-
-        <div
-          v-if="open"
-          class="px-3 pt-5 pb-2 text-xs font-semibold uppercase tracking-wider text-muted flex items-center gap-1"
-        >
-          <UIcon
-            name="i-lucide-scale"
-            class="w-3 h-3 text-primary md:hidden"
-          />
-          <span>Yasal</span>
-        </div>
-
-        <UNavigationMenu
-          :items="legalItems"
-          orientation="vertical"
-          :ui="{ link: 'p-1.5 max-md:p-2 max-md:rounded-xl overflow-hidden' }"
-        />
-      </div>
+      </nav>
     </div>
 
     <template #footer>
@@ -249,7 +283,7 @@ function toggleSidebar() {
             icon="i-lucide-download"
             label="Uygulamayı Yükle"
             block
-            class="font-medium"
+            class="font-semibold"
             @click="void promptInstall()"
           />
           <div
@@ -265,7 +299,7 @@ function toggleSidebar() {
                 color="primary"
                 variant="soft"
                 icon="i-lucide-download"
-                class="rounded-lg shrink-0"
+                class="shrink-0"
                 aria-label="Uygulamayı Yükle"
                 @click="void promptInstall()"
               />
@@ -307,7 +341,7 @@ function toggleSidebar() {
                 variant="ghost"
                 color="neutral"
                 size="sm"
-                class="rounded-lg shrink-0"
+                class="shrink-0"
                 aria-label="Çıkış Yap"
                 @click="closeOnMobile"
               />
@@ -320,7 +354,7 @@ function toggleSidebar() {
           >
             <button
               type="button"
-              class="w-full p-2 rounded-xl bg-muted/40 hover:bg-muted/70 transition-all flex items-center justify-between gap-2 overflow-hidden text-left cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              class="w-full p-2 os-card-interactive flex items-center justify-between gap-2 overflow-hidden text-left cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               @click="openProfile"
             >
               <UUser
@@ -386,7 +420,6 @@ function toggleSidebar() {
                 color="primary"
                 variant="solid"
                 size="sm"
-                class="rounded-lg"
                 aria-label="Giriş Yap"
                 @click="closeOnMobile"
               />
@@ -412,9 +445,11 @@ function toggleSidebar() {
 
         <p
           v-if="open"
-          class="text-center text-[10px] text-muted-foreground pt-2 md:hidden"
+          class="text-center text-[10px] text-muted pt-2 flex items-center justify-center gap-1.5"
         >
-          Mangile © 2026
+          <span>Mangile © 2026</span>
+          <span>•</span>
+          <span class="text-primary font-semibold">{{ resolvedOsLabel }}</span>
         </p>
       </div>
     </template>

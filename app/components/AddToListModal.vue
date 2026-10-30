@@ -203,7 +203,7 @@ function startCreatingNew() {
         v-else
         class="space-y-4"
       >
-        <div class="flex items-center gap-3 p-3 rounded-xl bg-muted/20 ring-1 ring-default/20">
+        <div class="flex items-center gap-3 p-3 os-panel">
           <UIcon
             name="i-lucide-bookmark"
             class="size-5 text-primary shrink-0"
@@ -269,7 +269,7 @@ function startCreatingNew() {
                 v-for="l in userLists"
                 :key="l._id"
                 type="button"
-                class="flex items-center justify-between p-2.5 rounded-xl border text-left transition-all text-xs"
+                class="flex items-center justify-between p-2.5 rounded-(--os-inner-radius) border text-left transition-all text-xs"
                 :class="selectedListId === l._id ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-default/20 hover:bg-muted/20 text-foreground'"
                 @click="selectedListId = l._id"
               >
@@ -281,7 +281,7 @@ function startCreatingNew() {
             </div>
             <div
               v-if="!isCreatingNew && isAlreadyInSelectedList"
-              class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2"
+              class="p-2.5 rounded-(--os-inner-radius) bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-400 flex items-center gap-2"
             >
               <UIcon
                 name="i-lucide-info"
@@ -293,7 +293,7 @@ function startCreatingNew() {
 
           <div
             v-else
-            class="space-y-3 p-3 rounded-xl bg-muted/15 border border-default/20"
+            class="space-y-3 p-3 os-panel"
           >
             <div class="space-y-1">
               <label class="text-[11px] font-medium text-muted">Liste Başlığı</label>

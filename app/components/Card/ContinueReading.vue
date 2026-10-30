@@ -84,10 +84,10 @@ function formatBadgeLabel(item: ReadingHistoryItem): string {
     >
       <NuxtLink
         :to="getResumeLink(item)"
-        class="group relative flex items-stretch gap-2.5 sm:gap-3 w-full overflow-hidden rounded-xl sm:rounded-2xl border border-default bg-elevated/50 p-2 sm:p-2.5 cursor-pointer select-none touch-manipulation transition-all duration-300 hover:border-primary/50 hover:bg-elevated hover:shadow-md active:scale-[0.98]"
+        class="os-card-interactive group relative flex items-stretch gap-2.5 sm:gap-3 w-full overflow-hidden p-2 sm:p-2.5 cursor-pointer select-none touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         <!-- Thumbnail -->
-        <div class="relative w-16 sm:w-20 shrink-0 aspect-2/3 overflow-hidden rounded-lg sm:rounded-xl border border-default/60 bg-muted">
+        <div class="os-inner-media relative w-16 sm:w-20 shrink-0 aspect-2/3 overflow-hidden border border-default/60 bg-muted">
           <img
             v-if="item.coverUrl"
             :src="item.coverUrl"
@@ -105,7 +105,7 @@ function formatBadgeLabel(item: ReadingHistoryItem): string {
               class="size-5"
             />
           </div>
-          <span class="absolute top-1 left-1 px-1 py-0.5 rounded text-[8px] font-bold bg-black/75 text-white backdrop-blur-xs">
+          <span class="absolute top-1 left-1 px-1.5 py-0.5 rounded-(--os-badge-radius) text-[8px] font-bold bg-black/75 text-white">
             {{ formatBadgeLabel(item) }}
           </span>
         </div>
@@ -162,7 +162,7 @@ function formatBadgeLabel(item: ReadingHistoryItem): string {
                 />
               </span>
             </div>
-            <div class="w-full bg-muted/40 h-1.5 rounded-full overflow-hidden">
+            <div class="w-full bg-muted/60 h-1.5 rounded-full overflow-hidden">
               <div
                 class="bg-primary h-full rounded-full transition-all duration-300"
                 :style="{

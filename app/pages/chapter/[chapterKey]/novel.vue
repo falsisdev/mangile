@@ -525,7 +525,7 @@ definePageMeta({
     <!-- ÜST ÇUBUK (Sticky App Bar) -->
     <header
       v-if="!isCopyrightLocked"
-      class="sticky top-0 z-40 bg-default/90 backdrop-blur-xl border-b border-border/50 shadow-xs pt-[env(safe-area-inset-top)]"
+      class="os-glass-bar sticky top-0 z-40 pt-[env(safe-area-inset-top)]"
     >
       <div class="px-3 sm:px-6 h-12 sm:h-14 flex items-center justify-between gap-2 max-w-5xl mx-auto">
         <!-- Sol: Geri butonu ve Başlık Bilgisi -->
@@ -536,7 +536,7 @@ definePageMeta({
             size="sm"
             color="neutral"
             variant="ghost"
-            class="rounded-full shrink-0"
+            class="rounded-(--os-btn-radius) shrink-0"
             aria-label="Seriye Dön"
           />
           <div class="min-w-0 flex-1">
@@ -558,7 +558,7 @@ definePageMeta({
             color="success"
             variant="subtle"
             label="İndirildi"
-            class="font-medium"
+            class="font-medium rounded-(--os-btn-radius)"
             @click="onRemoveOffline"
           />
           <UButton
@@ -569,7 +569,7 @@ definePageMeta({
             color="neutral"
             variant="subtle"
             :label="downloadButtonLabel"
-            class="font-medium"
+            class="font-medium rounded-(--os-btn-radius)"
             @click="onDownloadOffline"
           />
 
@@ -595,7 +595,7 @@ definePageMeta({
             color="neutral"
             variant="ghost"
             size="xs"
-            class="rounded-full"
+            class="rounded-(--os-btn-radius)"
             aria-label="Tema Değiştir"
             @click="toggleTheme"
           />
@@ -605,7 +605,7 @@ definePageMeta({
             :color="showSettings ? 'primary' : 'neutral'"
             :variant="showSettings ? 'solid' : 'ghost'"
             size="xs"
-            class="rounded-full"
+            class="rounded-(--os-btn-radius)"
             aria-label="Okuma Ayarları"
             @click="void (showSettings = !showSettings)"
           />
@@ -624,9 +624,9 @@ definePageMeta({
     >
       <div
         v-if="showSettings"
-        class="fixed bottom-20 sm:bottom-auto sm:top-16 inset-x-3 sm:inset-x-auto sm:right-4 z-50 w-auto sm:w-96 bg-default/95 backdrop-blur-xl border border-border/80 rounded-2xl shadow-2xl p-4 sm:p-5 max-h-[75vh] overflow-y-auto"
+        class="os-popover-surface fixed bottom-20 sm:bottom-auto sm:top-16 inset-x-3 sm:inset-x-auto sm:right-4 z-50 w-auto sm:w-96 p-4 sm:p-5 max-h-[75vh] overflow-y-auto"
       >
-        <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-border/50">
+        <div class="flex items-center justify-between pb-2.5 mb-3 border-b border-default">
           <h3 class="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
             <UIcon
               name="i-lucide-sliders-horizontal"
@@ -639,7 +639,7 @@ definePageMeta({
             variant="ghost"
             size="xs"
             color="neutral"
-            class="rounded-full"
+            class="rounded-(--os-btn-radius)"
             aria-label="Kapat"
             @click="void (showSettings = false)"
           />
@@ -802,8 +802,8 @@ definePageMeta({
         v-else-if="chapterData && isCopyrightLocked"
         class="min-h-[80vh] flex items-center justify-center p-4"
       >
-        <div class="max-w-md w-full bg-elevated/70 border border-default rounded-3xl p-6 sm:p-8 text-center space-y-6 shadow-xl backdrop-blur-md">
-          <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center ring-8 ring-amber-500/5">
+        <div class="os-card max-w-md w-full p-6 sm:p-8 text-center space-y-6">
+          <div class="w-16 h-16 mx-auto rounded-(--os-card-inner-radius) bg-amber-500/10 text-amber-500 flex items-center justify-center ring-8 ring-amber-500/5">
             <UIcon
               name="i-lucide-lock"
               class="w-8 h-8"
@@ -815,7 +815,7 @@ definePageMeta({
               color="warning"
               variant="subtle"
               size="sm"
-              class="rounded-full px-3 py-1 font-semibold"
+              class="rounded-(--os-badge-radius) px-3 py-1 font-semibold"
             >
               Telif Korumalı İçerik
             </UBadge>
@@ -838,7 +838,7 @@ definePageMeta({
               variant="solid"
               size="md"
               icon="i-lucide-log-in"
-              class="flex-1 justify-center rounded-xl font-bold py-2.5"
+              class="flex-1 justify-center rounded-(--os-btn-radius) font-bold py-2.5"
             >
               Giriş Yap
             </UButton>
@@ -848,7 +848,7 @@ definePageMeta({
               variant="soft"
               size="md"
               icon="i-lucide-arrow-left"
-              class="flex-1 justify-center rounded-xl font-bold py-2.5"
+              class="flex-1 justify-center rounded-(--os-btn-radius) font-bold py-2.5"
             >
               Seriye Dön
             </UButton>
@@ -910,7 +910,7 @@ definePageMeta({
       <!-- Sayfa Sonu Bölüm Geçiş Butonları -->
       <div
         v-if="!pending && chapterData && !isCopyrightLocked"
-        class="pt-8 sm:pt-12 mt-8 sm:mt-12 mb-16 border-t border-border/50 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4"
+        class="pt-8 sm:pt-12 mt-8 sm:mt-12 mb-16 border-t border-default flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4"
       >
         <UButton
           :disabled="!hasPreviousChapter"
@@ -918,7 +918,7 @@ definePageMeta({
           size="md"
           color="primary"
           variant="soft"
-          class="w-full sm:w-auto justify-center rounded-xl"
+          class="w-full sm:w-auto justify-center rounded-(--os-btn-radius)"
           @click="goToPreviousChapter"
         >
           Önceki Bölüm
@@ -936,7 +936,7 @@ definePageMeta({
           size="md"
           color="primary"
           variant="solid"
-          class="w-full sm:w-auto justify-center rounded-xl font-bold"
+          class="w-full sm:w-auto justify-center rounded-(--os-btn-radius) font-bold"
           @click="goToNextChapter"
         >
           Sonraki Bölüm
@@ -944,10 +944,10 @@ definePageMeta({
       </div>
     </UContainer>
 
-    <!-- YÜZEN ALT BÖLÜM GEZİNME ÇUBUĞU (Android Reader Style) -->
+    <!-- YÜZEN ALT BÖLÜM GEZİNME ÇUBUĞU -->
     <div
       v-if="!pending && chapterData && !isCopyrightLocked"
-      class="fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-2 bg-default/95 backdrop-blur-xl border border-border/80 shadow-2xl rounded-2xl sm:rounded-full max-w-[calc(100vw-1.5rem)]"
+      class="os-reader-hud fixed bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-2 rounded-(--os-card-radius) sm:rounded-(--os-btn-radius) max-w-[calc(100vw-1.5rem)]"
     >
       <UButton
         :disabled="!hasPreviousChapter"
@@ -955,7 +955,7 @@ definePageMeta({
         size="sm"
         color="neutral"
         variant="soft"
-        class="rounded-xl shrink-0"
+        class="rounded-(--os-btn-radius) shrink-0"
         aria-label="Önceki Bölüm"
         @click="goToPreviousChapter"
       />
@@ -973,7 +973,7 @@ definePageMeta({
         size="sm"
         color="neutral"
         variant="soft"
-        class="rounded-xl shrink-0"
+        class="rounded-(--os-btn-radius) shrink-0"
         aria-label="Sonraki Bölüm"
         @click="goToNextChapter"
       />
@@ -994,7 +994,7 @@ definePageMeta({
         size="sm"
         color="primary"
         variant="soft"
-        class="fixed bottom-18 right-3 sm:bottom-20 sm:right-8 shadow-xl z-30 rounded-full"
+        class="fixed bottom-18 right-3 sm:bottom-20 sm:right-8 shadow-xl z-30 rounded-(--os-btn-radius)"
         aria-label="Başa Dön"
         @click="scrollToTop"
       />

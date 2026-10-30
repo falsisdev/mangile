@@ -21,9 +21,9 @@ const isNovel = computed(() => props.kind === 'novel' || props.kind === 'lightNo
 <template>
   <NuxtLink
     :to="to"
-    class="group relative flex items-stretch gap-2.5 sm:gap-3 w-full overflow-hidden rounded-xl sm:rounded-2xl border border-default bg-elevated/50 p-2 sm:p-2.5 cursor-pointer select-none touch-manipulation [-webkit-tap-highlight-color:transparent] transition-[transform,border-color,background-color,box-shadow] duration-300 ease-out hover:border-primary/40 hover:bg-elevated hover:shadow-md active:scale-[0.98] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+    class="os-card-interactive group relative flex items-stretch gap-2.5 sm:gap-3 w-full overflow-hidden p-2 sm:p-2.5 cursor-pointer select-none touch-manipulation [-webkit-tap-highlight-color:transparent] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
   >
-    <div class="relative w-16 sm:w-20 md:w-24 shrink-0 aspect-2/3 overflow-hidden rounded-lg sm:rounded-xl border border-default/60 bg-muted">
+    <div class="os-inner-media relative w-16 sm:w-20 md:w-22 shrink-0 aspect-2/3 overflow-hidden border border-default/60 bg-muted">
       <img
         :src="cover"
         :alt="title"
@@ -48,7 +48,7 @@ const isNovel = computed(() => props.kind === 'novel' || props.kind === 'lightNo
           class="h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0 text-dimmed"
         />
         <span class="truncate text-[10px] sm:text-[11px] font-semibold text-muted">{{ formatTimeAgo(dateStamp) }}</span>
-        <span class="ml-auto inline-flex shrink-0 items-center gap-0.5 sm:gap-1 rounded-full bg-muted px-1.5 py-0.5 sm:px-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-toned">
+        <span class="ml-auto inline-flex shrink-0 items-center gap-0.5 sm:gap-1 rounded-(--os-badge-radius) bg-muted/80 px-1.5 py-0.5 sm:px-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-toned">
           <UIcon
             :name="isNovel ? 'i-lucide-book-open' : 'i-lucide-image'"
             class="h-2.5 w-2.5 sm:h-3 sm:w-3"
@@ -57,7 +57,7 @@ const isNovel = computed(() => props.kind === 'novel' || props.kind === 'lightNo
         </span>
       </div>
 
-      <h3 class="text-xs sm:text-sm font-bold leading-tight sm:leading-snug text-highlighted line-clamp-2">
+      <h3 class="text-xs sm:text-sm font-bold leading-tight sm:leading-snug text-highlighted line-clamp-2 group-hover:text-primary transition-colors">
         {{ title }}
       </h3>
 

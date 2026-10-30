@@ -14,17 +14,18 @@ interface SearchItem extends CommandPaletteItem {
   id: number
 }
 
-const searchTerm = ref('')
-const debouncedSearch = ref('')
-const isOpen = ref(false)
+const searchTerm = shallowRef('')
+const debouncedSearch = shallowRef('')
+const isOpen = shallowRef(false)
 const config = useRuntimeConfig()
+const { isAppleTheme } = useOsTheme()
 
 let debounceTimeout: ReturnType<typeof setTimeout>
 watch(searchTerm, (newVal) => {
   clearTimeout(debounceTimeout)
   debounceTimeout = setTimeout(() => {
     debouncedSearch.value = newVal.trim()
-  }, 500)
+  }, 400)
 })
 
 watch(isOpen, (newVal) => {
@@ -73,7 +74,7 @@ const groups = computed(() => [
     id: 'titles',
     label: searchTerm.value
       ? `Aranıyor: “${searchTerm.value}”...`
-      : 'Öne Çıkanlar',
+      : 'Öne Çıkan Seriler',
     items: titles.value || [],
     ignoreFilter: true
   }
@@ -90,28 +91,64 @@ function onSelect(value: CommandPaletteItem | null) {
 function openSearch() {
   isOpen.value = true
 }
+
+function handleGlobalKeydown(e: KeyboardEvent) {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault()
+    isOpen.value = !isOpen.value
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleGlobalKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown)
+})
 </script>
 
 <template>
+  <!-- Mobile Icon Trigger -->
   <UButton
     icon="i-lucide-search"
     color="neutral"
     variant="ghost"
     size="sm"
+    class="sm:hidden"
     aria-label="Ara"
     @click="openSearch"
   />
 
+  <!-- Desktop / Tablet OS-Adaptive Search Bar Trigger -->
+  <button
+    type="button"
+    class="hidden sm:inline-flex items-center justify-between gap-3 h-8 px-3 rounded-(--os-btn-radius) border border-default bg-elevated/60 hover:bg-elevated text-muted hover:text-highlighted text-xs transition-all cursor-pointer min-w-44 lg:min-w-56"
+    aria-label="İçerikleri Ara"
+    @click="openSearch"
+  >
+    <span class="flex items-center gap-2 truncate">
+      <UIcon
+        name="i-lucide-search"
+        class="size-3.5 shrink-0 text-muted"
+      />
+      <span class="truncate">Seri veya roman ara...</span>
+    </span>
+    <kbd class="px-1.5 py-0.5 text-[10px] font-mono font-semibold rounded bg-muted/70 text-muted border border-default/60 shrink-0">
+      {{ isAppleTheme ? '⌘K' : 'Ctrl K' }}
+    </kbd>
+  </button>
+
   <UModal
     v-model:open="isOpen"
-    :ui="{ content: 'sm:max-w-lg max-h-[85dvh] overflow-hidden' }"
+    :ui="{ content: 'sm:max-w-lg max-h-[85dvh] overflow-hidden os-modal-surface' }"
   >
     <template #content>
       <UCommandPalette
         v-model:search-term="searchTerm"
         :loading="status === 'pending'"
         :groups="groups"
-        placeholder="İçerikleri ara..."
+        placeholder="Manga, webtoon veya hafif roman ara..."
         class="h-80 sm:h-96"
         @update:model-value="onSelect"
       />

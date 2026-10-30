@@ -287,13 +287,13 @@ const localTitles = computed(() => {
       class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-8"
     >
       <div
-        class="bg-muted/30 rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 cursor-pointer transition-all group"
+        class="os-card-interactive rounded-(--os-hero-radius) p-5 sm:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 cursor-pointer group overflow-hidden"
         style="
         background-image: url('https://cdn.sanity.io/images/1yge7tlr/production/82d9ae08a8b6318090165bad8229d9fb2d072317-700x420.gif');
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
-        box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.7);
+        box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.72);
         "
         @click="void (exploreMode = 'all')"
       >
@@ -304,23 +304,23 @@ const localTitles = computed(() => {
           />
         </div>
         <div class="text-center">
-          <h3 class="text-lg sm:text-xl font-bold text-foreground">
+          <h3 class="text-lg sm:text-xl font-bold text-white">
             Tüm Serileri Keşfet
           </h3>
-          <p class="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
+          <p class="text-xs sm:text-sm text-white/75 mt-1 sm:mt-2">
             Geniş veritabanındaki (AniList) tüm serileri inceleyin
           </p>
         </div>
       </div>
 
       <div
-        class="bg-muted/30 rounded-2xl sm:rounded-3xl p-5 sm:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 cursor-pointer transition-all group"
+        class="os-card-interactive rounded-(--os-hero-radius) p-5 sm:p-8 flex flex-col items-center justify-center gap-3 sm:gap-4 cursor-pointer group overflow-hidden"
         style="
         background-image: url('https://cdn.sanity.io/images/1yge7tlr/production/23d03703d1751a1e51b27a4c4099e80ad1673545-540x250.gif');
         background-position: center;
         background-size: cover;
         background-repeat: no-repeat;
-        box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.7);
+        box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.72);
         "
         @click="void (exploreMode = 'local')"
       >
@@ -331,10 +331,10 @@ const localTitles = computed(() => {
           />
         </div>
         <div class="text-center">
-          <h3 class="text-lg sm:text-xl font-bold text-foreground">
+          <h3 class="text-lg sm:text-xl font-bold text-white">
             Mangile Serilerini Keşfet
           </h3>
-          <p class="text-xs sm:text-sm text-muted-foreground mt-1 sm:mt-2">
+          <p class="text-xs sm:text-sm text-white/75 mt-1 sm:mt-2">
             Mangile sistemine eklenmiş serileri görüntüleyin
           </p>
         </div>
@@ -351,7 +351,6 @@ const localTitles = computed(() => {
           variant="soft"
           color="neutral"
           size="sm"
-          class="rounded-xl"
           @click="void (exploreMode = 'menu')"
         >
           Geri Dön
@@ -359,11 +358,11 @@ const localTitles = computed(() => {
       </div>
 
       <!-- Filtreleme Paneli - Tüm Seriler -->
-      <div class="bg-muted/20 border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 space-y-2.5 sm:space-y-3">
+      <div class="os-panel p-3 sm:p-4 space-y-2.5 sm:space-y-3">
         <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground mb-1">
           <UIcon
             name="i-lucide-sliders-horizontal"
-            class="w-3.5 h-3.5 sm:w-4 sm:h-4"
+            class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary"
           />
           Filtreleme & Sıralama
         </div>
@@ -417,7 +416,6 @@ const localTitles = computed(() => {
             variant="soft"
             color="neutral"
             size="xs"
-            class="rounded-lg"
             @click="resetAllFilters"
           >
             Filtreleri Temizle
@@ -432,7 +430,7 @@ const localTitles = computed(() => {
         <USkeleton
           v-for="i in 12"
           :key="i"
-          class="h-64 rounded-2xl"
+          class="h-64 rounded-(--os-card-radius)"
         />
       </div>
 
@@ -486,7 +484,6 @@ const localTitles = computed(() => {
           variant="soft"
           color="neutral"
           size="sm"
-          class="rounded-xl"
           @click="void (exploreMode = 'menu')"
         >
           Geri Dön
@@ -494,11 +491,11 @@ const localTitles = computed(() => {
       </div>
 
       <!-- Filtreleme Paneli - Mangile Serileri -->
-      <div class="bg-muted/20 border border-border/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 space-y-2.5 sm:space-y-3">
+      <div class="os-panel p-3 sm:p-4 space-y-2.5 sm:space-y-3">
         <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-foreground mb-1">
           <UIcon
             name="i-lucide-sliders-horizontal"
-            class="w-3.5 h-3.5 sm:w-4 sm:h-4"
+            class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary"
           />
           Filtreleme & Sıralama
         </div>
@@ -552,7 +549,6 @@ const localTitles = computed(() => {
             variant="soft"
             color="neutral"
             size="xs"
-            class="rounded-lg"
             @click="resetLocalFilters"
           >
             Filtreleri Temizle
@@ -567,7 +563,7 @@ const localTitles = computed(() => {
         <USkeleton
           v-for="i in 12"
           :key="i"
-          class="h-64 rounded-2xl"
+          class="h-64 rounded-(--os-card-radius)"
         />
       </div>
 

@@ -271,7 +271,7 @@ useSeoMeta({
           variant="solid"
           size="sm"
           icon="i-lucide-plus"
-          class="rounded-xl font-bold shrink-0"
+          class="font-bold shrink-0"
           @click="openCreateModal"
         >
           Yeni Liste
@@ -280,20 +280,20 @@ useSeoMeta({
     </div>
 
     <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
-      <div class="flex items-center p-1 rounded-xl bg-muted/20 border border-default/20 w-full sm:w-auto">
+      <div class="os-segmented flex items-center w-full sm:w-auto">
         <button
           v-if="user"
           type="button"
-          class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="activeTab === 'my' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+          class="os-segmented-btn flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold"
+          :class="{ 'is-active': activeTab === 'my' }"
           @click="activeTab = 'my'"
         >
           Listelerim ({{ myLists.length }})
         </button>
         <button
           type="button"
-          class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="activeTab === 'explore' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+          class="os-segmented-btn flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold"
+          :class="{ 'is-active': activeTab === 'explore' }"
           @click="activeTab = 'explore'"
         >
           Keşfet
@@ -301,8 +301,8 @@ useSeoMeta({
         <button
           v-if="user"
           type="button"
-          class="flex-1 sm:flex-none px-4 py-1.5 rounded-lg text-xs font-bold transition-all"
-          :class="activeTab === 'liked' ? 'bg-primary text-inverted shadow-xs' : 'text-muted hover:text-foreground'"
+          class="os-segmented-btn flex-1 sm:flex-none px-4 py-1.5 text-xs font-bold"
+          :class="{ 'is-active': activeTab === 'liked' }"
           @click="activeTab = 'liked'"
         >
           Beğendiklerim ({{ likedLists.length }})
@@ -323,7 +323,7 @@ useSeoMeta({
     <div v-if="activeTab === 'my'">
       <div
         v-if="!user"
-        class="text-center py-12 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6"
+        class="text-center py-12 space-y-3 os-panel p-6"
       >
         <UIcon
           name="i-lucide-user-x"
@@ -340,7 +340,7 @@ useSeoMeta({
           color="primary"
           variant="solid"
           size="sm"
-          class="rounded-xl font-bold"
+          class="font-bold"
         >
           Giriş Yap
         </UButton>
@@ -353,13 +353,13 @@ useSeoMeta({
         <div
           v-for="i in 3"
           :key="i"
-          class="h-44 rounded-2xl bg-muted/20 animate-pulse"
+          class="h-44 rounded-(--os-card-radius) bg-muted/20 animate-pulse"
         />
       </div>
 
       <div
         v-else-if="filteredMyLists.length === 0"
-        class="text-center py-12 space-y-3 bg-muted/10 rounded-2xl border border-default/20 p-6"
+        class="text-center py-12 space-y-3 os-panel p-6"
       >
         <UIcon
           name="i-lucide-library"
@@ -377,7 +377,7 @@ useSeoMeta({
           variant="solid"
           size="sm"
           icon="i-lucide-plus"
-          class="rounded-xl font-bold"
+          class="font-bold"
           @click="openCreateModal"
         >
           Yeni Liste Oluştur
@@ -391,7 +391,7 @@ useSeoMeta({
         <div
           v-for="l in filteredMyLists"
           :key="l._id"
-          class="group relative flex flex-col justify-between p-4 rounded-2xl bg-elevated/70 border border-default/30 hover:border-primary/50 transition-all hover:shadow-lg"
+          class="group relative flex flex-col justify-between p-4 os-card-interactive"
         >
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
@@ -399,7 +399,7 @@ useSeoMeta({
                 :color="l.isPrivate ? 'neutral' : 'success'"
                 variant="subtle"
                 size="xs"
-                class="rounded-full text-[10px]"
+                class="text-[10px]"
               >
                 {{ l.isPrivate ? 'Gizli' : 'Herkese Açık' }}
               </UBadge>
@@ -445,7 +445,7 @@ useSeoMeta({
                     :key="cIdx"
                     :src="c"
                     alt=""
-                    class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
+                    class="size-9 os-inner-media object-cover ring-2 ring-background shadow-xs"
                   >
                 </div>
               </div>
@@ -480,13 +480,13 @@ useSeoMeta({
         <div
           v-for="i in 6"
           :key="i"
-          class="h-44 rounded-2xl bg-muted/20 animate-pulse"
+          class="h-44 rounded-(--os-card-radius) bg-muted/20 animate-pulse"
         />
       </div>
 
       <div
         v-else-if="filteredExploreLists.length === 0"
-        class="text-center py-12 space-y-2 bg-muted/10 rounded-2xl border border-default/20 p-6"
+        class="text-center py-12 space-y-2 os-panel p-6"
       >
         <UIcon
           name="i-lucide-compass"
@@ -508,7 +508,7 @@ useSeoMeta({
           v-for="l in filteredExploreLists"
           :key="l._id"
           :to="`/lists/${l._id}`"
-          class="group flex flex-col justify-between p-4 rounded-2xl bg-elevated/70 border border-default/30 hover:border-primary/50 transition-all hover:shadow-lg"
+          class="group flex flex-col justify-between p-4 os-card-interactive"
         >
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
@@ -526,7 +526,7 @@ useSeoMeta({
                 color="primary"
                 variant="subtle"
                 size="xs"
-                class="rounded-full text-[10px]"
+                class="text-[10px]"
               >
                 {{ l.items?.length || l.itemsCount || 0 }} Öge
               </UBadge>
@@ -550,7 +550,7 @@ useSeoMeta({
                   :key="cIdx"
                   :src="c"
                   alt=""
-                  class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
+                  class="size-9 os-inner-media object-cover ring-2 ring-background shadow-xs"
                 >
               </div>
             </div>
@@ -578,13 +578,13 @@ useSeoMeta({
         <div
           v-for="i in 3"
           :key="i"
-          class="h-44 rounded-2xl bg-muted/20 animate-pulse"
+          class="h-44 rounded-(--os-card-radius) bg-muted/20 animate-pulse"
         />
       </div>
 
       <div
         v-else-if="filteredLikedLists.length === 0"
-        class="text-center py-12 space-y-2 bg-muted/10 rounded-2xl border border-default/20 p-6"
+        class="text-center py-12 space-y-2 os-panel p-6"
       >
         <UIcon
           name="i-lucide-heart"
@@ -606,7 +606,7 @@ useSeoMeta({
           v-for="l in filteredLikedLists"
           :key="l._id"
           :to="`/lists/${l._id}`"
-          class="group flex flex-col justify-between p-4 rounded-2xl bg-elevated/70 border border-default/30 hover:border-primary/50 transition-all hover:shadow-lg"
+          class="group flex flex-col justify-between p-4 os-card-interactive"
         >
           <div>
             <div class="flex items-center justify-between gap-2 mb-2">
@@ -624,7 +624,7 @@ useSeoMeta({
                 color="primary"
                 variant="subtle"
                 size="xs"
-                class="rounded-full text-[10px]"
+                class="text-[10px]"
               >
                 {{ l.items?.length || l.itemsCount || 0 }} Öge
               </UBadge>
@@ -648,7 +648,7 @@ useSeoMeta({
                   :key="cIdx"
                   :src="c"
                   alt=""
-                  class="size-9 rounded-lg object-cover ring-2 ring-background shadow-xs"
+                  class="size-9 os-inner-media object-cover ring-2 ring-background shadow-xs"
                 >
               </div>
             </div>

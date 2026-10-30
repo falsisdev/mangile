@@ -134,9 +134,9 @@ async function handleRemoveAll(seriesId: string) {
       <!-- Giriş Yapılmamışsa Uyarı Kartı -->
       <div
         v-if="!user || !isRegistered"
-        class="p-6 rounded-3xl bg-muted/20 border border-default/20 text-center space-y-4 max-w-lg mx-auto my-12"
+        class="p-6 os-card text-center space-y-4 max-w-lg mx-auto my-12"
       >
-        <div class="size-16 rounded-2xl bg-amber-500/10 text-amber-500 mx-auto flex items-center justify-center">
+        <div class="size-16 rounded-(--os-card-radius) bg-amber-500/10 text-amber-500 mx-auto flex items-center justify-center">
           <UIcon
             name="i-lucide-lock"
             class="size-8"
@@ -158,7 +158,7 @@ async function handleRemoveAll(seriesId: string) {
             label="Giriş Yap"
             icon="i-lucide-log-in"
             color="primary"
-            class="rounded-xl font-bold"
+            class="font-bold"
           />
           <UButton
             v-else
@@ -166,7 +166,7 @@ async function handleRemoveAll(seriesId: string) {
             label="Kaydı Tamamla"
             icon="i-lucide-sparkles"
             color="warning"
-            class="rounded-xl font-bold"
+            class="font-bold"
           />
         </div>
       </div>
@@ -188,7 +188,7 @@ async function handleRemoveAll(seriesId: string) {
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <!-- MyAnimeList -->
-            <div class="p-4 rounded-2xl bg-muted/20 border border-default/20 flex flex-col justify-between gap-4">
+            <div class="p-4 os-card flex flex-col justify-between gap-4">
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
                   <TrackerBrandIcon
@@ -209,7 +209,6 @@ async function handleRemoveAll(seriesId: string) {
                   :color="user.integrations?.mal?.accessToken ? 'success' : 'neutral'"
                   size="xs"
                   variant="subtle"
-                  class="rounded"
                 >
                   {{ user.integrations?.mal?.accessToken ? 'Bağlı' : 'Bağlı Değil' }}
                 </UBadge>
@@ -229,7 +228,7 @@ async function handleRemoveAll(seriesId: string) {
                     size="xs"
                     color="error"
                     variant="soft"
-                    class="rounded-xl font-bold"
+                    class="font-bold"
                     @click="handleDisconnect('mal')"
                   />
                   <UButton
@@ -239,7 +238,7 @@ async function handleRemoveAll(seriesId: string) {
                     size="xs"
                     color="primary"
                     variant="solid"
-                    class="rounded-xl font-bold"
+                    class="font-bold"
                     @click="connectProvider('mal')"
                   />
                 </div>
@@ -247,7 +246,7 @@ async function handleRemoveAll(seriesId: string) {
             </div>
 
             <!-- AniList -->
-            <div class="p-4 rounded-2xl bg-muted/20 border border-default/20 flex flex-col justify-between gap-4">
+            <div class="p-4 os-card flex flex-col justify-between gap-4">
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
                   <TrackerBrandIcon
@@ -268,7 +267,6 @@ async function handleRemoveAll(seriesId: string) {
                   :color="user.integrations?.anilist?.accessToken ? 'success' : 'neutral'"
                   size="xs"
                   variant="subtle"
-                  class="rounded"
                 >
                   {{ user.integrations?.anilist?.accessToken ? 'Bağlı' : 'Bağlı Değil' }}
                 </UBadge>
@@ -281,7 +279,7 @@ async function handleRemoveAll(seriesId: string) {
                   size="xs"
                   color="error"
                   variant="soft"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="handleDisconnect('anilist')"
                 />
                 <UButton
@@ -291,14 +289,14 @@ async function handleRemoveAll(seriesId: string) {
                   size="xs"
                   color="primary"
                   variant="solid"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="connectProvider('anilist')"
                 />
               </div>
             </div>
 
             <!-- MangaDex -->
-            <div class="p-4 rounded-2xl bg-muted/20 border border-default/20 flex flex-col justify-between gap-4">
+            <div class="p-4 os-card flex flex-col justify-between gap-4">
               <div class="flex items-start justify-between">
                 <div class="flex items-center gap-3">
                   <TrackerBrandIcon
@@ -319,7 +317,6 @@ async function handleRemoveAll(seriesId: string) {
                   :color="user.integrations?.mangadex?.accessToken ? 'success' : 'neutral'"
                   size="xs"
                   variant="subtle"
-                  class="rounded"
                 >
                   {{ user.integrations?.mangadex?.accessToken ? (user.integrations.mangadex.username ? `@${user.integrations.mangadex.username}` : 'Bağlı') : 'Bağlı Değil' }}
                 </UBadge>
@@ -332,7 +329,7 @@ async function handleRemoveAll(seriesId: string) {
                   size="xs"
                   color="error"
                   variant="soft"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="handleDisconnect('mangadex')"
                 />
                 <UButton
@@ -342,7 +339,7 @@ async function handleRemoveAll(seriesId: string) {
                   size="xs"
                   color="primary"
                   variant="solid"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="void (mangaDexModalOpen = true)"
                 />
               </div>
@@ -365,7 +362,6 @@ async function handleRemoveAll(seriesId: string) {
               size="xs"
               color="neutral"
               variant="ghost"
-              class="rounded-lg"
               :loading="loading"
               @click="loadTrackers"
             />
@@ -389,7 +385,7 @@ async function handleRemoveAll(seriesId: string) {
             <div
               v-for="item in trackersDoc.trackers"
               :key="item.seriesId"
-              class="p-4 rounded-2xl bg-muted/20 border border-default/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-muted/30 transition-all"
+              class="p-4 os-card-interactive flex flex-col sm:flex-row sm:items-center justify-between gap-3"
             >
               <div class="space-y-1">
                 <NuxtLink
@@ -408,7 +404,6 @@ async function handleRemoveAll(seriesId: string) {
                     size="xs"
                     variant="subtle"
                     color="info"
-                    class="rounded"
                   >
                     MAL: {{ item.malId }}
                   </UBadge>
@@ -417,7 +412,6 @@ async function handleRemoveAll(seriesId: string) {
                     size="xs"
                     variant="subtle"
                     color="primary"
-                    class="rounded"
                   >
                     AniList: {{ item.anilistId }}
                   </UBadge>
@@ -426,7 +420,6 @@ async function handleRemoveAll(seriesId: string) {
                     size="xs"
                     variant="subtle"
                     color="warning"
-                    class="rounded"
                   >
                     MangaDex
                   </UBadge>
@@ -452,7 +445,7 @@ async function handleRemoveAll(seriesId: string) {
                   size="xs"
                   color="neutral"
                   variant="soft"
-                  class="rounded-xl font-bold"
+                  class="font-bold"
                   @click="openManageSeries(item)"
                 />
                 <UButton
@@ -460,7 +453,6 @@ async function handleRemoveAll(seriesId: string) {
                   size="xs"
                   color="error"
                   variant="ghost"
-                  class="rounded-xl"
                   @click="handleRemoveAll(item.seriesId)"
                 />
               </div>
@@ -470,9 +462,9 @@ async function handleRemoveAll(seriesId: string) {
           <!-- Henüz seri eşleşmemiş -->
           <div
             v-else
-            class="py-16 p-6 rounded-3xl bg-muted/15 border border-dashed border-default/20 text-center space-y-3"
+            class="py-16 p-6 rounded-(--os-hero-radius) os-panel border-dashed text-center space-y-3"
           >
-            <div class="size-12 rounded-2xl bg-muted/30 text-muted mx-auto flex items-center justify-center">
+            <div class="size-12 rounded-(--os-card-radius) bg-muted/30 text-muted mx-auto flex items-center justify-center">
               <UIcon
                 name="i-lucide-bookmark-check"
                 class="size-6"
@@ -493,7 +485,7 @@ async function handleRemoveAll(seriesId: string) {
               color="primary"
               variant="soft"
               size="xs"
-              class="rounded-xl font-bold"
+              class="font-bold"
             />
           </div>
         </div>

@@ -105,7 +105,7 @@ async function handleSelect(result: TrackerSearchResult) {
 <template>
   <UModal v-model:open="isOpen">
     <template #content>
-      <UCard class="w-full max-w-2xl overflow-hidden rounded-2xl max-h-[90dvh] overflow-y-auto">
+      <UCard class="w-full max-w-2xl overflow-hidden max-h-[90dvh] overflow-y-auto">
         <template #header>
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -128,7 +128,6 @@ async function handleSelect(result: TrackerSearchResult) {
               variant="ghost"
               icon="i-lucide-x"
               size="sm"
-              class="rounded-xl"
               @click="void (isOpen = false)"
             />
           </div>
@@ -149,7 +148,6 @@ async function handleSelect(result: TrackerSearchResult) {
               label="Ara"
               icon="i-lucide-search"
               color="primary"
-              class="rounded-xl"
               :loading="searching"
               @click="executeSearch"
             />
@@ -158,7 +156,7 @@ async function handleSelect(result: TrackerSearchResult) {
           <!-- Admin/Mod Global Eşleme Opsiyonu -->
           <div
             v-if="isAdminOrMod"
-            class="flex items-center gap-2 p-2.5 rounded-xl bg-primary/5 border border-primary/20 text-xs"
+            class="flex items-center gap-2 p-2.5 rounded-(--os-inner-radius) bg-primary/5 border border-primary/20 text-xs"
           >
             <UCheckbox v-model="globalBind" />
             <span
@@ -189,19 +187,19 @@ async function handleSelect(result: TrackerSearchResult) {
             <div
               v-for="item in results"
               :key="item.id"
-              class="group p-2.5 rounded-xl bg-muted/20 hover:bg-muted/35 border border-default/20 transition-all flex items-center justify-between gap-3"
+              class="group p-2.5 os-card-interactive flex items-center justify-between gap-3"
             >
               <div class="flex items-center gap-3 min-w-0">
                 <img
                   v-if="item.coverImage"
                   :src="item.coverImage"
                   :alt="item.title"
-                  class="size-14 rounded-lg object-cover flex-shrink-0 bg-muted/30"
+                  class="size-14 os-inner-media object-cover flex-shrink-0 bg-muted/30"
                   loading="lazy"
                 >
                 <div
                   v-else
-                  class="size-14 rounded-lg bg-muted/30 flex items-center justify-center flex-shrink-0"
+                  class="size-14 os-inner-media bg-muted/30 flex items-center justify-center flex-shrink-0"
                 >
                   <UIcon
                     name="i-lucide-book"
@@ -224,7 +222,6 @@ async function handleSelect(result: TrackerSearchResult) {
                       size="xs"
                       variant="subtle"
                       color="neutral"
-                      class="rounded"
                     >
                       {{ item.format }}
                     </UBadge>
@@ -244,7 +241,7 @@ async function handleSelect(result: TrackerSearchResult) {
                 color="primary"
                 variant="soft"
                 size="xs"
-                class="rounded-xl flex-shrink-0 font-bold"
+                class="flex-shrink-0 font-bold"
                 :loading="bindingId === item.id"
                 @click="handleSelect(item)"
               />

@@ -1,24 +1,31 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+@import "./os-themes.css";
 
-@theme {
-  --font-sans: 'Raleway', sans-serif;
+@theme inline {
+  --font-sans: var(--os-font-sans);
+  --color-background: var(--ui-bg);
+  --color-foreground: var(--ui-text-highlighted);
+  --color-muted-foreground: var(--ui-text-muted);
+  --color-card: var(--ui-bg-elevated);
+  --color-border: var(--ui-border);
+  --color-sidebar: var(--os-sidebar-bg);
 }
 
 :root {
-  --ui-primary: black;
   font-size: 14.5px;
   -webkit-tap-highlight-color: transparent;
 }
 
 @media (min-width: 768px) {
   :root {
-    font-size: 16px;
+    font-size: 15.5px;
   }
-}
 
-.dark {
-  --ui-primary: white;
+  html[data-os-theme="macos27"],
+  html[data-os-theme="fluent2"] {
+    font-size: 15px;
+  }
 }
 
 /* Native App & PWA Ergonomics */
@@ -29,6 +36,7 @@ body {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: var(--os-font-sans);
 }
 
 /* Touch manipulation & tap highlight removal for interactive elements */
@@ -57,7 +65,7 @@ button {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Sleek modern scrollbars */
+/* OS-Adaptive Sleek Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -68,8 +76,12 @@ button {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(150, 150, 150, 0.25);
+  background: rgba(150, 150, 150, 0.26);
   border-radius: 9999px;
+}
+
+html[data-os-theme="fluent2"] ::-webkit-scrollbar-thumb {
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -93,19 +105,20 @@ button {
   padding-right: env(safe-area-inset-right, 0px);
 }
 
-/* Smooth page transitions */
+/* OS-Adaptive Smooth Page Transitions */
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity 0.24s var(--os-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    transform 0.24s var(--os-ease, cubic-bezier(0.22, 1, 0.36, 1));
 }
 
 .page-enter-from {
   opacity: 0;
-  transform: translateY(8px) scale(0.995);
+  transform: translateY(6px) scale(0.996);
 }
 
 .page-leave-to {
   opacity: 0;
-  transform: translateY(-4px) scale(0.998);
+  transform: translateY(-3px) scale(0.998);
 }

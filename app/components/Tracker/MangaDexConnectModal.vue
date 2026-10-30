@@ -45,27 +45,27 @@ async function handleConnect() {
   <UModal
     v-model:open="open"
     :ui="{
-      content: 'sm:max-w-md bg-neutral-900 border border-neutral-800 max-h-[90dvh] overflow-y-auto'
+      content: 'sm:max-w-md os-modal-surface max-h-[90dvh] overflow-y-auto'
     }"
   >
     <template #content>
-      <div class="p-6">
+      <div class="p-6 text-foreground">
         <div class="flex items-center gap-3 mb-4">
           <TrackerBrandIcon
             provider="mangadex"
             class="w-8 h-8"
           />
           <div>
-            <h3 class="text-base font-semibold text-neutral-100">
+            <h3 class="text-base font-bold text-foreground">
               MangaDex Hesabını Bağla
             </h3>
-            <p class="text-xs text-neutral-400">
+            <p class="text-xs text-muted">
               Manga okuma ilerlemenizi MangaDex ile eşitleyin
             </p>
           </div>
         </div>
 
-        <div class="bg-neutral-800/40 border border-neutral-700/50 rounded-lg p-3 text-xs text-neutral-300 mb-4 leading-relaxed">
+        <div class="os-panel p-3 text-xs text-muted mb-4 leading-relaxed">
           MangaDex kişisel istemci API kuralları gereği, hesabınızı yetkilendirmek için MangaDex kullanıcı adı ve şifrenizle bir kerelik oturum açmanız gerekmektedir. Bilgileriniz güvenli sunucu üzerinden MangaDex ile doğrulanır ve saklanmaz.
         </div>
 
@@ -74,7 +74,7 @@ async function handleConnect() {
           @submit.prevent="handleConnect"
         >
           <div class="space-y-1.5">
-            <label class="text-xs font-medium text-neutral-300">MangaDex Kullanıcı Adı veya E-posta</label>
+            <label class="text-xs font-semibold text-foreground">MangaDex Kullanıcı Adı veya E-posta</label>
             <UInput
               v-model="username"
               placeholder="Kullanıcı adınız"
@@ -86,7 +86,7 @@ async function handleConnect() {
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-xs font-medium text-neutral-300">MangaDex Şifresi</label>
+            <label class="text-xs font-semibold text-foreground">MangaDex Şifresi</label>
             <UInput
               v-model="password"
               type="password"
@@ -99,7 +99,7 @@ async function handleConnect() {
 
           <p
             v-if="errorMessage"
-            class="text-xs text-red-400"
+            class="text-xs text-red-500 font-medium"
           >
             {{ errorMessage }}
           </p>
